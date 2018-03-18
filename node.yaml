@@ -35,6 +35,13 @@ yum_repos:
         protect: true
 write_files:
   - content: |
+        if [[ $UID -ne 0 ]]; then
+          if [[ -r /cvmfs/soft.computecanada.ca/config/profile/bash.sh ]]; then
+            source /cvmfs/soft.computecanada.ca/config/profile/bash.sh
+          fi
+        fi
+    path: /etc/profile.d/z-00-computecanada.sh
+  - content: |
         CVMFS_REPOSITORIES="cvmfs-config.computecanada.ca"
         CVMFS_QUOTA_LIMIT=4450
         CVMFS_HTTP_PROXY="http://${login1_ip}:3128"
