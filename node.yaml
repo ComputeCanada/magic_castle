@@ -1,0 +1,41 @@
+#cloud-config
+packages:
+  - git
+  - avahi
+  - nss-mdns
+  - wget
+  - libsss_autofs
+  - cvmfs
+  - cvmfs-config-default
+  - cvmfs-auto-setup
+
+runcmd:
+  # - yum update -y
+  - systemctl start avahi-daemon
+  - systemctl enable avahi-daemon
+  - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
+  - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
+  - systemctl restart autofs
+  # - reboot -n
+
+yum_repos:
+    epel:
+        baseurl: http://dl.fedoraproject.org/pub/epel/$releasever/$basearch
+        enabled: true
+        failovermethod: priority
+        gpgcheck: false
+        gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL
+        name: Extra Packages for Enterprise Linux
+    cvmfs:
+        name: CernVM packages
+        baseurl: http://cvmrepo.web.cern.ch/cvmrepo/yum/cvmfs/EL/$releasever/$basearch/
+        gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM
+        gpgcheck: false
+        enabled: true
+        protect: true
+write_files:
+  - content: |
+        CVMFS_REPOSITORIES="cvmfs-config.computecanada.ca"
+        CVMFS_QUOTA_LIMIT=4450
+        CVMFS_HTTP_PROXY="http://${login1_ip}:3128"
+    path: /etc/cvmfs/default.local
