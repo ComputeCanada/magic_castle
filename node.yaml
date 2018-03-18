@@ -8,9 +8,13 @@ packages:
   - cvmfs
   - cvmfs-config-default
   - cvmfs-auto-setup
+  - nfs-utils
 
 runcmd:
   # - yum update -y
+  - mkdir -p /mnt/nfs/home
+  - mkdir -p /mnt/nfs/project /project
+  - mkdir -p /mnt/nfs/scratch /scratch
   - systemctl start avahi-daemon
   - systemctl enable avahi-daemon
   - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
@@ -33,6 +37,7 @@ yum_repos:
         gpgcheck: false
         enabled: true
         protect: true
+
 write_files:
   - content: |
         if [[ $UID -ne 0 ]]; then
@@ -46,3 +51,10 @@ write_files:
         CVMFS_QUOTA_LIMIT=4450
         CVMFS_HTTP_PROXY="http://${login1_ip}:3128"
     path: /etc/cvmfs/default.local
+
+mounts:
+  - ["${login1_ip}:/home", "/mnt/nfs/home", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
+  - ["${login1_ip}:/project", "/mnt/nfs/project", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
+  - ["${login1_ip}:/scratch", "/mnt/nfs/scratch", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
+  - ["/scratch", "/mnt/nfs/scratch", "none", "default,bind", "0", "0"]
+  - ["/project", "/mnt/nfs/project", "none", "default,bind", "0", "0"]

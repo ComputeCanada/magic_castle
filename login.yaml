@@ -9,16 +9,32 @@ packages:
   - cvmfs
   - cvmfs-config-default
   - cvmfs-auto-setup
+  - nfs-utils
 
 runcmd:
   # - yum update -y
-  - systemctl start avahi-daemon
-  - systemctl enable avahi-daemon
+  # Squid
   - systemctl start squid
   - systemctl enable squid
+  # mDNS
+  - systemctl start avahi-daemon
+  - systemctl enable avahi-daemon
+  # CVMFS
   - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
   - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
   - systemctl restart autofs
+  # Shared folders
+  - mkdir /project
+  - mkdir /scratch
+  # NFS
+  - systemctl enable rpcbind
+  - systemctl enable nfs-server
+  # - systemctl enable nfs-lock
+  # - systemctl enable nfs-idmap
+  - systemctl start rpcbind
+  - systemctl start nfs-server
+  # - systemctl start nfs-lock
+  # - systemctl start nfs-idmap
   # - reboot -n
 
 yum_repos:
@@ -38,6 +54,11 @@ yum_repos:
         protect: true
 
 write_files:
+  - content: |
+      /home     10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
+      /project  10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
+      /scratch  10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
+    path: /etc/exports
   - content: |
         if [[ $UID -ne 0 ]]; then
           if [[ -r /cvmfs/soft.computecanada.ca/config/profile/bash.sh ]]; then
