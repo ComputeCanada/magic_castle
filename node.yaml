@@ -56,5 +56,5 @@ mounts:
   - ["${login1_ip}:/home", "/mnt/nfs/home", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
   - ["${login1_ip}:/project", "/mnt/nfs/project", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
   - ["${login1_ip}:/scratch", "/mnt/nfs/scratch", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
-  - ["/scratch", "/mnt/nfs/scratch", "none", "default,bind", "0", "0"]
-  - ["/project", "/mnt/nfs/project", "none", "default,bind", "0", "0"]
+  - ["/mnt/nfs/scratch", "/scratch", "none", "default,bind", "0", "0"]
+  - ["/mnt/nfs/project", "/project", "none", "default,bind", "0", "0"]
