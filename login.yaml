@@ -2,6 +2,7 @@
 packages:
   - git
   - avahi
+  - avahi-tools
   - nss-mdns
   - wget
   - squid
@@ -10,9 +11,10 @@ packages:
   - cvmfs-config-default
   - cvmfs-auto-setup
   - nfs-utils
+  - mariadb-server
 
 runcmd:
-  # - yum update -y
+  # - yum update   -y
   # Squid
   - systemctl start squid
   - systemctl enable squid
@@ -29,13 +31,27 @@ runcmd:
   # NFS
   - systemctl enable rpcbind
   - systemctl enable nfs-server
-  # - systemctl enable nfs-lock
-  # - systemctl enable nfs-idmap
   - systemctl start rpcbind
   - systemctl start nfs-server
-  # - systemctl start nfs-lock
-  # - systemctl start nfs-idmap
-  # - reboot -n
+  # Slurm
+  - groupadd -g 2001 slurm
+  - useradd -m -c "Slurm workload manager" -d /var/lib/slurm -u 2001 -g slurm  -s /bin/bash slurm
+  - groupadd -g 2002 munge
+  - useradd -m -c "MUNGE Uid 'N' Gid Emporium" -d /var/lib/munge -u 2002 -g munge  -s /sbin/nologin munge
+  - yum install -y munge munge-libs
+  - mkdir /var/spool/slurm
+  - chown slurm:slurm /var/spool/slurm
+  - chown slurm:slurm /etc/slurm/slurm.conf
+  - chown munge:munge /etc/munge/munge.key
+  - systemctl enable munge
+  - systemctl start  munge
+  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-17.11.5-1.el7.centos.x86_64.rpm
+  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-perlapi-17.11.5-1.el7.centos.x86_64.rpm
+  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-plugins-17.11.5-1.el7.centos.x86_64.rpm
+  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-slurmdbd-17.11.5-1.el7.centos.x86_64.rpm
+  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-slurmctld-17.11.5-1.el7.centos.x86_64.rpm
+  # Find hostnames
+  # - avahi-browse -atpr | awk -F';' '{print $8, $7}' | sed '/^ *$/d' | sed 's/.local//' >> /etc/hosts
 
 yum_repos:
     epel:
@@ -55,17 +71,69 @@ yum_repos:
 
 write_files:
   - content: |
-      /home     10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
-      /project  10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
-      /scratch  10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
-    path: /etc/exports
+        # MANAGEMENT POLICIES
+        ControlMachine=login1
+        AuthType=auth/munge
+        CryptoType=crypto/munge
+        SlurmUser=slurm
+
+        # NODE CONFIGURATIONS
+        NodeName=compute-node[1-${nb_nodes}]
+
+        # PARTITION CONFIGURATIONS
+        PartitionName=debug Nodes=compute-node[1-${nb_nodes}] Default=YES
+
+        SlurmctldPort=6817
+        SlurmdPort=6818
+
+        SlurmctldDebug=debug
+        SlurmctldLogFile=/var/log/slurmctld.log
+        SlurmdDebug=debug
+        SlurmdLogFile=/var/log/slurmd.log
+
+        SlurmctldPidFile=/var/run/slurmctld.pid
+        SlurmdPidFile=/var/run/slurmd.pid
+
+        StateSaveLocation=/var/spool/slurm
+    path: /etc/slurm/slurm.conf
+  - content: |
+        VkJmEF/j97xr7L33ZYsf/mZdQ527MxyvVkoBSL8H9fCjeKtrDTPJBHecsO4/iTvO
+        hrOxJBh0hsLZjyl8w7V8hZISKKMyqebNL2cknn/cj7l4zbt+E3lb+RRYlfCkGHgB
+        lXw86SzhFLJRjKwHTKSrhgIeFVsHXasAzakYIxJecZ7GpiwK6ViSR1hj4j06fNqC
+        Wb+v3nkZGBc5HpjuxOViHr6em/z++p9b2MYGPBrZwN40ZtLtWlUWwVR/BlIiHalr
+        xDC2bqMz9ubJYbAgfE/NimwsLyqQN/2kuFplBmzSNP11EZSGKFo8DM1KNFmteotG
+        zanfP6uBJvgSdw3FtctsxEX06Ch6jLuGDdW6WhWJN+eH+aghEKANExdQdJtaiCr1
+        HgY3xNFJzVVZcUHozWRP9GzbXdZ5SzdcQYTfZmyMcxIKRvKFLxtWTwpFfhmAPaei
+        j8PlTMgZQWoVtSOpSqD3/ngUGItvs1ofqEW2eit4q+/1nKkL3M7HsorEkd2UiVN4
+        g2w/m+fct72XdEp+dSRCGxNkvHpMssMg4HdgTp5EfNXRTCnWk3JOdo+0bT3L9GJc
+        DnklNqvGBRVu6Fw+QBt2C7yHg+PCcJ0PNUqkuoT3k5VQibAu1w0gp/WmqG3gJhwe
+        1/EXOmkL8Ml060P8nSmt6yYhzihn3s90wHMvdJQa3CnlwPFd/iw80F9cBybqjtKo
+        Ck5M0nycCcprXteIOqR1ysy8KyCG6rCafk02VdW9wgY1ZthLCHdjzKrzuyzuybac
+        gfa/jFpFKmmTCWsrkYcbxFx9JL1J+ZKpqHJMM9gv+4x0fn4CTnOFMgVHibmXNYqH
+        lqLxR9+Sg2Ny9w2xd+13KaWii/FtmD2Pgp/P5XGPwSPT4WtzA853MeESBPqmFwlu
+        6tSDtez8yQKR+zj3FzPx+EVw41VNzNt+dm6bWGz4pvS4QqUr329xygeOqJjVV4BX
+        TnPuU7yPGYOKLu5cazqhKH0vV9tGKHXb+dxJ3ji/tPR85Nsr6vQ72RRqscroa3Fq
+        BP11zaizzi+uf5Zf/VTyFx/04r2rbdmhU/lFFAdpmEhLfrgQzkAJHT+w+xzd1hp6
+        +f9fjG15HiDM8rhkDkSZovK4c9tI+LKv3TrrH77ZG/ufvFPfm6u8iR95xRMh9kWG
+        FfPW4jZl0HkQQlr8uv/gItnt4H9DZjpkOAteb/Z2y/ahPEzQkddpct5D/JjHSI40
+        0J/dvVhHs9hhiSsn9PLNSRfa7psxAZNde8JrbKeU6ntI0C/GYpz8zyWillKXZ55g
+        EmeBi8LpnS+OuHq9BmWqLYdmr5zcZHPlJ8XycPQE7g82h9f0LOKfe0YVeqxVo+T7
+        Kraf+lA9U1nDEKob6RLYyw==
+    path: /etc/munge/munge.key
+    permissions: "0400"
+    encoding: "base64"
+  - content: |
+        /home     10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
+        /project  10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
+        /scratch  10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
+    path: /etc/exports        
   - content: |
         if [[ $UID -ne 0 ]]; then
           if [[ -r /cvmfs/soft.computecanada.ca/config/profile/bash.sh ]]; then
             source /cvmfs/soft.computecanada.ca/config/profile/bash.sh
           fi
         fi
-    path: /etc/profile.d/z-00-computecanada.sh
+    path: /etc/profile.d/z-00-computecanada.sh        
   - content: |
         CVMFS_REPOSITORIES="cvmfs-config.computecanada.ca"
         CVMFS_QUOTA_LIMIT=4450
