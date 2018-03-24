@@ -1,9 +1,6 @@
 #cloud-config
 packages:
   - git
-  - avahi
-  - avahi-tools
-  - nss-mdns
   - wget
   - squid
   - libsss_autofs
@@ -12,15 +9,14 @@ packages:
   - cvmfs-auto-setup
   - nfs-utils
   - mariadb-server
+  - ipa-server-dns
+  - vim
 
 runcmd:
   # - yum update   -y
   # Squid
   - systemctl start squid
   - systemctl enable squid
-  # mDNS
-  - systemctl start avahi-daemon
-  - systemctl enable avahi-daemon
   # CVMFS
   - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
   - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
@@ -47,11 +43,9 @@ runcmd:
   - systemctl start  munge
   - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-17.11.5-1.el7.centos.x86_64.rpm
   - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-perlapi-17.11.5-1.el7.centos.x86_64.rpm
-  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-plugins-17.11.5-1.el7.centos.x86_64.rpm
   - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-slurmdbd-17.11.5-1.el7.centos.x86_64.rpm
   - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-slurmctld-17.11.5-1.el7.centos.x86_64.rpm
-  # Find hostnames
-  # - avahi-browse -atpr | awk -F';' '{print $8, $7}' | sed '/^ *$/d' | sed 's/.local//' >> /etc/hosts
+  - bash /root/freeipa.sh
 
 yum_repos:
     epel:
@@ -70,6 +64,16 @@ yum_repos:
         protect: true
 
 write_files:
+  - path: /root/freeipa.sh
+    permissions: 0700
+    content: |
+        #!/bin/bash
+        hostnamectl set-hostname $(hostname)
+        ipa-server-install --hostname $(hostname) --setup-dns \
+                           --ds-password changeme --admin-password changeme \
+                           --mkhomedir --ssh-trust-dns --unattended \
+                           --forwarder=10.0.0.2 --ip-address=$(hostname -i | awk '{print $2}') \
+                           --realm=WESTCLOUD
   - content: |
         # MANAGEMENT POLICIES
         ControlMachine=login1

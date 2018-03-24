@@ -1,15 +1,14 @@
 #cloud-config
 packages:
   - git
-  - avahi
-  - avahi-tools
-  - nss-mdns
   - wget
   - libsss_autofs
   - cvmfs
   - cvmfs-config-default
   - cvmfs-auto-setup
   - nfs-utils
+  - ipa-client
+  - vim
 
 runcmd:
   # - yum update -y
@@ -17,8 +16,6 @@ runcmd:
   - mkdir -p /mnt/nfs/home
   - mkdir -p /mnt/nfs/project /project
   - mkdir -p /mnt/nfs/scratch /scratch
-  - systemctl start avahi-daemon
-  - systemctl enable avahi-daemon
   - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
   - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
   - systemctl restart autofs
@@ -35,11 +32,9 @@ runcmd:
   - systemctl enable munge
   - systemctl start  munge
   - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-17.11.5-1.el7.centos.x86_64.rpm
+  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-slurmd-17.11.5-1.el7.centos.x86_64.rpm
   - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-perlapi-17.11.5-1.el7.centos.x86_64.rpm
-  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-plugins-17.11.5-1.el7.centos.x86_64.rpm
-  # Find hostnames
-  # - avahi-browse -atpr | awk -F';' '{print $8, $7}' | sed '/^ *$/d' | sed 's/.local//' >> /etc/hosts  
-  # - reboot -n
+  - bash /root/freeipa.sh
 
 yum_repos:
     epel:
@@ -58,9 +53,23 @@ yum_repos:
         protect: true
 
 write_files:
+  - path: /root/freeipa.sh
+    permissions: 0700
+    content: |
+        #!/bin/bash
+        hostnamectl set-hostname $(hostname)
+        cat << EOF > /etc/resolv.conf
+        search westcloud
+        nameserver ${login1_ip}
+        EOF
+        until ping -c1 login1 &>/dev/null; do :; done
+        sleep 30
+        ipa-client-install --mkhomedir --ssh-trust-dns \
+                           --enable-dns-updates \
+                           --unattended -p admin \
+                           -w changeme
   - path: /etc/munge/munge.key
     permissions: 0400
-    owner: 2002
     encoding: "base64"
     content: |
       VkJmEF/j97xr7L33ZYsf/mZdQ527MxyvVkoBSL8H9fCjeKtrDTPJBHecsO4/iTvO
@@ -101,6 +110,6 @@ mounts:
   - ["${login1_ip}:/home", "/mnt/nfs/home", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
   - ["${login1_ip}:/project", "/mnt/nfs/project", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
   - ["${login1_ip}:/scratch", "/mnt/nfs/scratch", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
-  - ["/mnt/nfs/home", "/home", "none", "default,bind", "0", "0"]
+  # - ["/mnt/nfs/home", "/home", "none", "default,bind", "0", "0"]
   - ["/mnt/nfs/project", "/project", "none", "default,bind", "0", "0"]
   - ["/mnt/nfs/scratch", "/scratch", "none", "default,bind", "0", "0"]
