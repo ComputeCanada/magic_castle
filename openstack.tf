@@ -7,6 +7,14 @@ provider "openstack" {
   region      = "${var.os_region_name}"
 }
 
+data "template_file" "common" {
+  template = "${file("common.yaml")}"
+
+  vars {
+    nb_nodes = "${var.nb_nodes}"
+  }
+}
+
 data "template_file" "login" {
   template = "${file("login.yaml")}"
 
@@ -15,12 +23,26 @@ data "template_file" "login" {
   }
 }
 
+data "template_cloudinit_config" "login_config" {
+  part {
+    filename     = "login.yaml"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.login.rendered}"
+  }
+
+  part {
+    filename     = "common.yaml"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.common.rendered}"
+  }
+}
+
 resource "openstack_compute_instance_v2" "login1" {
   name            = "login1"
   flavor_id       = "${var.os_login_flavor_id}"
   key_pair        = "${var.os_ssh_key}"
   security_groups = ["default", "ssh"]
-  user_data       = "${data.template_file.login.rendered}"
+  user_data       = "${data.template_cloudinit_config.login_config.rendered}"
 
   block_device {
     uuid                  = "${var.os_image_id}"
@@ -44,6 +66,20 @@ data "template_file" "node" {
   }
 }
 
+data "template_cloudinit_config" "node_config" {
+  part {
+    filename     = "node.yaml"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.node.rendered}"
+  }
+
+  part {
+    filename     = "common.yaml"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.common.rendered}"
+  }
+}
+
 resource "openstack_compute_instance_v2" "node" {
   count           = "${var.nb_nodes}"
   name            = "compute_node${count.index + 1}"
@@ -51,7 +87,7 @@ resource "openstack_compute_instance_v2" "node" {
   flavor_id       = "${var.os_flavor_id}"
   key_pair        = "${var.os_ssh_key}"
   security_groups = ["default"]
-  user_data       = "${data.template_file.node.rendered}"
+  user_data       = "${data.template_cloudinit_config.node_config.rendered}"
 
   network {
     name = "${var.os_default_network}"

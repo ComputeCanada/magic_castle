@@ -1,0 +1,16 @@
+- freeipa:
+    - configure email default domain name to an empty string
+- slurm.conf 
+    - configure memory resource
+    - configure account
+    - reduce timelimit
+    - restrict ssh access to nodes
+- create guest accounts
+    - kinit admin
+    - ipa user-add user01 --first Another --last User --email a.user@test.com --shell /bin/bash --random
+- download images in /project
+- git repo
+    - create a new branch "slurmcloud"
+    - reduce number of cpus in solution 2 - 5
+    - review memory requirements in solution 2 - 5
+    - change account in solutions 2 - 5
