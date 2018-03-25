@@ -24,6 +24,7 @@ write_files:
     path: /etc/profile.d/z-00-computecanada.sh
   - content: |
         # MANAGEMENT POLICIES
+        ClusterName=cirro
         ControlMachine=login1
         AuthType=auth/munge
         CryptoType=crypto/munge
@@ -50,6 +51,10 @@ write_files:
 
         SlurmctldPidFile=/var/run/slurmctld.pid
         SlurmdPidFile=/var/run/slurmd.pid
+
+        MpiDefault=pmi2
+        ProctrackType=proctrack/cgroup
+        TaskPlugin=task/cgroup
 
         StateSaveLocation=/var/spool/slurm
         SallocDefaultCommand=\"srun -n1 -N1 --mem-per-cpu=0 --pty --preserve-env --mpi=none bash\"
