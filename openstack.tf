@@ -11,7 +11,10 @@ data "template_file" "common" {
   template = "${file("common.yaml")}"
 
   vars {
-    nb_nodes = "${var.nb_nodes}"
+    nb_nodes      = "${var.nb_nodes}"
+    compute_vcpus = "${var.compute_vcpus}"
+    compute_ram   = "${var.compute_ram - 256}"
+    compute_disk  = "${var.compute_disk}"
   }
 }
 
@@ -66,6 +69,12 @@ data "template_file" "node" {
   }
 }
 
+data "openstack_compute_flavor_v2" "node" {
+  vcpus = "${var.compute_vcpus}"
+  ram   = "${var.compute_ram}"
+  disk  = "${var.compute_disk}"
+}
+
 data "template_cloudinit_config" "node_config" {
   part {
     filename     = "node.yaml"
@@ -81,10 +90,12 @@ data "template_cloudinit_config" "node_config" {
 }
 
 resource "openstack_compute_instance_v2" "node" {
-  count           = "${var.nb_nodes}"
-  name            = "compute_node${count.index + 1}"
-  image_id        = "${var.os_image_id}"
-  flavor_id       = "${var.os_flavor_id}"
+  count    = "${var.nb_nodes}"
+  name     = "compute_node${count.index + 1}"
+  image_id = "${var.os_image_id}"
+
+  # flavor_id       = "${var.os_flavor_id}"
+  flavor_id       = "${data.openstack_compute_flavor_v2.node.id}"
   key_pair        = "${var.os_ssh_key}"
   security_groups = ["default"]
   user_data       = "${data.template_cloudinit_config.node_config.rendered}"

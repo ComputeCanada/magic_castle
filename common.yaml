@@ -29,11 +29,16 @@ write_files:
         CryptoType=crypto/munge
         SlurmUser=slurm
 
+        # 
+        SchedulerType=sched/backfill
+        SelectType=select/cons_res
+        SelectTypeParameters=CR_Core_Memory
+        
         # NODE CONFIGURATIONS
-        NodeName=compute-node[1-${nb_nodes}]
+        NodeName=compute-node[1-${nb_nodes}] Sockets=${compute_vcpus} CoresPerSocket=1 ThreadsPerCore=1 RealMemory=${compute_ram}
 
         # PARTITION CONFIGURATIONS
-        PartitionName=debug Nodes=compute-node[1-${nb_nodes}] Default=YES
+        PartitionName=cpubase_bycore_b1 Nodes=compute-node[1-${nb_nodes}] Default=YES
 
         SlurmctldPort=6817
         SlurmdPort=6818
@@ -47,6 +52,8 @@ write_files:
         SlurmdPidFile=/var/run/slurmd.pid
 
         StateSaveLocation=/var/spool/slurm
+        SallocDefaultCommand=\"srun -n1 -N1 --mem-per-cpu=0 --pty --preserve-env --mpi=none bash\"
+
     path: /etc/slurm/slurm.conf
   - content: |
         VkJmEF/j97xr7L33ZYsf/mZdQ527MxyvVkoBSL8H9fCjeKtrDTPJBHecsO4/iTvO

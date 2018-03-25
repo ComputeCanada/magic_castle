@@ -1,7 +1,4 @@
-- freeipa:
-    - configure email default domain name to an empty string
-- slurm.conf 
-    - configure memory resource
+- slurm.conf
     - configure account
     - reduce timelimit
     - restrict ssh access to nodes
@@ -12,5 +9,4 @@
 - git repo
     - create a new branch "slurmcloud"
     - reduce number of cpus in solution 2 - 5
-    - review memory requirements in solution 2 - 5
     - change account in solutions 2 - 5
