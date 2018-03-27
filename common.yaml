@@ -1,3 +1,20 @@
+disable_ec2_metadata: true
+
+packages:
+    - wget
+    - vim
+    - iptables-services
+    - libsss_autofs
+    - cvmfs
+    - cvmfs-config-default
+    - cvmfs-auto-setup
+    - nfs-utils
+
+# runcmd:
+#     - systemctl enable iptables
+#     - iptables -A OUTPUT -d 169.254.169.254 -j DROP
+#     - service iptables save
+
 yum_repos:
     epel:
         baseurl: http://dl.fedoraproject.org/pub/epel/$releasever/$basearch

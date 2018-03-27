@@ -1,16 +1,8 @@
 #cloud-config
 packages:
-  - git
-  - wget
   - squid
-  - libsss_autofs
-  - cvmfs
-  - cvmfs-config-default
-  - cvmfs-auto-setup
-  - nfs-utils
   - mariadb-server
   - ipa-server-dns
-  - vim
 
 runcmd:
   # - yum update   -y
@@ -22,8 +14,10 @@ runcmd:
   - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
   - systemctl restart autofs
   # Shared folders
-  - mkdir /project
   - mkdir /scratch
+  - mkdir -p /project/6002799/photos
+  - wget https://images-assets.nasa.gov/image/KSC-20180316-PH_JBS01_0118/KSC-20180316-PH_JBS01_0118~orig.JPG -O /project/6002799/photos/KSC2018.jpg
+  - wget https://images-assets.nasa.gov/image/VAFB-20180302-PH_ANV01_0056/VAFB-20180302-PH_ANV01_0056~orig.jpg -O /project/6002799/photos/VAFB2018.jpg
   # NFS
   - systemctl enable rpcbind
   - systemctl enable nfs-server
@@ -54,12 +48,24 @@ write_files:
     permissions: 0700
     content: |
         #!/bin/bash
+        set -e
         hostnamectl set-hostname $(hostname)
         ipa-server-install --hostname $(hostname) --setup-dns \
-                           --ds-password changeme --admin-password changeme \
+                           --ds-password ${admin_passwd} --admin-password ${admin_passwd} \
                            --mkhomedir --ssh-trust-dns --unattended \
                            --forwarder=10.0.0.2 --ip-address=$(hostname -i | awk '{print $2}') \
                            --realm=WESTCLOUD
+        # Configure password for guest accounts
+        echo "${admin_passwd}" | kinit admin
+        ipa pwpolicy-mod  --minlife=0        
+        for i in $(seq -f "%02g" 1 ${nb_users}); do
+            echo ${guest_passwd} | ipa user-add user$i --first user --last $i --email user$i@example.com --shell /bin/bash --password
+        done
+        kdestroy
+        for i in $(seq -f "%02g" 1 ${nb_users}); do
+            echo -e "${guest_passwd}\n${guest_passwd}\n${guest_passwd}" | kinit user$i
+            kdestroy
+        done
   - content: |
         /home     10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
         /project  10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)

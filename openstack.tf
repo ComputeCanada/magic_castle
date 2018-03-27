@@ -22,7 +22,10 @@ data "template_file" "login" {
   template = "${file("login.yaml")}"
 
   vars {
-    nb_nodes = "${var.nb_nodes}"
+    admin_passwd = "${var.admin_passwd}"
+    guest_passwd = "${var.guest_passwd}"
+    nb_users     = "${var.nb_users}"
+    nb_nodes     = "${var.nb_nodes}"
   }
 }
 
@@ -65,7 +68,8 @@ data "template_file" "node" {
   template = "${file("node.yaml")}"
 
   vars {
-    login1_ip = "${openstack_compute_instance_v2.login1.network.0.fixed_ip_v4}"
+    admin_passwd = "${var.admin_passwd}"
+    login1_ip    = "${openstack_compute_instance_v2.login1.network.0.fixed_ip_v4}"
   }
 }
 

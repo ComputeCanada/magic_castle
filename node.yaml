@@ -2,10 +2,6 @@
 packages:
   - git
   - wget
-  - libsss_autofs
-  - cvmfs
-  - cvmfs-config-default
-  - cvmfs-auto-setup
   - nfs-utils
   - ipa-client
   - vim
@@ -61,7 +57,7 @@ write_files:
         ipa-client-install --mkhomedir --ssh-trust-dns \
                            --enable-dns-updates \
                            --unattended -p admin \
-                           -w changeme
+                           -w ${admin_passwd}
   - path: /etc/cvmfs/default.local
     content: |
         CVMFS_REPOSITORIES="cvmfs-config.computecanada.ca"
