@@ -1,0 +1,4 @@
+os_venv/*
+.terraform/*
+*.tfstate*
+*-openrc.sh
