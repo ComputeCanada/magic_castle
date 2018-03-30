@@ -5,14 +5,9 @@ packages:
   - ipa-server-dns
 
 runcmd:
-  # - yum update   -y
   # Squid
   - systemctl start squid
   - systemctl enable squid
-  # CVMFS
-  - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
-  - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
-  - systemctl restart autofs
   # Shared folders
   - mkdir /scratch
   - mkdir -p /project/6002799/photos
@@ -70,12 +65,7 @@ write_files:
         /home     10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
         /project  10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
         /scratch  10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
-    path: /etc/exports  
-  - content: |
-        CVMFS_REPOSITORIES="cvmfs-config.computecanada.ca"
-        CVMFS_QUOTA_LIMIT=4450
-        CVMFS_HTTP_PROXY="http://localhost:3128"
-    path: /etc/cvmfs/default.local
+    path: /etc/exports
   - content: |
         acl manager proto cache_object
         acl localhost src 127.0.0.1/32 ::1

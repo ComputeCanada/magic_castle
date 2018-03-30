@@ -1,28 +1,15 @@
 #cloud-config
 packages:
-  - squid
-  - mariadb-server
-  - ipa-server-dns
+  - ipa-client
+  - libsss_autofs
+  - cvmfs
+  - cvmfs-config-default
+  - cvmfs-auto-setup
+  - nfs-utils
 
 runcmd:
-  # - yum update   -y
-  # Squid
-  - systemctl start squid
-  - systemctl enable squid
-  # CVMFS
-  - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
-  - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
-  - systemctl restart autofs
-  # Shared folders
-  - mkdir /scratch
-  - mkdir -p /project/6002799/photos
-  - wget https://images-assets.nasa.gov/image/KSC-20180316-PH_JBS01_0118/KSC-20180316-PH_JBS01_0118~orig.JPG -O /project/6002799/photos/KSC2018.jpg
-  - wget https://images-assets.nasa.gov/image/VAFB-20180302-PH_ANV01_0056/VAFB-20180302-PH_ANV01_0056~orig.jpg -O /project/6002799/photos/VAFB2018.jpg
-  # NFS
-  - systemctl enable rpcbind
-  - systemctl enable nfs-server
-  - systemctl start rpcbind
-  - systemctl start nfs-server
+  # Free IPA
+  - bash /root/freeipa.sh
   # Slurm
   - groupadd -g 2001 slurm
   - useradd -m -c "Slurm workload manager" -d /var/lib/slurm -u 2001 -g slurm  -s /bin/bash slurm
@@ -36,93 +23,49 @@ runcmd:
   - systemctl enable munge
   - systemctl start  munge
   - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-17.11.5-1.el7.centos.x86_64.rpm
-  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-perlapi-17.11.5-1.el7.centos.x86_64.rpm
-  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-slurmdbd-17.11.5-1.el7.centos.x86_64.rpm
-  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-slurmctld-17.11.5-1.el7.centos.x86_64.rpm
-  - bash /root/freeipa.sh
-  - systemctl enable slurmctld
-  - systemctl start  slurmctld
+  # NFS
+  - setsebool -P use_nfs_home_dirs 1
+  - mkdir -p /mnt/nfs/home
+  - mkdir -p /mnt/nfs/project /project
+  - mkdir -p /mnt/nfs/scratch /scratch
+  - mount -a
+  # CVMFS
+  - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
+  - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
+  - systemctl restart autofs  
 
 write_files:
+  - content: |
+        if [[ $UID -ne 0 ]]; then
+          if [[ -r /cvmfs/soft.computecanada.ca/config/profile/bash.sh ]]; then
+            source /cvmfs/soft.computecanada.ca/config/profile/bash.sh
+          fi
+        fi
+    path: /etc/profile.d/z-00-computecanada.sh
   - path: /root/freeipa.sh
     permissions: 0700
     content: |
         #!/bin/bash
-        set -e
         hostnamectl set-hostname $(hostname)
-        ipa-server-install --hostname $(hostname) --setup-dns \
-                           --ds-password ${admin_passwd} --admin-password ${admin_passwd} \
-                           --mkhomedir --ssh-trust-dns --unattended \
-                           --forwarder=10.0.0.2 --ip-address=$(hostname -i | awk '{print $2}') \
-                           --realm=WESTCLOUD
-        # Configure password for guest accounts
-        echo "${admin_passwd}" | kinit admin
-        ipa pwpolicy-mod  --minlife=0        
-        for i in $(seq -f "%02g" 1 ${nb_users}); do
-            echo ${guest_passwd} | ipa user-add user$i --first user --last $i --email user$i@example.com --shell /bin/bash --password
-        done
-        kdestroy
-        for i in $(seq -f "%02g" 1 ${nb_users}); do
-            echo -e "${guest_passwd}\n${guest_passwd}\n${guest_passwd}" | kinit user$i
-            kdestroy
-        done
-  - content: |
-        /home     10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
-        /project  10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
-        /scratch  10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
-    path: /etc/exports  
-  - content: |
+        cat << EOF > /etc/resolv.conf
+        search westcloud
+        nameserver ${mgmt01_ip}
+        EOF
+        until ping -c1 mgmt01 &>/dev/null; do :; done
+        sleep 30
+        ipa-client-install --mkhomedir --ssh-trust-dns \
+                           --enable-dns-updates \
+                           --unattended -p admin \
+                           -w ${admin_passwd}
+  - path: /etc/cvmfs/default.local
+    content: |
         CVMFS_REPOSITORIES="cvmfs-config.computecanada.ca"
         CVMFS_QUOTA_LIMIT=4450
-        CVMFS_HTTP_PROXY="http://localhost:3128"
-    path: /etc/cvmfs/default.local
-  - content: |
-        acl manager proto cache_object
-        acl localhost src 127.0.0.1/32 ::1
-        acl to_localhost dst 127.0.0.0/8 0.0.0.0/32 ::1
-        acl SSL_ports port 443
-        acl Safe_ports port 80
-        acl Safe_ports port 443
-        acl Safe_ports port 1025-65535
-        acl CONNECT method CONNECT
-
-        # predefined http_accesses
-        http_access allow manager localhost
-        http_access deny manager
-        http_access deny !Safe_ports
-        http_access deny CONNECT !SSL_ports
-
-        # user-defined ACLs
-        acl compute_network src 10.0.0.0/16
-        acl compute_dstdom_regex dstdom_regex ^(cvmfs-.*\.computecanada\.ca)$
-
-        # user-defined http_accesses
-        http_access allow compute_network compute_dstdom_regex
-        http_access allow localhost
-        http_access deny all
-
-        # user-defined http_port
-        http_port 3128
-
-        # general settings
-        coredump_dir                   /var/spool/squid
-        maximum_object_size_in_memory  512 KB
-        maximum_object_size            4096 KB
-        ignore_expect_100              off
-        cache_mgr                      root
-        client_persistent_connections  on
-        server_persistent_connections  on
-        forwarded_for                  on
-        via                            on
-        access_log                     /var/log/squid/access.log
-
-        cache_mem                      256 MB
-        cache_store_log                /var/log/squid/store.log
-        cache_log                      /var/log/squid/cache.log
-
-        refresh_pattern /cvmfs/soft.computecanada.ca/.cvmfs*          	0  100%	30
-        refresh_pattern /cvmfs/soft.computecanada.ca/data/*   	525600  100%	525600 
-        refresh_pattern                .                     0    20%     4320
-
-        cache_dir ufs /var/spool/squid 4096 16 256
-    path: /etc/squid/squid.conf
+        CVMFS_HTTP_PROXY="http://${mgmt01_ip}:3128"
+mounts:
+  - ["${mgmt01_ip}:/home", "/mnt/nfs/home", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
+  - ["${mgmt01_ip}:/project", "/mnt/nfs/project", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
+  - ["${mgmt01_ip}:/scratch", "/mnt/nfs/scratch", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
+#   - ["/mnt/nfs/home", "/home", "none", "default,bind", "0", "0"]
+  - ["/mnt/nfs/project", "/project", "none", "default,bind", "0", "0"]
+  - ["/mnt/nfs/scratch", "/scratch", "none", "default,bind", "0", "0"]

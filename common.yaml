@@ -1,14 +1,7 @@
 disable_ec2_metadata: true
-
 packages:
-    - wget
-    - vim
-    - iptables-services
-    - libsss_autofs
-    - cvmfs
-    - cvmfs-config-default
-    - cvmfs-auto-setup
-    - nfs-utils
+  - wget
+  - vim
 
 yum_repos:
     epel:
@@ -28,16 +21,9 @@ yum_repos:
 
 write_files:
   - content: |
-        if [[ $UID -ne 0 ]]; then
-          if [[ -r /cvmfs/soft.computecanada.ca/config/profile/bash.sh ]]; then
-            source /cvmfs/soft.computecanada.ca/config/profile/bash.sh
-          fi
-        fi
-    path: /etc/profile.d/z-00-computecanada.sh
-  - content: |
         # MANAGEMENT POLICIES
-        ClusterName=cirro
-        ControlMachine=login1
+        ClusterName=${cluster_name}
+        ControlMachine=mgmt01
         AuthType=auth/munge
         CryptoType=crypto/munge
         SlurmUser=slurm
@@ -48,10 +34,10 @@ write_files:
         SelectTypeParameters=CR_Core_Memory
         
         # NODE CONFIGURATIONS
-        NodeName=compute-node[1-${nb_nodes}] Sockets=${compute_vcpus} CoresPerSocket=1 ThreadsPerCore=1 RealMemory=${compute_ram}
+        NodeName=node[1-${nb_nodes}] Sockets=${compute_vcpus} CoresPerSocket=1 ThreadsPerCore=1 RealMemory=${compute_ram}
 
         # PARTITION CONFIGURATIONS
-        PartitionName=cpubase_bycore_b1 Nodes=compute-node[1-${nb_nodes}] Default=YES
+        PartitionName=cpubase_bycore_b1 Nodes=node[1-${nb_nodes}] Default=YES
 
         SlurmctldPort=6817
         SlurmdPort=6818

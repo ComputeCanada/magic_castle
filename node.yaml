@@ -1,20 +1,15 @@
 #cloud-config
 packages:
-  - git
-  - wget
-  - nfs-utils
   - ipa-client
-  - vim
+  - libsss_autofs
+  - cvmfs
+  - cvmfs-config-default
+  - cvmfs-auto-setup
+  - nfs-utils
 
 runcmd:
-  # - yum update -y
-  - setsebool -P use_nfs_home_dirs 1
-  - mkdir -p /mnt/nfs/home
-  - mkdir -p /mnt/nfs/project /project
-  - mkdir -p /mnt/nfs/scratch /scratch
-  - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
-  - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
-  - systemctl restart autofs
+  # Free IPA
+  - bash /root/freeipa.sh  
   # Slurm
   - groupadd -g 2001 slurm
   - useradd -m -c "Slurm workload manager" -d /var/lib/slurm -u 2001 -g slurm  -s /bin/bash slurm
@@ -30,12 +25,27 @@ runcmd:
   - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-17.11.5-1.el7.centos.x86_64.rpm
   - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-slurmd-17.11.5-1.el7.centos.x86_64.rpm
   - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-perlapi-17.11.5-1.el7.centos.x86_64.rpm
-  - bash /root/freeipa.sh
   - systemctl enable slurmd
   - systemctl start  slurmd
+  # NFS
+  - setsebool -P use_nfs_home_dirs 1
+  - mkdir -p /mnt/nfs/home
+  - mkdir -p /mnt/nfs/project /project
+  - mkdir -p /mnt/nfs/scratch /scratch  
   - mount -a
-  
+  # CVMFS
+  - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
+  - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
+  - systemctl restart autofs
+
 write_files:
+  - content: |
+        if [[ $UID -ne 0 ]]; then
+          if [[ -r /cvmfs/soft.computecanada.ca/config/profile/bash.sh ]]; then
+            source /cvmfs/soft.computecanada.ca/config/profile/bash.sh
+          fi
+        fi
+    path: /etc/profile.d/z-00-computecanada.sh
   - path: /etc/slurm/cgroup.conf
     content: |
         CgroupMountpoint=/cgroup
@@ -50,9 +60,9 @@ write_files:
         hostnamectl set-hostname $(hostname)
         cat << EOF > /etc/resolv.conf
         search westcloud
-        nameserver ${login1_ip}
+        nameserver ${mgmt01_ip}
         EOF
-        until ping -c1 login1 &>/dev/null; do :; done
+        until ping -c1 mgmt01 &>/dev/null; do :; done
         sleep 30
         ipa-client-install --mkhomedir --ssh-trust-dns \
                            --enable-dns-updates \
@@ -62,11 +72,11 @@ write_files:
     content: |
         CVMFS_REPOSITORIES="cvmfs-config.computecanada.ca"
         CVMFS_QUOTA_LIMIT=4450
-        CVMFS_HTTP_PROXY="http://${login1_ip}:3128"
+        CVMFS_HTTP_PROXY="http://${mgmt01_ip}:3128"
 mounts:
-  - ["${login1_ip}:/home", "/mnt/nfs/home", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
-  - ["${login1_ip}:/project", "/mnt/nfs/project", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
-  - ["${login1_ip}:/scratch", "/mnt/nfs/scratch", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
-  - ["/mnt/nfs/home", "/home", "none", "default,bind", "0", "0"]
+  - ["${mgmt01_ip}:/home", "/mnt/nfs/home", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
+  - ["${mgmt01_ip}:/project", "/mnt/nfs/project", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
+  - ["${mgmt01_ip}:/scratch", "/mnt/nfs/scratch", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
+  # - ["/mnt/nfs/home", "/home", "none", "default,bind", "0", "0"]
   - ["/mnt/nfs/project", "/project", "none", "default,bind", "0", "0"]
   - ["/mnt/nfs/scratch", "/scratch", "none", "default,bind", "0", "0"]

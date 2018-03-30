@@ -1,5 +1,9 @@
+variable "cluster_name" {
+  default = "phoenix"
+}
+
 variable "nb_nodes" {
-  default = 5
+  default = 2
 }
 
 variable "nb_users" {
@@ -15,7 +19,7 @@ variable "admin_passwd" {
 }
 
 variable "guest_passwd" {
-  default = "UQTR20180329"
+  default = "Test.La.Balinaise.Elle.Est.Bien.Bonne"
 }
 
 variable "compute_vcpus" {
@@ -23,22 +27,23 @@ variable "compute_vcpus" {
 }
 
 variable "compute_ram" {
-  default = 7680
+  default = 3072
 }
 
 variable "compute_disk" {
-  default = 20
-}
-
-variable "os_flavor_id" {
-  default = "2ff7463c-dda9-4687-8b7a-80ad3303fd41"
+  default = 0
 }
 
 variable "os_login_flavor_id" {
+  default = "2ff7463c-dda9-4687-8b7a-80ad3303fd41"
+}
+
+variable "os_mgmt_flavor_id" {
   # p2-3gb
-  # default = "2ff7463c-dda9-4687-8b7a-80ad3303fd41"
+  default = "2ff7463c-dda9-4687-8b7a-80ad3303fd41"
+
   # c4-15gb-31
-  default = "9493fdd3-3100-440d-a9a1-020d93701ed2"
+  # default = "9493fdd3-3100-440d-a9a1-020d93701ed2"
 }
 
 variable "os_image_id" {
