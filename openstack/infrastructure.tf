@@ -13,7 +13,7 @@ data "template_file" "common" {
   vars {
     nb_nodes      = "${var.nb_nodes}"
     compute_vcpus = "${var.compute_vcpus}"
-    compute_ram   = "${var.compute_ram - 256}"
+    compute_ram   = "${var.compute_ram - 512}"
     compute_disk  = "${var.compute_disk}"
   }
 }
@@ -53,7 +53,7 @@ resource "openstack_compute_instance_v2" "login1" {
   block_device {
     uuid                  = "${var.os_image_id}"
     source_type           = "image"
-    volume_size           = 20
+    volume_size           = "${var.shared_storage_size}"
     boot_index            = 0
     destination_type      = "volume"
     delete_on_termination = true
@@ -98,7 +98,6 @@ resource "openstack_compute_instance_v2" "node" {
   name     = "compute_node${count.index + 1}"
   image_id = "${var.os_image_id}"
 
-  # flavor_id       = "${var.os_flavor_id}"
   flavor_id       = "${data.openstack_compute_flavor_v2.node.id}"
   key_pair        = "${var.os_ssh_key}"
   security_groups = ["default"]
