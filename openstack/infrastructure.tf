@@ -26,19 +26,20 @@ data "template_file" "mgmt" {
     admin_passwd = "${var.admin_passwd}"
     guest_passwd = "${var.guest_passwd}"
     nb_users     = "${var.nb_users}"
-    nb_nodes     = "${var.nb_nodes}"
   }
 }
 
 data "template_cloudinit_config" "mgmt_config" {
   part {
     filename     = "common.yaml"
+    merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = "${data.template_file.common.rendered}"
   }
 
   part {
     filename     = "mgmt.yaml"
+    merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = "${data.template_file.mgmt.rendered}"
   }
@@ -77,12 +78,14 @@ data "template_file" "login" {
 data "template_cloudinit_config" "login_config" {
   part {
     filename     = "common.yaml"
+    merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = "${data.template_file.common.rendered}"
   }
 
   part {
     filename     = "login.yaml"
+    merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = "${data.template_file.login.rendered}"
   }
@@ -120,12 +123,14 @@ data "openstack_compute_flavor_v2" "node" {
 data "template_cloudinit_config" "node_config" {
   part {
     filename     = "common.yaml"
+    merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = "${data.template_file.common.rendered}"
   }
 
   part {
     filename     = "node.yaml"
+    merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = "${data.template_file.node.rendered}"
   }
