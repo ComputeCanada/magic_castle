@@ -1,4 +1,3 @@
-#cloud-config
 packages:
   - ipa-client
   - libsss_autofs
@@ -8,21 +7,6 @@ packages:
   - nfs-utils
 
 runcmd:
-  # Free IPA
-  - bash /root/freeipa.sh
-  # Slurm
-  - groupadd -g 2001 slurm
-  - useradd -m -c "Slurm workload manager" -d /var/lib/slurm -u 2001 -g slurm  -s /bin/bash slurm
-  - groupadd -g 2002 munge
-  - useradd -m -c "MUNGE Uid 'N' Gid Emporium" -d /var/lib/munge -u 2002 -g munge  -s /sbin/nologin munge
-  - yum install -y munge munge-libs
-  - mkdir /var/spool/slurm
-  - chown slurm:slurm /var/spool/slurm
-  - chown slurm:slurm /etc/slurm/slurm.conf
-  - chown munge:munge /etc/munge/munge.key
-  - systemctl enable munge
-  - systemctl start  munge
-  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-17.11.5-1.el7.centos.x86_64.rpm
   # NFS
   - setsebool -P use_nfs_home_dirs 1
   - mkdir -p /mnt/nfs/home
