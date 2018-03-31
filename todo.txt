@@ -2,7 +2,3 @@
     - configure accounting
     - reduce timelimit
     - restrict ssh access to nodes
-- git repo
-    - create a new branch "slurmcloud"
-    - reduce number of cpus in solution 2 - 5
-    - change account in solutions 2 - 5

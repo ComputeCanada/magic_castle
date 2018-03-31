@@ -4,8 +4,6 @@ packages:
   - vim
 
 runcmd:
-  # Free IPA
-  - bash /root/freeipa.sh
   # Slurm
   - groupadd -g 2001 slurm
   - useradd -m -c "Slurm workload manager" -d /var/lib/slurm -u 2001 -g slurm  -s /bin/bash slurm
@@ -19,6 +17,8 @@ runcmd:
   - systemctl enable munge
   - systemctl start  munge
   - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-17.11.5-1.el7.centos.x86_64.rpm
+  # Free IPA
+  - bash /root/freeipa.sh
 
 yum_repos:
     epel:
