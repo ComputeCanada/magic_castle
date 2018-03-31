@@ -32,15 +32,15 @@ data "template_file" "mgmt" {
 
 data "template_cloudinit_config" "mgmt_config" {
   part {
-    filename     = "mgmt.yaml"
-    content_type = "text/cloud-config"
-    content      = "${data.template_file.mgmt.rendered}"
-  }
-
-  part {
     filename     = "common.yaml"
     content_type = "text/cloud-config"
     content      = "${data.template_file.common.rendered}"
+  }
+
+  part {
+    filename     = "mgmt.yaml"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.mgmt.rendered}"
   }
 }
 
@@ -76,15 +76,15 @@ data "template_file" "login" {
 
 data "template_cloudinit_config" "login_config" {
   part {
-    filename     = "login.yaml"
-    content_type = "text/cloud-config"
-    content      = "${data.template_file.login.rendered}"
-  }
-
-  part {
     filename     = "common.yaml"
     content_type = "text/cloud-config"
     content      = "${data.template_file.common.rendered}"
+  }
+
+  part {
+    filename     = "login.yaml"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.login.rendered}"
   }
 }
 
@@ -119,15 +119,15 @@ data "openstack_compute_flavor_v2" "node" {
 
 data "template_cloudinit_config" "node_config" {
   part {
-    filename     = "node.yaml"
-    content_type = "text/cloud-config"
-    content      = "${data.template_file.node.rendered}"
-  }
-
-  part {
     filename     = "common.yaml"
     content_type = "text/cloud-config"
     content      = "${data.template_file.common.rendered}"
+  }
+
+  part {
+    filename     = "node.yaml"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.node.rendered}"
   }
 }
 
