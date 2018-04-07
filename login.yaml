@@ -68,11 +68,9 @@ write_files:
     permissions: 0700
     content: |
         #!/bin/bash
-        hostnamectl set-hostname $(hostname)
-        cat << EOF > /etc/resolv.conf
-        search westcloud
-        nameserver ${mgmt01_ip}
-        EOF
+        DOMAIN=$(grep search /etc/resolv.conf | awk '{print $2}')
+        hostnamectl set-hostname login01.$DOMAIN
+        sed -i "/nameserver/c\nameserver ${mgmt01_ip}" /etc/resolv.conf
         until ping -c1 mgmt01 &>/dev/null; do :; done
         sleep 30
         ipa-client-install --mkhomedir --ssh-trust-dns \
