@@ -82,10 +82,10 @@ write_files:
         CVMFS_REPOSITORIES="cvmfs-config.computecanada.ca"
         CVMFS_QUOTA_LIMIT=4450
         CVMFS_HTTP_PROXY="http://${mgmt01_ip}:3128"
-mounts:
-  - ["${mgmt01_ip}:/home", "/mnt/nfs/home", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
-  - ["${mgmt01_ip}:/project", "/mnt/nfs/project", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
-  - ["${mgmt01_ip}:/scratch", "/mnt/nfs/scratch", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
+# mounts:
+  # - ["${mgmt01_ip}:/home", "/mnt/nfs/home", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
+  # - ["${mgmt01_ip}:/project", "/mnt/nfs/project", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
+  # - ["${mgmt01_ip}:/scratch", "/mnt/nfs/scratch", "nfs", "auto,nofail,noatime,nolock,intr,tcp,actimeo=1800", "0", "0"]
 #   - ["/mnt/nfs/home", "/home", "none", "default,bind", "0", "0"]
-  - ["/mnt/nfs/project", "/project", "none", "default,bind", "0", "0"]
-  - ["/mnt/nfs/scratch", "/scratch", "none", "default,bind", "0", "0"]
+  # - ["/mnt/nfs/project", "/project", "none", "default,bind", "0", "0"]
+  # - ["/mnt/nfs/scratch", "/scratch", "none", "default,bind", "0", "0"]
