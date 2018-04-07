@@ -103,3 +103,4 @@ write_files:
     encoding: "base64"
 
 disable_ec2_metadata: true
+timezone: "America/Montreal"

@@ -5,6 +5,8 @@ packages:
   - cvmfs-config-default
   - cvmfs-auto-setup
   - nfs-utils
+  - python36
+  - git
 
 runcmd:
   # NFS
@@ -16,11 +18,47 @@ runcmd:
   # CVMFS
   - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
   - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
-  - systemctl restart autofs  
+  - systemctl restart autofs
+  # JupyterHub
+#   - bash /root/jupyterhub.sh
 
 write_files:
+  - path: /root/jupyterhub.sh
+    content: |
+        python36 -m venv /opt/jupyterhub
+        source /opt/jupyterhub/bin/activate
+        pip install jupyterhub
+        pip install git+https://github.com/cmd-ntrf/batchspawner@remote_port_api
+        pip install notebook
+        # Node.js and NPM
+        curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
+        yum -y install nodejs
+        npm install -g configurable-http-proxy
+        # Ownership
+        groupadd -g 2003 jupyterhub
+        useradd -m -c "Jupyterhub" -d /opt/jupyterhub -u 2003 -g jupyterhub  -s /bin/bash jupyterhub
+        chown -R jupyterhub:jupyterhub /opt/jupyterhub
+
+    permissions: 0700
   - content: |
-        if [[ $UID -ne 0 ]]; then
+        [Unit]
+        Description=Jupyterhub
+        After=network-online.target
+
+        [Service]
+        User=jupyterhub
+        ExecStart=/opt/jupyterhub/bin/jupyterhub 
+        WorkingDirectory=/opt/jupyterhub/etc/jupyterhub
+
+        [Install]
+        WantedBy=multi-user.target
+    path: /lib/systemd/system/jupyterhub.service
+  - content: |
+        jupyterhub      ALL=(ALL)       NOPASSWD:SETENV: /bin/sbatch, /bin/scancel [0-9]*, /bin/squeue -h -j [0-9]* -o "%T %B"
+    path: /etc/sudoers.d/99-jupyterhub-user
+    permissions: 0400
+  - content: |
+        if [[ $UID -gt 10000 ]]; then
           if [[ -r /cvmfs/soft.computecanada.ca/config/profile/bash.sh ]]; then
             source /cvmfs/soft.computecanada.ca/config/profile/bash.sh
           fi
