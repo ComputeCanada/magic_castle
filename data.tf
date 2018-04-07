@@ -70,12 +70,6 @@ data "template_file" "node" {
   }
 }
 
-data "openstack_compute_flavor_v2" "node" {
-  vcpus = "${var.compute_vcpus}"
-  ram   = "${var.compute_ram}"
-  disk  = "${var.compute_disk}"
-}
-
 data "template_cloudinit_config" "node_config" {
   part {
     filename     = "common.yaml"

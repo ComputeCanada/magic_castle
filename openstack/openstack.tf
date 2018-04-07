@@ -1,3 +1,9 @@
+data "openstack_compute_flavor_v2" "node" {
+  vcpus = "${var.compute_vcpus}"
+  ram   = "${var.compute_ram}"
+  disk  = "${var.compute_disk}"
+}
+
 variable "os_ssh_key" {
   default = "fafor10"
 }
