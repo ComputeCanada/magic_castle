@@ -41,7 +41,7 @@ data "template_file" "login" {
 
   vars {
     admin_passwd = "${var.admin_passwd}"
-    mgmt01_ip    = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
+    mgmt01_ip    = "${local.mgmt01_ip}"
   }
 }
 
@@ -66,7 +66,7 @@ data "template_file" "node" {
 
   vars {
     admin_passwd = "${var.admin_passwd}"
-    mgmt01_ip    = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
+    mgmt01_ip    = "${local.mgmt01_ip}"
   }
 }
 

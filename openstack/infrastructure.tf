@@ -28,6 +28,10 @@ resource "openstack_compute_instance_v2" "mgmt01" {
   }
 }
 
+locals {
+  mgmt01_ip = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
+}
+
 resource "openstack_compute_instance_v2" "login01" {
   name     = "${var.cluster_name}01"
   image_id = "${var.os_image_id}"
