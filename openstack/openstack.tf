@@ -6,10 +6,6 @@ variable "os_external_network" {
   default = "VLAN3337"
 }
 
-variable "os_default_network" {
-  default = "ipm-500_network"
-}
-
 variable "os_login_flavor_id" {
   default = "2ff7463c-dda9-4687-8b7a-80ad3303fd41"
 }

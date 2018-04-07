@@ -15,10 +15,6 @@ resource "openstack_compute_instance_v2" "mgmt01" {
     destination_type      = "volume"
     delete_on_termination = true
   }
-
-  network {
-    name = "${var.os_default_network}"
-  }
 }
 
 locals {
@@ -33,10 +29,6 @@ resource "openstack_compute_instance_v2" "login01" {
   key_pair        = "${var.os_ssh_key}"
   security_groups = ["default", "ssh"]
   user_data       = "${data.template_cloudinit_config.login_config.rendered}"
-
-  network {
-    name = "${var.os_default_network}"
-  }
 }
 
 resource "openstack_compute_instance_v2" "node" {
@@ -48,10 +40,6 @@ resource "openstack_compute_instance_v2" "node" {
   key_pair        = "${var.os_ssh_key}"
   security_groups = ["default"]
   user_data       = "${data.template_cloudinit_config.node_config.rendered}"
-
-  network {
-    name = "${var.os_default_network}"
-  }
 }
 
 resource "openstack_networking_floatingip_v2" "fip_1" {
