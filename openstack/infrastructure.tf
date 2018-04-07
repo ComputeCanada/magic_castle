@@ -1,11 +1,4 @@
-provider "openstack" {
-  user_name   = "${var.os_username}"
-  password    = "${var.os_password}"
-  auth_url    = "${var.os_auth_url}"
-  tenant_name = "${var.os_tenant_name}"
-  tenant_id   = "${var.os_tenant_id}"
-  region      = "${var.os_region_name}"
-}
+provider "openstack" {}
 
 resource "openstack_compute_instance_v2" "mgmt01" {
   name            = "mgmt01"
