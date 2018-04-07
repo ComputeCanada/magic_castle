@@ -4,6 +4,7 @@ packages:
   - vim
 
 runcmd:
+  - bash /root/addswap.sh
   # Slurm
   - groupadd -g 2001 slurm
   - useradd -m -c "Slurm workload manager" -d /var/lib/slurm -u 2001 -g slurm  -s /bin/bash slurm
@@ -37,6 +38,16 @@ yum_repos:
         protect: true
 
 write_files:
+  - path: /root/addswap.sh
+    permissions: 0700
+    content: |
+        #!/bin/bash
+        set -e
+        dd if=/dev/zero of=/swapfile bs=1M count=1024
+        chmod 600 /swapfile
+        mkswap /swapfile
+        swapon /swapfile
+        echo "/swapfile none swap defaults 0 0" >> /etc/fstab
   - content: |
         # MANAGEMENT POLICIES
         ClusterName=${cluster_name}
