@@ -39,7 +39,7 @@ resource "openstack_compute_instance_v2" "node" {
   flavor_id       = "${data.openstack_compute_flavor_v2.node.id}"
   key_pair        = "${var.os_ssh_key}"
   security_groups = ["default"]
-  user_data       = "${data.template_cloudinit_config.node_config.rendered}"
+  user_data       = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"
 }
 
 resource "openstack_networking_floatingip_v2" "fip_1" {

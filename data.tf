@@ -42,6 +42,7 @@ data "template_file" "login" {
   vars {
     admin_passwd = "${var.admin_passwd}"
     mgmt01_ip    = "${local.mgmt01_ip}"
+    hostname     = "${var.cluster_name}01"
   }
 }
 
@@ -63,14 +64,18 @@ data "template_cloudinit_config" "login_config" {
 
 data "template_file" "node" {
   template = "${file("node.yaml")}"
+  count    = "${var.nb_nodes}"
 
   vars {
     admin_passwd = "${var.admin_passwd}"
     mgmt01_ip    = "${local.mgmt01_ip}"
+    hostname     = "node${count.index + 1}"
   }
 }
 
 data "template_cloudinit_config" "node_config" {
+  count = "${var.nb_nodes}"
+
   part {
     filename     = "common.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
@@ -82,6 +87,6 @@ data "template_cloudinit_config" "node_config" {
     filename     = "node.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
-    content      = "${data.template_file.node.rendered}"
+    content      = "${element(data.template_file.node.*.rendered, count.index)}"
   }
 }
