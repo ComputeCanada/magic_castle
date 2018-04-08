@@ -133,6 +133,27 @@ resource "aws_instance" "login01" {
   }
 }
 
+resource "aws_instance" "node" {
+  count = "${var.nb_nodes}"
+
+  # CentOS 7 -  ca-central-1
+  ami                         = "ami-dcad28b8"
+  instance_type               = "t2.micro"
+  user_data                   = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"
+  subnet_id                   = "${aws_subnet.private_subnet.id}"
+  key_name                    = "fafor10"
+  associate_public_ip_address = "true"
+
+  vpc_security_group_ids = [
+    "${aws_security_group.allow_any_inside_vpc.id}",
+    "${aws_security_group.allow_out_any.id}",
+  ]
+
+  tags {
+    Name = "node${count.index + 1}"
+  }
+}
+
 locals {
   mgmt01_ip = "${aws_instance.mgmt01.private_ip}"
 }
