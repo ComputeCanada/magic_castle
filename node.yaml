@@ -48,10 +48,7 @@ write_files:
     content: |
         #!/bin/bash
         hostnamectl set-hostname $(hostname)
-        cat << EOF > /etc/resolv.conf
-        search westcloud
-        nameserver ${mgmt01_ip}
-        EOF
+        sed -i "/nameserver/c\nameserver ${mgmt01_ip}" /etc/resolv.conf
         until ping -c1 mgmt01 &>/dev/null; do :; done
         sleep 30
         ipa-client-install --mkhomedir --ssh-trust-dns \
