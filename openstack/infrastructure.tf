@@ -2,7 +2,7 @@ provider "openstack" {}
 
 resource "openstack_compute_instance_v2" "mgmt01" {
   name            = "mgmt01"
-  flavor_id       = "${var.os_mgmt_flavor_id}"
+  flavor_id       = "${data.openstack_compute_flavor_v2.mgmt.id}"
   key_pair        = "${var.os_ssh_key}"
   security_groups = ["default"]
   user_data       = "${data.template_cloudinit_config.mgmt_config.rendered}"
@@ -25,7 +25,7 @@ resource "openstack_compute_instance_v2" "login01" {
   name     = "${var.cluster_name}01"
   image_id = "${var.os_image_id}"
 
-  flavor_id       = "${var.os_login_flavor_id}"
+  flavor_id       = "${data.openstack_compute_flavor_v2.login.id}"
   key_pair        = "${var.os_ssh_key}"
   security_groups = ["default", "ssh"]
   user_data       = "${data.template_cloudinit_config.login_config.rendered}"

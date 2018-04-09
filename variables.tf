@@ -21,15 +21,3 @@ variable "admin_passwd" {
 variable "guest_passwd" {
   default = "Test.La.Balinaise.Elle.Est.Bien.Bonne"
 }
-
-variable "compute_vcpus" {
-  default = 2
-}
-
-variable "compute_ram" {
-  default = 3072
-}
-
-variable "compute_disk" {
-  default = 0
-}
