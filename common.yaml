@@ -13,6 +13,7 @@ runcmd:
   - yum install -y munge munge-libs
   - mkdir /var/spool/slurm
   - chown slurm:slurm /var/spool/slurm
+  - chown slurm:slurm /etc/slurm
   - chown slurm:slurm /etc/slurm/slurm.conf
   - chown munge:munge /etc/munge/munge.key
   - systemctl enable munge
@@ -62,7 +63,7 @@ write_files:
         SelectTypeParameters=CR_Core_Memory
         
         # NODE CONFIGURATIONS
-        NodeName=node[1-${nb_nodes}] Sockets=${compute_vcpus} CoresPerSocket=1 ThreadsPerCore=1 RealMemory=${compute_ram}
+        NodeName=node[1-${nb_nodes}]
 
         # PARTITION CONFIGURATIONS
         PartitionName=cpubase_bycore_b1 Nodes=node[1-${nb_nodes}] Default=YES
@@ -86,6 +87,13 @@ write_files:
         SallocDefaultCommand=\"srun -n1 -N1 --mem-per-cpu=0 --pty --preserve-env --mpi=none bash\"
 
     path: /etc/slurm/slurm.conf
+  - path: /etc/slurm/cgroup.conf
+    content: |
+        CgroupMountpoint=/cgroup
+        CgroupAutomount=yes
+        ConstrainCores=yes
+        #ConstrainRAMSpace=yes
+        AllowedRAMSpace=98.5
   - content: |
         VkJmEF/j97xr7L33ZYsf/mZdQ527MxyvVkoBSL8H9fCjeKtrDTPJBHecsO4/iTvO
         hrOxJBh0hsLZjyl8w7V8hZISKKMyqebNL2cknn/cj7l4zbt+E3lb+RRYlfCkGHgB

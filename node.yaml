@@ -7,28 +7,42 @@ packages:
   - nfs-utils
 
 runcmd:
-  # slurmd
-  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-slurmd-17.11.5-1.el7.centos.x86_64.rpm
-  - systemctl enable slurmd
-  - systemctl start  slurmd
   # NFS
   - setsebool -P use_nfs_home_dirs 1
   - mkdir -p /mnt/nfs/home
   - mkdir -p /mnt/nfs/project /project
   - mkdir -p /mnt/nfs/scratch /scratch
-  - echo "mgmt01:/home    /mnt/nfs/home    nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
-  - echo "mgmt01:/project /mnt/nfs/project nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
-  - echo "mgmt01:/scratch /mnt/nfs/scratch nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
-  - echo "/mnt/nfs/home    /home    none default,bind 0 0" >> /etc/fstab
-  - echo "/mnt/nfs/project /project none default,bind 0 0" >> /etc/fstab
-  - echo "/mnt/nfs/scratch /scratch none default,bind 0 0" >> /etc/fstab
+  - mkdir -p /mnt/nfs/etc/slurm
+  - echo "mgmt01:/home      /mnt/nfs/home      nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
+  - echo "mgmt01:/project   /mnt/nfs/project   nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
+  - echo "mgmt01:/scratch   /mnt/nfs/scratch   nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
+  - echo "mgmt01:/etc/slurm /mnt/nfs/etc/slurm nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
+  - echo "/mnt/nfs/home      /home      none default,bind 0 0" >> /etc/fstab
+  - echo "/mnt/nfs/project   /project   none default,bind 0 0" >> /etc/fstab
+  - echo "/mnt/nfs/scratch   /scratch   none default,bind 0 0" >> /etc/fstab
+  - echo "/mnt/nfs/etc/slurm /etc/slurm none default,bind 0 0" >> /etc/fstab
   - mount -a
   # CVMFS
   - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
   - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
   - systemctl restart autofs
+  # slurmd
+  - bash /root/update_slurm.sh
+  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-slurmd-17.11.5-1.el7.centos.x86_64.rpm
+  - systemctl enable slurmd
+  - systemctl start  slurmd
 
 write_files:
+  - content: |
+        #!/bin/bash
+        if [[ "${hostname}" == "node1"  ]]; then
+            RAM=$(free -m  | grep Mem | awk '{print $2}')
+            SOCKETS=$(grep processor /proc/cpuinfo | wc -l)
+            STRING="Sockets=$SOCKETS CoresPerSocket=1 ThreadsPerCore=1 RealMemory=$RAM"
+            sed -i "/^NodeName/ s/\$/ $STRING/" /etc/slurm/slurm.conf
+            scontrol reconfigure
+        fi
+    path: /root/update_slurm.sh
   - content: |
         if [[ $UID -ne 0 ]]; then
           if [[ -r /cvmfs/soft.computecanada.ca/config/profile/bash.sh ]]; then
@@ -36,13 +50,6 @@ write_files:
           fi
         fi
     path: /etc/profile.d/z-00-computecanada.sh
-  - path: /etc/slurm/cgroup.conf
-    content: |
-        CgroupMountpoint=/cgroup
-        CgroupAutomount=yes
-        ConstrainCores=yes
-        #ConstrainRAMSpace=yes
-        AllowedRAMSpace=98.5
   - path: /root/freeipa.sh
     permissions: 0700
     content: |

@@ -2,11 +2,8 @@ data "template_file" "common" {
   template = "${file("common.yaml")}"
 
   vars {
-    nb_nodes      = "${var.nb_nodes}"
-    compute_vcpus = "${var.compute_vcpus}"
-    compute_ram   = "${floor(var.compute_ram * 0.925)}"
-    compute_disk  = "${var.compute_disk}"
-    cluster_name  = "${var.cluster_name}"
+    nb_nodes     = "${var.nb_nodes}"
+    cluster_name = "${var.cluster_name}"
   }
 }
 
