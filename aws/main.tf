@@ -100,7 +100,7 @@ resource "aws_instance" "mgmt01" {
   associate_public_ip_address = "true"
 
   root_block_device {
-    volume_type = "standard"
+    volume_type = "gp2"
     volume_size = "20"
   }
 
