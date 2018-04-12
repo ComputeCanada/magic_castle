@@ -120,7 +120,7 @@ write_files:
         WantedBy=multi-user.target
     path: /lib/systemd/system/jupyterhub.service
   - content: |
-        jupyterhub      ALL=(ALL)       NOPASSWD:SETENV: /bin/sbatch, /bin/scancel [0-9]*, /bin/squeue -h -j [0-9]* -o "%T %B"
+        jupyterhub      ALL=(ALL)       NOPASSWD:SETENV: /bin/sbatch, /bin/scancel [0-9]*, /bin/squeue -h -j [0-9]* -o %T\ %B
     path: /etc/sudoers.d/99-jupyterhub-user
     permissions: 0400
   - content: |
