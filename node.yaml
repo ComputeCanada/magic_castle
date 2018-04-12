@@ -15,10 +15,10 @@ runcmd:
   - mkdir -p /mnt/nfs/project /project
   - mkdir -p /mnt/nfs/scratch /scratch
   - mkdir -p /mnt/nfs/etc/slurm
-  - echo "mgmt01:/home      /mnt/nfs/home      nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
-  - echo "mgmt01:/project   /mnt/nfs/project   nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
-  - echo "mgmt01:/scratch   /mnt/nfs/scratch   nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
-  - echo "mgmt01:/etc/slurm /mnt/nfs/etc/slurm nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
+  - echo "mgmt01:/home      /mnt/nfs/home      nfs rw,async,hard,intr 0 0" >> /etc/fstab
+  - echo "mgmt01:/project   /mnt/nfs/project   nfs rw,async,hard,intr 0 0" >> /etc/fstab
+  - echo "mgmt01:/scratch   /mnt/nfs/scratch   nfs rw,async,hard,intr 0 0" >> /etc/fstab
+  - echo "mgmt01:/etc/slurm /mnt/nfs/etc/slurm nfs rw,async,hard,intr 0 0" >> /etc/fstab
   - echo "/mnt/nfs/home      /home      none default,bind 0 0" >> /etc/fstab
   - echo "/mnt/nfs/project   /project   none default,bind 0 0" >> /etc/fstab
   - echo "/mnt/nfs/scratch   /scratch   none default,bind 0 0" >> /etc/fstab
