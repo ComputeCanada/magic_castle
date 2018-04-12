@@ -5,6 +5,8 @@ packages:
   - cvmfs-config-default
   - cvmfs-auto-setup
   - nfs-utils
+  - python36  
+  - git
 
 runcmd:
   # NFS

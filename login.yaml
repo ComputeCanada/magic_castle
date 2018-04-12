@@ -29,7 +29,7 @@ runcmd:
   - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
   - systemctl restart autofs
   # JupyterHub
-#   - bash /root/jupyterhub.sh
+  - bash /root/jupyterhub.sh
 
 write_files:
   - path: /root/jupyterhub.sh
@@ -49,6 +49,63 @@ write_files:
         chown -R jupyterhub:jupyterhub /opt/jupyterhub
 
     permissions: 0700
+  - path: /opt/jupyterhub/etc/jupyterhub_config.py
+    content: |
+        # Configuration file for jupyterhub (postgres example).
+        from batchspawner import SlurmSpawner
+        class MySpawner(SlurmSpawner):
+            @property
+            def batch_script(self):
+                with open('/opt/jupyterhub/etc/submit.sh', 'r') as script_template:
+                    script = script_template.read()
+                return script
+        c.JupyterHub.spawner_class = MySpawner
+        c.JupyterHub.hub_ip = '0.0.0.0'
+        c.Spawner.http_timeout = 600
+        c.Spawner.start_timeout = 600
+        c.Spawner.poll_interval = 600
+
+    permissions: 0600
+  - path: /opt/jupyterhub/etc/submit.sh
+    content: |
+        #!/bin/bash
+        #SBATCH --time=00-1:00:00
+        #SBATCH --output={homedir}/jupyterhub_slurmspawner_%j.log
+        #SBATCH --job-name=spawner-jupyterhub
+        #SBATCH --workdir={homedir}
+        #SBATCH --mem=500M
+        #SBATCH --export={keepvars}
+        unset XDG_RUNTIME_DIR
+        module purge -f
+        # Environment setup begin
+        VENV="/dev/shm/$USER/jupyter"
+        rm -rf $VENV
+        mkdir -p $VENV
+        python3.6 -m venv $VENV
+        source $VENV/bin/activate
+        pip install --no-cache-dir jupyterhub notebook
+        pip install --no-cache-dir git+https://github.com/cmd-ntrf/batchspawner@remote_port_api 
+        pip install --no-cache-dir jupyterlmod
+        jupyter nbextension install --py jupyterlmod --sys-prefix
+        jupyter nbextension enable --py jupyterlmod --sys-prefix
+        jupyter serverextension enable --py jupyterlmod --sys-prefix
+        pip install --no-cache-dir nbserverproxy
+        pip install --no-cache-dir git+https://github.com/jupyterhub/nbrsessionproxy
+        jupyter serverextension enable --py nbserverproxy --sys-prefix
+        jupyter nbextension install --py nbrsessionproxy --sys-prefix
+        jupyter nbextension enable --py nbrsessionproxy --sys-prefix
+        jupyter serverextension enable --py nbrsessionproxy --sys-prefix
+        deactivate
+        # Environment setup end
+
+        # Launch jupyterhub single server
+        module load StdEnv
+        module load python/3.6
+        source $VENV/bin/activate
+        {cmd}
+
+
+    permissions: 0600
   - content: |
         [Unit]
         Description=Jupyterhub
