@@ -22,6 +22,9 @@ runcmd:
   - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
   - systemctl restart autofs
   # JupyterHub
+  - checkmodule -M -m -o /root/login.mod /root/login.te
+  - semodule_package -o /root/login.pp -m /root/login.mod
+  - semodule -i /root/login.pp
   - bash /root/jupyterhub.sh
 
 write_files:
@@ -141,3 +144,15 @@ write_files:
         CVMFS_REPOSITORIES="cvmfs-config.computecanada.ca"
         CVMFS_QUOTA_LIMIT=4450
         CVMFS_HTTP_PROXY="http://mgmt01:3128"
+  - path: /root/login.te
+    content: |
+        module login 1.0;
+
+        require {
+          type unconfined_t;
+          type unconfined_service_t;
+          class process transition;
+        }
+
+        allow unconfined_service_t unconfined_t:process transition;
+    permissions: 0600
