@@ -26,6 +26,8 @@ runcmd:
   - semodule_package -o /root/login.pp -m /root/login.mod
   - semodule -i /root/login.pp
   - bash /root/jupyterhub.sh
+  - systemctl enable jupyterhub
+  - systemctl start jupyterhub
 
 write_files:
   - path: /root/jupyterhub.sh
@@ -109,8 +111,9 @@ write_files:
 
         [Service]
         User=jupyterhub
-        ExecStart=/opt/jupyterhub/bin/jupyterhub 
-        WorkingDirectory=/opt/jupyterhub/etc/jupyterhub
+        Group=jupyterhub
+        ExecStart=/opt/jupyterhub/bin/jupyterhub --config /opt/jupyterhub/etc/jupyterhub_config.py
+        WorkingDirectory=/opt/jupyterhub/etc
 
         [Install]
         WantedBy=multi-user.target
