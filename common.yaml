@@ -123,3 +123,4 @@ write_files:
 
 disable_ec2_metadata: true
 timezone: "America/Montreal"
+output: { all: "| tee -a /var/log/cloud-init-output.log" }
