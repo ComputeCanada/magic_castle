@@ -40,6 +40,7 @@ data "template_file" "login" {
     admin_passwd = "${var.admin_passwd}"
     mgmt01_ip    = "${local.mgmt01_ip}"
     hostname     = "${var.cluster_name}01"
+    domain_name  = "${var.domain_name}"
   }
 }
 

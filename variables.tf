@@ -21,3 +21,7 @@ variable "admin_passwd" {
 variable "guest_passwd" {
   default = "Test.La.Balinaise.Elle.Est.Bien.Bonne"
 }
+
+variable "domain_name" {
+  default = "jupyter.batcloud.org"
+}

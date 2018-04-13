@@ -7,6 +7,7 @@ packages:
   - nfs-utils
   - python36
   - git
+  - nginx
 
 runcmd:
   # NFS
@@ -28,6 +29,9 @@ runcmd:
   - bash /root/jupyterhub.sh
   - systemctl enable jupyterhub
   - systemctl start jupyterhub
+  - setsebool -P httpd_can_network_connect 1
+  - systemctl enable nginx
+  - systemctl start nginx
 
 write_files:
   - path: /root/jupyterhub.sh
@@ -59,6 +63,7 @@ write_files:
                 return script
         c.JupyterHub.spawner_class = MySpawner
         c.JupyterHub.hub_ip = '0.0.0.0'
+        c.JupyterHub.ip = '127.0.0.1'
         c.Spawner.http_timeout = 600
         c.Spawner.start_timeout = 600
         c.Spawner.poll_interval = 600
@@ -159,3 +164,35 @@ write_files:
 
         allow unconfined_service_t unconfined_t:process transition;
     permissions: 0600
+  - path: /etc/nginx/conf.d/jupyterhub.conf
+    content: |
+        # top-level http config for websocket headers
+        # If Upgrade is defined, Connection = upgrade
+        # If Upgrade is empty, Connection = close
+        map $http_upgrade $connection_upgrade {
+            default upgrade;
+            ''      close;
+        }
+
+        # HTTP server to handle JupyterHub
+        server {
+            listen 80;
+            server_name ${domain_name};
+
+            location / {
+                proxy_pass http://127.0.0.1:8000;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+                # websocket headers
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+            }
+
+            # Managing requests to verify letsencrypt host
+            location ~ /.well-known {
+                allow all;
+            }
+        }
+    permissions: 644
