@@ -48,10 +48,6 @@ write_files:
             echo -e "${guest_passwd}\n${guest_passwd}\n${guest_passwd}" | kinit user$i
             kdestroy
         done
-        # Create home directory
-        for i in $(seq -f "%02g" 1 ${nb_users}); do
-            echo exit | su - user$i
-        done
   - content: |
         /home          10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
         /project       10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
