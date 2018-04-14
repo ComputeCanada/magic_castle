@@ -3,10 +3,4 @@
     - reduce timelimit
     - restrict ssh access to nodes
 - Jupyterhub
-    - write config file
-    - add user jupyterhub to sudoers to do sbatch
-    - add domain name to variables.tf
-    - add domain_name to login.yaml template
-    - configure ssl certificate
-    - write /etc/nginc/nginx.conf (https://github.com/jupyterhub/jupyterhub/blob/master/docs/source/reference/config-examples.md)
-    - 
+    - configure spawner form
