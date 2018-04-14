@@ -33,7 +33,7 @@ runcmd:
   - setsebool -P httpd_can_network_connect 1
   - systemctl enable nginx
   - systemctl start nginx
-  - certbot --nginx -m felix@calculquebec.ca -n --agree-tos --domains ${domain_name}
+  - certbot --nginx -m felix@calculquebec.ca --noninteractive --redirect --agree-tos --domains ${domain_name}
 
 write_files:
   - path: /root/jupyterhub.sh
