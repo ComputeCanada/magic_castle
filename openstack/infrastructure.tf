@@ -19,6 +19,7 @@ resource "openstack_compute_instance_v2" "mgmt01" {
 
 locals {
   mgmt01_ip = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
+  public_ip = "${openstack_networking_floatingip_v2.fip_1.address}"
 }
 
 resource "openstack_compute_instance_v2" "login01" {
@@ -49,8 +50,4 @@ resource "openstack_networking_floatingip_v2" "fip_1" {
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
   floating_ip = "${openstack_networking_floatingip_v2.fip_1.address}"
   instance_id = "${openstack_compute_instance_v2.login01.id}"
-}
-
-output "ip" {
-  value = "${openstack_networking_floatingip_v2.fip_1.address}"
 }

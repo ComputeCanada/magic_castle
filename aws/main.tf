@@ -156,8 +156,5 @@ resource "aws_instance" "node" {
 
 locals {
   mgmt01_ip = "${aws_instance.mgmt01.private_ip}"
-}
-
-output "ip" {
-  value = "${aws_instance.login01.public_ip}"
+  public_ip = "${aws_instance.login01.public_ip}"
 }
