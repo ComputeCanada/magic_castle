@@ -104,7 +104,7 @@ write_files:
         # Environment setup end
 
         # Launch jupyterhub single server
-        module load StdEnv
+        module restore
         module load python/3.6
         source $VENV/bin/activate
         {cmd}
