@@ -1,1 +1,1 @@
-../data.tf
+../common/data.tf

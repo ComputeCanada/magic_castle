@@ -1,5 +1,5 @@
 data "template_file" "common" {
-  template = "${file("common.yaml")}"
+  template = "${file("cloud-init/common.yaml")}"
 
   vars {
     nb_nodes     = "${var.nb_nodes}"
@@ -8,7 +8,7 @@ data "template_file" "common" {
 }
 
 data "template_file" "mgmt" {
-  template = "${file("mgmt.yaml")}"
+  template = "${file("cloud-init/mgmt.yaml")}"
 
   vars {
     admin_passwd = "${var.admin_passwd}"
@@ -34,7 +34,7 @@ data "template_cloudinit_config" "mgmt_config" {
 }
 
 data "template_file" "login" {
-  template = "${file("login.yaml")}"
+  template = "${file("cloud-init/login.yaml")}"
 
   vars {
     admin_passwd = "${var.admin_passwd}"
@@ -61,7 +61,7 @@ data "template_cloudinit_config" "login_config" {
 }
 
 data "template_file" "node" {
-  template = "${file("node.yaml")}"
+  template = "${file("cloud-init/node.yaml")}"
   count    = "${var.nb_nodes}"
 
   vars {
