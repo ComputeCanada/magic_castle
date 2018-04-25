@@ -2,5 +2,8 @@
     - configure accounting
     - reduce timelimit
     - restrict ssh access to nodes
+    - handle TmpFS
+    - add Adam Spencer plugin for cgroup tmpfs
+    https://git.computecanada.ca/cc-provisioning/spank-cc-tmpfs_mounts
 - Jupyterhub
     - configure spawner form
