@@ -143,6 +143,7 @@ write_files:
         DOMAIN=$(grep search /etc/resolv.conf | awk '{print $2}')
         hostnamectl set-hostname ${hostname}.$DOMAIN
         sed -i "/nameserver/c\nameserver ${mgmt01_ip}" /etc/resolv.conf
+        chattr +i /etc/resolv.conf
         until ping -c1 mgmt01 &>/dev/null; do :; done
         sleep 30
         ipa-client-install --mkhomedir --ssh-trust-dns \
