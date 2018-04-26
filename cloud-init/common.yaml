@@ -2,6 +2,7 @@
 packages:
   - wget
   - vim
+  - unzip
 
 runcmd:
   - bash /root/addswap.sh
