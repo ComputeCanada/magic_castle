@@ -11,7 +11,7 @@ packages:
 runcmd:
   # NFS
   - setsebool -P use_nfs_home_dirs 1
-  - mkdir -p /project /scratch
+  - mkdir -p /project /scratch /localscratch
   - echo "mgmt01:/home      /home      nfs rw,noatime,nolock,hard,tcp 0 0" >> /etc/fstab
   - echo "mgmt01:/project   /project   nfs rw,noatime,nolock,hard,tcp 0 0" >> /etc/fstab
   - echo "mgmt01:/scratch   /scratch   nfs rw,noatime,nolock,hard,tcp 0 0" >> /etc/fstab
