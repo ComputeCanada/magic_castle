@@ -53,10 +53,10 @@ write_files:
             kdestroy
         done
   - content: |
-        /home          10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
-        /project       10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
-        /scratch       10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
-        /etc/slurm     10.0.0.0/24(rw,sync,no_root_squash,no_all_squash)
+        /home          ${cidr}(rw,sync,no_root_squash,no_all_squash)
+        /project       ${cidr}(rw,sync,no_root_squash,no_all_squash)
+        /scratch       ${cidr}(rw,sync,no_root_squash,no_all_squash)
+        /etc/slurm     ${cidr}(rw,sync,no_root_squash,no_all_squash)
     path: /etc/exports
   - content: |
         acl manager proto cache_object
@@ -75,7 +75,7 @@ write_files:
         http_access deny CONNECT !SSL_ports
 
         # user-defined ACLs
-        acl compute_network src 10.0.0.0/16
+        acl compute_network src ${cidr}
         acl compute_dstdom_regex dstdom_regex ^(cvmfs-.*\.computecanada\.ca)$
 
         # user-defined http_accesses

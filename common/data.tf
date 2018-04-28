@@ -12,6 +12,7 @@ data "template_file" "mgmt" {
 
   vars {
     admin_passwd = "${var.admin_passwd}"
+    cidr         = "${local.cidr}"
     guest_passwd = "${var.guest_passwd}"
     nb_users     = "${var.nb_users}"
   }

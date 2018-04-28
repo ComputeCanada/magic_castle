@@ -1,5 +1,7 @@
 provider "openstack" {}
 
+data "openstack_networking_subnet_v2" "subnet_1" {}
+
 resource "openstack_compute_instance_v2" "mgmt01" {
   name            = "mgmt01"
   flavor_id       = "${data.openstack_compute_flavor_v2.mgmt.id}"
@@ -20,6 +22,7 @@ resource "openstack_compute_instance_v2" "mgmt01" {
 locals {
   mgmt01_ip = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
   public_ip = "${openstack_networking_floatingip_v2.fip_1.address}"
+  cidr      = "${data.openstack_networking_subnet_v2.subnet_1.cidr}"
 }
 
 resource "openstack_compute_instance_v2" "login01" {
