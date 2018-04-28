@@ -3,6 +3,7 @@ packages:
   - wget
   - vim
   - unzip
+  - rsyslog
 
 runcmd:
   - bash /root/addswap.sh

@@ -4,6 +4,10 @@ packages:
   - ipa-server-dns
 
 runcmd:
+  # rsyslog
+  - sed -i '/^#$ModLoad imtcp$/s/^#//' /etc/rsyslog.conf
+  - sed -i '/^#$InputTCPServerRun 514$/s/^#//' /etc/rsyslog.conf
+  - systemctl restart rsyslog
   # Squid
   - systemctl start squid
   - systemctl enable squid
