@@ -90,7 +90,6 @@ write_files:
         coredump_dir                   /var/spool/squid
         maximum_object_size_in_memory  512 KB
         maximum_object_size            4096 KB
-        ignore_expect_100              off
         cache_mgr                      root
         client_persistent_connections  on
         server_persistent_connections  on
