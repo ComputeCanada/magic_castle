@@ -39,8 +39,8 @@ write_files:
         ipa-server-install --hostname mgmt01.$DOMAIN --setup-dns \
                            --ds-password ${admin_passwd} --admin-password ${admin_passwd} \
                            --mkhomedir --ssh-trust-dns --unattended \
-                           --forwarder=8.8.8.8 --ip-address=$(hostname -i | awk '{print $2}') \
-                           --realm=$REALM
+                           --forwarder=1.1.1.1 --forwarder=8.8.8.8 --ip-address=$(hostname -i | awk '{print $2}') \
+                           --no-host-dns --no-dnssec-validation --realm=$REALM
         # Configure password for guest accounts
         echo "${admin_passwd}" | kinit admin
         ipa pwpolicy-mod  --minlife=0
