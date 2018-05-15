@@ -88,7 +88,7 @@ write_files:
         # JOBS AND TASKS/RESOURCES CONTROL
         TmpFS=/localscratch
         # Prolog=/etc/slurm/prolog
-        # Epilog=/etc/slurm/epilog
+        Epilog=/etc/slurm/epilog
         MpiDefault=pmi2
         ProctrackType=proctrack/cgroup
         TaskPlugin=task/cgroup
@@ -116,6 +116,14 @@ write_files:
         # Remounted 50% size tmpfs # required /usr/lib64/slurm/cc-tmpfs_mounts.so tmpfs=/tmp bindself=/dev/shm target=/localscratch bind=/var/tmp/
         # Better option, bindmount to an already mounted /tmp which inherits its size setting
         required /usr/lib64/slurm/cc-tmpfs_mounts.so bindself=/tmp bindself=/dev/shm target=/localscratch bind=/var/tmp/
+  - path: /etc/slurm/epilog
+    permissions: 0755
+    content: |
+        #!/bin/bash
+        rm -rf "/localscratch/${SLURM_JOB_USER}.${SLURM_JOBID}.*"
+        rm -rf "/dev/shm/${SLURM_JOB_USER}.${SLURM_JOBID}.*"
+        rm -rf "/tmp/${SLURM_JOB_USER}.${SLURM_JOBID}.*"
+        exit 0
   - content: |
         VkJmEF/j97xr7L33ZYsf/mZdQ527MxyvVkoBSL8H9fCjeKtrDTPJBHecsO4/iTvO
         hrOxJBh0hsLZjyl8w7V8hZISKKMyqebNL2cknn/cj7l4zbt+E3lb+RRYlfCkGHgB
