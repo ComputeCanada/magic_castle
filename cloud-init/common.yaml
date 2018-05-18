@@ -6,6 +6,7 @@ packages:
   - rsyslog
 
 runcmd:
+  - reboot -n
   - bash /root/addswap.sh
   # Slurm
   - groupadd -g 2001 slurm
