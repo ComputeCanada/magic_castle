@@ -31,12 +31,12 @@ runcmd:
   - semodule_package -o /root/login.pp -m /root/login.mod
   - semodule -i /root/login.pp
   - bash /root/jupyterhub.sh
-  - systemctl enable jupyterhub
-  - systemctl start jupyterhub
   - setsebool -P httpd_can_network_connect 1
   - systemctl enable nginx
   - systemctl start nginx
   - certbot --nginx -m felix@calculquebec.ca --noninteractive --redirect --agree-tos --domains ${domain_name}
+  - systemctl enable jupyterhub
+  - systemctl start jupyterhub
 
 write_files:
   - path: /root/jupyterhub.sh
