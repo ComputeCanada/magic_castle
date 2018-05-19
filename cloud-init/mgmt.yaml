@@ -32,13 +32,14 @@ write_files:
     content: |
         #!/bin/bash
         set -e
-        DOMAIN=$(grep search /etc/resolv.conf | awk '{print $2}')
+        DOMAIN=$(grep -P -o 'search \K\S+' /etc/resolv.conf)
         REALM=$${DOMAIN^^}
         hostnamectl set-hostname mgmt01.$DOMAIN
         ipa-server-install --hostname mgmt01.$DOMAIN --setup-dns \
                            --ds-password ${admin_passwd} --admin-password ${admin_passwd} \
                            --mkhomedir --ssh-trust-dns --unattended \
-                           --forwarder=1.1.1.1 --forwarder=8.8.8.8 --ip-address=$(hostname -i | awk '{print $2}') \
+                           --forwarder=1.1.1.1 --forwarder=8.8.8.8 \
+                           --ip-address=$(ifconfig eth0 | grep -P -o 'inet \K\S+') \
                            --no-host-dns --no-dnssec-validation --realm=$REALM
         # Configure password for guest accounts
         echo "${admin_passwd}" | kinit admin
