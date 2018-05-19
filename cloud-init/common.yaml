@@ -5,9 +5,9 @@ packages:
   - unzip
   - rsyslog
 
+package_reboot_if_required: true
+
 runcmd:
-  # reboot to avoid problems with potential updated packages
-  - reboot -n
   - bash /root/addswap.sh
   # Slurm
   - groupadd -g 2001 slurm
@@ -47,6 +47,8 @@ yum_repos:
         protect: true
 
 write_files:
+  - path: /var/run/reboot-required
+    permissions: 644
   - path: /root/addswap.sh
     permissions: 0700
     content: |
