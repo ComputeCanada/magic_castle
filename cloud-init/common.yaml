@@ -23,7 +23,7 @@ runcmd:
   - chown munge:munge /etc/munge/munge.key
   - systemctl enable munge
   - systemctl start  munge
-  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-17.11.5-1.el7.centos.x86_64.rpm
+  - yum install -y slurm
   # Slurm CC plugin
   - wget https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/spank-cc-tmpfs_mounts/d2efb9ea/cc-tmpfs_mounts.so.zip
   - unzip cc-tmpfs_mounts.so.zip -d /usr/lib64/slurm
@@ -31,6 +31,16 @@ runcmd:
   - bash /root/freeipa.sh
 
 yum_repos:
+    darrenboss-slurm:
+        name: Copr repo for Slurm owned by darrenboss
+        baseurl: https://copr-be.cloud.fedoraproject.org/results/darrenboss/Slurm/epel-7-$basearch/
+        type: rpm-md
+        skip_if_unavailable: True
+        gpgcheck: 1
+        gpgkey: https://copr-be.cloud.fedoraproject.org/results/darrenboss/Slurm/pubkey.gpg
+        repo_gpgcheck: 0
+        enabled: 1
+        enabled_metadata: 1
     epel:
         baseurl: http://dl.fedoraproject.org/pub/epel/$releasever/$basearch
         enabled: true

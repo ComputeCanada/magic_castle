@@ -26,7 +26,7 @@ runcmd:
   - systemctl restart autofs
   # slurmd
   - bash /root/update_slurm.sh
-  - yum install -y https://git.computecanada.ca/fafor10/slurm_rpms/raw/master/17.11.5/slurm-slurmd-17.11.5-1.el7.centos.x86_64.rpm
+  - yum install -y slurm-slurmd
   - systemctl enable slurmd
   - systemctl start  slurmd
 
