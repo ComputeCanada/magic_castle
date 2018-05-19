@@ -6,6 +6,7 @@ packages:
   - rsyslog
 
 runcmd:
+  # reboot to avoid problems with potential updated packages
   - reboot -n
   - bash /root/addswap.sh
   # Slurm
