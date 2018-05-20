@@ -78,12 +78,12 @@ write_files:
         SchedulerType=sched/backfill
         SelectType=select/cons_res
         SelectTypeParameters=CR_Core_Memory
-        
+
         # NODE CONFIGURATIONS
-        NodeName=node[1-${nb_nodes}]
+        NodeName=node[1-100] State=UNKNOWN
 
         # PARTITION CONFIGURATIONS
-        PartitionName=cpubase_bycore_b1 Nodes=node[1-${nb_nodes}] Default=YES
+        PartitionName=cpubase_bycore_b1 Nodes=ALL Default=YES
 
         SlurmctldPort=6817
         SlurmdPort=6818

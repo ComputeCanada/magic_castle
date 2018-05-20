@@ -25,21 +25,22 @@ runcmd:
   - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
   - systemctl restart autofs
   # slurmd
-  - bash /root/update_slurm.sh
   - yum install -y slurm-slurmd
+  - flock /etc/slurm/slurm.conf.lock bash /root/update_slurm.sh
   - systemctl enable slurmd
   - systemctl start  slurmd
 
 write_files:
   - content: |
         #!/bin/bash
-        if [[ "${hostname}" == "node1"  ]]; then
-            RAM=$(free -m  | grep Mem | awk '{print $2}')
-            SOCKETS=$(grep processor /proc/cpuinfo | wc -l)
-            STRING="Sockets=$SOCKETS CoresPerSocket=1 ThreadsPerCore=1 RealMemory=$RAM"
-            sed -i "/^NodeName/ s/\$/ $STRING/" /etc/slurm/slurm.conf
-            scontrol reconfigure
-        fi
+        # Add node to slurm.conf
+        sed -i "/# NODE CONFIGURATIONS/a $(slurmd -C | head -n 1)" /etc/slurm/slurm.conf
+        # Remove node from unknown state node range
+        HOST_UNK_LIST=$(comm -3 <(scontrol show hostname node[1-100] | sort) <(grep -P -o 'NodeName=\K(node[0-9]{1,})' /etc/slurm/slurm.conf | sort) | paste -d, -s)
+        HOST_UNK_RANGE=$(scontrol show hostlistsorted $HOST_UNK_LIST)
+        sed -i -r "s/(NodeName=)(node\[[0-9-]*\])/\1$HOST_UNK_RANGE/g" /etc/slurm/slurm.conf
+        # Force slurmctld reconfiguration
+        scontrol reconfigure
     path: /root/update_slurm.sh
   - content: |
         if [[ $UID -ne 0 ]]; then

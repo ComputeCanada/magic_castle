@@ -2,7 +2,6 @@ data "template_file" "common" {
   template = "${file("cloud-init/common.yaml")}"
 
   vars {
-    nb_nodes     = "${var.nb_nodes}"
     cluster_name = "${var.cluster_name}"
   }
 }
