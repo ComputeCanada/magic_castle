@@ -38,3 +38,13 @@ To tear down the cluster, from the `aws` folder, call: `terraform destroy`.
 1. Create a symlink to the `dns.tf` file into your cloud project folder (i.e: `openstack`, `aws`, etc.).
 2. Export the following environment variables `CLOUDFLARE_EMAIL` and `CLOUDFLARE_TOKEN`.
 3. Run `terraform apply`.
+
+## Verifying the cluster state
+
+On the login node :
+- Verify SLURM cluster state: `sinfo`. You should see the number of nodes defined in `variables.tf` 
+and all nodes should have an idle state.
+- Verify JupyterHub state: `systemctl status jupyterhub`. It should be active.
+- Verify you can run interactive jobs: `salloc`
+- Verify the home were created: `ls /home`. You should see as many home as there are guest account + centos account.
+- Verify the domain name: go to https://${domain_name}. It should be JupyterHub login page.
