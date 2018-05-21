@@ -7,21 +7,21 @@ variable "nb_nodes" {
 }
 
 variable "nb_users" {
-  default = 20
+  default = 5
 }
 
 variable "shared_storage_size" {
-  default = 50
+  default = 20
 }
 
 variable "admin_passwd" {
-  default = "changeme"
+  default = "impearl.oboist.elect.foss"
 }
 
 variable "guest_passwd" {
-  default = "Test.La.Balinaise.Elle.Est.Bien.Bonne"
+  default = "internee.craps.verve.cohesive"
 }
 
 variable "domain_name" {
-  default = "jupyter.batcloud.org"
+  default = "jupyter2.calculquebec.cloud"
 }
