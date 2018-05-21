@@ -35,11 +35,14 @@ write_files:
         DOMAIN="${domain_name}"
         REALM=$${DOMAIN^^}
         hostnamectl set-hostname mgmt01.$DOMAIN
+        LOCAL_IP=$(ifconfig eth0 | grep -P -o 'inet \K\S+')
+        # GCP automatically add an entry for this IP. It must be removed to avoid conflict with ipa-server
+        sed -i "/$LOCAL_IP/d" /etc/hosts 
         ipa-server-install --hostname mgmt01.$DOMAIN --setup-dns \
                            --ds-password ${admin_passwd} --admin-password ${admin_passwd} \
                            --mkhomedir --ssh-trust-dns --unattended \
                            --forwarder=1.1.1.1 --forwarder=8.8.8.8 \
-                           --ip-address=$(ifconfig eth0 | grep -P -o 'inet \K\S+') \
+                           --ip-address=$LOCAL_IP \
                            --no-host-dns --no-dnssec-validation --realm=$REALM
         # Configure password for guest accounts
         echo "${admin_passwd}" | kinit admin

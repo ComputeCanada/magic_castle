@@ -1,0 +1,111 @@
+provider "google" {
+  credentials = "${file("credentials.json")}"
+  project     = "${var.project_name}"
+  region      = "${var.zone}"
+}
+
+resource "google_compute_instance" "mgmt01" {
+  project = "${var.project_name}"
+  zone = "${var.zone_region}"
+  name = "mgmt01"
+  machine_type = "f1-micro"
+  tags         = ["mgmt01"]
+  boot_disk {
+	initialize_params {
+	  image = "centos-7"
+	}
+  }
+
+  network_interface {
+	network = "default"
+	access_config {
+	}
+  }
+
+  metadata {
+    sshKeys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
+    user-data = "${data.template_cloudinit_config.mgmt_config.rendered}"
+  }
+  metadata_startup_script = <<-EOF
+              #!/bin/bash
+              mkdir 
+                sudo /usr/bin/cloud-init -d init
+              EOF
+}
+
+resource "google_compute_instance" "login01" {
+  project = "${var.project_name}"
+  zone = "${var.zone_region}"
+  name = "login01"
+  machine_type = "f1-micro"
+  tags         = ["login01"]
+  boot_disk {
+	initialize_params {
+	  image = "centos-7"
+	}
+  }
+
+  network_interface {
+	network = "default"
+	access_config {
+	}
+  }
+
+  metadata {
+    sshKeys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
+    user-data = "${data.template_cloudinit_config.login_config.rendered}"
+  }
+  metadata_startup_script = <<-EOF
+              #!/bin/bash
+                sudo yum -y install cloud-init
+                sudo /usr/bin/cloud-init -d init
+              EOF
+
+}
+
+resource "google_compute_instance" "node" {
+  count = "${var.nb_nodes}"
+  project = "${var.project_name}"
+  zone = "${var.zone_region}"
+  name = "node${count.index + 1}"
+  machine_type = "f1-micro"
+  tags         = ["node${count.index + 1}"]
+  boot_disk {
+	initialize_params {
+	  image = "centos-7"
+	}
+  }
+
+  network_interface {
+	network = "default"
+	access_config {
+	}
+  }
+
+  metadata {
+    user-data = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"  
+  }
+  metadata_startup_script = <<-EOF
+              #!/bin/bash
+                sudo yum -y install cloud-init
+                sudo /usr/bin/cloud-init -d init
+              EOF
+}
+
+resource "google_compute_firewall" "default" {
+  name    = "firewall"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["80", "443"]
+  }
+
+  target_tags   = ["login01", "mgmt01"]
+}
+
+locals {
+  mgmt01_ip = "${google_compute_instance.mgmt01.network_interface.0.address}"
+  public_ip = "${google_compute_instance.login01.network_interface.0.access_config.0.assigned_nat_ip}"
+  cidr = "10.128.0.0/9" # GCP default
+}

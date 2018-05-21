@@ -52,6 +52,14 @@ yum_repos:
         gpgcheck: false
         enabled: true
         protect: true
+    elrepo:
+        name: ELRepo.org Community Enterprise Linux Repository - el7
+        baseurl: http://elrepo.org/linux/elrepo/el7/$basearch/
+        enabled: true
+        gpgcheck: true
+        gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-elrepo.org
+        protect: false
+
 
 write_files:
   - path: /var/run/reboot-required
@@ -251,6 +259,6 @@ write_files:
         U7K8f5PoNdP5R+DxvhL9kb81/oOfGH7yCw+7Izzex2Z/5OU3vIbFl3VodBv1Z3DeweM6PpL5kW/ZM8lmDxXzQ58Jj/cvPPhNcv9T
         /oXwqIvQ3HP9pDzszWwD3zb8huFfSTGKNuHfzfxdsh18h2yvLVESYpX1Df9RwcO+AbqvN5v4SAAA
 
-disable_ec2_metadata: true
+disable_ec2_metadata: false
 timezone: "America/Montreal"
 output: { all: "| tee -a /var/log/cloud-init-output.log" }
