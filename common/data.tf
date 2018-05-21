@@ -11,6 +11,7 @@ data "template_file" "mgmt" {
 
   vars {
     admin_passwd = "${var.admin_passwd}"
+    domain_name  = "${var.domain_name}"
     cidr         = "${local.cidr}"
     guest_passwd = "${var.guest_passwd}"
     nb_users     = "${var.nb_users}"
@@ -66,6 +67,7 @@ data "template_file" "node" {
 
   vars {
     admin_passwd = "${var.admin_passwd}"
+    domain_name  = "${var.domain_name}"
     mgmt01_ip    = "${local.mgmt01_ip}"
     hostname     = "node${count.index + 1}"
   }

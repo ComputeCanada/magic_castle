@@ -32,7 +32,7 @@ write_files:
     content: |
         #!/bin/bash
         set -e
-        DOMAIN=$(grep -P -o 'search \K\S+' /etc/resolv.conf)
+        DOMAIN="${domain_name}"
         REALM=$${DOMAIN^^}
         hostnamectl set-hostname mgmt01.$DOMAIN
         ipa-server-install --hostname mgmt01.$DOMAIN --setup-dns \

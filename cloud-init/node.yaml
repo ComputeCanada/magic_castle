@@ -53,9 +53,9 @@ write_files:
     permissions: 0700
     content: |
         #!/bin/bash
-        DOMAIN=$(grep search /etc/resolv.conf | awk '{print $2}')
-        hostnamectl set-hostname ${hostname}.$DOMAIN
+        hostnamectl set-hostname ${hostname}.${domain_name}
         sed -i "/nameserver/c\nameserver ${mgmt01_ip}" /etc/resolv.conf
+        sed -i "/search/c\search ${domain_name}" /etc/resolv.conf
         chattr +i /etc/resolv.conf
         until ping -c1 mgmt01 &>/dev/null; do :; done
         sleep 30
