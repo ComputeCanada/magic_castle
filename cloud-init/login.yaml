@@ -77,11 +77,12 @@ write_files:
   - path: /opt/jupyterhub/etc/submit.sh
     content: |
         #!/bin/bash
-        #SBATCH --time=00-1:00:00
+        ##SBATCH --time=00-1:00:00
         #SBATCH --output={homedir}/jupyterhub_slurmspawner_%j.log
         #SBATCH --job-name=spawner-jupyterhub
         #SBATCH --workdir={homedir}
-        #SBATCH --mem=500M
+        #SBATCH --mem=2000M
+        #SBATCH --cpus-per-task=2
         #SBATCH --export={keepvars}
         unset XDG_RUNTIME_DIR
         module purge -f
