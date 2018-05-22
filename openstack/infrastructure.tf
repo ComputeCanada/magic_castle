@@ -2,11 +2,70 @@ provider "openstack" {}
 
 data "openstack_networking_subnet_v2" "subnet_1" {}
 
+resource "openstack_compute_secgroup_v2" "secgroup_1" {
+  name        = "slurm_cloud"
+  description = "Slurm+JupyterHub security group"
+
+  rule {
+    from_port   = -1
+    to_port     = -1
+    ip_protocol = "icmp"
+    self        = true
+  }
+
+  rule {
+    from_port   = 1
+    to_port     = 65535
+    ip_protocol = "tcp"
+    self        = true
+  }
+
+  rule {
+    from_port   = 1
+    to_port     = 65535
+    ip_protocol = "udp"
+    self        = true
+  }
+
+  rule {
+    from_port   = 22
+    to_port     = 22
+    ip_protocol = "tcp"
+    cidr        = "132.203.0.0/16"
+  }
+
+  rule {
+    from_port   = 22
+    to_port     = 22
+    ip_protocol = "tcp"
+    cidr        = "132.219.0.0/16"
+  }
+
+  rule {
+    from_port   = 80
+    to_port     = 80
+    ip_protocol = "tcp"
+    cidr        = "0.0.0.0/0"
+  }
+
+  rule {
+    from_port   = 443
+    to_port     = 443
+    ip_protocol = "tcp"
+    cidr        = "0.0.0.0/0"
+  }
+}
+
+resource "openstack_compute_keypair_v2" "keypair" {
+  name       = "slurm_cloud_key"
+  public_key = "${var.public_key}"
+}
+
 resource "openstack_compute_instance_v2" "mgmt01" {
   name            = "mgmt01"
   flavor_id       = "${data.openstack_compute_flavor_v2.mgmt.id}"
-  key_pair        = "${var.os_ssh_key}"
-  security_groups = ["default"]
+  key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
+  security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${data.template_cloudinit_config.mgmt_config.rendered}"
 
   block_device {
@@ -30,8 +89,8 @@ resource "openstack_compute_instance_v2" "login01" {
   image_id = "${var.os_image_id}"
 
   flavor_id       = "${data.openstack_compute_flavor_v2.login.id}"
-  key_pair        = "${var.os_ssh_key}"
-  security_groups = ["default", "ssh"]
+  key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
+  security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${data.template_cloudinit_config.login_config.rendered}"
 }
 
@@ -41,8 +100,8 @@ resource "openstack_compute_instance_v2" "node" {
   image_id = "${var.os_image_id}"
 
   flavor_id       = "${data.openstack_compute_flavor_v2.node.id}"
-  key_pair        = "${var.os_ssh_key}"
-  security_groups = ["default"]
+  key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
+  security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"
 }
 
