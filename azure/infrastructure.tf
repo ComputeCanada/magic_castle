@@ -157,7 +157,7 @@ resource "azurerm_virtual_machine" "login01vm" {
   location              = "${var.location}"
   resource_group_name   = "${azurerm_resource_group.group.name}"
   network_interface_ids = ["${azurerm_network_interface.loginNIC.id}"]
-  vm_size               = "${data.vm_size.login}"
+  vm_size               = "${var.vm_size_login}"
 
   storage_os_disk {
     name              = "loginDisk"
@@ -193,7 +193,7 @@ resource "azurerm_virtual_machine" "mgmt01vm" {
   location              = "${var.location}"
   resource_group_name   = "${azurerm_resource_group.group.name}"
   network_interface_ids = ["${azurerm_network_interface.mgmtNIC.id}"]
-  vm_size               = "${data.vm_size.mgmt}"
+  vm_size               = "${var.vm_size_mgmt}"
 
   storage_os_disk {
     name              = "mgmtDisk"
@@ -230,7 +230,7 @@ resource "azurerm_virtual_machine" "nodevm" {
   location              = "${var.location}"
   resource_group_name   = "${azurerm_resource_group.group.name}"
   network_interface_ids = ["${element(azurerm_network_interface.nodeNIC.*.id, count.index)}"]
-  vm_size               = "${data.vm_size.node}"
+  vm_size               = "${var.vm_size_node}"
 
   storage_os_disk {
     name              = "nodeDisk${count.index + 1}"

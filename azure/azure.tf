@@ -10,14 +10,14 @@ variable "location" {
   default = "eastus"
 }
 
-data "vm_size" "mgmt" {
-  name = "Standard_DS1_v2"
+variable "vm_size_mgmt" {
+  default = "Standard_DS1_v2"
 }
 
-data "vm_size" "login" {
-  name = "Standard_DS1_v2"
+variable "vm_size_login" {
+  default = "Standard_DS1_v2"
 }
 
-data "vm_size" "node" {
-  name = "Standard_DS1_v2"
+variable "vm_size_node" {
+  default = "Standard_DS1_v2"
 }
