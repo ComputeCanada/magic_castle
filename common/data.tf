@@ -1,3 +1,13 @@
+resource "random_string" "admin_passwd" {
+  length  = 16
+  special = false
+}
+
+resource "random_pet" "guest_passwd" {
+  length    = 4
+  separator = "."
+}
+
 data "template_file" "common" {
   template = "${file("cloud-init/common.yaml")}"
 
@@ -10,10 +20,10 @@ data "template_file" "mgmt" {
   template = "${file("cloud-init/mgmt.yaml")}"
 
   vars {
-    admin_passwd = "${var.admin_passwd}"
+    admin_passwd = "${random_string.admin_passwd.result}"
     domain_name  = "${var.domain_name}"
     cidr         = "${local.cidr}"
-    guest_passwd = "${var.guest_passwd}"
+    guest_passwd = "${random_pet.guest_passwd.id}"
     nb_users     = "${var.nb_users}"
   }
 }
@@ -38,7 +48,7 @@ data "template_file" "login" {
   template = "${file("cloud-init/login.yaml")}"
 
   vars {
-    admin_passwd = "${var.admin_passwd}"
+    admin_passwd = "${random_string.admin_passwd.result}"
     mgmt01_ip    = "${local.mgmt01_ip}"
     hostname     = "${var.cluster_name}01"
     domain_name  = "${var.domain_name}"
@@ -66,7 +76,7 @@ data "template_file" "node" {
   count    = "${var.nb_nodes}"
 
   vars {
-    admin_passwd = "${var.admin_passwd}"
+    admin_passwd = "${random_string.admin_passwd.result}"
     domain_name  = "${var.domain_name}"
     mgmt01_ip    = "${local.mgmt01_ip}"
     hostname     = "node${count.index + 1}"
