@@ -2,6 +2,18 @@ provider "openstack" {}
 
 data "openstack_networking_subnet_v2" "subnet_1" {}
 
+data "openstack_compute_flavor_v2" "mgmt" {
+  name = "${var.os_flavor_mgmt}"
+}
+
+data "openstack_compute_flavor_v2" "login" {
+  name = "${var.os_flavor_login}"
+}
+
+data "openstack_compute_flavor_v2" "node" {
+  name = "${var.os_flavor_node}"
+}
+
 resource "openstack_compute_secgroup_v2" "secgroup_1" {
   name        = "slurm_cloud"
   description = "Slurm+JupyterHub security group"

@@ -1,14 +1,6 @@
-data "openstack_compute_flavor_v2" "mgmt" {
-  name = "p2-3gb"
-}
-
-data "openstack_compute_flavor_v2" "login" {
-  name = "p2-3gb"
-}
-
-data "openstack_compute_flavor_v2" "node" {
-  name = "p2-3gb"
-}
+variable "os_flavor_node" {}
+variable "os_flavor_login" {}
+variable "os_flavor_mgmt" {}
 
 variable "os_ssh_key" {
   default = "fafor10"
