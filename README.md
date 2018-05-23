@@ -6,18 +6,17 @@
 
 ## OpenStack Cloud
 
-1. Download the latest version of this project: [v1.0](https://git.computecanada.ca/fafor10/slurm_cloud/repository/1.0/archive.tar.gz)
-2. Untar: `tar xvf archive.tar.gz`
-3. Go in the openstack project folder : `cd slurm_cloud-1.0*/openstack`
-4. Download your project openrc file from the OpenStack _Access and security_ section into the `openstack` folder.
-5. Source your project openrc file : `source _project_-openrsh.sh`.
-6. Initiate the Terraform state : `terraform init`.
-7. Adapt the cluster variables in the `variables.tf` file (i.e.: number of guest accounts, number of nodes).
-8. Adapt the OpenStack parameters in the `openstack.tf` file (i.e: compute node flavor, ssh key pair).
-9. Verify the Terraform plan : `terraform plan`.
-10. Apply the Terraform plan : `terraform apply`.
+1. Create a new folder : `mkdir my_new_cluster`
+2. Copy an example `main.tf` [openstack example folder](https://git.computecanada.ca/fafor10/slurm_cloud/tree/master/examples/openstack)
+3. Download your project openrc file from the OpenStack _Access and security_ section into the `openstack` folder.
+4. Source your project openrc file : `source _project_-openrsh.sh`.
+5. Initiate the Terraform state : `terraform init`.
+6. Retrieve the Terraform OpenStack module : `terraform get`.
+7. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
+8. Verify the Terraform plan : `terraform plan`.
+9. Apply the Terraform plan : `terraform apply`.
 
-To tear down the cluster, from the `openstack` folder, call: `terraform destroy`.
+To tear down the cluster, from the `my_new_cluster` folder, call: `terraform destroy`.
 
 ## Amazon Web Services
 
