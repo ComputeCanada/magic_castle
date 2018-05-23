@@ -9,7 +9,7 @@ resource "random_pet" "guest_passwd" {
 }
 
 data "template_file" "common" {
-  template = "${file("cloud-init/common.yaml")}"
+  template = "${file("${path.module}/cloud-init/common.yaml")}"
 
   vars {
     cluster_name = "${var.cluster_name}"
@@ -17,7 +17,7 @@ data "template_file" "common" {
 }
 
 data "template_file" "mgmt" {
-  template = "${file("cloud-init/mgmt.yaml")}"
+  template = "${file("${path.module}/cloud-init/mgmt.yaml")}"
 
   vars {
     admin_passwd = "${random_string.admin_passwd.result}"
@@ -45,7 +45,7 @@ data "template_cloudinit_config" "mgmt_config" {
 }
 
 data "template_file" "login" {
-  template = "${file("cloud-init/login.yaml")}"
+  template = "${file("${path.module}/cloud-init/login.yaml")}"
 
   vars {
     admin_passwd = "${random_string.admin_passwd.result}"
@@ -72,7 +72,7 @@ data "template_cloudinit_config" "login_config" {
 }
 
 data "template_file" "node" {
-  template = "${file("cloud-init/node.yaml")}"
+  template = "${file("${path.module}/cloud-init/node.yaml")}"
   count    = "${var.nb_nodes}"
 
   vars {
