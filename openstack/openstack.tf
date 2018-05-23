@@ -2,10 +2,6 @@ variable "os_flavor_node" {}
 variable "os_flavor_login" {}
 variable "os_flavor_mgmt" {}
 
-variable "os_ssh_key" {
-  default = "fafor10"
-}
-
 variable "os_external_network" {
   default = "VLAN3337"
 }
