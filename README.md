@@ -7,7 +7,7 @@
 ## OpenStack Cloud
 
 1. Create a new folder : `mkdir my_new_cluster`
-2. Copy an example `main.tf` [openstack example folder](https://git.computecanada.ca/fafor10/slurm_cloud/tree/master/examples/openstack)
+2. Copy an example `main.tf` from the [openstack example folder](https://git.computecanada.ca/fafor10/slurm_cloud/tree/master/examples/openstack)
 3. Download your project openrc file from the OpenStack _Access and security_ section into the `openstack` folder.
 4. Source your project openrc file : `source _project_-openrsh.sh`.
 5. Initiate the Terraform state : `terraform init`.
