@@ -14,4 +14,6 @@ module "openstack" {
   os_flavor_node      = "p2-3gb"
   os_flavor_login     = "p2-3gb"
   os_flavor_mgmt      = "p2-3gb"
+  public_key_name     = "calculquebec_key"
+
 }

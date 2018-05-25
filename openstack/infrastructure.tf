@@ -70,7 +70,7 @@ resource "openstack_compute_secgroup_v2" "secgroup_1" {
 
 resource "openstack_compute_keypair_v2" "keypair" {
   name       = "slurm_cloud_key"
-  public_key = "${var.public_key}"
+  public_key_name = "${var.public_key}"
 }
 
 resource "openstack_compute_instance_v2" "mgmt01" {
