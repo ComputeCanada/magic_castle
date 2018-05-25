@@ -1,5 +1,5 @@
 provider "google" {
-  credentials = "${file("credentials.json")}"
+  credentials = "${file(var.credentials_file)}"
   project     = "${var.project_name}"
   region      = "${var.zone}"
 }
@@ -25,7 +25,7 @@ resource "google_compute_instance" "mgmt01" {
   }
 
   metadata {
-    sshKeys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
+    sshKeys = "centos:${file(var.ssh_pub_key_file)}"
     user-data = "${data.template_cloudinit_config.mgmt_config.rendered}"
     user-data-encoding = "base64"
   }
@@ -61,7 +61,7 @@ resource "google_compute_instance" "login01" {
   }
 
   metadata {
-    sshKeys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
+    sshKeys = "centos:${file(var.ssh_pub_key_file)}"
     user-data = "${data.template_cloudinit_config.login_config.rendered}"
     user-data-encoding = "base64"
   }
@@ -106,7 +106,7 @@ resource "google_compute_instance" "node" {
   }
 
   metadata {
-    sshKeys = "${var.ssh_user}:${file(var.ssh_pub_key_file)}"
+    sshKeys = "centos:${file(var.ssh_pub_key_file)}"
     user-data = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"  
     user-data-encoding = "base64"
   }

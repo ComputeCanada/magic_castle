@@ -1,38 +1,21 @@
-variable "project_name" { 
-    default = "crested-return-137823"
-}
+variable "project_name" {}
 
-variable "ssh_pub_key_file" { 
-    default = "key.pub"
-}
+variable "ssh_pub_key_file" {}
 
-variable "ssh_user" { 
-    default = "centos"
-}
+variable "credentials_file" {}
 
-variable "zone" {
-    default = "us-central1"
-}
+variable "ssh_user" {}
 
-variable "zone_region" {
-    default = "us-central1-a"
-}
+variable "zone" {}
 
-variable "machine_type_mgmt" {
-# Minimun size to install freeipa-server
-  default = "g1-small"
-}
+variable "zone_region" {}
 
-variable "machine_type_login" {
-  default = "f1-micro"
-}
+variable "machine_type_mgmt" {}
 
-variable "machine_type_node" {
-  default = "n1-standard-1"
-}
+variable "machine_type_login" {}
+
+variable "machine_type_node" {}
 
 variable "gpu_per_node" {
-  type    = "list"
-# ["GPU card", count]
-  default = ["nvidia-tesla-k80", 1]
+  type = "list"
 }
