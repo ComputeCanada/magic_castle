@@ -54,9 +54,9 @@ yum_repos:
         protect: true
     elrepo:
         name: ELRepo.org Community Enterprise Linux Repository - el7
-        baseurl: http://elrepo.org/linux/elrepo/el7/$basearch/
+        baseurl: http://muug.ca/mirror/elrepo/elrepo/el7/$basearch/
         enabled: true
-        gpgcheck: true
+        gpgcheck: false
         gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-elrepo.org
         protect: false
 

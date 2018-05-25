@@ -7,6 +7,7 @@ packages:
   - nfs-utils
   - python36  
   - git
+  - pciutils
 
 runcmd:
   # rsyslog
@@ -24,6 +25,8 @@ runcmd:
   - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
   - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
   - systemctl restart autofs
+  # Nvidia driver
+  - bash /root/nvidia-driver.sh
   # slurmd
   - yum install -y slurm-slurmd
   - flock /etc/slurm/slurm.conf.lock bash /root/update_slurm.sh
@@ -68,3 +71,12 @@ write_files:
         CVMFS_REPOSITORIES="cvmfs-config.computecanada.ca"
         CVMFS_QUOTA_LIMIT=4450
         CVMFS_HTTP_PROXY="http://mgmt01:3128"
+
+  - path: /root/nvidia-driver.sh
+    permissions: 0700
+    content: |
+        #!/bin/bash
+        if lspci | grep -q "3D controller: NVIDIA" ; then
+            yum install -y kmod-nvidia-390.48
+        fi
+
