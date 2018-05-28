@@ -4,8 +4,6 @@ variable "ssh_pub_key_file" {}
 
 variable "credentials_file" {}
 
-variable "ssh_user" {}
-
 variable "zone" {}
 
 variable "zone_region" {}

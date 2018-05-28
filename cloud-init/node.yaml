@@ -77,6 +77,11 @@ write_files:
     content: |
         #!/bin/bash
         if lspci | grep -q "3D controller: NVIDIA" ; then
-            yum install -y kmod-nvidia-390.48
+          for VERSION in `ls /cvmfs/soft.computecanada.ca/nix/lib/libcuda.so* | grep -Po "(?<=\.)[0-9]+\.[0-9]+" | sort -rn`
+          do
+            if yum install -y -q kmod-nvidia-$VERSION; then
+              break
+            fi
+          done
         fi
 
