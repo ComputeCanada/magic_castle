@@ -2,6 +2,10 @@
 provider "azurerm" {
 }
 
+variable "ssh_user" {
+  default = "centos"
+}
+
 # Create a resource group
 resource "azurerm_resource_group" "group" {
   name     = "myResourceGroup"

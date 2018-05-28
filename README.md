@@ -34,18 +34,18 @@ To tear down the cluster, from the `aws` folder, call: `terraform destroy`.
 
 ## Azure
 
-1. Download the latest version of this project: [master](https://git.computecanada.ca/fafor10/slurm_cloud/repository/1.0/archive.tar.gz).
-2. Untar: `tar xvf archive.tar.gz`.
+1. Create a new folder : `mkdir my_new_cluster`.
+2. Copy the example `main.tf` from the [azure example folder](https://git.computecanada.ca/fafor10/slurm_cloud/tree/master/examples/azure).
 3. Go in the azure project folder : `cd slurm_cloud-1.0*/azure`.
 4. Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) if not already installed : `pip install azure-cli`.
 5. Login to Azure and follow the instructions : `az login`.
 6. Initiate the Terraform state : `terraform init`.
-7. Adapt the cluster variables in the `variables.tf` file (i.e.: number of guest accounts, number of nodes).
-8. Adapt the Azure parameters in the `azure.tf` file (i.e: compute node flavor, ssh key pair).
+7. Retrieve the Terraform Azure module : `terraform get`.
+8. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
 9. Verify the Terraform plan : `terraform plan`.
 10. Apply the Terraform plan : `terraform apply`.
 
-To tear down the cluster, from the `azure` folder, call: `terraform destroy`.
+To tear down the cluster, from the `my_new_cluster` folder, call: `terraform destroy`.
 
 ## GCP
 
