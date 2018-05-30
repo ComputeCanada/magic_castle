@@ -37,6 +37,7 @@ write_files:
   - content: |
         #!/bin/bash
         # Add node to slurm.conf
+        sed -i "/^NodeName=$(hostname -s)/ d" /etc/slurm/slurm.conf
         sed -i "/# NODE CONFIGURATIONS/a $(slurmd -C | head -n 1)" /etc/slurm/slurm.conf
         # Remove node from unknown state node range
         HOST_UNK_LIST=$(comm -3 <(scontrol show hostname node[1-100] | sort) <(grep -P -o 'NodeName=\K(node[0-9]{1,})' /etc/slurm/slurm.conf | sort) | paste -d, -s)
