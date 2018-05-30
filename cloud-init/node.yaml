@@ -57,9 +57,17 @@ write_files:
     content: |
         #!/bin/bash
         hostnamectl set-hostname ${hostname}.${domain_name}
+        systemctl is-active --quiet NetworkManager
+        IS_RUNNING=$?
+        if [ $IS_RUNNING -eq 0 ]; then
+            systemctl stop NetworkManager
+        fi
         sed -i "/nameserver/c\nameserver ${mgmt01_ip}" /etc/resolv.conf
         sed -i "/search/c\search ${domain_name}" /etc/resolv.conf
         chattr +i /etc/resolv.conf
+        if [ $IS_RUNNING -eq 0 ]; then
+            systemctl start NetworkManager
+        fi
         until ping -c1 mgmt01 &>/dev/null; do :; done
         sleep 30
         ipa-client-install --mkhomedir --ssh-trust-dns \
@@ -76,12 +84,13 @@ write_files:
     permissions: 0700
     content: |
         #!/bin/bash
-        if lspci | grep -q "3D controller: NVIDIA" ; then
+        if lspci | grep -q "controller: NVIDIA" ; then
           for VERSION in `ls /cvmfs/soft.computecanada.ca/nix/lib/libcuda.so* | grep -Po "(?<=\.)[0-9]+\.[0-9]+" | sort -rn`
           do
             if yum install -y -q kmod-nvidia-$VERSION; then
               break
             fi
           done
+          reboot
         fi
 

@@ -144,10 +144,18 @@ write_files:
     permissions: 0700
     content: |
         #!/bin/bash
+        systemctl is-active --quiet NetworkManager
+        IS_RUNNING=$?
+        if [ $IS_RUNNING -eq 0 ]; then
+            systemctl stop NetworkManager
+        fi
         hostnamectl set-hostname ${hostname}.${domain_name}
         sed -i "/nameserver/c\nameserver ${mgmt01_ip}" /etc/resolv.conf
         sed -i "/search/c\search ${domain_name}" /etc/resolv.conf
         chattr +i /etc/resolv.conf
+        if [ $IS_RUNNING -eq 0 ]; then
+            systemctl start NetworkManager
+        fi
         until ping -c1 mgmt01 &>/dev/null; do :; done
         sleep 30
         ipa-client-install --mkhomedir --ssh-trust-dns \
