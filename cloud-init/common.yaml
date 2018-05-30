@@ -9,6 +9,7 @@ package_reboot_if_required: true
 
 runcmd:
   - bash /root/addswap.sh
+  - bash /root/disable_firewalld.sh
   # Slurm
   - groupadd -g 2001 slurm
   - useradd -m -c "Slurm workload manager" -d /var/lib/slurm -u 2001 -g slurm  -s /bin/bash slurm
@@ -64,6 +65,26 @@ yum_repos:
 write_files:
   - path: /var/run/reboot-required
     permissions: 644
+  - path: /root/disable_firewalld.sh
+    permissions: 0700
+    content: |
+        #!/bin/bash
+        cat > /etc/sysconfig/iptables << END
+        *filter
+        :INPUT ACCEPT [0:0]
+        :FORWARD ACCEPT [0:0]
+        :OUTPUT ACCEPT [0:0]
+        -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+        -A INPUT -p icmp -j ACCEPT
+        -A INPUT -i lo -j ACCEPT
+        COMMIT
+        END
+
+        systemctl stop firewalld && systemctl start iptables; systemctl start ip6tables
+        systemctl disable firewalld
+        systemctl mask firewalld
+        systemctl enable iptables
+        systemctl enable ip6tables
   - path: /root/addswap.sh
     permissions: 0700
     content: |
