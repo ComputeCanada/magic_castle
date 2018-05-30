@@ -64,13 +64,12 @@ To tear down the cluster, from the `my_new_cluster` folder, call: `terraform des
 
 1. Create a new folder : `mkdir my_new_cluster`.
 2. Copy an example `main.tf` from the [ovh example folder](https://git.computecanada.ca/fafor10/slurm_cloud/tree/master/examples/ovh).
-3. Download your project openrc file from the [OVH OpenStack interface](https://horizon.cloud.ovh.net/project/) at the top right corner of the page.
+3. Download your project OpenStack RC File v3 (v2 won't work) from the [OVH OpenStack interface](https://horizon.cloud.ovh.net/project/) at the top right corner of the page.
 4. Source your project openrc file : `source _project_-openrc.sh`.
 5. Initiate the Terraform state : `terraform init`.
-6. Retrieve the Terraform OpenStack module : `terraform get`.
-7. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
-8. Verify the Terraform plan : `terraform plan`.
-9. Apply the Terraform plan : `terraform apply`.
+6. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
+7. Verify the Terraform plan : `terraform plan`.
+8. Apply the Terraform plan : `terraform apply`.
 
 To tear down the cluster, from the `my_new_cluster` folder, call: `terraform destroy`.
 
