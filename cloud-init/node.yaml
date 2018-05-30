@@ -74,6 +74,7 @@ write_files:
         ipa-client-install --mkhomedir --ssh-trust-dns \
                            --enable-dns-updates \
                            --unattended -p admin \
+                           --force-join \
                            -w ${admin_passwd}
   - path: /etc/cvmfs/default.local
     content: |
