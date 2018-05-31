@@ -1,6 +1,3 @@
-variable "path_ssh_public_key" {
-}
-
 variable "location" {
 }
 

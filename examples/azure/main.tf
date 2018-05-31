@@ -7,9 +7,9 @@ module "azure" {
   nb_users            = 10
   shared_storage_size = 100
   domain_name         = "jupyter2.calculquebec.cloud"
+  public_key_path = "./key.pub"
 
   # Azure specifics
-  path_ssh_public_key = "./key.pub"
   location            = "eastus"
   vm_size_mgmt        = "Standard_DS1_v2"
   vm_size_login       = "Standard_DS1_v2"

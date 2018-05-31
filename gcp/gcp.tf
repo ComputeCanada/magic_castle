@@ -1,7 +1,5 @@
 variable "project_name" {}
 
-variable "ssh_pub_key_file" {}
-
 variable "credentials_file" {}
 
 variable "zone" {}

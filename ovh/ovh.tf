@@ -5,4 +5,3 @@ variable "os_flavor_mgmt" {}
 variable "os_external_network" {}
 
 variable "os_image_id" {}
-variable "public_key_file" {}

@@ -187,7 +187,7 @@ resource "azurerm_virtual_machine" "login01vm" {
     disable_password_authentication = true
     ssh_keys {
       path     = "/home/${var.ssh_user}/.ssh/authorized_keys"
-      key_data = "${file(var.path_ssh_public_key)}"
+      key_data = "${file(var.public_key_path)}"
     }
   }
 }
@@ -223,7 +223,7 @@ resource "azurerm_virtual_machine" "mgmt01vm" {
     disable_password_authentication = true
     ssh_keys {
       path     = "/home/${var.ssh_user}/.ssh/authorized_keys"
-      key_data = "${file(var.path_ssh_public_key)}"
+      key_data = "${file(var.public_key_path)}"
     }
   }
 }
@@ -261,7 +261,7 @@ resource "azurerm_virtual_machine" "nodevm" {
     disable_password_authentication = true
     ssh_keys {
       path     = "/home/${var.ssh_user}/.ssh/authorized_keys"
-      key_data = "${file(var.path_ssh_public_key)}"
+      key_data = "${file(var.public_key_path)}"
     }
   }
 }

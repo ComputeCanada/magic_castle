@@ -7,10 +7,10 @@ module "gcp" {
   nb_users            = 10
   shared_storage_size = 100
   domain_name         = "jupyter2.calculquebec.cloud"
+  public_key_path     = "./key.pub"
 
   # GCP specifics
   project_name       = "crested-return-137823"
-  ssh_pub_key_file   = "./key.pub"
   credentials_file   = "./credentials.json"
   zone               = "us-central1"
   zone_region        = "us-central1-a"

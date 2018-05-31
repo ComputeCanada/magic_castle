@@ -7,6 +7,7 @@ module "openstack" {
   nb_users            = 10
   shared_storage_size = 100
   domain_name         = "jupyter2.calculquebec.cloud"
+  public_key_path     = "./pub.key"
 
   # OpenStack specifics
   os_external_network = "VLAN3337"
@@ -14,5 +15,4 @@ module "openstack" {
   os_flavor_node      = "p2-3gb"
   os_flavor_login     = "p2-3gb"
   os_flavor_mgmt      = "p2-3gb"
-  public_key_name     = "calculquebec_key"
 }

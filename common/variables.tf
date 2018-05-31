@@ -7,3 +7,5 @@ variable "nb_users" {}
 variable "shared_storage_size" {}
 
 variable "domain_name" {}
+
+variable "public_key_path" {}

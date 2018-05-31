@@ -25,7 +25,7 @@ resource "google_compute_instance" "mgmt01" {
   }
 
   metadata {
-    sshKeys = "centos:${file(var.ssh_pub_key_file)}"
+    sshKeys = "centos:${file(var.public_key_path)}"
     user-data = "${data.template_cloudinit_config.mgmt_config.rendered}"
     user-data-encoding = "base64"
   }
@@ -61,7 +61,7 @@ resource "google_compute_instance" "login01" {
   }
 
   metadata {
-    sshKeys = "centos:${file(var.ssh_pub_key_file)}"
+    sshKeys = "centos:${file(var.public_key_path)}"
     user-data = "${data.template_cloudinit_config.login_config.rendered}"
     user-data-encoding = "base64"
   }
@@ -106,7 +106,7 @@ resource "google_compute_instance" "node" {
   }
 
   metadata {
-    sshKeys = "centos:${file(var.ssh_pub_key_file)}"
+    sshKeys = "centos:${file(var.public_key_path)}"
     user-data = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"  
     user-data-encoding = "base64"
   }

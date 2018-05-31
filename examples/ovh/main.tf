@@ -7,6 +7,7 @@ module "ovh" {
   nb_users            = 10
   shared_storage_size = 100
   domain_name         = "jupyter2.calculquebec.cloud"
+  public_key_path     = "./key.pub"
 
   # OpenStack specifics
   os_external_network = "Ext-Net"
@@ -14,7 +15,6 @@ module "ovh" {
   os_flavor_node      = "s1-2"
   os_flavor_login     = "s1-2"
   os_flavor_mgmt      = "s1-2"
-  public_key_file     = "./key.pub"
 }
 
 output "public_ip" {

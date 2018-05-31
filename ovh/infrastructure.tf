@@ -69,15 +69,14 @@ resource "openstack_networking_subnet_v2" "subnet" {
 
 resource "openstack_compute_keypair_v2" "keypair" {
   name       = "slurm_cloud_key"
-  public_key = "${file(var.public_key_file)}"
+  public_key = "${file(var.public_key_path)}"
 }
 
 resource "openstack_compute_instance_v2" "mgmt01" {
   name            = "mgmt"
   flavor_name     = "${var.os_flavor_mgmt}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
-  /* security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"] */
-  security_groups = ["default"]
+  security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${data.template_cloudinit_config.mgmt_config.rendered}"
   # Networks must be defined in this order
   network =
@@ -105,8 +104,7 @@ resource "openstack_compute_instance_v2" "login01" {
 
   flavor_name       = "${var.os_flavor_login}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
-  /* security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"] */
-  security_groups = ["default"]
+  security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${data.template_cloudinit_config.login_config.rendered}"
   # Networks must be defined in this order
   network =
@@ -127,8 +125,7 @@ resource "openstack_compute_instance_v2" "node" {
 
   flavor_name     = "${var.os_flavor_node}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
-  /* security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"] */
-  security_groups = ["default"]
+  security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"
   network =
   {
