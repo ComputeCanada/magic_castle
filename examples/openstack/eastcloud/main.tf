@@ -15,5 +15,20 @@ module "openstack" {
   os_flavor_node      = "p2-3gb"
   os_flavor_login     = "p2-3gb"
   os_flavor_mgmt      = "p2-3gb"
+}
 
+output "public_ip" {
+	value = "${module.openstack.ip}"
+}
+
+output "domain_name" {
+	value = "${module.openstack.domain_name}"
+}
+
+output "admin_passwd" {
+	value = "${module.openstack.admin_passwd}"
+}
+
+output "guest_passwd" {
+	value = "${module.openstack.guest_passwd}"
 }

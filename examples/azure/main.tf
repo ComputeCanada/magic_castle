@@ -15,3 +15,19 @@ module "azure" {
   vm_size_login       = "Standard_DS1_v2"
   vm_size_node        = "Standard_DS1_v2"
 }
+
+output "public_ip" {
+	value = "${module.azure.ip}"
+}
+
+output "domain_name" {
+	value = "${module.azure.domain_name}"
+}
+
+output "admin_passwd" {
+	value = "${module.azure.admin_passwd}"
+}
+
+output "guest_passwd" {
+	value = "${module.azure.guest_passwd}"
+}
