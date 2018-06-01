@@ -20,17 +20,16 @@ To tear down the cluster, from the `my_new_cluster` folder, call: `terraform des
 
 ## Amazon Web Services
 
-1. Download the latest version of this project: [master](https://git.computecanada.ca/fafor10/slurm_cloud/repository/1.0/archive.tar.gz).
-2. Untar: `tar xvf archive.tar.gz`.
-3. Go in the aws project folder : `cd slurm_cloud-1.0*/aws`.
-4. Export the following environment variables : `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
-5. Initiate the Terraform state : `terraform init`.
-6. Adapt the cluster variables in the `variables.tf` file (i.e.: number of guest accounts, number of nodes).
-7. Adapt the AWS parameters in the `main.tf` file (i.e: compute node flavor, ssh key pair).
-9. Verify the Terraform plan : `terraform plan`.
-10. Apply the Terraform plan : `terraform apply`.
+1. Create a new folder : `mkdir my_new_cluster`.
+2. Copy an example `main.tf` from the [aws example folder](https://git.computecanada.ca/fafor10/slurm_cloud/tree/master/examples/aws).
+3. Export the following environment variables : `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+4. Initiate the Terraform state : `terraform init`.
+5. Retrieve the Terraform OpenStack module : `terraform get`.
+6. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
+7. Verify the Terraform plan : `terraform plan`.
+8. Apply the Terraform plan : `terraform apply`.
 
-To tear down the cluster, from the `aws` folder, call: `terraform destroy`.
+To tear down the cluster, from the `my_new_cluster` folder, call: `terraform destroy`.
 
 ## Azure
 
