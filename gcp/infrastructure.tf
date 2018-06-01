@@ -15,6 +15,7 @@ resource "google_compute_instance" "mgmt01" {
   boot_disk {
     initialize_params {
       image = "centos-7"
+      size  = "${var.shared_storage_size}"
     }
   }
 

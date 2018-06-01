@@ -204,6 +204,7 @@ resource "azurerm_virtual_machine" "mgmt01vm" {
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
+    disk_size_gb      = "${var.shared_storage_size}"
   }
 
   storage_image_reference {
