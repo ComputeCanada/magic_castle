@@ -2,8 +2,7 @@
     - configure accounting
     - reduce timelimit
     - restrict ssh access to nodes
-    - handle TmpFS
-    - add Adam Spencer plugin for cgroup tmpfs
-    https://git.computecanada.ca/cc-provisioning/spank-cc-tmpfs_mounts
+    - repair the sed for adding node. The range of unknown is sometime not modified.
+    - Replace UNKNOWN state by FUTURE in NodeName state.
 - Jupyterhub
     - configure spawner form
