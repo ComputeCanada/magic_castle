@@ -15,7 +15,7 @@ data "openstack_compute_flavor_v2" "node" {
 }
 
 resource "openstack_compute_secgroup_v2" "secgroup_1" {
-  name        = "slurm_cloud"
+  name        = "${var.cluster_name}_secgroup"
   description = "Slurm+JupyterHub security group"
 
   rule {
@@ -69,7 +69,7 @@ resource "openstack_compute_secgroup_v2" "secgroup_1" {
 }
 
 resource "openstack_compute_keypair_v2" "keypair" {
-  name       = "slurm_cloud_key"
+  name       = "${var.cluster_name}_key"
   public_key = "${file(var.public_key_path)}"
 }
 
