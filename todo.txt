@@ -2,7 +2,5 @@
     - configure accounting
     - reduce timelimit
     - restrict ssh access to nodes
-    - repair the sed for adding node. The range of unknown is sometime not modified.
-    - Replace UNKNOWN state by FUTURE in NodeName state.
 - Jupyterhub
     - configure spawner form
