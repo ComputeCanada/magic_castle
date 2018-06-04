@@ -110,7 +110,7 @@ write_files:
         SelectTypeParameters=CR_Core_Memory
 
         # NODE CONFIGURATIONS
-        NodeName=node[1-100] State=UNKNOWN
+        NodeName=node[1-100] State=FUTURE
 
         # PARTITION CONFIGURATIONS
         PartitionName=cpubase_bycore_b1 Nodes=ALL Default=YES
