@@ -38,9 +38,9 @@ write_files:
         sed -i "/^NodeName=$(hostname -s)/ d" /etc/slurm/slurm.conf
         sed -i "/# NODE CONFIGURATIONS/a $(slurmd -C | head -n 1)" /etc/slurm/slurm.conf
         # Remove node from unknown state node range
-        HOST_UNK_LIST=$(comm -3 <(scontrol show hostname node[1-100] | sort) <(grep -P -o 'NodeName=\K(node[0-9]{1,})' /etc/slurm/slurm.conf | sort) | paste -d, -s)
+        HOST_UNK_LIST=$(comm --nocheck-order -3 <(scontrol show hostnames node[1-100]) <(grep -P -o 'NodeName=\K(node[0-9]{1,})' /etc/slurm/slurm.conf | sort -V) | paste -d, -s)
         HOST_UNK_RANGE=$(scontrol show hostlistsorted $HOST_UNK_LIST)
-        sed -i -r "s/(NodeName=)(node\[[0-9-]*\])/\1$HOST_UNK_RANGE/g" /etc/slurm/slurm.conf
+        sed -i -r "s/^(NodeName=)(node[][0-9,-]*) (State=FUTURE)$/\1$HOST_UNK_RANGE \3/g" /etc/slurm/slurm.conf
         # Force slurmctld reconfiguration
         scontrol reconfigure
     path: /root/update_slurm.sh
