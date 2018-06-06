@@ -3,7 +3,6 @@
         - https://slurm.schedmd.com/elastic_computing.html
         - Example for GCP : https://github.com/SchedMD/slurm/tree/master/contribs/gcp/scripts
     2. configure accounting
-    - reduce timelimit
-    - restrict ssh access to nodes
+    3. configure email
 - Jupyterhub
     - configure spawner form
