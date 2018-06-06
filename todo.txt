@@ -1,5 +1,7 @@
-- slurm.conf
-    - configure accounting
+- slurm
+    1. configure elastic cloud for OpenStack
+        - https://slurm.schedmd.com/elastic_computing.html
+    2. configure accounting
     - reduce timelimit
     - restrict ssh access to nodes
 - Jupyterhub
