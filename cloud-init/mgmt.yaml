@@ -2,6 +2,7 @@ packages:
   - squid
   - mariadb-server
   - ipa-server-dns
+  - jq
 
 runcmd:
   # rsyslog
