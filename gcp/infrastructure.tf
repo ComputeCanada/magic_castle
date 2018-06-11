@@ -39,6 +39,7 @@ resource "google_compute_instance" "mgmt01" {
                 sudo yum -y install cloud-init
                 sudo reboot
               fi
+              rm -f /etc/dhcp/dhclient.d/google_hostname.sh
               EOF
 }
 
@@ -75,6 +76,7 @@ resource "google_compute_instance" "login01" {
                 sudo yum -y install cloud-init
                 sudo reboot
               fi
+              rm -f /etc/dhcp/dhclient.d/google_hostname.sh
               EOF
 }
 
@@ -120,6 +122,7 @@ resource "google_compute_instance" "node" {
                 sudo yum -y install cloud-init
                 sudo reboot
               fi
+              rm -f /etc/dhcp/dhclient.d/google_hostname.sh
               EOF
 }
 
