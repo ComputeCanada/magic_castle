@@ -9,6 +9,8 @@ packages:
   - git
   - nginx
   - certbot-nginx
+  - gcc
+  - python36-devel
 
 runcmd:
   # rsyslog
@@ -85,7 +87,8 @@ write_files:
         #SBATCH --cpus-per-task=2
         #SBATCH --export={keepvars}
         unset XDG_RUNTIME_DIR
-        module purge -f
+        module restore
+        module load python/3.6
         # Environment setup begin
         VENV="/dev/shm/$USER/jupyter"
         rm -rf $VENV
@@ -108,8 +111,6 @@ write_files:
         # Environment setup end
 
         # Launch jupyterhub single server
-        module restore
-        module load python/3.6
         source $VENV/bin/activate
         {cmd}
 
