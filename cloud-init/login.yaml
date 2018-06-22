@@ -9,8 +9,6 @@ packages:
   - git
   - nginx
   - certbot-nginx
-  - gcc
-  - python36-devel
 
 runcmd:
   # rsyslog
