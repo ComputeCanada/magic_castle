@@ -1,9 +1,5 @@
 packages:
   - ipa-client
-  - libsss_autofs
-  - cvmfs
-  - cvmfs-config-default
-  - cvmfs-auto-setup
   - nfs-utils
   - python36
   - git
@@ -23,9 +19,9 @@ runcmd:
   - echo "mgmt01:/etc/slurm /etc/slurm nfs rw,noatime,nolock,hard,tcp 0 0" >> /etc/fstab
   - mount -a
   # CVMFS
-  - rpm --import https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/RPM-GPG-KEY-CC-CVMFS-1
-  - rpm -U https://git.computecanada.ca/cc-cvmfs-public/cvmfs-config/raw/master/Packages/cvmfs-config-computecanada-latest.noarch.rpm
-  - systemctl restart autofs
+  - yum install -y https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest.noarch.rpm
+  - yum install -y https://package.computecanada.ca/yum/cc-cvmfs-public/Packages/cvmfs-config-computecanada-latest.noarch.rpm
+  - yum install -y cvmfs cvmfs-config-computecanada cvmfs-config-default cvmfs-auto-setup
   # JupyterHub
   - checkmodule -M -m -o /root/login.mod /root/login.te
   - semodule_package -o /root/login.pp -m /root/login.mod
@@ -163,7 +159,7 @@ write_files:
                            -w ${admin_passwd}
   - path: /etc/cvmfs/default.local
     content: |
-        CVMFS_REPOSITORIES="cvmfs-config.computecanada.ca"
+        CVMFS_REPOSITORIES="cvmfs-config.computecanada.ca,soft.computecanada.ca"
         CVMFS_QUOTA_LIMIT=4450
         CVMFS_HTTP_PROXY="http://mgmt01:3128"
   - path: /root/login.te

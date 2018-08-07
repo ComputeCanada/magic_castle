@@ -47,13 +47,6 @@ yum_repos:
         gpgcheck: false
         gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL
         name: Extra Packages for Enterprise Linux
-    cvmfs:
-        name: CernVM packages
-        baseurl: http://cvmrepo.web.cern.ch/cvmrepo/yum/cvmfs/EL/$releasever/$basearch/
-        gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM
-        gpgcheck: false
-        enabled: true
-        protect: true
     elrepo:
         name: ELRepo.org Community Enterprise Linux Repository - el7
         baseurl: http://muug.ca/mirror/elrepo/elrepo/el7/$basearch/
