@@ -20,7 +20,7 @@ runcmd:
   - mount -a
   # CVMFS
   - yum install -y https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest.noarch.rpm
-  - yum install -y https://package.computecanada.ca/yum/cc-cvmfs-public/Packages/cvmfs-config-computecanada-latest.noarch.rpm
+  - yum install -y https://package.computecanada.ca/yum/cc-cvmfs-public/Packages/computecanada-release-1.0-1.noarch.rpm
   - yum install -y cvmfs cvmfs-config-computecanada cvmfs-config-default cvmfs-auto-setup
   # JupyterHub
   - checkmodule -M -m -o /root/login.mod /root/login.te
