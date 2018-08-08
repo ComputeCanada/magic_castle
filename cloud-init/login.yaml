@@ -40,16 +40,40 @@ write_files:
         python36 -m venv /opt/jupyterhub
         source /opt/jupyterhub/bin/activate
         pip install jupyterhub
-        pip install git+https://github.com/cmd-ntrf/batchspawner@remote_port_api
+        pip install git+https://github.com/cmd-ntrf/batchspawner@remote_port
         pip install notebook
+        
         # Node.js and NPM
         curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
         yum -y install nodejs
         npm install -g configurable-http-proxy
+        
         # Ownership
         groupadd -g 2003 jupyterhub
         useradd -m -c "Jupyterhub" -d /opt/jupyterhub -u 2003 -g jupyterhub  -s /bin/bash jupyterhub
         chown -R jupyterhub:jupyterhub /opt/jupyterhub
+        
+        # Build notebook virtualenv
+        VENV="/dev/shm/jupyter"
+        mkdir -p $VENV
+        PYTHON="/cvmfs/soft.computecanada.ca/easybuild/software/2017/Core/python/3.7.0/bin/python3"
+        $PYTHON -m virtualenv $VENV
+        source $VENV/bin/activate
+        pip install --no-cache-dir jupyterhub notebook jupyterlmod nbserverproxy
+        pip install --no-cache-dir https://github.com/cmd-ntrf/batchspawner/archive/remote_port.zip
+        pip install --no-cache-dir https://github.com/jupyterhub/nbrsessionproxy/archive/master.zip
+
+        jupyter nbextension install --py jupyterlmod --sys-prefix
+        jupyter nbextension enable --py jupyterlmod --sys-prefix
+        jupyter serverextension enable --py jupyterlmod --sys-prefix
+        jupyter serverextension enable --py nbserverproxy --sys-prefix
+        jupyter nbextension install --py nbrsessionproxy --sys-prefix
+        jupyter nbextension enable --py nbrsessionproxy --sys-prefix
+        jupyter serverextension enable --py nbrsessionproxy --sys-prefix
+
+        $PYTHON -m virtualenv --relocatable $VENV
+        sed 's;VIRTUAL_ENV=.*;VIRTUAL_ENV="$(readlink -f $(cd "$( dirname "${BASH_SOURCE[0]}" )" \&\& pwd )/..)";g' $VENV/bin/activate
+        tar czf /project/jupyter_singleuser.tar.gz $VENV
 
     permissions: 0700
   - path: /opt/jupyterhub/etc/jupyterhub_config.py
@@ -81,27 +105,12 @@ write_files:
         #SBATCH --cpus-per-task=2
         #SBATCH --export={keepvars}
         unset XDG_RUNTIME_DIR
-        module restore
-        module load python/3.6
+
         # Environment setup begin
         VENV="/dev/shm/$USER/jupyter"
         rm -rf $VENV
-        mkdir -p $VENV
-        python3.6 -m venv $VENV
-        source $VENV/bin/activate
-        pip install --no-cache-dir jupyterhub notebook
-        pip install --no-cache-dir git+https://github.com/cmd-ntrf/batchspawner@remote_port_api 
-        pip install --no-cache-dir jupyterlmod
-        jupyter nbextension install --py jupyterlmod --sys-prefix
-        jupyter nbextension enable --py jupyterlmod --sys-prefix
-        jupyter serverextension enable --py jupyterlmod --sys-prefix
-        pip install --no-cache-dir nbserverproxy
-        pip install --no-cache-dir git+https://github.com/jupyterhub/nbrsessionproxy
-        jupyter serverextension enable --py nbserverproxy --sys-prefix
-        jupyter nbextension install --py nbrsessionproxy --sys-prefix
-        jupyter nbextension enable --py nbrsessionproxy --sys-prefix
-        jupyter serverextension enable --py nbrsessionproxy --sys-prefix
-        deactivate
+        cd /dev/shm/$USER
+        tar xf /project/jupyter_singleuser.tar.gz
         # Environment setup end
 
         # Launch jupyterhub single server
