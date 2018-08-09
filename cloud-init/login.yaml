@@ -39,7 +39,7 @@ write_files:
     content: |
         python36 -m venv /opt/jupyterhub
         source /opt/jupyterhub/bin/activate
-        pip install jupyterhub
+        pip install jupyterhub==0.9.0
         pip install git+https://github.com/cmd-ntrf/batchspawner@remote_port
         pip install notebook
         
@@ -59,7 +59,7 @@ write_files:
         PYTHON="/cvmfs/soft.computecanada.ca/easybuild/software/2017/Core/python/3.7.0/bin/python3"
         $PYTHON -m virtualenv $VENV
         source $VENV/bin/activate
-        pip install --no-cache-dir jupyterhub notebook jupyterlmod nbserverproxy
+        pip install --no-cache-dir jupyterhub==0.9.0 notebook jupyterlmod nbserverproxy
         pip install --no-cache-dir https://github.com/cmd-ntrf/batchspawner/archive/remote_port.zip
         pip install --no-cache-dir https://github.com/jupyterhub/nbrsessionproxy/archive/master.zip
 
