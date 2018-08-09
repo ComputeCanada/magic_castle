@@ -107,9 +107,9 @@ write_files:
         unset XDG_RUNTIME_DIR
 
         # Environment setup begin
-        VENV="/dev/shm/$USER/jupyter"
+        VENV="/dev/shm/jupyter"
         rm -rf $VENV
-        cd /dev/shm/$USER
+        cd /dev/shm
         tar xf /project/jupyter_singleuser.tar.gz
         # Environment setup end
 
