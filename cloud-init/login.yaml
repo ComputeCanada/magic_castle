@@ -72,8 +72,8 @@ write_files:
         jupyter serverextension enable --py nbrsessionproxy --sys-prefix
 
         $PYTHON -m virtualenv --relocatable $VENV
-        sed 's;VIRTUAL_ENV=.*;VIRTUAL_ENV="$(readlink -f $(cd "$( dirname "${BASH_SOURCE[0]}" )" \&\& pwd )/..)";g' $VENV/bin/activate
-        tar czf /project/jupyter_singleuser.tar.gz $VENV
+        sed -i 's;VIRTUAL_ENV=.*;VIRTUAL_ENV="$(readlink -f $(cd "$( dirname "$\{BASH_SOURCE[0]\}" )" \&\& pwd )/..)";g' $VENV/bin/activate
+        tar czf /project/jupyter_singleuser.tar.gz --directory=$VENV/.. jupyter
 
     permissions: 0700
   - path: /opt/jupyterhub/etc/jupyterhub_config.py
