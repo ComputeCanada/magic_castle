@@ -39,8 +39,8 @@ write_files:
     content: |
         python36 -m venv /opt/jupyterhub
         source /opt/jupyterhub/bin/activate
-        pip install jupyterhub==0.9.0
-        pip install git+https://github.com/cmd-ntrf/batchspawner@remote_port
+        pip install jupyterhub
+        pip install git+https://github.com/cmd-ntrf/batchspawner@remote_port_api
         pip install notebook
         
         # Node.js and NPM
@@ -61,7 +61,7 @@ write_files:
         $PYTHON -m virtualenv $VENV
         source $VENV/bin/activate
         pip install --no-cache-dir jupyterhub notebook jupyterlmod nbserverproxy
-        pip install --no-cache-dir https://github.com/cmd-ntrf/batchspawner/archive/remote_port.zip
+        pip install --no-cache-dir https://github.com/cmd-ntrf/batchspawner/archive/remote_port_api.zip
         pip install --no-cache-dir https://github.com/jupyterhub/nbrsessionproxy/archive/master.zip
 
         jupyter nbextension install --py jupyterlmod --sys-prefix
