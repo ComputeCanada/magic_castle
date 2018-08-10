@@ -55,11 +55,12 @@ write_files:
         
         # Build notebook virtualenv
         VENV="/dev/shm/jupyter"
+        rm -rf $VENV
         mkdir -p $VENV
         PYTHON="/cvmfs/soft.computecanada.ca/easybuild/software/2017/Core/python/3.7.0/bin/python3"
         $PYTHON -m virtualenv $VENV
         source $VENV/bin/activate
-        pip install --no-cache-dir jupyterhub==0.9.0 notebook jupyterlmod nbserverproxy
+        pip install --no-cache-dir jupyterhub notebook jupyterlmod nbserverproxy
         pip install --no-cache-dir https://github.com/cmd-ntrf/batchspawner/archive/remote_port.zip
         pip install --no-cache-dir https://github.com/jupyterhub/nbrsessionproxy/archive/master.zip
 
@@ -71,9 +72,12 @@ write_files:
         jupyter nbextension enable --py nbrsessionproxy --sys-prefix
         jupyter serverextension enable --py nbrsessionproxy --sys-prefix
 
+        deactivate
+
         $PYTHON -m virtualenv --relocatable $VENV
-        sed -i 's;VIRTUAL_ENV=.*;VIRTUAL_ENV="$(readlink -f $(cd "$( dirname "$\{BASH_SOURCE[0]\}" )" \&\& pwd )/..)";g' $VENV/bin/activate
+        sed -i 's;VIRTUAL_ENV=.*;VIRTUAL_ENV=$(readlink -f $(dirname $BASH_SOURCE)/..);g' $VENV/bin/activate
         tar czf /project/jupyter_singleuser.tar.gz --directory=$VENV/.. jupyter
+        rm -rf $VENV
 
     permissions: 0700
   - path: /opt/jupyterhub/etc/jupyterhub_config.py
@@ -105,18 +109,16 @@ write_files:
         #SBATCH --cpus-per-task=2
         #SBATCH --export={keepvars}
         unset XDG_RUNTIME_DIR
+        module restore
 
-        # Environment setup begin
+        # Environment setup
         VENV="/dev/shm/jupyter"
         rm -rf $VENV
-        cd /dev/shm
-        tar xf /project/jupyter_singleuser.tar.gz
-        # Environment setup end
+        tar xf /project/jupyter_singleuser.tar.gz -C /dev/shm
 
         # Launch jupyterhub single server
         source $VENV/bin/activate
         {cmd}
-
 
     permissions: 0600
   - content: |
