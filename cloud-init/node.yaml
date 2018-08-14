@@ -1,7 +1,6 @@
 packages:
   - ipa-client
   - nfs-utils
-  - python36
   - kmod-nvidia-390.48
 
 runcmd:
