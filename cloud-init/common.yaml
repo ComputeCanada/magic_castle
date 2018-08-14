@@ -1,6 +1,5 @@
 #cloud-config
 packages:
-  - wget
   - vim
   - unzip
   - rsyslog
@@ -25,7 +24,7 @@ runcmd:
   - systemctl enable munge
   - systemctl start  munge
   - yum install -y slurm
-  - wget https://gist.github.com/cmd-ntrf/a9305513809e7c9a104f79f0f15ec067/raw/da71a07f455206e21054f019d26a277daeaa0f00/cc-tmpfs_mounts.so -O /usr/lib64/slurm/cc-tmpfs_mounts.so
+  - curl https://gist.github.com/cmd-ntrf/a9305513809e7c9a104f79f0f15ec067/raw/da71a07f455206e21054f019d26a277daeaa0f00/cc-tmpfs_mounts.so --output /usr/lib64/slurm/cc-tmpfs_mounts.so --silent
   # Free IPA
   - bash /root/freeipa.sh
 
