@@ -93,9 +93,6 @@ write_files:
         c.JupyterHub.spawner_class = MySpawner
         c.JupyterHub.hub_ip = '0.0.0.0'
         c.JupyterHub.ip = '127.0.0.1'
-        c.Spawner.http_timeout = 600
-        c.Spawner.start_timeout = 600
-        c.Spawner.poll_interval = 600
 
     permissions: 0600
   - path: /opt/jupyterhub/etc/submit.sh
