@@ -38,10 +38,8 @@ write_files:
     content: |
         python36 -m venv /opt/jupyterhub
         source /opt/jupyterhub/bin/activate
-        pip install jupyterhub
+        pip install --no-cache-dir jupyterhub notebook
         pip install --no-cache-dir https://github.com/cmd-ntrf/batchspawner/archive/remote_port.zip
-        pip install notebook
-        
         # Node.js and NPM
         curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
         yum -y install nodejs
