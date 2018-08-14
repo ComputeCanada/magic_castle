@@ -13,6 +13,7 @@ data "template_file" "common" {
 
   vars {
     cluster_name = "${var.cluster_name}"
+    munge_key    = "${base64sha512(random_string.admin_passwd.result)}"
   }
 }
 
