@@ -1,7 +1,6 @@
 #cloud-config
 packages:
   - vim
-  - unzip
   - rsyslog
 
 package_reboot_if_required: true
