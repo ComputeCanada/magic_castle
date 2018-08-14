@@ -7,7 +7,7 @@ runcmd:
   # Exclude Nvidia drivers from update
   - echo "exclude=kmod-nvidia* nvidia-x11-drv" >> /etc/yum.conf
   # rsyslog
-  - sudo sed -i 's/^#\*.\* @@remote-host:514/\*.\* @@mgmt01:514/g' /etc/rsyslog.conf
+  - sed -i 's/^#\*.\* @@remote-host:514/\*.\* @@mgmt01:514/g' /etc/rsyslog.conf
   - systemctl restart rsyslog
   # NFS
   - setsebool -P use_nfs_home_dirs 1
