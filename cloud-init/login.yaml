@@ -2,7 +2,6 @@ packages:
   - ipa-client
   - nfs-utils
   - python36
-  - git
   - nginx
   - certbot-nginx
 
