@@ -73,6 +73,7 @@ write_files:
 
         deactivate
 
+        # Create deployable environment tarball
         $PYTHON -m virtualenv --relocatable $VENV
         sed -i 's;VIRTUAL_ENV=.*;VIRTUAL_ENV=$(readlink -f $(dirname $BASH_SOURCE)/..);g' $VENV/bin/activate
         tar czf /project/jupyter_singleuser.tar.gz --directory=$VENV/.. jupyter
