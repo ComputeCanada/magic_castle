@@ -39,7 +39,7 @@ write_files:
     content: |
         python36 -m venv /opt/jupyterhub
         source /opt/jupyterhub/bin/activate
-        pip install jupyterhub==0.9.0
+        pip install jupyterhub
         pip install git+https://github.com/cmd-ntrf/batchspawner@remote_port
         pip install notebook
         
