@@ -1,0 +1,5 @@
+#!/bin/bash
+rm -rf "/localscratch/$SLURM_JOB_USER.$SLURM_JOBID.0"
+rm -rf "/dev/shm/$SLURM_JOB_USER.$SLURM_JOBID.0"
+rm -rf "/tmp/$SLURM_JOB_USER.$SLURM_JOBID.0"
+exit 0
