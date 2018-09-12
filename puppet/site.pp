@@ -112,11 +112,12 @@ node /^mgmt\d+$/ {
   class { '::nfs':
     server_enabled => true,
     nfs_v4 => true,
-    nfs_v4_export_root  => "/",
-    nfs_v4_export_root_clients => "$cidr(rw,sync,no_root_squash,no_all_squash)"
+    nfs_v4_export_root  => "/export",
+    nfs_v4_export_root_clients => "$cidr(ro,fsid=root,insecure,no_subtree_check,async,root_squash)"
   }
   nfs::server::export{ ['/etc/slurm', '/home', '/project', '/scratch'] :
     ensure  => 'mounted',
+    nfs_v4_export_root_clients => "$cidr(rw,sync,no_root_squash,no_all_squash)"
   }
 
 }
