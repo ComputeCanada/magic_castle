@@ -12,6 +12,7 @@ class slurm::base (String $munge_key) {
     home    => '/var/lib/slurm',
     comment =>  'Slurm workload manager',
     shell   => '/bin/bash'
+    before  => Package['slurm']
   }
 
   group { 'munge':
@@ -25,7 +26,8 @@ class slurm::base (String $munge_key) {
     uid     => '2002',
     home    => '/var/lib/munge',
     comment =>  'MUNGE Uid N Gid Emporium',
-    shell   => '/sbin/nologin'
+    shell   => '/sbin/nologin',
+    before  => Package['munge']
   }
 
   package { ['munge', 'munge-libs'] :
@@ -85,12 +87,14 @@ class slurm::base (String $munge_key) {
     owner  => 'munge',
     group  => 'munge',
     mode   => '0400',
-    content => $munge_key
+    content => $munge_key,
+    before  => Service['munge']
   }
 
   service { 'munge':
     ensure => 'running',
-    enable => 'true'
+    enable => 'true',
+    subscribe => File['/etc/munge/munge.key']
   }
 
   yumrepo { 'darrenboss-slurm':
