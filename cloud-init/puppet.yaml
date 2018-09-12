@@ -1,0 +1,8 @@
+#cloud-config
+packages:
+  - git
+
+runcmd:
+  - rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
+  - yum -y install puppet-agent
+  - /opt/puppetlabs/puppet/bin/gem install r10k
