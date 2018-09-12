@@ -117,7 +117,7 @@ node /^mgmt\d+$/ {
   }
   nfs::server::export{ ['/etc/slurm', '/home', '/project', '/scratch'] :
     ensure  => 'mounted',
-    nfs_v4_export_root_clients => "$cidr(rw,sync,no_root_squash,no_all_squash)"
+    clients => "$cidr(rw,sync,no_root_squash,no_all_squash)"
   }
 
 }

@@ -11,7 +11,7 @@ class slurm::base (String $munge_key) {
     uid     => '2001',
     home    => '/var/lib/slurm',
     comment =>  'Slurm workload manager',
-    shell   => '/bin/bash'
+    shell   => '/bin/bash',
     before  => Package['slurm']
   }
 
