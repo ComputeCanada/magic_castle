@@ -5,3 +5,4 @@ os_venv/*
 *-openrc.sh
 venv
 */venv
+*.tar.*
