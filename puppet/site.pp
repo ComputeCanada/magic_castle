@@ -47,6 +47,8 @@ node default {
 
 node /^mgmt\d+$/ {
   include common
+  $masklen = netmask_to_masklen("$netmask")
+  $cidr    = "$network/$masklen"
 
   package { "ipa-server-dns":
     ensure => "installed"
@@ -105,6 +107,29 @@ node /^mgmt\d+$/ {
     ensure => 'present',
     source => "https://images-assets.nasa.gov/image/VAFB-20180302-PH_ANV01_0056/VAFB-20180302-PH_ANV01_0056~orig.jpg"
   }
+
+  # NFS
+  class { '::nfs':
+    server_enabled => true,
+    nfs_v4 => true
+  }
+  nfs::server::export{ '/etc/slurm':
+    ensure  => 'mounted',
+    clients => "$cidr(rw,sync,no_root_squash,no_all_squash)"
+  }
+  nfs::server::export{ '/home':
+    ensure  => 'mounted',
+    clients => "$cidr(rw,sync,no_root_squash,no_all_squash)"
+  }
+  nfs::server::export{ '/project':
+    ensure  => 'mounted',
+    clients => "$cidr(rw,sync,no_root_squash,no_all_squash)"
+  }
+  nfs::server::export{ '/scratch':
+    ensure  => 'mounted',
+    clients => "$cidr(rw,sync,no_root_squash,no_all_squash)"
+  }
+
 
 }
 
