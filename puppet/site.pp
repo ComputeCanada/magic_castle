@@ -92,7 +92,7 @@ node /^mgmt\d+$/ {
   file { '/scratch' :
     ensure => directory,
   }
-  file { '/project/6002799/photos' :
+  file { ['/project', '/project/6002799', '/project/6002799/photos'] :
     ensure => directory
   }
 
