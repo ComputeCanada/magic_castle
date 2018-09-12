@@ -11,7 +11,7 @@ http_access deny !Safe_ports
 http_access deny CONNECT !SSL_ports
 
 # user-defined ACLs
-acl compute_network src ${cidr}
+acl compute_network src <%= $cidr %>
 acl compute_dstdom_regex dstdom_regex ^(cvmfs-.*\.computecanada\.ca)$
 
 # user-defined http_accesses

@@ -87,7 +87,7 @@ node /^mgmt\d+$/ {
 
   file { '/etc/squid/squid.conf':
     ensure  => 'present',
-    content => file('squid/squid.conf')
+    content => epp('squid/squid.conf', {'cidr' => $cidr})
   }
 
   # Shared folders
