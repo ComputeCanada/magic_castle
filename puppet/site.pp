@@ -1,4 +1,4 @@
-node default {
+class common {
   include stdlib
 
   package { 'vim':
@@ -18,7 +18,7 @@ node default {
   }
 
   yumrepo { 'epel':
-    baseurl        => "http://dl.fedoraproject.org/pub/epel/\$releasever/\$basearch",
+    baseurl        => 'http://dl.fedoraproject.org/pub/epel/$releasever/$basearch',
     enabled        => "true",
     failovermethod => "priority",
     gpgcheck       => "false",
@@ -28,7 +28,7 @@ node default {
 
   yumrepo { 'elrepo':
     descr    => "ELRepo.org Community Enterprise Linux Repository - el7",
-    baseurl  => "http://muug.ca/mirror/elrepo/elrepo/el7/\$basearch/",
+    baseurl  => 'http://muug.ca/mirror/elrepo/elrepo/el7/$basearch/',
     enabled  => "true",
     gpgcheck => "false",
     gpgkey   => "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-elrepo.org",
@@ -38,10 +38,15 @@ node default {
   class { 'slurm::base':
     munge_key => "abcdefghijklmnopqrstuvwxyz012345"
   }
+}
+
+node default {
+  include common
 
 }
 
 node /^mgmt\d+$/ {
+  include common
 
   package { "ipa-server-dns":
     ensure => "installed"
