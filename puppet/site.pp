@@ -1,6 +1,6 @@
 node default {
-  include slurm
-  
+  include stdlib
+
   package { 'vim':
     ensure => 'installed'
   }
@@ -36,12 +36,65 @@ node default {
   }
 
   class { 'slurm::base':
-    munge_key => "abcdefghijklmnopqrstuvwxyz"
+    munge_key => "abcdefghijklmnopqrstuvwxyz012345"
   }
 
 }
 
 node /^mgmt\d+$/ {
+
+  package { "ipa-server-dns":
+    ensure => "installed"
+  }
+
+  # rsyslog
+  file_line {
+    ensure => present,
+    path   => "/etc/rsyslog.conf",
+    match  => "^#$ModLoad imtcp",
+    line   => "$ModLoad imtcp",
+    notify => Service['rsyslog']
+  }
+  file_line {
+    ensure => present,
+    path   => "/etc/rsyslog.conf",
+    match  => "^#$InputTCPServerRun 514",
+    line   => "$InputTCPServerRun 514",
+    notify => Service['rsyslog']
+  }
+
+  # Squid
+  package { "squid":
+    ensure => "installed"
+  }
+
+  service { 'squid':
+    ensure => 'running',
+    enable => 'true'
+  }
+
+  file { '/etc/squid/squid.conf':
+    ensure  => 'present',
+    content => file('squid/squid.conf')
+  }
+
+  # Shared folders
+  file { '/scratch' :
+    ensure => directory,
+  }
+  file { '/project/6002799/photos' :
+    ensure => directory
+  }
+
+  file { '/project/6002799/photos/KSC2018.jpg':
+    ensure => 'present',
+    source => "https://images-assets.nasa.gov/image/KSC-20180316-PH_JBS01_0118/KSC-20180316-PH_JBS01_0118~orig.JPG"
+  }
+
+  file { "/project/6002799/photos/VAFB2018.jpg":
+    ensure => 'present',
+    source => "https://images-assets.nasa.gov/image/VAFB-20180302-PH_ANV01_0056/VAFB-20180302-PH_ANV01_0056~orig.jpg"
+  }
 
 }
 
