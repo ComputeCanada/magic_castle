@@ -53,18 +53,23 @@ node /^mgmt\d+$/ {
   }
 
   # rsyslog
-  file_line {
+  service { 'rsyslog':
+    ensure => running,
+    enable => true
+  }
+
+  file_line { 'rsyslog_modload_imtcp':
     ensure => present,
     path   => "/etc/rsyslog.conf",
-    match  => "^#$ModLoad imtcp",
-    line   => "$ModLoad imtcp",
+    match  => '^#$ModLoad imtcp',
+    line   => '$ModLoad imtcp',
     notify => Service['rsyslog']
   }
-  file_line {
+  file_line { 'rsyslog_InputTCPServerRun':
     ensure => present,
     path   => "/etc/rsyslog.conf",
-    match  => "^#$InputTCPServerRun 514",
-    line   => "$InputTCPServerRun 514",
+    match  => '^#$InputTCPServerRun 514',
+    line   => '$InputTCPServerRun 514',
     notify => Service['rsyslog']
   }
 
