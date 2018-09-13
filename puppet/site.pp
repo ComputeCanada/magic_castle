@@ -156,6 +156,16 @@ node /^mgmt\d+$/ {
     clients => "$cidr(rw,sync,no_root_squash,no_all_squash)"
   }
 
+  # Slurm Controller
+  package { ['slurm-slurmctld']:
+    ensure => 'installed',
+  }
+  service { 'slurmctld':
+    ensure  => 'running',
+    enable  => true,
+    require => Package['slurm-slurmctld']
+  }
+
 }
 
 node /^login\d+$/ {
