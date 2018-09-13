@@ -1,6 +1,16 @@
 class common {
   include stdlib
 
+  class { '::swap_file':
+    'files' => {
+      'resource_name' => {
+        ensure   => present,
+        swapfile => '/mnt/swap',
+        swapfilesize => '1 GB',
+      },
+    },
+  }
+
   package { 'vim':
     ensure => 'installed'
   }
