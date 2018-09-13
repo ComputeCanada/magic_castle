@@ -84,7 +84,6 @@ node /^mgmt\d+$/ {
                 --no-dnssec-validation \
                 --real=$realm",
     creates => '/etc/ipa/default.conf',
-    require => Package['ipa-server-dns'],
     timeout => 0,
     require => Class['::swap_file']
   }
