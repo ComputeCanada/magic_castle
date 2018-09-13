@@ -167,6 +167,79 @@ node /^mgmt\d+$/ {
 }
 
 node /^login\d+$/ {
+  include common
+
+  # rsyslog
+  file_line { 'remote_host':
+    ensure => present,
+    path   => "/etc/rsyslog.conf",
+    match  => '^#\*.\* @@remote-host:514',
+    line   => '*.* @@mgmt01:514',
+    notify => Service['rsyslog']
+  }
+
+  # FreeIPA
+  $admin_passwd = "abcdefghijk0123456"
+  $domain = "phoenix.calculquebec.cloud"
+  $mgmt01_ip = "10.0.0.9"
+
+  package { 'ipa-client':
+    ensure => 'installed'
+  }
+  file_line { 'resolv_nameserver':
+    ensure => present,
+    path   => "/etc/resolv.conf",
+    match  => "nameserver",
+    line   => "nameserver $mgmt01_ip"
+  }
+  file_line { 'resolv_search':
+    ensure => present,
+    path   => "/etc/resolv.conf",
+    match  => "search",
+    line   => "search $domain"
+  }
+
+  exec { 'set_hostname':
+    command => "/bin/hostnamectl set-hostname $hostname.$domain",
+    unless  => "/usr/bin/test `hostname` = $hostname.$domain"
+  }
+
+  # TODO: add chattr +i /etc/resolv.conf
+  exec { 'ipa-client-install':
+    command => "/sbin/ipa-client-install \
+                --mkhomedir \
+                --ssh-trust-dns \
+                --enable-dns-updates \
+                --unattended \
+                -p admin \
+                -w $admin_passwd",
+    tries => 10,
+    try_sleep => 30,
+    require => [File_line['resolv_nameserver'],
+                File_line['resolv_search'],
+                Exec['set_hostname']],
+    creates => '/etc/ipa/default.conf'
+  }
+
+  # NFS
+  $server = 'mgmt01'
+  class { '::nfs':
+    client_enabled => true,
+    nfs_v4_client  => true,
+  }
+  nfs::client::mount { '/project':
+      server => 'mgmt01',
+      share => 'project'
+  }
+  nfs::client::mount { '/scratch':
+      server => 'mgmt01',
+      share => 'scratch'
+  }
+  # TODO : fix problem with this mount
+  nfs::client::mount { '/etc/slurm':
+      server => 'mgmt01',
+      share => 'etc/slurm'
+  }
 
 }
 
