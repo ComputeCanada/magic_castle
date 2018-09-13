@@ -2,8 +2,8 @@ class common {
   include stdlib
 
   class { '::swap_file':
-    'files' => {
-      'resource_name' => {
+    files => {
+      '/mnt/swap' => {
         ensure   => present,
         swapfile => '/mnt/swap',
         swapfilesize => '1 GB',
@@ -52,7 +52,6 @@ class common {
 
 node default {
   include common
-
 }
 
 node /^mgmt\d+$/ {
