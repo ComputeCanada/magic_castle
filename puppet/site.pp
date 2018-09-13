@@ -64,6 +64,32 @@ node /^mgmt\d+$/ {
     ensure => "installed"
   }
 
+  # FreeIPA
+  $admin_passwd = "abcdefghijk0123456"
+  $domain = "phoenix.calculquebec.cloud"
+  $realm = upcase($domain)
+  $ip = $facts['networking']['ip']
+  exec { 'ipa-server-install':
+    command => "/sbin/ipa-server-install \
+                --setup-dns \
+                --hostname $hostname.$domain \
+                --ds-password $admin_passwd \
+                --admin-password $admin_passwd \
+                --mkhomedir \
+                --ssh-trust-dns \
+                --unattended \
+                --forwarder=1.1.1.1 \
+                --forwarder=8.8.8.8 \
+                --ip-address=$ip \
+                --no-host-dns \
+                --no-dnssec-validation \
+                --real=$realm",
+    creates => '/etc/ipa/default.conf',
+    require => Package['ipa-server-dns'],
+    timeout => 0,
+    require => Class['::swap_file']
+  }
+
   # rsyslog
   service { 'rsyslog':
     ensure => running,
