@@ -1,6 +1,11 @@
 class common {
   include stdlib
 
+  service { 'rsyslog':
+    ensure => running,
+    enable => true
+  }
+
   class { '::swap_file':
     files => {
       '/mnt/swap' => {
@@ -89,11 +94,6 @@ node /^mgmt\d+$/ {
   }
 
   # rsyslog
-  service { 'rsyslog':
-    ensure => running,
-    enable => true
-  }
-
   file_line { 'rsyslog_modload_imtcp':
     ensure => present,
     path   => "/etc/rsyslog.conf",
