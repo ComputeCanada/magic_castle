@@ -1,6 +1,11 @@
 class common {
   include stdlib
 
+  class { selinux:
+    mode => 'enforcing',
+    type => 'targeted',
+  }
+
   service { 'rsyslog':
     ensure => running,
     enable => true
