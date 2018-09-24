@@ -1,0 +1,3 @@
+CVMFS_REPOSITORIES="cvmfs-config.computecanada.ca,soft.computecanada.ca"
+CVMFS_QUOTA_LIMIT=4450
+CVMFS_HTTP_PROXY="http://mgmt01:3128"

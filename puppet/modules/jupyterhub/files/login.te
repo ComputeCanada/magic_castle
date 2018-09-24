@@ -1,0 +1,9 @@
+module login 1.0;
+
+require {
+    type unconfined_t;
+    type unconfined_service_t;
+    class process transition;
+}
+
+allow unconfined_service_t unconfined_t:process transition;
