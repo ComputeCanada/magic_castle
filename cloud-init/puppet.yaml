@@ -6,3 +6,6 @@ runcmd:
   - rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
   - yum -y install puppet-agent
   - /opt/puppetlabs/puppet/bin/gem install r10k
+  # - Clone puppet repo
+  - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir r10k --puppetfile=puppet/Puppetfile
+  - puppet apply --modulepath=puppet/modules:./r10k puppet/site.pp
