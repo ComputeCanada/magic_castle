@@ -38,7 +38,7 @@ cache_store_log                /var/log/squid/store.log
 cache_log                      /var/log/squid/cache.log
 
 refresh_pattern /cvmfs/soft.computecanada.ca/.cvmfs*          	0  100%	30
-refresh_pattern /cvmfs/soft.computecanada.ca/data/*   	525600  100%	525600 
+refresh_pattern /cvmfs/soft.computecanada.ca/data/*   	525600  100%	525600
 refresh_pattern                .                     0    20%     4320
 
 cache_dir ufs /var/spool/squid 4096 16 256
