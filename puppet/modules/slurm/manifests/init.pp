@@ -76,7 +76,7 @@ class slurm::base (String $munge_key) {
 
   $node_template = @(END)
 <% for i in 1..250 do -%>
-NodeName=node<%= i =%> State=FUTURE
+NodeName=node<%= i %> State=FUTURE
 <% end -%>
 END
 
