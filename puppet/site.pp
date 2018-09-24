@@ -233,6 +233,11 @@ node /^login\d+$/ {
     client_enabled => true,
     nfs_v4_client  => true,
   }
+  selinux::boolean { 'use_nfs_home_dirs': }
+  nfs::client::mount { '/home':
+      server => 'mgmt01',
+      share => 'home'
+  }
   nfs::client::mount { '/project':
       server => 'mgmt01',
       share => 'project'
@@ -241,10 +246,10 @@ node /^login\d+$/ {
       server => 'mgmt01',
       share => 'scratch'
   }
-  # TODO : fix problem with this mount
   nfs::client::mount { '/etc/slurm':
       server => 'mgmt01',
-      share => 'etc/slurm'
+      share => 'slurm'
+  }
   }
 
 }
