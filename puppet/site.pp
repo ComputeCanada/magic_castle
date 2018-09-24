@@ -191,17 +191,18 @@ node /^login\d+$/ {
   package { 'ipa-client':
     ensure => 'installed'
   }
-  file_line { 'resolv_nameserver':
-    ensure => present,
-    path   => "/etc/resolv.conf",
-    match  => "nameserver",
-    line   => "nameserver $mgmt01_ip"
-  }
   file_line { 'resolv_search':
     ensure => present,
     path   => "/etc/resolv.conf",
     match  => "search",
     line   => "search $domain"
+  }
+  file_line { 'resolv_nameserver':
+    ensure  => present,
+    path    => "/etc/resolv.conf",
+    after   => "search $domain",
+    line    => "nameserver $mgmt01_ip",
+    require => File_line['resolv_search']
   }
 
   exec { 'set_hostname':
