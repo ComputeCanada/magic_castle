@@ -309,8 +309,7 @@ node /^node\d+$/ {
   }
 
   exec { 'slurm_config':
-    command => "flock /etc/slurm/node.conf.lock sed -i 's/NodeName=$hostname.*/$(slurmd -C | head -n 1)/g'",
-    unless  => "/usr/bin/test `hostname` = $hostname.$domain"
+    command => "/bin/flock /etc/slurm/node.conf.lock sed -i 's/NodeName=$hostname.*/$(slurmd -C | head -n 1)/g'",
   }
 
 }
