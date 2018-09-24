@@ -71,8 +71,21 @@ class slurm::base (String $munge_key) {
     ensure  => 'present',
     owner   => 'slurm',
     group   => 'slurm',
-    replace => 'false',
     content => file('slurm/slurm.conf')
+  }
+
+  $node_template = @(END)
+<% for i in 1..250 do -%>
+NodeName=node<%= i =%> State=FUTURE
+<% end -%>
+END
+
+  file { '/etc/slurm/node.conf':
+    ensure  => 'present',
+    owner   => 'slurm',
+    group   => 'slurm',
+    replace => 'false',
+    content => inline_template($node_template)
   }
 
   file { '/etc/slurm/plugstack.conf':
