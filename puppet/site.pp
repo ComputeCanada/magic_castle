@@ -60,6 +60,118 @@ class common {
   }
 }
 
+class client {
+  # rsyslog
+  file_line { 'remote_host':
+    ensure => present,
+    path   => "/etc/rsyslog.conf",
+    match  => '^#\*.\* @@remote-host:514',
+    line   => '*.* @@mgmt01:514',
+    notify => Service['rsyslog']
+  }
+
+  # FreeIPA
+  $admin_passwd = "abcdefghijk0123456"
+  $domain = "phoenix.calculquebec.cloud"
+  $mgmt01_ip = "10.0.0.9"
+
+  package { 'ipa-client':
+    ensure => 'installed'
+  }
+  file_line { 'resolv_search':
+    ensure => present,
+    path   => "/etc/resolv.conf",
+    match  => "search",
+    line   => "search $domain"
+  }
+  file_line { 'resolv_nameserver':
+    ensure  => present,
+    path    => "/etc/resolv.conf",
+    after   => "search $domain",
+    line    => "nameserver $mgmt01_ip",
+    require => File_line['resolv_search']
+  }
+
+  exec { 'set_hostname':
+    command => "/bin/hostnamectl set-hostname $hostname.$domain",
+    unless  => "/usr/bin/test `hostname` = $hostname.$domain"
+  }
+
+  # TODO: add chattr +i /etc/resolv.conf
+  exec { 'ipa-client-install':
+    command => "/sbin/ipa-client-install \
+                --mkhomedir \
+                --ssh-trust-dns \
+                --enable-dns-updates \
+                --unattended \
+                -p admin \
+                -w $admin_passwd",
+    tries => 10,
+    try_sleep => 30,
+    require => [File_line['resolv_nameserver'],
+                File_line['resolv_search'],
+                Exec['set_hostname']],
+    creates => '/etc/ipa/default.conf'
+  }
+
+  # NFS
+  $server = 'mgmt01'
+  class { '::nfs':
+    client_enabled => true,
+    nfs_v4_client  => true,
+  }
+  selinux::boolean { 'use_nfs_home_dirs': }
+  nfs::client::mount { '/home':
+      server => 'mgmt01',
+      share => 'home'
+  }
+  nfs::client::mount { '/project':
+      server => 'mgmt01',
+      share => 'project'
+  }
+  nfs::client::mount { '/scratch':
+      server => 'mgmt01',
+      share => 'scratch'
+  }
+  nfs::client::mount { '/etc/slurm':
+      server => 'mgmt01',
+      share => 'slurm'
+  }
+
+  # CVMFS
+  package { 'cvmfs-repo':
+    name     => 'cvmfs-release-2-6.noarch',
+    provider => 'rpm',
+    ensure   => 'installed',
+    source   => 'https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest.noarch.rpm'
+  }
+  package { 'cc-cvmfs-repo':
+    name     => 'computecanada-release-1.0-1.noarch',
+    provider => 'rpm',
+    ensure   => 'installed',
+    source   => 'https://package.computecanada.ca/yum/cc-cvmfs-public/Packages/computecanada-release-1.0-1.noarch.rpm'
+  }
+  package { ['cvmfs', 'cvmfs-config-computecanada', 'cvmfs-config-default', 'cvmfs-auto-setup']:
+    ensure => 'installed',
+    require => [Package['cvmfs-repo'], Package['cc-cvmfs-repo']]
+  }
+  file { '/etc/cvmfs/default.local':
+    ensure  => 'present',
+    content => file('cvmfs/default.local'),
+    require => Package['cvmfs']
+  }
+  file { '/etc/profile.d/z-00-computecanada.sh':
+    ensure  => 'present',
+    content => file('cvmfs/z-00-computecanada.sh'),
+    require => File['/etc/cvmfs/default.local']
+  }
+  service { 'autofs':
+    ensure  => running,
+    enable  => true,
+    require => File['/etc/cvmfs/default.local']
+  }
+}
+
 node default {
   include common
 }
@@ -173,122 +285,32 @@ node /^mgmt\d+$/ {
 
 node /^login\d+$/ {
   include common
-
-  # rsyslog
-  file_line { 'remote_host':
-    ensure => present,
-    path   => "/etc/rsyslog.conf",
-    match  => '^#\*.\* @@remote-host:514',
-    line   => '*.* @@mgmt01:514',
-    notify => Service['rsyslog']
-  }
-
-  # FreeIPA
-  $admin_passwd = "abcdefghijk0123456"
-  $domain = "phoenix.calculquebec.cloud"
-  $mgmt01_ip = "10.0.0.9"
-
-  package { 'ipa-client':
-    ensure => 'installed'
-  }
-  file_line { 'resolv_search':
-    ensure => present,
-    path   => "/etc/resolv.conf",
-    match  => "search",
-    line   => "search $domain"
-  }
-  file_line { 'resolv_nameserver':
-    ensure  => present,
-    path    => "/etc/resolv.conf",
-    after   => "search $domain",
-    line    => "nameserver $mgmt01_ip",
-    require => File_line['resolv_search']
-  }
-
-  exec { 'set_hostname':
-    command => "/bin/hostnamectl set-hostname $hostname.$domain",
-    unless  => "/usr/bin/test `hostname` = $hostname.$domain"
-  }
-
-  # TODO: add chattr +i /etc/resolv.conf
-  exec { 'ipa-client-install':
-    command => "/sbin/ipa-client-install \
-                --mkhomedir \
-                --ssh-trust-dns \
-                --enable-dns-updates \
-                --unattended \
-                -p admin \
-                -w $admin_passwd",
-    tries => 10,
-    try_sleep => 30,
-    require => [File_line['resolv_nameserver'],
-                File_line['resolv_search'],
-                Exec['set_hostname']],
-    creates => '/etc/ipa/default.conf'
-  }
-
-  # NFS
-  $server = 'mgmt01'
-  class { '::nfs':
-    client_enabled => true,
-    nfs_v4_client  => true,
-  }
-  selinux::boolean { 'use_nfs_home_dirs': }
-  nfs::client::mount { '/home':
-      server => 'mgmt01',
-      share => 'home'
-  }
-  nfs::client::mount { '/project':
-      server => 'mgmt01',
-      share => 'project'
-  }
-  nfs::client::mount { '/scratch':
-      server => 'mgmt01',
-      share => 'scratch'
-  }
-  nfs::client::mount { '/etc/slurm':
-      server => 'mgmt01',
-      share => 'slurm'
-  }
-
-  # CVMFS
-  package { 'cvmfs-repo':
-    name     => 'cvmfs-release-2-6.noarch',
-    provider => 'rpm',
-    ensure   => 'installed',
-    source   => 'https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest.noarch.rpm'
-  }
-  package { 'cc-cvmfs-repo':
-    name     => 'computecanada-release-1.0-1.noarch',
-    provider => 'rpm',
-    ensure   => 'installed',
-    source   => 'https://package.computecanada.ca/yum/cc-cvmfs-public/Packages/computecanada-release-1.0-1.noarch.rpm'
-  }
-  package { ['cvmfs', 'cvmfs-config-computecanada', 'cvmfs-config-default', 'cvmfs-auto-setup']:
-    ensure => 'installed',
-    require => [Package['cvmfs-repo'], Package['cc-cvmfs-repo']]
-  }
-  file { '/etc/cvmfs/default.local':
-    ensure  => 'present',
-    content => file('cvmfs/default.local'),
-    require => Package['cvmfs']
-  }
-  file { '/etc/profile.d/z-00-computecanada.sh':
-    ensure  => 'present',
-    content => file('cvmfs/z-00-computecanada.sh'),
-    require => File['/etc/cvmfs/default.local']
-  }
-  service { 'autofs':
-    ensure  => running,
-    enable  => true,
-    require => File['/etc/cvmfs/default.local']
-  }
-
+  include client
   # JupyterHub
   include jupyterhub
 
 }
 
 node /^node\d+$/ {
+  include common
+  include client
+  
+  package { 'kmod-nvidia-390.48':
+    ensure => 'installed'
+  }
+  
+  package { 'slurmd':
+    ensure => 'installed'
+  }
+
+  service { 'slurmd':
+    ensure => 'running',
+    enable => 'true'
+  }
+
+  exec { 'slurm_config':
+    command => "flock /etc/slurm/node.conf.lock sed -i 's/NodeName=$hostname.*/$(slurmd -C | head -n 1)/g'",
+    unless  => "/usr/bin/test `hostname` = $hostname.$domain"
+  }
 
 }
