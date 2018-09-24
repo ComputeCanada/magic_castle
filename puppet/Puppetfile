@@ -1,6 +1,8 @@
 mod 'puppetlabs-firewall', '1.12.0'
 mod 'puppetlabs-stdlib', '4.25.1'
 mod 'puppetlabs-concat', '4.2.1'
+mod 'puppet-selinux', '1.6.0'
+mod 'puppet-nodejs', '6.0.0'
 mod 'derdanne-nfs', '2.0.9'
 mod 'yelp-netstdlib', '0.0.1'
 mod 'petems-swap_file', '4.0.0'
