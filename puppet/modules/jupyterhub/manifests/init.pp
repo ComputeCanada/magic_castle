@@ -1,4 +1,4 @@
-class jupyterhub {
+class jupyterhub (String $domain_name = "") {
   selinux::module { 'login':
     ensure    => 'present',
     source_te => 'puppet:///modules/jupyterhub/login.te',
@@ -111,20 +111,38 @@ class jupyterhub {
 
   file { 'jupyterhub.conf':
     path    => '/etc/nginx/conf.d/jupyterhub.conf',
-    content => epp('jupyterhub/jupyterhub.conf', {'domain' => $domain}),
+    content => epp('jupyterhub/jupyterhub.conf', {'domain_name' => $domain_name}),
     mode    => '0644',
+    notify  => Service['nginx']
+  }
+
+  file_line { 'nginx_default_server_ipv4':
+    ensure => absent,
+    path   => "/etc/nginx/nginx.conf",
+    match  => "listen       80 default_server;",
+    match_for_absence => true,
+    notify => Service['nginx']
+  }
+
+  file_line { 'nginx_default_server_ipv6':
+    ensure => absent,
+    path   => "/etc/nginx/nginx.conf",
+    match  => "listen       \[::\]:80 default_server;",
+    match_for_absence => true,
+    notify => Service['nginx']
   }
 
   service { 'nginx':
     ensure  => running,
-    enable  => true,
-    require => File['jupyterhub.conf']
+    enable  => true
   }
 
-  exec { 'cerbot-nginx':
-    command => "/bin/certbot --nginx --register-unsafely-without-email --noninteractive --redirect --agree-tos --domains $domain",
-    creates => "/etc/letsencrypt/live/$domain/cert.pem",
-    require => [Package['certbot-nginx'], Service['nginx']]
+  if $domain_name != "" {
+    exec { 'cerbot-nginx':
+      command => "/bin/certbot --nginx --register-unsafely-without-email --noninteractive --redirect --agree-tos --domains $domain_name",
+      creates => "/etc/letsencrypt/live/$domain_name/cert.pem",
+      require => [Package['certbot-nginx'], Service['nginx']]
+    }
   }
 
 }
