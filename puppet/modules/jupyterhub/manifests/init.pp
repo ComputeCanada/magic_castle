@@ -48,7 +48,7 @@ class jupyterhub (String $domain_name = "") {
     ensure => 'present',
     source => 'puppet:///modules/jupyterhub/99-jupyterhub-user'
   }
-  file { ['/opt', '/opt/jupyterhub', '/opt/jupyterhub/etc', '/opt/jupyterhub/bin']:
+  file { ['/opt/jupyterhub', '/opt/jupyterhub/etc', '/opt/jupyterhub/bin']:
     ensure => directory,
     owner  => 'jupyterhub'
   }
