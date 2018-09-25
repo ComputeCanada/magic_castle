@@ -11,6 +11,11 @@ class common {
     enable => true
   }
 
+  service { 'dbus':
+    ensure => running,
+    enable => true
+  }
+
   class { '::swap_file':
     files => {
       '/mnt/swap' => {
@@ -76,8 +81,10 @@ class client {
   $mgmt01_ip = "10.0.0.9"
 
   package { 'ipa-client':
-    ensure => 'installed'
+    ensure => 'installed',
+    notify => Service['dbus']
   }
+
   file_line { 'resolv_search':
     ensure => present,
     path   => "/etc/resolv.conf",
@@ -104,6 +111,7 @@ class client {
                 --ssh-trust-dns \
                 --enable-dns-updates \
                 --unattended \
+                --force-join \
                 -p admin \
                 -w $admin_passwd",
     tries => 10,
@@ -181,11 +189,12 @@ node /^mgmt\d+$/ {
   $masklen = netmask_to_masklen("$netmask")
   $cidr    = "$network/$masklen"
 
+  # FreeIPA
   package { "ipa-server-dns":
-    ensure => "installed"
+    ensure => "installed",
+    notify => Service['dbus']
   }
 
-  # FreeIPA
   $admin_passwd = "abcdefghijk0123456"
   $domain = "phoenix.calculquebec.cloud"
   $realm = upcase($domain)
@@ -207,7 +216,8 @@ node /^mgmt\d+$/ {
                 --real=$realm",
     creates => '/etc/ipa/default.conf',
     timeout => 0,
-    require => Class['::swap_file']
+    require => [Package['ipa-server-dns'],
+                Class['::swap_file']]
   }
 
   # rsyslog
@@ -300,12 +310,12 @@ node /^node\d+$/ {
     path   => '/etc/yum.conf',
     line   => 'exclude=kmod-nvidia* nvidia-x11-drv',
   }
-  
+
   package { 'kmod-nvidia-390.48':
     ensure  => 'installed',
     require => File_line['kmod_nvidia_exclude']
   }
-  
+
   package { 'slurm-slurmd':
     ensure => 'installed'
   }
