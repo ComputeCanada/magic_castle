@@ -5,7 +5,42 @@ packages:
 runcmd:
   - rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
   - yum -y install puppet-agent
-  - /opt/puppetlabs/puppet/bin/gem install r10k
-  # - Clone puppet repo
-  - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir r10k --puppetfile=puppet/Puppetfile
-  - puppet apply --modulepath=puppet/modules:./r10k puppet/site.pp
+  - /opt/puppetlabs/puppet/bin/gem install r10k -v 2.6.4
+  - git clone https://git.computecanada.ca/fafor10/slurm_cloud_puppet.git /root/puppet
+  - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir /root/puppet/r10k --puppetfile=/root/puppet/Puppetfile
+  - /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/r10k /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
+  - "echo '@reboot /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/r10k /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log' | crontab -"
+  - reboot -n
+
+write_files:
+  - content: |
+      ---
+      version: 5
+      defaults:
+        datadir: /etc/puppetlabs/puppet/hieradata
+        data_hash: yaml_data
+      hierarchy:
+        - name: "Other YAML hierarchy levels"
+          paths:
+            - "common.yaml"
+    path: /etc/puppetlabs/puppet/hiera.yaml
+  - content: |
+      ---
+      freeipa::server::admin_passwd: "${admin_passwd}"
+      freeipa::server::domain_name: "${domain_name}"
+      freeipa::client::admin_passwd: "${admin_passwd}"
+      freeipa::client::domain_name: "${domain_name}"
+      freeipa::client::dns_ip: "${dns_ip}"
+      freeipa::guest_accounts::admin_passwd: "${admin_passwd}"
+      freeipa::guest_accounts::guest_passwd: "${guest_passwd}"
+      freeipa::guest_accounts::nb_accounts: ${nb_users}
+      slurm::base::cluster_name: "${cluster_name}"
+      slurm::base::munge_key: "${munge_key}"
+      jupyterhub::domain_name: "${domain_name}"
+    path: /etc/puppetlabs/puppet/hieradata/common.yaml
+    owner: root:root
+    permissions: "0600"
+
+disable_ec2_metadata: false
+timezone: "America/Montreal"
+output: { all: "| tee -a /var/log/cloud-init-output.log" }
