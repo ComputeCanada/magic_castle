@@ -7,9 +7,9 @@ runcmd:
   - yum -y install puppet-agent
   - /opt/puppetlabs/puppet/bin/gem install r10k -v 2.6.4
   - git clone https://git.computecanada.ca/fafor10/slurm_cloud_puppet.git /root/puppet
-  - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir /root/puppet/r10k --puppetfile=/root/puppet/Puppetfile
-  - /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/r10k /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
-  - "echo '@reboot /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/r10k /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log' | crontab -"
+  - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir /root/puppet/modules --puppetfile=/root/puppet/Puppetfile
+  - /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
+  - "echo '@reboot /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log' | crontab -"
   - reboot -n
 
 write_files:
@@ -26,16 +26,13 @@ write_files:
     path: /etc/puppetlabs/puppet/hiera.yaml
   - content: |
       ---
-      freeipa::server::admin_passwd: "${admin_passwd}"
-      freeipa::server::domain_name: "${domain_name}"
-      freeipa::client::admin_passwd: "${admin_passwd}"
-      freeipa::client::domain_name: "${domain_name}"
-      freeipa::client::dns_ip: "${dns_ip}"
-      freeipa::guest_accounts::admin_passwd: "${admin_passwd}"
-      freeipa::guest_accounts::guest_passwd: "${guest_passwd}"
-      freeipa::guest_accounts::nb_accounts: ${nb_users}
-      slurm::base::cluster_name: "${cluster_name}"
-      slurm::base::munge_key: "${munge_key}"
+      profile::freeipa::base::admin_passwd: "${admin_passwd}"
+      profile::freeipa::base::domain_name: "${domain_name}"
+      profile::freeipa::base::dns_ip: "${dns_ip}"
+      profile::freeipa::guest_accounts::guest_passwd: "${guest_passwd}"
+      profile::freeipa::guest_accounts::nb_accounts: ${nb_users}
+      profile::slurm::base::cluster_name: "${cluster_name}"
+      profile::slurm::base::munge_key: "${munge_key}"
       jupyterhub::domain_name: "${domain_name}"
     path: /etc/puppetlabs/puppet/hieradata/common.yaml
     owner: root:root
