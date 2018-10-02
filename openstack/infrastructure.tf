@@ -135,10 +135,11 @@ resource "openstack_compute_instance_v2" "node" {
 }
 
 resource "openstack_networking_floatingip_v2" "fip_1" {
-  pool = "${var.os_external_network}"
+  count = "${var.public_ip == "" ? 1 : 0}"
+  pool  = "${var.os_external_network}"
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
-  floating_ip = "${openstack_networking_floatingip_v2.fip_1.address}"
+  floating_ip = "${var.public_ip == "" ? openstack_networking_floatingip_v2.fip_1.address : var.public_ip}"
   instance_id = "${openstack_compute_instance_v2.login01.id}"
 }

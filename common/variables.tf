@@ -9,3 +9,7 @@ variable "shared_storage_size" {}
 variable "domain_name" {}
 
 variable "public_key_path" {}
+
+variable "login_public_ip" {
+    default = ""
+}
