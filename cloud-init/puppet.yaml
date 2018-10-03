@@ -33,6 +33,7 @@ write_files:
       profile::freeipa::guest_accounts::nb_accounts: ${nb_users}
       profile::slurm::base::cluster_name: "${cluster_name}"
       profile::slurm::base::munge_key: "${munge_key}"
+      profile::slurm::accounting::password: "${admin_passwd}"
       jupyterhub::domain_name: "${domain_name}"
     path: /etc/puppetlabs/puppet/hieradata/common.yaml
     owner: root:root
