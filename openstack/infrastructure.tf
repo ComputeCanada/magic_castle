@@ -110,7 +110,7 @@ resource "openstack_compute_instance_v2" "mgmt01" {
 
 locals {
   mgmt01_ip = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
-  public_ip = "${openstack_networking_floatingip_v2.fip_1.address}"
+  public_ip = "${openstack_compute_floatingip_associate_v2.fip_1.floating_ip}"
 }
 
 resource "openstack_compute_instance_v2" "login01" {
@@ -140,6 +140,6 @@ resource "openstack_networking_floatingip_v2" "fip_1" {
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
-  floating_ip = "${var.public_ip == "" ? openstack_networking_floatingip_v2.fip_1.address : var.public_ip}"
+  floating_ip = "${var.public_ip != "" ? var.public_ip : element(concat(openstack_networking_floatingip_v2.fip_1.*.address, list("")), 0) }"
   instance_id = "${openstack_compute_instance_v2.login01.id}"
 }
