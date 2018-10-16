@@ -84,6 +84,28 @@ resource "openstack_compute_secgroup_v2" "secgroup_1" {
     ip_protocol = "tcp"
     cidr        = "0.0.0.0/0"
   }
+
+  # Globus
+  rule {
+    from_port   = 2811
+    to_port     = 2811
+    ip_protocol = "tcp"
+    cidr        = "54.237.254.192/29"
+  }
+
+  rule {
+    from_port   = 7512
+    to_port     = 7512
+    ip_protocol = "tcp"
+    cidr        = "54.237.254.192/29"
+  }
+
+  rule {
+    from_port   = 50000
+    to_port     = 51000
+    ip_protocol = "tcp"
+    cidr        = "0.0.0.0/0"
+  }
 }
 
 resource "openstack_compute_keypair_v2" "keypair" {

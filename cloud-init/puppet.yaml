@@ -34,6 +34,8 @@ write_files:
       profile::slurm::base::cluster_name: "${cluster_name}"
       profile::slurm::base::munge_key: "${munge_key}"
       profile::slurm::accounting::password: "${admin_passwd}"
+      profile::globus::base::globus_user: "${globus_user}"
+      profile::globus::base::globus_password: "${globus_password}"
       jupyterhub::domain_name: "${domain_name}"
     path: /etc/puppetlabs/puppet/hieradata/common.yaml
     owner: root:root
