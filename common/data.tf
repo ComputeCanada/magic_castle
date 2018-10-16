@@ -12,13 +12,15 @@ data "template_file" "mgmt" {
   template = "${file("${path.module}/cloud-init/puppet.yaml")}"
 
   vars {
-    admin_passwd = "${random_string.admin_passwd.result}"
-    cluster_name = "${var.cluster_name}"
-    dns_ip       = ""
-    domain_name  = "${var.domain_name}"
-    guest_passwd = "${random_pet.guest_passwd.id}"
-    munge_key    = "${base64sha512(random_string.admin_passwd.result)}"
-    nb_users     = "${var.nb_users}"
+    admin_passwd    = "${random_string.admin_passwd.result}"
+    cluster_name    = "${var.cluster_name}"
+    dns_ip          = ""
+    domain_name     = "${var.domain_name}"
+    guest_passwd    = "${random_pet.guest_passwd.id}"
+    munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
+    nb_users        = "${var.nb_users}"
+    globus_user     = ""
+    globus_password = ""
   }
 }
 
@@ -35,13 +37,15 @@ data "template_file" "login" {
   template = "${file("${path.module}/cloud-init/puppet.yaml")}"
 
   vars {
-    admin_passwd = "${random_string.admin_passwd.result}"
-    cluster_name = "${var.cluster_name}"
-    dns_ip       = "${local.mgmt01_ip}"
-    domain_name  = "${var.domain_name}"
-    guest_passwd = "${random_pet.guest_passwd.id}"
-    munge_key    = "${base64sha512(random_string.admin_passwd.result)}"
-    nb_users     = "${var.nb_users}"
+    admin_passwd    = "${random_string.admin_passwd.result}"
+    cluster_name    = "${var.cluster_name}"
+    dns_ip          = "${local.mgmt01_ip}"
+    domain_name     = "${var.domain_name}"
+    guest_passwd    = "${random_pet.guest_passwd.id}"
+    munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
+    nb_users        = "${var.nb_users}"
+    globus_user     = "${var.globus_user}"
+    globus_password = "${var.globus_password}"
   }
 }
 
@@ -59,13 +63,15 @@ data "template_file" "node" {
   count    = "${var.nb_nodes}"
 
   vars {
-    admin_passwd = "${random_string.admin_passwd.result}"
-    cluster_name = "${var.cluster_name}"
-    dns_ip       = "${local.mgmt01_ip}"
-    domain_name  = "${var.domain_name}"
-    guest_passwd = "${random_pet.guest_passwd.id}"
-    munge_key    = "${base64sha512(random_string.admin_passwd.result)}"
-    nb_users     = "${var.nb_users}"
+    admin_passwd    = "${random_string.admin_passwd.result}"
+    cluster_name    = "${var.cluster_name}"
+    dns_ip          = "${local.mgmt01_ip}"
+    domain_name     = "${var.domain_name}"
+    guest_passwd    = "${random_pet.guest_passwd.id}"
+    munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
+    nb_users        = "${var.nb_users}"
+    globus_user     = ""
+    globus_password = ""
   }
 }
 
