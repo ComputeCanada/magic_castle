@@ -5,3 +5,7 @@ variable "os_flavor_mgmt" {}
 variable "os_external_network" {}
 
 variable "os_image_id" {}
+
+variable "os_availability_zone" {
+    default = ""
+}
