@@ -10,7 +10,7 @@ runcmd:
   - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir /root/puppet/modules --puppetfile=/root/puppet/Puppetfile
   - /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
   - "echo '@reboot /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log' | crontab -"
-  - reboot -n
+  # - reboot -n
 
 write_files:
   - content: |
