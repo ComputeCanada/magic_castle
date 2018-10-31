@@ -21,6 +21,7 @@ data "template_file" "mgmt" {
     nb_users        = "${var.nb_users}"
     globus_user     = ""
     globus_password = ""
+    node_name       = "mgmt01"
   }
 }
 
@@ -46,6 +47,7 @@ data "template_file" "login" {
     nb_users        = "${var.nb_users}"
     globus_user     = "${var.globus_user}"
     globus_password = "${var.globus_password}"
+    node_name       = "${var.cluster_name}01"
   }
 }
 
@@ -95,6 +97,7 @@ data "template_file" "node" {
     nb_users        = "${var.nb_users}"
     globus_user     = ""
     globus_password = ""
+    node_name       = "node${count.index + 1}"
   }
 }
 
