@@ -9,10 +9,14 @@ runcmd:
   - git clone https://git.computecanada.ca/fafor10/slurm_cloud_puppet.git /root/puppet
   - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir /root/puppet/modules --puppetfile=/root/puppet/Puppetfile
   - /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
-  - "echo '@reboot /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log' | crontab -"
+  - crontab /root/crontab
   # - reboot -n
 
 write_files:
+  - content: |
+      @reboot /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
+      */5 * * * * /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
+    path: /root/crontab
   - content: |
       ---
       version: 5
