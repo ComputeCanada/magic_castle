@@ -5,5 +5,4 @@ resource "cloudflare_record" "jupyter" {
   name   = "${element(split(".", var.domain_name), 0)}"
   value  = "${local.public_ip}"
   type   = "A"
-  ttl    = 3600
 }
