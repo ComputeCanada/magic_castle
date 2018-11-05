@@ -49,3 +49,4 @@ resource "cloudflare_record" "login_sshfp_ecdsa_sha256" {
     type        = 2
     fingerprint = "${sha256(base64decode(element(split(" ", tls_private_key.login_ecdsa.public_key_openssh), 1)))}"
   }
+}
