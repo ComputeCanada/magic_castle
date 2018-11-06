@@ -3,7 +3,6 @@ packages:
   - git
 
 runcmd:
-  - hostnamectl set-hostname "${node_name}"
   - rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
   - yum -y install puppet-agent
   - /opt/puppetlabs/puppet/bin/gem install r10k -v 2.6.4
@@ -48,4 +47,5 @@ write_files:
 
 disable_ec2_metadata: false
 timezone: "America/Montreal"
+fqdn: "${node_name}"
 output: { all: "| tee -a /var/log/cloud-init-output.log" }
