@@ -22,6 +22,7 @@ The project can be used to build clusters with commercial cloud, but it implies 
 https://draw.io/
 
 ## Building Your First Cloud Cluster
+
 ### Setup check
 
 1. Open a terminal
@@ -114,6 +115,7 @@ Define with lowercase alphanumeric characters and start with a letter.
 
 Modifying this variable after the cluster is built lead to a complete
 cluster rebuild at next `terraform apply`.
+
 #### `nb_nodes`
 
 `nb_nodes` defines how many compute nodes virtual machines
@@ -145,7 +147,8 @@ SSH key defined by `public_key_path`.
 
 Modifying this variable after the cluster is built lead to a complete
 cluster rebuild at next `terraform apply`.
-### `shared_storage_size`
+
+#### `shared_storage_size`
 
 `shared_storage_size` defines the size of the management node single volume.
 This volume hosts four NFS exports that are mounted on the login node and the
@@ -182,5 +185,27 @@ cluster rebuild at next `terraform apply`.
 key. This key will associated with the `centos` account to provide you
 administrative access to the cluster.
 
+Modifying this variable after the cluster is built lead to a complete
+cluster rebuild at next `terraform apply`.
+
 #### `os_external_network`
+
+`os_external_network` defines the name of the OpenStack external network.
+It is used to allocate a floating-ip that will be associated with the
+login node. Each Compute Canada Cloud OpenStack has its own external
+network and they are all named differently. For future references:
+
+* Arbutus: `Public-Network`
+* East Cloud: `net04_ext` 
+* West Cloud: `VLAN3337`
+
+If you are using a different OpenStack instance, to find the name of
+your external network, in the OpenStack web UI go to : Project → Network → Networks,
+and then look for the name of the network which **External** column is set
+to **Yes**.
+
+Modifying this variable after the cluster is built lead to a rebuild of the
+login node and a renew of its floating ip at next `terraform apply`.
+
+#### `os_image_id`
 
