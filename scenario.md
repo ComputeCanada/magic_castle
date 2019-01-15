@@ -16,6 +16,10 @@ For the workshop you will need
 
 The project can be used to build clusters with commercial cloud, but it implies cost or access to credit.
 
+## Overview of the Cloud Cluster Architecture
+
+**TODO: Insert image of the cluster and the repartition of the services**
+
 ## Building Your First Cloud Cluster
 ### Setup check
 
@@ -78,10 +82,34 @@ folder. You do not need to look at its content for now.
 
 ### Customizing Your Cluster
 
+The order of the input parameters we are about to present does not matter, but
+we recommend leaving it as it is presented in the examples.
+
+#### source
+
 The first line of the module block indicates to Terraform where it can find
-the Terraform files that defines the resources that constitutes your future
-cluster. The git repository of the project is divided in cloud provider.
-Since we are using OpenStack, the source corresponds to the the openstack
-folder. If you were to fork this project, you would need to replace the
+the `.tf` files that defines the resources that constitutes your future
+cluster. We are pointing this variable toward the git repo using the syntax
+defined in [Terraform documentation](https://www.terraform.io/docs/modules/sources.html#generic-git-repository)
+
+The git repository of the project subfolders are divided by cloud provider.
+If you were to fork this project, you would need to replace the
 source value by the link to your own fork.
+
+Beware, not all cloud provider module uses the same variables.
+You should refer to the examples specific to the cloud provider
+you want to use.
+
+#### cluster_name
+
+The `cluster_name` variable will be used to:
+
+* Define the `ClusterName` variable in `slurm.conf`.  This is the name by
+which this Slurm managed cluster is known in the accounting database
+([see `slurm.conf` documentation](https://slurm.schedmd.com/slurm.conf.html)).
+* Define the hostname of the login node.
+
+Define with lowercase alphanumeric characters and start with a letter.
+
+#### nb_nodes
 
