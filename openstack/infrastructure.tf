@@ -124,7 +124,6 @@ resource "openstack_compute_instance_v2" "mgmt01" {
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
   security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${data.template_cloudinit_config.mgmt_config.rendered}"
-  availability_zone = "${var.os_availability_zone}"
 
   block_device {
     uuid                  = "${data.openstack_images_image_v2.image.id}"
@@ -144,7 +143,6 @@ locals {
 resource "openstack_compute_instance_v2" "login01" {
   name     = "${var.cluster_name}01"
   image_id = "${data.openstack_images_image_v2.image.id}"
-  availability_zone = "${var.os_availability_zone}"
 
   flavor_id       = "${data.openstack_compute_flavor_v2.login.id}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
@@ -156,7 +154,6 @@ resource "openstack_compute_instance_v2" "node" {
   count    = "${var.nb_nodes}"
   name     = "node${count.index + 1}"
   image_id = "${data.openstack_images_image_v2.image.id}"
-  availability_zone = "${var.os_availability_zone}"
 
   flavor_id       = "${data.openstack_compute_flavor_v2.node.id}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
