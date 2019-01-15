@@ -207,5 +207,5 @@ to **Yes**.
 Modifying this variable after the cluster is built lead to a rebuild of the
 login node and a renew of its floating ip at next `terraform apply`.
 
-#### `os_image_id`
+#### `os_image_name`
 
