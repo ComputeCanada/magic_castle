@@ -102,7 +102,7 @@ you want to use.
 
 #### `cluster_name`
 
-The `cluster_name` variable will be used to:
+`cluster_name` is used to:
 
 * Define the `ClusterName` variable in `slurm.conf`.  This is the name by
 which this Slurm managed cluster is known in the accounting database
@@ -111,9 +111,11 @@ which this Slurm managed cluster is known in the accounting database
 
 Define with lowercase alphanumeric characters and start with a letter.
 
+Modifying this variable after the cluster is built implies a complete rebuild.
+
 #### `nb_nodes`
 
-The `nb_nodes` variable defines how many compute nodes virtual machines
+`nb_nodes` defines how many compute nodes virtual machines
 will be created. This integer can be between 0 and your cloud allocation
 instance upper limit minus 2 (you must leave space for a management and
 a login node).
@@ -123,5 +125,37 @@ Terraform will manage the creation or destruction of the virtual machines
 for you. It is therefore possible to start with 0 compute nodes, build the
 cluster, and later add more.
 
+Modifying this variable after the cluster is built only affect the number
+of compute nodes.
+
 #### `nb_users`
+
+`nb_users` defines how many user accounts will be created in
+FreeIPA. Each user account shares the same randomly generated password.
+The usernames are defined as `userX` where `X` is a number between 1 and
+the value of `nb_users`.
+
+Each user has a home folder on a shared NFS storage hosted by the management
+node.
+
+User accounts do not have administrator privileges. If you wish to use `sudo`,
+you will have to login using the administrator account named `centos` and the
+SSH key defined by `public_key_path`.
+
+Modifying this variable after the cluster is built implies a complete rebuild.
+
+### `shared_storage_size`
+
+`shared_storage_size` defines the size of the management node single volume.
+This volume hosts four NFS exports that are mounted on the login node and the
+compute nodes:
+
+1. `/home`
+2. `/project`
+3. `/scratch`
+4. `/etc/slurm`
+
+Modifying this variable after the cluster is built implies a complete rebuild.
+
+#### `domain_name`
 
