@@ -19,6 +19,7 @@ The project can be used to build clusters with commercial cloud, but it implies 
 ## Overview of the Cloud Cluster Architecture
 
 **TODO: Insert image of the cluster and the repartition of the services**
+https://draw.io/
 
 ## Building Your First Cloud Cluster
 ### Setup check
@@ -111,8 +112,8 @@ which this Slurm managed cluster is known in the accounting database
 
 Define with lowercase alphanumeric characters and start with a letter.
 
-Modifying this variable after the cluster is built implies a complete rebuild.
-
+Modifying this variable after the cluster is built lead to a complete
+cluster rebuild at next `terraform apply`.
 #### `nb_nodes`
 
 `nb_nodes` defines how many compute nodes virtual machines
@@ -126,7 +127,7 @@ for you. It is therefore possible to start with 0 compute nodes, build the
 cluster, and later add more.
 
 Modifying this variable after the cluster is built only affect the number
-of compute nodes.
+of compute nodes at next `terraform apply`.
 
 #### `nb_users`
 
@@ -142,8 +143,8 @@ User accounts do not have administrator privileges. If you wish to use `sudo`,
 you will have to login using the administrator account named `centos` and the
 SSH key defined by `public_key_path`.
 
-Modifying this variable after the cluster is built implies a complete rebuild.
-
+Modifying this variable after the cluster is built lead to a complete
+cluster rebuild at next `terraform apply`.
 ### `shared_storage_size`
 
 `shared_storage_size` defines the size of the management node single volume.
@@ -155,7 +156,31 @@ compute nodes:
 3. `/scratch`
 4. `/etc/slurm`
 
-Modifying this variable after the cluster is built implies a complete rebuild.
+Modifying this variable after the cluster is built lead to a complete
+cluster rebuild at next `terraform apply`.
 
 #### `domain_name`
+
+`domain_name` is used to:
+
+* Define the Kerberos realm name when initializing FreeIPA.
+* Define the internal domain name and the resolv.conf search domain as
+`int.{domain_name}`
+* If the domain is registered with CloudFlare and you have administrative
+rights, it will be used to register a new entry in the DNS (**optional**).
+
+If you own a domain but it is not administred with CloudFlare, you can
+registered the IP address under this domain name manually with your
+registrar once the cluster is built.
+
+Modifying this variable after the cluster is built lead to a complete
+cluster rebuild at next `terraform apply`.
+
+#### `public_key_path`
+
+`public_key_path` is the path to the file that contains an SSH public
+key. This key will associated with the `centos` account to provide you
+administrative access to the cluster.
+
+#### `os_external_network`
 
