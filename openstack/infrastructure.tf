@@ -2,6 +2,11 @@ provider "openstack" {}
 
 data "openstack_networking_subnet_v2" "subnet_1" {}
 
+
+data "openstack_images_image_v2" "image" {
+  name = "${var.os_image_name}"
+}
+
 data "openstack_compute_flavor_v2" "mgmt" {
   name = "${var.os_flavor_mgmt}"
 }
@@ -122,7 +127,7 @@ resource "openstack_compute_instance_v2" "mgmt01" {
   availability_zone = "${var.os_availability_zone}"
 
   block_device {
-    uuid                  = "${var.os_image_id}"
+    uuid                  = "${data.openstack_images_image_v2.image.id}"
     source_type           = "image"
     volume_size           = "${var.shared_storage_size}"
     boot_index            = 0
@@ -138,7 +143,7 @@ locals {
 
 resource "openstack_compute_instance_v2" "login01" {
   name     = "${var.cluster_name}01"
-  image_id = "${var.os_image_id}"
+  image_id = "${data.openstack_images_image_v2.image.id}"
   availability_zone = "${var.os_availability_zone}"
 
   flavor_id       = "${data.openstack_compute_flavor_v2.login.id}"
@@ -150,7 +155,7 @@ resource "openstack_compute_instance_v2" "login01" {
 resource "openstack_compute_instance_v2" "node" {
   count    = "${var.nb_nodes}"
   name     = "node${count.index + 1}"
-  image_id = "${var.os_image_id}"
+  image_id = "${data.openstack_images_image_v2.image.id}"
   availability_zone = "${var.os_availability_zone}"
 
   flavor_id       = "${data.openstack_compute_flavor_v2.node.id}"

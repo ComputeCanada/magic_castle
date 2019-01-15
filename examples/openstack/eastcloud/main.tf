@@ -11,7 +11,7 @@ module "openstack" {
 
   # OpenStack specifics
   os_external_network = "net04_ext"
-  os_image_id         = "357d4c60-6ead-4d3a-9d4e-20b375e13011"
+  os_image_name       = "CentOS-7-x64-2018-05"
   os_flavor_node      = "p2-3gb"
   os_flavor_login     = "p2-3gb"
   os_flavor_mgmt      = "p2-3gb"
