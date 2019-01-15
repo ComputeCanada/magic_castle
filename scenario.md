@@ -70,7 +70,7 @@ file. Further customization will be addressed during the second part of the work
 Terraform fetches the plugins required to interact with the cloud provider defined by
 our `main.tf` once when we initialize. To initialize, enter the following command:
 ```
-terraform init
+$ terraform init
 ```
 
 The initialization is specific to the folder where you are currently located.
@@ -236,5 +236,38 @@ and `os_node_flavor="c2-7.5gb-31"`. Your instances would be in two
 different availability zones and would not be able to communicate through
 the internal network.
 
-### Planning Deployment
+### Planning Cluster Deployment
+
+Once your initial cluster configuration is done, you can initiate
+a planning phase where you will ask Terraform to communicate with
+OpenStack and verify that your cluster can be built as it is
+described by the `main.tf` configuration file.
+
+First, you will have to download your OpenStack Open RC
+file. It is project-specific and contains the credentials used
+by Terraform to communicate with OpenStack API. It comes
+as a sourcable shell-script. To download, using OpenStack web
+ui go to : **Project** → **API Access**, then click on **Download OpenStack RC File**
+then right-click on **OpenStack RC File (Identity API v3)**, **Save Link as...**, then
+select the same folder that contains `main.tf`.
+
+Second, in a terminal located in the same folder as your OpenStack RC file
+and your `main.tf` file, source the OpenStack RC file.
+
+```$ source *-openrc.sh```
+
+This command will ask for a password, enter your Compute Canada password.
+
+Terraform should now be able to communicate with OpenStack. To test your
+configuration file, enter the following command
+
+```$ terraform plan```
+
+This command will validate the syntax of your configuration file and
+communicate with OpenStack, but it will not create new resources. It
+is only a dry-run. If Terraform does not report any error, you can move
+to the next step. Otherwise, read the errors and fix your configuration
+file accordingly.
+
+### Applying the Configuration File
 
