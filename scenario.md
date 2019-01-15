@@ -100,7 +100,7 @@ Beware, not all cloud provider module uses the same variables.
 You should refer to the examples specific to the cloud provider
 you want to use.
 
-#### cluster_name
+#### `cluster_name`
 
 The `cluster_name` variable will be used to:
 
@@ -111,5 +111,17 @@ which this Slurm managed cluster is known in the accounting database
 
 Define with lowercase alphanumeric characters and start with a letter.
 
-#### nb_nodes
+#### `nb_nodes`
+
+The `nb_nodes` variable defines how many compute nodes virtual machines
+will be created. This integer can be between 0 and your cloud allocation
+instance upper limit minus 2 (you must leave space for a management and
+a login node).
+
+This variable can be modified at any point of your cluster lifetime.
+Terraform will manage the creation or destruction of the virtual machines
+for you. It is therefore possible to start with 0 compute nodes, build the
+cluster, and later add more.
+
+#### `nb_users`
 
