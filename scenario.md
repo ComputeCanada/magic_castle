@@ -209,3 +209,32 @@ login node and a renew of its floating ip at next `terraform apply`.
 
 #### `os_image_name`
 
+`os_image_name` defines the name of the image that will be used as the
+base image for the cluster nodes. For the provisionning to work properly,
+this image has to be a CentOS 7 based image.
+
+You can use custom CentOS 7 image if you wish, but provisioning custommization
+should be mainly done through Puppet scripting. Image customization is mostly
+envision to accelerate the provisioning process by applying in advance the
+security patches and general OS updates.
+
+Modifying this variable after the cluster is built lead to a complete
+cluster rebuild at next `terraform apply`.
+
+#### `os_flavor_*`
+
+`os_flavor_*` defines the flavor of one of the three types of servers
+in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
+defines the compute, memory, and storage capacity of an instance.
+
+There some constraints on the flavor.
+
+* The management server (*mgmt*) requires as least 3GB of memory.
+* When using Arbutus, all three flavors need to be either persistent
+or compute. For example, you cannot have `os_mgmt_flavor="p2-3gb"`
+and `os_node_flavor="c2-7.5gb-31"`. Your instances would be in two
+different availability zones and would not be able to communicate through
+the internal network.
+
+### Planning Deployment
+
