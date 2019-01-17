@@ -1,9 +1,12 @@
 provider "cloudflare" {}
 
+variable "domain_name" {}
+variable "public_ip" {}
+
 resource "cloudflare_record" "jupyter" {
   domain = "${join(".", slice(split(".", var.domain_name), 1, length(split(".", var.domain_name))))}"
   name   = "${element(split(".", var.domain_name), 0)}"
-  value  = "${local.public_ip}"
+  value  = "${var.public_ip}"
   type   = "A"
 }
 
