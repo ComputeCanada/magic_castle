@@ -168,12 +168,12 @@ cluster rebuild at next `terraform apply`.
 * Define the Kerberos realm name when initializing FreeIPA.
 * Define the internal domain name and the resolv.conf search domain as
 `int.{domain_name}`
-* If the domain is registered with CloudFlare and you have administrative
-rights, it will be used to register a new entry in the DNS (**optional**).
 
-If you own a domain but it is not administred with CloudFlare, you can
-registered the IP address under this domain name manually with your
-registrar once the cluster is built.
+If you own a domain, you can register the login floating IP address
+under this domain name manually with your registrar. An optional module
+following the `openstack` module in the example `main.tf` can register
+the domain name if your domain's nameservers are administred
+by CloudFlare.
 
 Modifying this variable after the cluster is built lead to a complete
 cluster rebuild at next `terraform apply`.
@@ -220,16 +220,15 @@ security patches and general OS updates.
 Modifying this variable after the cluster is built lead to a complete
 cluster rebuild at next `terraform apply`.
 
-#### `os_flavor_*`
+#### `os_flavor_mgmt`, `os_flavor_login` and `os_flavor_node`.
 
 `os_flavor_*` defines the flavor of one of the three types of servers
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
 defines the compute, memory, and storage capacity of an instance.
 
-For the management server (*mgmt*), choose a flavor with at
-least 3GB of memory.
+For `os_flavor_mgmt`, choose a flavor with at least 3GB of memory.
 
-#### `os_floating_ip`
+#### `os_floating_ip` (**optional**)
 
 **TODO: Document this variable**
 
