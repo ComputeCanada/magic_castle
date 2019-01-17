@@ -37,12 +37,11 @@ https://draw.io/
 
 1. Go to https://git.computecanada.ca/fafor10/slurm_cloud.
 2. Star the repo ;).
-3. Instead of `master`, select the branch named `puppet`.
-4. Click on the `examples` folder.
-5. Click on the `openstack` folder.
-6. Verify everyone has an arbutus cloud account.
-7. Click on the `arbutus` folder. For those who do not have an account on Arbutus, select the cloud corresponding to your account.
-8. Click on `main.tf`
+3. Click on the `examples` folder.
+4. Click on the `openstack` folder.
+5. Verify everyone has an arbutus cloud account.
+6. Click on the `arbutus` folder. For those who do not have an account on Arbutus, select the cloud corresponding to your account.
+7. Click on `main.tf`
 
 This file contains a Terraform module. A module block instructs Terraform to create an
 instance of a module, and in turn to instantiate any resources defined within it. The
@@ -57,8 +56,8 @@ our module we would like to be shown on screen once the ressources have been ins
 4. Save a copy of the preceding `main.tf` file inside your new folder.
 ```
 wget https://git.computecanada.ca/\
-     fafor10/slurm_cloud/raw/puppet/\
-     examples/openstack/arbutus/main.tf
+     fafor10/slurm_cloud/raw/examples/\
+     openstack/arbutus/main.tf
 ```
 
 This file will be our main canvas to design our new clusters. As long as the module block
