@@ -9,10 +9,6 @@ output "domain" {
   value = "${var.domain}"
 }
 
-output "domain_name" {
-  value = "${local.domain_name}"
-}
-
 output "admin_username" {
   value = "centos"
 }

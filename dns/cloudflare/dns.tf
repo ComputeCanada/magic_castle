@@ -55,3 +55,7 @@ resource "cloudflare_record" "login_sshfp_ecdsa_sha256" {
     fingerprint = "${sha256(base64decode(element(split(" ", var.ecdsa_public_key), 1)))}"
   }
 }
+
+output "domain_name" {
+  value = "${var.name}.${var.domain}"
+}

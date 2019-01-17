@@ -20,6 +20,21 @@ module "openstack" {
   os_floating_ip      = ""
 }
 
+output "admin_username" {
+	value = "${module.openstack.admin_username}"
+}
+output "admin_passwd" {
+	value = "${module.openstack.admin_passwd}"
+}
+
+output "guest_passwd" {
+	value = "${module.openstack.guest_passwd}"
+}
+
+output "public_ip" {
+	value = "${module.openstack.ip}"
+}
+
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
 #   source           = "git::ssh://gitlab@git.computecanada.ca/fafor10/slurm_cloud.git//dns/cloudflare"
@@ -29,22 +44,7 @@ module "openstack" {
 #   rsa_public_key   = "${module.openstack.rsa_public_key}"
 #   ecdsa_public_key = "${module.openstack.ecdsa_public_key}"
 # }
-
-output "public_ip" {
-	value = "${module.openstack.ip}"
-}
-
-output "domain_name" {
-	value = "${module.openstack.domain_name}"
-}
-output "admin_username" {
-	value = "${module.openstack.admin_username}"
-}
-
-output "admin_passwd" {
-	value = "${module.openstack.admin_passwd}"
-}
-
-output "guest_passwd" {
-	value = "${module.openstack.guest_passwd}"
-}
+#
+# output "domain_name" {
+# 	value = "${module.dns.domain_name}"
+# }
