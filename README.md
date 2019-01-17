@@ -75,7 +75,7 @@ To tear down the cluster, from the `my_new_cluster` folder, call: `terraform des
 
 ## Using Cloudflare DNS Service
 
-1. Create a symlink to the `dns.tf` file into your cloud project folder (i.e: `openstack`, `aws`, etc.).
+1. Uncomment the `dns` module in your `main.tf`.
 2. Export the following environment variables `CLOUDFLARE_EMAIL` and `CLOUDFLARE_TOKEN`.
 3. Run `terraform apply`.
 
