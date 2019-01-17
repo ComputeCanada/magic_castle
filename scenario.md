@@ -234,6 +234,9 @@ defines the compute, memory, and storage capacity of an instance.
 
 For `os_flavor_mgmt`, choose a flavor with at least 3GB of memory.
 
+Modifying one of these variables after the cluster is built lead
+to a rebuild of the instances with the corresponding type.
+
 #### `os_floating_ip` (**optional**)
 
 **TODO: Document this variable**
