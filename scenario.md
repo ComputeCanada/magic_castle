@@ -43,11 +43,9 @@ https://draw.io/
 6. Click on the `arbutus` folder. For those who do not have an account on Arbutus, select the cloud corresponding to your account.
 7. Click on `main.tf`
 
-This file contains a Terraform module. A module block instructs Terraform to create an
-instance of a module, and in turn to instantiate any resources defined within it. The
-first block of the file configure the module source and its parameters.
-
-The other blocks in the file are output. They are used to tell Terraform which variables of
+This file contains Terraform modules and outputs. Modules are files that defines a set of
+ressources that will be configured based on the inputs provided in the module block.
+Outputs are used to tell Terraform which variables of
 our module we would like to be shown on screen once the ressources have been instantiated.
 
 1. Open a Terminal.
@@ -115,6 +113,23 @@ Define with lowercase alphanumeric characters and start with a letter.
 Modifying this variable after the cluster is built lead to a complete
 cluster rebuild at next `terraform apply`.
 
+#### `domain`
+
+`domain` defines:
+
+* the Kerberos realm name when initializing FreeIPA.
+* the internal domain name and the resolv.conf search domain as
+`int.{cluster_name}.{domain}`
+
+If you own a domain, you can register the login floating IP address
+under this domain name manually with your registrar. An optional module
+following the `openstack` module in the example `main.tf` can register
+the domain name if your domain's nameservers are administred
+by CloudFlare.
+
+Modifying this variable after the cluster is built lead to a complete
+cluster rebuild at next `terraform apply`.
+
 #### `nb_nodes`
 
 `nb_nodes` defines how many compute nodes virtual machines
@@ -161,23 +176,6 @@ compute nodes:
 Modifying this variable after the cluster is built lead to a complete
 cluster rebuild at next `terraform apply`.
 
-#### `domain_name`
-
-`domain_name` is used to:
-
-* Define the Kerberos realm name when initializing FreeIPA.
-* Define the internal domain name and the resolv.conf search domain as
-`int.{domain_name}`
-
-If you own a domain, you can register the login floating IP address
-under this domain name manually with your registrar. An optional module
-following the `openstack` module in the example `main.tf` can register
-the domain name if your domain's nameservers are administred
-by CloudFlare.
-
-Modifying this variable after the cluster is built lead to a complete
-cluster rebuild at next `terraform apply`.
-
 #### `public_key_path`
 
 `public_key_path` is the path to the file that contains an SSH public
@@ -186,6 +184,14 @@ administrative access to the cluster.
 
 Modifying this variable after the cluster is built lead to a complete
 cluster rebuild at next `terraform apply`.
+
+#### `globus_user` (**optional**)
+
+**TODO: Document this variable**
+
+#### `globus_password` (**optional**)
+
+**TODO: Document this variable**
 
 #### `os_external_network`
 
