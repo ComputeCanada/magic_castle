@@ -1,22 +1,20 @@
 provider "cloudflare" {}
-
-variable "domain_name" {}
+variable "name" {}
+variable "domain" {}
 variable "public_ip" {}
-
 variable "rsa_public_key" {}
-
 variable "ecdsa_public_key" {}
 
 resource "cloudflare_record" "jupyter" {
-  domain = "${join(".", slice(split(".", var.domain_name), 1, length(split(".", var.domain_name))))}"
-  name   = "${element(split(".", var.domain_name), 0)}"
+  domain = "${var.domain}"
+  name   = "${var.name}"
   value  = "${var.public_ip}"
   type   = "A"
 }
 
 resource "cloudflare_record" "login_sshfp_rsa_sha1" {
-  domain = "${join(".", slice(split(".", var.domain_name), 1, length(split(".", var.domain_name))))}"
-  name   = "${element(split(".", var.domain_name), 0)}"
+  domain = "${var.domain}"
+  name   = "${var.name}"
   type   = "SSHFP"
   data   = {
     algorithm   = 1
@@ -26,8 +24,8 @@ resource "cloudflare_record" "login_sshfp_rsa_sha1" {
 }
 
 resource "cloudflare_record" "login_sshfp_rsa_sha256" {
-  domain = "${join(".", slice(split(".", var.domain_name), 1, length(split(".", var.domain_name))))}"
-  name   = "${element(split(".", var.domain_name), 0)}"
+  domain = "${var.domain}"
+  name   = "${var.name}"
   type   = "SSHFP"
   data   = {
     algorithm   = 1
@@ -37,8 +35,8 @@ resource "cloudflare_record" "login_sshfp_rsa_sha256" {
 }
 
 resource "cloudflare_record" "login_sshfp_ecdsa_sha1" {
-  domain = "${join(".", slice(split(".", var.domain_name), 1, length(split(".", var.domain_name))))}"
-  name   = "${element(split(".", var.domain_name), 0)}"
+  domain = "${var.domain}"
+  name   = "${var.name}"
   type   = "SSHFP"
   data   = {
     algorithm   = 3
@@ -48,8 +46,8 @@ resource "cloudflare_record" "login_sshfp_ecdsa_sha1" {
 }
 
 resource "cloudflare_record" "login_sshfp_ecdsa_sha256" {
-  domain = "${join(".", slice(split(".", var.domain_name), 1, length(split(".", var.domain_name))))}"
-  name   = "${element(split(".", var.domain_name), 0)}"
+  domain = "${var.domain}"
+  name   = "${var.name}"
   type   = "SSHFP"
   data   = {
     algorithm   = 3

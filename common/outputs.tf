@@ -3,7 +3,7 @@ output "ip" {
 }
 
 output "domain_name" {
-  value = "${var.domain_name}"
+  value = "${local.domain_name}"
 }
 
 output "admin_passwd" {

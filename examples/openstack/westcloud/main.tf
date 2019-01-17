@@ -3,11 +3,13 @@ module "openstack" {
 
   # JupyterHub + Slurm definition
   cluster_name        = "phoenix"
+  domain              = "calculquebec.cloud"
   nb_nodes            = 5
   nb_users            = 10
   shared_storage_size = 100
-  domain_name         = "jupyter2.calculquebec.cloud"
   public_key_path     = "./pub.key"
+  globus_user         = ""
+  globus_password     = ""
 
   # OpenStack specifics
   os_external_network = "VLAN3337"
@@ -21,7 +23,8 @@ module "openstack" {
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
 #   source           = "git::ssh://gitlab@git.computecanada.ca/fafor10/slurm_cloud.git//dns/cloudflare"
-#   domain_name      = "${module.openstack.domain_name}"
+#   name             = "${module.openstack.cluster_name}"
+#   domain           = "${module.openstack.domain}"
 #   public_ip        = "${module.openstack.ip}"
 #   rsa_public_key   = "${module.openstack.rsa_public_key}"
 #   ecdsa_public_key = "${module.openstack.ecdsa_public_key}"
