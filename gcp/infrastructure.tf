@@ -1,5 +1,4 @@
 provider "google" {
-  credentials = "${file(var.credentials_file)}"
   project     = "${var.project_name}"
   region      = "${var.zone}"
 }
@@ -20,7 +19,7 @@ resource "google_compute_instance" "mgmt01" {
   }
 
   network_interface {
-	network = "default"
+	subnetwork = "default"
 	access_config {
 	}
   }
@@ -57,7 +56,7 @@ resource "google_compute_instance" "login01" {
   }
 
   network_interface {
-	network = "default"
+	subnetwork = "default"
 	access_config {
 	}
   }
@@ -103,7 +102,7 @@ resource "google_compute_instance" "node" {
   }
 
   network_interface {
-	network = "default"
+	subnetwork = "default"
 	access_config {
 	}
   }

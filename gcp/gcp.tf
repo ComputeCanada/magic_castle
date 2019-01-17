@@ -1,7 +1,5 @@
 variable "project_name" {}
 
-variable "credentials_file" {}
-
 variable "zone" {}
 
 variable "zone_region" {}

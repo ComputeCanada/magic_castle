@@ -50,12 +50,13 @@ To tear down the cluster, from the `my_new_cluster` folder, call: `terraform des
 
 1. Create a new folder : `mkdir my_new_cluster`.
 2. Copy the example `main.tf` from the [gcp example folder](https://git.computecanada.ca/fafor10/slurm_cloud/tree/master/examples/gcp).
-3. Follow these [steps](https://www.terraform.io/docs/providers/google/index.html#authentication-json-file) to download your credentials as a JSON file.
-4. Initiate the Terraform state : `terraform init`.
-5. Retrieve the Terraform GCP module : `terraform get`.
-6. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
-7. Verify the Terraform plan : `terraform plan`.
-8. Apply the Terraform plan : `terraform apply`.
+3. Install the [Google Cloud SDK](https://cloud.google.com/sdk/install)
+4. Login to your Google account : `gcloud auth application-default login`
+5. Initiate the Terraform state : `terraform init`.
+6. Retrieve the Terraform GCP module : `terraform get`.
+7. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
+8. Verify the Terraform plan : `terraform plan`.
+9. Apply the Terraform plan : `terraform apply`.
 
 To tear down the cluster, from the `my_new_cluster` folder, call: `terraform destroy`.
 

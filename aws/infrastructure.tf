@@ -98,7 +98,7 @@ resource "aws_key_pair" "key" {
 # Instances
 resource "aws_instance" "mgmt01" {
   instance_type               = "${var.instance_type_mgmt}"
-  ami                         = "ami-dcad28b8"                                           # CentOS 7 -  ca-central-1
+  ami                         = "ami-dcad28b8" # CentOS 7 -  ca-central-1
   user_data                   = "${data.template_cloudinit_config.mgmt_config.rendered}"
   subnet_id                   = "${aws_subnet.private_subnet.id}"
   key_name                    = "${aws_key_pair.key.key_name}"
@@ -121,7 +121,7 @@ resource "aws_instance" "mgmt01" {
 
 resource "aws_instance" "login01" {
   instance_type               = "${var.instance_type_login}"
-  ami                         = "ami-dcad28b8"                                            # CentOS 7 -  ca-central-1
+  ami                         = "ami-dcad28b8" # CentOS 7 -  ca-central-1
   user_data                   = "${data.template_cloudinit_config.login_config.rendered}"
   subnet_id                   = "${aws_subnet.private_subnet.id}"
   key_name                    = "${aws_key_pair.key.key_name}"
@@ -134,7 +134,7 @@ resource "aws_instance" "login01" {
   ]
 
   tags {
-    Name = "login01"
+    Name = "${var.cluster_name}01"
   }
 }
 

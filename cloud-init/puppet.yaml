@@ -9,10 +9,14 @@ runcmd:
   - git clone https://git.computecanada.ca/fafor10/slurm_cloud_puppet.git /root/puppet
   - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir /root/puppet/modules --puppetfile=/root/puppet/Puppetfile
   - /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
-  - "echo '@reboot /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log' | crontab -"
-  - reboot -n
+  - crontab /root/crontab
+  # - reboot -n
 
 write_files:
+  - content: |
+      @reboot /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
+      */5 * * * * /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
+    path: /root/crontab
   - content: |
       ---
       version: 5
@@ -33,6 +37,9 @@ write_files:
       profile::freeipa::guest_accounts::nb_accounts: ${nb_users}
       profile::slurm::base::cluster_name: "${cluster_name}"
       profile::slurm::base::munge_key: "${munge_key}"
+      profile::slurm::accounting::password: "${admin_passwd}"
+      profile::globus::base::globus_user: "${globus_user}"
+      profile::globus::base::globus_password: "${globus_password}"
       jupyterhub::domain_name: "${domain_name}"
     path: /etc/puppetlabs/puppet/hieradata/common.yaml
     owner: root:root
@@ -40,4 +47,5 @@ write_files:
 
 disable_ec2_metadata: false
 timezone: "America/Montreal"
+fqdn: "${node_name}"
 output: { all: "| tee -a /var/log/cloud-init-output.log" }

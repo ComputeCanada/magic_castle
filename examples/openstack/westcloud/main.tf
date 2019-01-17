@@ -11,10 +11,11 @@ module "openstack" {
 
   # OpenStack specifics
   os_external_network = "VLAN3337"
-  os_image_id         = "5088c906-1636-4319-9dcb-76ab92257731"
+  os_image_name       = "CentOS-7-x86_64-GenericCloud-1809"
   os_flavor_node      = "p2-3gb"
   os_flavor_login     = "p2-3gb"
   os_flavor_mgmt      = "p2-3gb"
+  os_floating_ip      = ""
 }
 
 output "public_ip" {
