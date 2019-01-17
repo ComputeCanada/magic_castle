@@ -19,9 +19,11 @@ module "openstack" {
 }
 
 module "dns" {
-  source      = "git::ssh://gitlab@git.computecanada.ca/fafor10/slurm_cloud.git//dns/cloudflare"
-  domain_name = "${module.openstack.domain_name}"
-  public_ip   = "${module.openstack.ip}"
+  source           = "git::ssh://gitlab@git.computecanada.ca/fafor10/slurm_cloud.git//dns/cloudflare"
+  domain_name      = "${module.openstack.domain_name}"
+  public_ip        = "${module.openstack.ip}"
+  rsa_public_key   = "${module.openstack.rsa_public_key}"
+  ecdsa_public_key = "${module.openstack.ecdsa_public_key}"
 }
 
 output "public_ip" {
