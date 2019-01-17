@@ -87,4 +87,6 @@ and all nodes should have an idle state.
 - Verify JupyterHub state: `systemctl status jupyterhub`. It should be active.
 - Verify you can run interactive jobs: `salloc`
 - Verify the home were created: `ls /home`. You should see as many home as there are guest account + centos account.
+
+If you used the CloudFlare DNS Service
 - Verify the domain name: go to https://${domain_name}. It should be JupyterHub login page.
