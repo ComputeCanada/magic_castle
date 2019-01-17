@@ -4,7 +4,7 @@ variable "os_flavor_mgmt" {}
 
 variable "os_external_network" {}
 
-variable "os_image_id" {}
+variable "os_image_name" {}
 
 variable "os_floating_ip" {
     default = ""
