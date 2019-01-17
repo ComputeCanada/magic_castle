@@ -15,7 +15,7 @@ module "openstack" {
   os_flavor_node       = "p2-3gb"
   os_flavor_login      = "p2-3gb"
   os_flavor_mgmt       = "p4-6gb"
-
+  os_floating_ip       = ""
 }
 
 output "public_ip" {

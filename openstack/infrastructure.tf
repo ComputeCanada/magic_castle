@@ -148,11 +148,11 @@ resource "openstack_compute_instance_v2" "node" {
 }
 
 resource "openstack_networking_floatingip_v2" "fip_1" {
-  count = "${var.public_ip == "" ? 1 : 0}"
+  count = "${var.os_floating_ip == "" ? 1 : 0}"
   pool  = "${var.os_external_network}"
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
-  floating_ip = "${var.public_ip != "" ? var.public_ip : element(concat(openstack_networking_floatingip_v2.fip_1.*.address, list("")), 0) }"
+  floating_ip = "${var.os_floating_ip != "" ? var.os_floating_ip : element(concat(openstack_networking_floatingip_v2.fip_1.*.address, list("")), 0) }"
   instance_id = "${openstack_compute_instance_v2.login01.id}"
 }

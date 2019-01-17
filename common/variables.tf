@@ -10,10 +10,6 @@ variable "domain_name" {}
 
 variable "public_key_path" {}
 
-variable "public_ip" {
-    default = ""
-}
-
 variable "globus_user" {}
 
 variable "globus_password" {}

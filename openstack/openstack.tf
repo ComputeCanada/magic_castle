@@ -6,6 +6,6 @@ variable "os_external_network" {}
 
 variable "os_image_id" {}
 
-variable "os_availability_zone" {
+variable "os_floating_ip" {
     default = ""
 }
