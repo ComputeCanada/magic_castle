@@ -11,10 +11,9 @@
 3. Download your project openrc file from the OpenStack _Access and security_ section.
 4. Source your project openrc file : `source _project_-openrsh.sh`.
 5. Initiate the Terraform state : `terraform init`.
-6. Retrieve the Terraform OpenStack module : `terraform get`.
-7. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
-8. Verify the Terraform plan : `terraform plan`.
-9. Apply the Terraform plan : `terraform apply`.
+6. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
+7. Verify the Terraform plan : `terraform plan`.
+8. Apply the Terraform plan : `terraform apply`.
 
 To tear down the cluster, from the `my_new_cluster` folder, call: `terraform destroy`.
 
@@ -24,10 +23,9 @@ To tear down the cluster, from the `my_new_cluster` folder, call: `terraform des
 2. Copy an example `main.tf` from the [aws example folder](https://git.computecanada.ca/fafor10/slurm_cloud/tree/master/examples/aws).
 3. Export the following environment variables : `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
 4. Initiate the Terraform state : `terraform init`.
-5. Retrieve the Terraform OpenStack module : `terraform get`.
-6. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
-7. Verify the Terraform plan : `terraform plan`.
-8. Apply the Terraform plan : `terraform apply`.
+5. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
+6. Verify the Terraform plan : `terraform plan`.
+7. Apply the Terraform plan : `terraform apply`.
 
 To tear down the cluster, from the `my_new_cluster` folder, call: `terraform destroy`.
 
@@ -39,10 +37,9 @@ To tear down the cluster, from the `my_new_cluster` folder, call: `terraform des
 4. Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) if not already installed : `pip install azure-cli`.
 5. Login to Azure and follow the instructions : `az login`.
 6. Initiate the Terraform state : `terraform init`.
-7. Retrieve the Terraform Azure module : `terraform get`.
-8. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
-9. Verify the Terraform plan : `terraform plan`.
-10. Apply the Terraform plan : `terraform apply`.
+7. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
+8. Verify the Terraform plan : `terraform plan`.
+9. Apply the Terraform plan : `terraform apply`.
 
 To tear down the cluster, from the `my_new_cluster` folder, call: `terraform destroy`.
 
@@ -53,10 +50,9 @@ To tear down the cluster, from the `my_new_cluster` folder, call: `terraform des
 3. Install the [Google Cloud SDK](https://cloud.google.com/sdk/install)
 4. Login to your Google account : `gcloud auth application-default login`
 5. Initiate the Terraform state : `terraform init`.
-6. Retrieve the Terraform GCP module : `terraform get`.
-7. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
-8. Verify the Terraform plan : `terraform plan`.
-9. Apply the Terraform plan : `terraform apply`.
+6. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
+7. Verify the Terraform plan : `terraform plan`.
+8. Apply the Terraform plan : `terraform apply`.
 
 To tear down the cluster, from the `my_new_cluster` folder, call: `terraform destroy`.
 
@@ -76,6 +72,7 @@ To tear down the cluster, from the `my_new_cluster` folder, call: `terraform des
 ## Using Cloudflare DNS Service
 
 1. Uncomment the `dns` module in your `main.tf`.
+2. Download and install the CloudFlare module: `terraform get`.
 2. Export the following environment variables `CLOUDFLARE_EMAIL` and `CLOUDFLARE_TOKEN`.
 3. Run `terraform apply`.
 
