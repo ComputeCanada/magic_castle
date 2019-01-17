@@ -227,14 +227,12 @@ cluster rebuild at next `terraform apply`.
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
 defines the compute, memory, and storage capacity of an instance.
 
-There some constraints on the flavor.
+For the management server (*mgmt*), choose a flavor with at
+least 3GB of memory.
 
-* The management server (*mgmt*) requires as least 3GB of memory.
-* When using Arbutus, all three flavors need to be either persistent
-or compute. For example, you cannot have `os_mgmt_flavor="p2-3gb"`
-and `os_node_flavor="c2-7.5gb-31"`. Your instances would be in two
-different availability zones and would not be able to communicate through
-the internal network.
+#### `os_floating_ip`
+
+**TODO: Document this variable**
 
 ### Planning Cluster Deployment
 
