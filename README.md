@@ -82,7 +82,7 @@ To tear down the cluster, from the `my_new_cluster` folder, call: `terraform des
 ## Verifying the cluster state
 
 On the login node :
-- Verify SLURM cluster state: `sinfo`. You should see the number of nodes defined in `variables.tf` 
+- Verify SLURM cluster state: `sinfo`. You should see the number of nodes defined in `main.tf`.
 and all nodes should have an idle state.
 - Verify JupyterHub state: `systemctl status jupyterhub`. It should be active.
 - Verify you can run interactive jobs: `salloc`
