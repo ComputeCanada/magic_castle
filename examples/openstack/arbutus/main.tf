@@ -38,6 +38,9 @@ output "domain_name" {
 	value = "${module.openstack.domain_name}"
 }
 
+output "admin_username" {
+	value = "${module.openstack.admin_username}"
+}
 output "admin_passwd" {
 	value = "${module.openstack.admin_passwd}"
 }

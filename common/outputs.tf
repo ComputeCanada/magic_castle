@@ -2,8 +2,19 @@ output "ip" {
   value = "${local.public_ip}"
 }
 
+output "cluster_name" {
+  value = "${var.cluster_name}"
+}
+output "domain" {
+  value = "${var.domain}"
+}
+
 output "domain_name" {
   value = "${local.domain_name}"
+}
+
+output "admin_username" {
+  value = "centos"
 }
 
 output "admin_passwd" {
