@@ -52,21 +52,7 @@ resource "openstack_compute_secgroup_v2" "secgroup_1" {
     from_port   = 22
     to_port     = 22
     ip_protocol = "tcp"
-    cidr        = "132.203.0.0/16"
-  }
-
-  rule {
-    from_port   = 22
-    to_port     = 22
-    ip_protocol = "tcp"
-    cidr        = "132.219.0.0/16"
-  }
-
-  rule {
-    from_port   = 22
-    to_port     = 22
-    ip_protocol = "tcp"
-    cidr        = "206.12.0.0/16"
+    cidr        = "0.0.0.0/0"
   }
 
   rule {
