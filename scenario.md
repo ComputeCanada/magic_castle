@@ -10,7 +10,7 @@ Version: 1.0
 ## Setup
 For the workshop you will need
 
-* the latest release of Terraform (0.11.10).
+* Terraform (latest or 0.11.11).
 * git
 * A Compute Canada Cloud account
 
@@ -39,7 +39,6 @@ https://draw.io/
 2. Star the repo ;).
 3. Click on the `examples` folder.
 4. Click on the `openstack` folder.
-5. Verify everyone has an arbutus cloud account.
 6. Click on the `arbutus` folder. For those who do not have an account on Arbutus, select the cloud corresponding to your account.
 7. Click on `main.tf`
 
@@ -110,7 +109,7 @@ which this Slurm managed cluster is known in the accounting database
 
 Define with lowercase alphanumeric characters and start with a letter.
 
-Modifying this variable after the cluster is built lead to a complete
+Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
 #### `domain`
@@ -122,27 +121,27 @@ cluster rebuild at next `terraform apply`.
 `int.{cluster_name}.{domain}`
 
 If you own a domain, you can register the login floating IP address
-under this domain name manually with your registrar. An optional module
-following the `openstack` module in the example `main.tf` can register
-the domain name if your domain's nameservers are administred
+under `{cluster_name}.{domain}` manually with your registrar. An optional
+module following the `openstack` module in the example `main.tf` can
+register the domain name if your domain's nameservers are administred
 by CloudFlare.
 
-Modifying this variable after the cluster is built lead to a complete
+Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
 #### `nb_nodes`
 
-`nb_nodes` defines how many compute nodes virtual machines
+`nb_nodes` defines how many compute node instances
 will be created. This integer can be between 0 and your cloud allocation
-instance upper limit minus 2 (you must leave space for a management and
+instance upper limit minus 2 (you must leave room for a management and
 a login node).
 
 This variable can be modified at any point of your cluster lifetime.
 Terraform will manage the creation or destruction of the virtual machines
 for you. It is therefore possible to start with 0 compute nodes, build the
-cluster, and later add more.
+cluster, and add more later.
 
-Modifying this variable after the cluster is built only affect the number
+Modifying this variable after the cluster is built only affects the number
 of compute nodes at next `terraform apply`.
 
 #### `nb_users`
@@ -150,7 +149,7 @@ of compute nodes at next `terraform apply`.
 `nb_users` defines how many user accounts will be created in
 FreeIPA. Each user account shares the same randomly generated password.
 The usernames are defined as `userX` where `X` is a number between 1 and
-the value of `nb_users`.
+the value of `nb_users` (zero-padded, i.e.: `user01 if X < 100`, `user1 if X < 10`).
 
 Each user has a home folder on a shared NFS storage hosted by the management
 node.
@@ -159,7 +158,14 @@ User accounts do not have administrator privileges. If you wish to use `sudo`,
 you will have to login using the administrator account named `centos` and the
 SSH key defined by `public_key_path`.
 
-Modifying this variable after the cluster is built lead to a complete
+If you would like to add a user account after the cluster is built. Log in the
+management node and call:
+```
+$ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> \
+ /sbin/ipa_create_user.sh <username>
+```
+
+Modifying `nb_users` after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
 #### `shared_storage_size`
@@ -178,20 +184,24 @@ cluster rebuild at next `terraform apply`.
 
 #### `public_key_path`
 
-`public_key_path` is the path to the file that contains an SSH public
-key. This key will associated with the `centos` account to provide you
+`public_key_path` is a path to an SSH public key file of your choice.
+This key will associated with the `centos` account to provide you
 administrative access to the cluster.
 
-Modifying this variable after the cluster is built lead to a complete
+Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### `globus_user` (**optional**)
+#### `globus_user` and `globus_password` (**optional**)
 
-**TODO: Document this variable**
+`globus_user` and `globus_password` are optional credentials that, when provided,
+are used to register a Globus Endpoint on [globus.org](globus.org). This endpoint will point
+to the NFS storage and could be used to demonstrate users how to use Globus or
+transfer file to and from the cloud cluster.
 
-#### `globus_password` (**optional**)
+The name of the registered endpoint corresponds to `{cluster_name}.{domain}`.
 
-**TODO: Document this variable**
+Modifying these variables after the cluster is built leads to a complete
+cluster rebuild at next `terraform apply`.
 
 #### `os_external_network`
 
@@ -209,7 +219,7 @@ your external network, in the OpenStack web UI go to : Project → Network → N
 and then look for the name of the network which **External** column is set
 to **Yes**.
 
-Modifying this variable after the cluster is built lead to a rebuild of the
+Modifying this variable after the cluster is built leads to a rebuild of the
 login node and a renew of its floating ip at next `terraform apply`.
 
 #### `os_image_name`
