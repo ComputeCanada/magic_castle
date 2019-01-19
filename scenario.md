@@ -226,14 +226,14 @@ login node and a renew of its floating ip at next `terraform apply`.
 
 `os_image_name` defines the name of the image that will be used as the
 base image for the cluster nodes. For the provisionning to work properly,
-this image has to be a CentOS 7 based image.
+this image has to be based on CentOS 7.
 
 You can use custom CentOS 7 image if you wish, but provisioning custommization
 should be mainly done through Puppet scripting. Image customization is mostly
 envision to accelerate the provisioning process by applying in advance the
 security patches and general OS updates.
 
-Modifying this variable after the cluster is built lead to a complete
+Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
 #### `os_flavor_mgmt`, `os_flavor_login` and `os_flavor_node`.
@@ -244,12 +244,22 @@ defines the compute, memory, and storage capacity of an instance.
 
 For `os_flavor_mgmt`, choose a flavor with at least 3GB of memory.
 
-Modifying one of these variables after the cluster is built lead
-to a rebuild of the instances with the corresponding type.
+Modifying one of these variables after the cluster is built leads
+to a rebuild of the instances with the corresponding type. If it
+is the management node flavor, the entire cluster will be rebuild.
 
 #### `os_floating_ip` (**optional**)
 
-**TODO: Document this variable**
+`os_floating_ip` defines pre-allocated floating ip address that will
+be assign to the login node. If this variable is left empty, the
+floating ip will be managed by Terraform.
+
+This variable can be useful if you administered your DNS manually and
+you would like the keep the same domain name for your cluster at each
+build.
+
+Modifying this variable after the cluster is built will change the
+floating ip assigned to the login node.
 
 ### Planning Cluster Deployment
 
@@ -284,5 +294,119 @@ is only a dry-run. If Terraform does not report any error, you can move
 to the next step. Otherwise, read the errors and fix your configuration
 file accordingly.
 
-### Applying the Configuration File
+### Creating the Cluster
+
+To create the resources defined by your module, enter the following command
+```
+$ terraform apply
+```
+
+The command will produce the same output as the `plan` command, but after
+the output it will ask for a confirmation to perform the proposed actions.
+Enter `yes`.
+
+Terraform will then proceed to create the resources defined by the
+configuration file. It should take a few minutes. Once the creation process
+is completed, Terraform will output the administror password, the user
+account password, the administrator username and the floating ip of the login
+node.
+
+**Beware**, altough the instance creation process is finished once Terraform
+outputs the connection information, you will not be able to
+connect and use the cluster immediately. The instance creation is only the
+first phase of the cluster building process. The provisioning: the
+creation of the user accounts, installation of FreeIPA, Slurm, configuration
+of JupyterHub, etc.; takes around 15 minutes after the instances are created.
+
+You can follow the provisioning process on the insances by looking at:
+
+* `/var/log/cloud-init-output.log`
+* `/var/log/puppetlabs/puppet/puppet.log` (require admin privileges)
+
+once the instances are booted.
+
+If unexpected problems occur during provisioning, you can provide these
+logs to the authors of Magic Castle to help you debug.
+
+### Modifying the Cluster Infrastructure
+
+You can modify the `main.tf` at any point of your cluster's life and
+apply the modifications while it is running. Depending on the variables
+you modify, Terraform will destroy some or all resources for recreate
+them. We have previously identify the effect of modifying each variable
+in their own section of this document.
+
+For example, to increase the number of computes nodes by one. Open
+`main.tf`, add 1 to `nb_nodes`, save the document and call
+```
+$ terraform apply
+```
+
+Terraform will analyze the difference between the current state and
+the future state, and plan the creation of a single new instance. If
+you accept the action plan, the instance will be created, provisioned
+and eventually automatically add to the Slurm cluster configuration.
+
+You could do the inverse and reduce the number of compute nodes to 0.
+
+### Destroying the Cluster
+
+Once you're done working with your cluster and you would like to recover
+the resources, in the same folder as `main.tf`, enter:
+```
+$ terraform destroy
+```
+
+As for `apply`, Terraform will output a plan that you will
+have to confirm by entering `yes`.
+
+**Beware**, once the cluster is destroyed, nothing will be left, even the
+shared storage will be erased.
+
+## Customizing a Live Cluster
+
+Once the cluster is build and provisioned, you are free to modify
+its software configuration as you please by connecting to it and
+abusing your administrator privileges. If after modifying the
+configuration, you think it would be good for Magic Castle to
+support your new features, make sure to submit an issue on the
+git repo or fork the slurm_cloud_puppet repo a make a pull-request.
+
+We will list here a few common customizations that are not currently
+supported directly by Magic Castle, but that are easy to do live.
+
+Most customizations are done from the management node (`mgmt01`).
+To connect to the management node, follow these steps:
+1. Make sure your SSH key is loaded in your ssh-agent.
+2. SSH in your cluster with with forwarding of the authentication
+agent connection enabled: `ssh -A centos@cluster_ip`.
+3. SSH in the management node : `ssh  centos@mgmt01`
+
+### Replace the User Accounts Password
+
+A four words password might not be ideal for workshops with new users
+who barely know how to type. To replace the randomly-generated
+password of the user accounts, follow these steps:
+
+2. Connect to `mgmt01`
+2. Create a variable containing the randomly generated password: `OLD_PASSWD=<random_passwd>`
+3. Create a variable containing the new human defined password: `NEW_PASSWD=<human_passwd>`.
+This password must respect the FreeIPA password policy. To display the policy enter
+`$ sudo ipa pwpolicy-show`
+4. Loop on all user accounts to replace the old password by the new one:
+```
+for username in $(seq -f "%02g" 1 100); do
+  echo -e "$OLD_PASSWD\n$NEW_PASSWD\n$NEW_PASSWD" | kinit $username
+  kdestroy
+done
+```
+
+### Add a User Account
+
+If you would like to add a user account after the cluster is built. Log in the
+management node and call:
+```
+$ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> \
+ /sbin/ipa_create_user.sh <username>
+```
 
