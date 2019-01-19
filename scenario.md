@@ -78,7 +78,7 @@ again to make sure you have all plugins.
 The initialization process creates a `.terraform` folder at the root of your current
 folder. You do not need to look at its content for now.
 
-### Customizing Your Cluster
+### Configuring Your Cluster
 
 The order of the input parameters we are about to present does not matter, but
 we recommend leaving it as it is presented in the examples.
@@ -370,17 +370,18 @@ its software configuration as you please by connecting to it and
 abusing your administrator privileges. If after modifying the
 configuration, you think it would be good for Magic Castle to
 support your new features, make sure to submit an issue on the
-git repo or fork the slurm_cloud_puppet repo a make a pull-request.
+git repo or fork the slurm_cloud_puppet repo and make a pull-request.
 
 We will list here a few common customizations that are not currently
 supported directly by Magic Castle, but that are easy to do live.
 
 Most customizations are done from the management node (`mgmt01`).
 To connect to the management node, follow these steps:
+
 1. Make sure your SSH key is loaded in your ssh-agent.
 2. SSH in your cluster with with forwarding of the authentication
 agent connection enabled: `ssh -A centos@cluster_ip`.
-3. SSH in the management node : `ssh  centos@mgmt01`
+3. SSH in the management node : `ssh centos@mgmt01`
 
 ### Replace the User Accounts Password
 
@@ -410,3 +411,22 @@ $ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> \
  /sbin/ipa_create_user.sh <username>
 ```
 
+### Restrict SSH Access
+
+By default, port 22 of the login node is accessible from the world.
+If you know the range of ip addresses that will connect to your cluster,
+we strongly recommend you to limit the access to port 22 to this range.
+
+To restrict the ip range, you can use OpenStack web ui.
+
+1. In OpenStack web ui, go to: **Project** → **Network** → **Security Groups**
+2. In the Security Groups table, there should be a line named like your cluster
+with the suffix `_secgroup`. Click on the corresponding **Managed Rules** button.
+3. Find the line with **22 (SSH)** in the **Port Range** column and click on the **Delete Rule** button. Click **Delete Rule** in the following message box.
+4. Click on the **Add Rule** button.
+5. Select **SSH** in Rule dropping list
+6. Define the range of ip addresses in the CIDR box.
+7. Click on Add
+8. Repeat 3 to 6 if you have multiple ip ranges.
+
+Try to SSH in your cluster. If the connection times out, your ip address is out of the range of you entered or you made a mystake when defining the range. Repeat from step 3.
