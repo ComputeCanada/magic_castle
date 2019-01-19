@@ -430,3 +430,24 @@ with the suffix `_secgroup`. Click on the corresponding **Managed Rules** button
 8. Repeat 3 to 6 if you have multiple ip ranges.
 
 Try to SSH in your cluster. If the connection times out, your ip address is out of the range of you entered or you made a mystake when defining the range. Repeat from step 3.
+
+### Increase Jupyter Notebook Job Walltime
+
+By default, the Jupyter Notebook jobs started by the cluster have a
+maximum walltime of 1 hour. To increase this value or modify
+other parameter of the Jupyter Notebook job, edit the following
+file on the login node:
+`/opt/jupyterhub/etc/submit.sh`
+
+### Add Packages to Jupyter Notebook Kernel
+
+On the login node, edit the file
+`/opt/jupyterhub/bin/build_venv_tarball.sh` and add new
+`pip install` after the ones already in the file. Once the
+file is edited, call the following command:
+
+```
+$ sudo /opt/jupyterhub/bin/build_venv_tarball.sh
+```
+
+## Customize Magic Castle Terraform Files
