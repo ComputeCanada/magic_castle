@@ -21,10 +21,10 @@ module "openstack" {
 }
 
 output "admin_username" {
-	value = "${module.openstack.admin_username}"
+  value = "${module.openstack.admin_username}"
 }
 output "freeipa_admin_passwd" {
-	value = "${module.openstack.freeipa_admin_passwd}"
+  value = "${module.openstack.freeipa_admin_passwd}"
 }
 
 output "guest_usernames" {
@@ -32,11 +32,11 @@ output "guest_usernames" {
 }
 
 output "guest_passwd" {
-	value = "${module.openstack.guest_passwd}"
+  value = "${module.openstack.guest_passwd}"
 }
 
 output "public_ip" {
-	value = "${module.openstack.ip}"
+  value = "${module.openstack.ip}"
 }
 
 ## Uncomment to register your domain name with CloudFlare
