@@ -13,8 +13,12 @@ output "admin_username" {
   value = "centos"
 }
 
-output "admin_passwd" {
+output "freeipa_admin_passwd" {
   value = "${random_string.admin_passwd.result}"
+}
+
+output "guest_usernames" {
+  value = "user[01-${var.nb_users}]"
 }
 
 output "guest_passwd" {
