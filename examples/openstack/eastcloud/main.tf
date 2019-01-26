@@ -23,8 +23,12 @@ module "openstack" {
 output "admin_username" {
 	value = "${module.openstack.admin_username}"
 }
-output "admin_passwd" {
-	value = "${module.openstack.admin_passwd}"
+output "freeipa_admin_passwd" {
+	value = "${module.openstack.freeipa_admin_passwd}"
+}
+
+output "guest_usernames" {
+  value = "${module.openstack.guest_usernames}"
 }
 
 output "guest_passwd" {
