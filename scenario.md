@@ -383,6 +383,20 @@ To connect to the management node, follow these steps:
 agent connection enabled: `ssh -A centos@cluster_ip`.
 3. SSH in the management node : `ssh centos@mgmt01`
 
+### Deactivate Puppet
+
+If you plan to modify configuration files manually, you will need to deactivate
+Puppet. Otherwise, you might find out that your modifications to the file
+dissapear in a window of 5 minutes.
+
+To avoid this, you will have to delete root crontab. To delete root crontab,
+enter : `sudo crontab -r`. This command will need to be run on every node that
+runs a service that will be affected by your modification to a configuration
+file.
+
+For example, if you plan to modify the `submit.sh` file of JupyterHub, delete
+root crontab of the login node.
+
 ### Replace the User Accounts Password
 
 A four words password might not be ideal for workshops with new users
@@ -434,9 +448,13 @@ with the suffix `_secgroup`. Click on the corresponding **Managed Rules** button
 7. Click on Add
 8. Repeat 3 to 6 if you have multiple ip ranges.
 
-Try to SSH in your cluster. If the connection times out, your ip address is out of the range of you entered or you made a mystake when defining the range. Repeat from step 3.
+Try to SSH in your cluster. If the connection times out, your ip address is out
+of the range of you entered or you made a mystake when defining the range.
+Repeat from step 3.
 
 ### Increase Jupyter Notebook Job Walltime
+
+**Require Puppet deactivation on the login node**
 
 By default, the Jupyter Notebook jobs started by the cluster have a
 maximum walltime of 1 hour. To increase this value or modify
@@ -446,6 +464,8 @@ file on the login node:
 
 ### Add Packages to Jupyter Notebook Kernel
 
+**Require Puppet deactivation on the login node**
+
 On the login node, edit the file
 `/opt/jupyterhub/bin/build_venv_tarball.sh` and add new
 `pip install` after the ones already in the file. Once the
@@ -454,5 +474,47 @@ file is edited, call the following command:
 ```
 $ sudo /opt/jupyterhub/bin/build_venv_tarball.sh
 ```
+
+### Activate Slurm Oversubscription
+
+**Require Puppet deactivation on the management node**
+
+Sometime, you might be interested in running more jobs than you
+have cores available.
+
+To activate Slurm oversubscription, edit `/etc/slurm/slurm.conf`
+and add `OverSubscribe=YES` at the end of the partition line that
+starts with `PartitionName=`. Once `slurm.conf` is modified, run:
+```
+sudo scontrol reconfigure
+```
+to tell Slurm to reload its configuration file.
+
+`OverSubscribe=YES` indicates to Slurm that
+CPUs allocated to a job may be shared with other jobs if
+each job allows sharing via the `--oversubscribe` option.
+Only the CPUs can be oversubscribed. Therefore, the number
+of jobs that can run on a node corresponds to the memory available
+and the memory allocated per job.
+
+Look at Slurm's documentation to know more:
+https://slurm.schedmd.com/cons_res_share.html
+
+#### Run More Notebooks Than Cores
+
+**Require Puppet deactivation on the login node**
+
+Now that oversubscription is activated, you can modify the
+JupyterHub submit file to allow notebook jobs to run on
+oversubscribed nodes.
+
+Edit `/opt/jupyterhub/etc/submit.sh` and add
+```
+#SBATCH --oversubscribe
+```
+
+Also take time to edit the number of tasks and the amount of
+memory per cpu to configure how many notebooks will be able to
+run on a single node.
 
 ## Customize Magic Castle Terraform Files
