@@ -389,15 +389,20 @@ A four words password might not be ideal for workshops with new users
 who barely know how to type. To replace the randomly-generated
 password of the user accounts, follow these steps:
 
-2. Connect to `mgmt01`
+1. Connect to the cluster.
 2. Create a variable containing the randomly generated password: `OLD_PASSWD=<random_passwd>`
 3. Create a variable containing the new human defined password: `NEW_PASSWD=<human_passwd>`.
 This password must respect the FreeIPA password policy. To display the policy enter
-`$ sudo ipa pwpolicy-show`
+```
+$ kinit admin # Enter FreeIPA admin password provided by Terraform
+$ ipa pwpolicy-show
+$ kdestroy
+```
 4. Loop on all user accounts to replace the old password by the new one:
 ```
-for username in $(seq -f "%02g" 1 100); do
-  echo -e "$OLD_PASSWD\n$NEW_PASSWD\n$NEW_PASSWD" | kinit $username
+for username in $(ls /home/ | grep user); do
+  echo -e "$OLD_PASSWD" | kinit $username
+  echo -e "$NEW_PASSWD\n$NEW_PASSWD" | ipa user-mod $username --password
   kdestroy
 done
 ```
