@@ -22,3 +22,35 @@ module "gcp" {
   gpu_per_node       = ["nvidia-tesla-k80", 1]
 
 }
+
+output "admin_username" {
+  value = "${module.gcp.admin_username}"
+}
+output "freeipa_admin_passwd" {
+  value = "${module.gcp.freeipa_admin_passwd}"
+}
+
+output "guest_usernames" {
+  value = "${module.gcp.guest_usernames}"
+}
+
+output "guest_passwd" {
+  value = "${module.gcp.guest_passwd}"
+}
+
+output "public_ip" {
+  value = "${module.gcp.ip}"
+}
+
+## Uncomment to register your domain name with CloudFlare
+# module "dns" {
+#   source           = "git::ssh://gitlab@git.computecanada.ca/fafor10/slurm_cloud.git//dns/cloudflare"
+#   name             = "${module.gcp.cluster_name}"
+#   domain           = "${module.gcp.domain}"
+#   public_ip        = "${module.gcp.ip}"
+#   rsa_public_key   = "${module.gcp.rsa_public_key}"
+#   ecdsa_public_key = "${module.gcp.ecdsa_public_key}"
+# }
+# output "domain_name" {
+# 	value = "${module.dns.domain_name}"
+# }
