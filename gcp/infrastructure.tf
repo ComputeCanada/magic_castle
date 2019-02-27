@@ -138,7 +138,7 @@ resource "google_compute_firewall" "default" {
 }
 
 locals {
-  mgmt01_ip = "${google_compute_instance.mgmt01.network_interface.0.address}"
-  public_ip = "${google_compute_instance.login01.network_interface.0.access_config.0.assigned_nat_ip}"
+  mgmt01_ip = "${google_compute_instance.mgmt01.network_interface.0.network_ip}"
+  public_ip = "${google_compute_instance.login01.network_interface.0.access_config.0.nat_ip}"
   cidr = "10.128.0.0/9" # GCP default
 }
