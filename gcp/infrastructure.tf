@@ -19,9 +19,8 @@ resource "google_compute_instance" "mgmt01" {
   }
 
   network_interface {
-	subnetwork = "default"
-	access_config {
-	}
+    subnetwork = "default"
+    access_config { }
   }
 
   metadata {
@@ -56,9 +55,8 @@ resource "google_compute_instance" "login01" {
   }
 
   network_interface {
-	subnetwork = "default"
-	access_config {
-	}
+    subnetwork = "default"
+    access_config { }
   }
 
   metadata {
@@ -102,14 +100,13 @@ resource "google_compute_instance" "node" {
   }
 
   network_interface {
-	subnetwork = "default"
-	access_config {
-	}
+    subnetwork = "default"
+    access_config { }
   }
 
   metadata {
     sshKeys = "centos:${file(var.public_key_path)}"
-    user-data = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"  
+    user-data = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"
     user-data-encoding = "base64"
   }
 
