@@ -8,6 +8,8 @@ module "gcp" {
   nb_users            = 10
   shared_storage_size = 100
   public_key_path     = "./key.pub"
+  globus_user         = ""
+  globus_password     = ""
 
   # GCP specifics
   project_name       = "crested-return-137823"
