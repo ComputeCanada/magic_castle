@@ -3,10 +3,10 @@ module "gcp" {
 
   # JupyterHub + Slurm definition
   cluster_name        = "phoenix"
+  domain_name         = "calculquebec.cloud"
   nb_nodes            = 5
   nb_users            = 10
   shared_storage_size = 100
-  domain_name         = "jupyter2.calculquebec.cloud"
   public_key_path     = "./key.pub"
 
   # GCP specifics
