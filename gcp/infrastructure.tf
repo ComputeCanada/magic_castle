@@ -14,7 +14,7 @@ resource "google_compute_instance" "mgmt01" {
 
   boot_disk {
     initialize_params {
-      image = "centos-7"
+      image = "${var.gcp_image}"
       size  = "${var.shared_storage_size}"
     }
   }
@@ -51,7 +51,7 @@ resource "google_compute_instance" "login01" {
 
   boot_disk {
     initialize_params {
-      image = "centos-7"
+      image = "${var.gcp_image}"
     }
   }
 
@@ -96,7 +96,7 @@ resource "google_compute_instance" "node" {
 
   boot_disk {
     initialize_params {
-      image = "centos-7"
+      image = "${var.gcp_image}"
     }
   }
 

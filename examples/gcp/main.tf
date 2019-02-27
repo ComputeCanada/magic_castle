@@ -15,6 +15,7 @@ module "gcp" {
   project_name       = "crested-return-137823"
   zone               = "us-central1"
   zone_region        = "us-central1-a"
+  gcp_image          = "centos-7"
   # Minimun size to install freeipa-server
   machine_type_mgmt  = "g1-small"
   machine_type_login = "g1-small"
