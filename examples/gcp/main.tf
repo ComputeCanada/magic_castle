@@ -11,7 +11,6 @@ module "gcp" {
 
   # GCP specifics
   project_name       = "crested-return-137823"
-  credentials_file   = "./credentials.json"
   zone               = "us-central1"
   zone_region        = "us-central1-a"
   # Minimun size to install freeipa-server
