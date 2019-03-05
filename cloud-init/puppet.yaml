@@ -14,8 +14,8 @@ runcmd:
 
 write_files:
   - content: |
-      @reboot /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
-      */5 * * * * /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
+      @reboot /usr/bin/flock -n /var/lock/puppet.lock /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
+      */5 * * * * /usr/bin/flock -n /var/lock/puppet.lock /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
     path: /root/crontab
   - content: |
       ---
