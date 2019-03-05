@@ -18,7 +18,7 @@ output "freeipa_admin_passwd" {
 }
 
 output "guest_usernames" {
-  value = "user[01-${var.nb_users}]"
+  value = "user[${format(format("%%0%dd", ceil(log(var.nb_users,10))+1), 1)}-${var.nb_users}]"
 }
 
 output "guest_passwd" {
