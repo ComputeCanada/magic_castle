@@ -5,6 +5,9 @@ variable "nb_nodes" {}
 variable "nb_users" {}
 
 variable "shared_storage_size" {}
+variable "home_size" {}
+variable "project_size" {}
+variable "scratch_size" {}
 
 variable "domain" {}
 
