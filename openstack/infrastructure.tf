@@ -106,19 +106,12 @@ resource "openstack_compute_keypair_v2" "keypair" {
 
 resource "openstack_compute_instance_v2" "mgmt01" {
   name            = "mgmt01"
+  image_id        = "${data.openstack_images_image_v2.image.id}"
+
   flavor_id       = "${data.openstack_compute_flavor_v2.mgmt.id}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
   security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${data.template_cloudinit_config.mgmt_config.rendered}"
-
-  block_device {
-    uuid                  = "${data.openstack_images_image_v2.image.id}"
-    source_type           = "image"
-    volume_size           = "${var.shared_storage_size}"
-    boot_index            = 0
-    destination_type      = "volume"
-    delete_on_termination = true
-  }
 }
 
 locals {
