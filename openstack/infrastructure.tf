@@ -104,6 +104,24 @@ resource "openstack_compute_keypair_v2" "keypair" {
   public_key = "${file(var.public_key_path)}"
 }
 
+resource "openstack_blockstorage_volume_v2" "home" {
+  name        = "${var.cluster_name}_home"
+  description = "${var.cluster_name} /home"
+  size        = "${var.home_size}"
+}
+
+resource "openstack_blockstorage_volume_v2" "project" {
+  name        = "${var.cluster_name}_project"
+  description = "${var.cluster_name} /project"
+  size        = "${var.project_size}"
+}
+
+resource "openstack_blockstorage_volume_v2" "scratch" {
+  name        = "${var.cluster_name}_scratch"
+  description = "${var.cluster_name} /scratch"
+  size        = "${var.scratch_size}"
+}
+
 resource "openstack_compute_instance_v2" "mgmt01" {
   name            = "mgmt01"
   image_id        = "${data.openstack_images_image_v2.image.id}"
@@ -113,6 +131,28 @@ resource "openstack_compute_instance_v2" "mgmt01" {
   security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${data.template_cloudinit_config.mgmt_config.rendered}"
 }
+
+resource "openstack_blockstorage_volume_attach_v2" "va_home" {
+  volume_id  = "${openstack_blockstorage_volume_v2.home.id}"
+  device     = "/dev/vdh"
+  host_name  = "${openstack_compute_instance_v2.mgmt01.name}"
+  ip_address = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
+}
+
+resource "openstack_blockstorage_volume_attach_v2" "va_project" {
+  volume_id  = "${openstack_blockstorage_volume_v2.project.id}"
+  device     = "/dev/vdp"
+  host_name  = "${openstack_compute_instance_v2.mgmt01.name}"
+  ip_address = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
+}
+
+resource "openstack_blockstorage_volume_attach_v2" "va_scratch" {
+  volume_id  = "${openstack_blockstorage_volume_v2.scratch.id}"
+  device     = "/dev/vds"
+  host_name  = "${openstack_compute_instance_v2.mgmt01.name}"
+  ip_address = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
+}
+
 
 locals {
   mgmt01_ip = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
