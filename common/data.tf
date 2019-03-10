@@ -9,6 +9,11 @@ resource "random_pet" "guest_passwd" {
 }
 
 data "template_file" "mgmt" {
+  template = "${file("${path.module}/cloud-init/mgmt.yaml")}"
+  vars {}
+}
+
+data "template_file" "mgmt_puppet" {
   template = "${file("${path.module}/cloud-init/puppet.yaml")}"
 
   vars {
@@ -31,6 +36,12 @@ data "template_cloudinit_config" "mgmt_config" {
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = "${data.template_file.mgmt.rendered}"
+  }
+  part {
+    filename     = "mgmt_puppet.yaml"
+    merge_type   = "list(append)+dict(recurse_array)+str()"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.mgmt_puppet.rendered}"
   }
 }
 

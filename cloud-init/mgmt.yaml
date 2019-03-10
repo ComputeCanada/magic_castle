@@ -1,0 +1,17 @@
+#cloud-config
+
+fs_setup:
+  - label: home
+    filesystem: 'ext4'
+    device: '/dev/vdb'
+  - label: project
+    filesystem: 'ext4'
+    device: '/dev/vdc'
+  - label: scratch
+    filesystem: 'ext4'
+    device: '/dev/vdd'
+
+mounts:
+  - [ home, /mnt/home ]
+  - [ project, /mnt/project ]
+  - [ scratch, /mnt/scratch ]
