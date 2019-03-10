@@ -10,7 +10,11 @@ resource "random_pet" "guest_passwd" {
 
 data "template_file" "mgmt" {
   template = "${file("${path.module}/cloud-init/mgmt.yaml")}"
-  vars {}
+  vars {
+    home_dev    = "${local.home_dev}"
+    project_dev = "${local.project_dev}"
+    scratch_dev = "${local.scratch_dev}"
+  }
 }
 
 data "template_file" "mgmt_puppet" {

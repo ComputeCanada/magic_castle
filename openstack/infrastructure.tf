@@ -135,24 +135,26 @@ resource "openstack_compute_instance_v2" "mgmt01" {
 resource "openstack_compute_volume_attach_v2" "va_home" {
   instance_id = "${openstack_compute_instance_v2.mgmt01.id}"
   volume_id   = "${openstack_blockstorage_volume_v2.home.id}"
-  device      =  "/dev/vdb"
 }
 
 resource "openstack_compute_volume_attach_v2" "va_project" {
   instance_id = "${openstack_compute_instance_v2.mgmt01.id}"
   volume_id  = "${openstack_blockstorage_volume_v2.project.id}"
-  device     = "/dev/vdc"
+  depends_on = ["openstack_compute_volume_attach_v2.va_home"]
 }
 
 resource "openstack_compute_volume_attach_v2" "va_scratch" {
   instance_id = "${openstack_compute_instance_v2.mgmt01.id}"
   volume_id   = "${openstack_blockstorage_volume_v2.scratch.id}"
-  device      = "/dev/vdd"
+  depends_on = ["openstack_compute_volume_attach_v2.va_project"]
 }
 
 locals {
   mgmt01_ip = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
   public_ip = "${openstack_compute_floatingip_associate_v2.fip_1.floating_ip}"
+  home_dev  = "/dev/vdb"
+  project_dev  = "/dev/vdc"
+  scratch_dev  = "/dev/vdd"
 }
 
 resource "openstack_compute_instance_v2" "login01" {
