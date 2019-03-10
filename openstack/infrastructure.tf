@@ -132,27 +132,23 @@ resource "openstack_compute_instance_v2" "mgmt01" {
   user_data       = "${data.template_cloudinit_config.mgmt_config.rendered}"
 }
 
-resource "openstack_blockstorage_volume_attach_v2" "va_home" {
-  volume_id  = "${openstack_blockstorage_volume_v2.home.id}"
-  device     = "/dev/vdh"
-  host_name  = "${openstack_compute_instance_v2.mgmt01.name}"
-  ip_address = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
+resource "openstack_compute_volume_attach_v2" "va_home" {
+  instance_id = "${openstack_compute_instance_v2.mgmt01.id}"
+  volume_id   = "${openstack_blockstorage_volume_v2.home.id}"
+  device      =  "/dev/vdh"
 }
 
-resource "openstack_blockstorage_volume_attach_v2" "va_project" {
+resource "openstack_compute_volume_attach_v2" "va_project" {
+  instance_id = "${openstack_compute_instance_v2.mgmt01.id}"
   volume_id  = "${openstack_blockstorage_volume_v2.project.id}"
   device     = "/dev/vdp"
-  host_name  = "${openstack_compute_instance_v2.mgmt01.name}"
-  ip_address = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
 }
 
-resource "openstack_blockstorage_volume_attach_v2" "va_scratch" {
-  volume_id  = "${openstack_blockstorage_volume_v2.scratch.id}"
-  device     = "/dev/vds"
-  host_name  = "${openstack_compute_instance_v2.mgmt01.name}"
-  ip_address = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
+resource "openstack_compute_volume_attach_v2" "va_scratch" {
+  instance_id = "${openstack_compute_instance_v2.mgmt01.name}"
+  volume_id   = "${openstack_blockstorage_volume_v2.scratch.id}"
+  device      = "/dev/vds"
 }
-
 
 locals {
   mgmt01_ip = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
