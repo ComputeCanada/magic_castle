@@ -1,20 +1,24 @@
 #cloud-config
 
+mounts:
+  - [ ${home_dev}1, /mnt/home]
+  - [ ${project_dev}1, /project]
+  - [ ${scratch_dev}1, /scratch]
+
 runcmd:
-  - parted -s "${home_dev}" mklabel gpt
-  - parted -s "${project_dev}" mklabel gpt
-  - parted -s "${scratch_dev}" mklabel gpt
-  - parted -s -a opt "${home_dev}" mkpart primary ext4 0% 100%
-  - parted -s -a opt "${project_dev}" mkpart primary ext4 0% 100%
-  - parted -s -a opt "${scratch_dev}" mkpart primary ext4 0% 100%
-  - mkfs.ext4 -L home "${home_dev}"1
-  - mkfs.ext4 -L project "${project_dev}"1
-  - mkfs.ext4 -L scratch "${scratch_dev}"1
+  - parted -s ${home_dev} mklabel gpt
+  - parted -s ${project_dev} mklabel gpt
+  - parted -s ${scratch_dev} mklabel gpt
+  - parted -s -a opt ${home_dev} mkpart primary ext4 0% 100%
+  - parted -s -a opt ${project_dev} mkpart primary ext4 0% 100%
+  - parted -s -a opt ${scratch_dev} mkpart primary ext4 0% 100%
+  - mkfs.xfs -L home ${home_dev}1
+  - mkfs.xfs -L project ${project_dev}1
+  - mkfs.xfs -L scratch ${scratch_dev}1
   - mkdir -p /mnt/home
-  - mkdir -p /mnt/project
-  - mkdir -p /mnt/scratch
+  - mkdir -p /project
+  - mkdir -p /scratch
   - mount -L home /mnt/home
-  - mount -L project /mnt/project
-  - mount -L scratch /mnt/scratch
-  - usermod -d /mnt/home/centos centos
-  - mv /home/centos /mnt/home/centos
+  - 'test ! -d /mnt/home/centos && cp -rp /home/centos /mnt/home/centos'
+  - mount -L project /project
+  - mount -L scratch /scratch
