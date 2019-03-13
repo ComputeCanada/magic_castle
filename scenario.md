@@ -39,8 +39,7 @@ https://draw.io/
 2. Star the repo ;).
 3. Click on the `examples` folder.
 4. Click on the `openstack` folder.
-6. Click on the `arbutus` folder. For those who do not have an account on Arbutus, select the cloud corresponding to your account.
-7. Click on `main.tf`
+5. Click on `main.tf`
 
 This file contains Terraform modules and outputs. Modules are files that defines a set of
 ressources that will be configured based on the inputs provided in the module block.
