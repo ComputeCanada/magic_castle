@@ -12,7 +12,6 @@ module "openstack" {
   globus_password     = ""
 
   # OpenStack specifics
-  os_external_network = "VLAN3337"
   os_image_name       = "CentOS-7-x86_64-GenericCloud-1809"
   os_flavor_node      = "p2-3gb"
   os_flavor_login     = "p2-3gb"
