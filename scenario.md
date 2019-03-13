@@ -165,8 +165,8 @@ $ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> \
  /sbin/ipa_create_user.sh <username>
 ```
 
-Modifying `nb_users` after the cluster is built leads to a complete
-cluster rebuild at next `terraform apply`.
+Modifying `nb_users` after the cluster is built leads to a rebuild 
+of the management node at next `terraform apply`.
 
 #### `shared_storage_size`
 
