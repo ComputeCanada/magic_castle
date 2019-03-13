@@ -203,25 +203,6 @@ The name of the registered endpoint corresponds to `{cluster_name}.{domain}`.
 Modifying these variables after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### `os_external_network`
-
-`os_external_network` defines the name of the OpenStack external network.
-It is used to allocate a floating-ip that will be associated with the
-login node. Each Compute Canada Cloud OpenStack has its own external
-network and they are all named differently. For future references:
-
-* Arbutus: `Public-Network`
-* East Cloud: `net04_ext` 
-* West Cloud: `VLAN3337`
-
-If you are using a different OpenStack instance, to find the name of
-your external network, in the OpenStack web UI go to : Project → Network → Networks,
-and then look for the name of the network which **External** column is set
-to **Yes**.
-
-Modifying this variable after the cluster is built leads to a rebuild of the
-login node and a renew of its floating ip at next `terraform apply`.
-
 #### `os_image_name`
 
 `os_image_name` defines the name of the image that will be used as the
