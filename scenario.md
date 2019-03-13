@@ -225,8 +225,8 @@ defines the compute, memory, and storage capacity of an instance.
 For `os_flavor_mgmt`, choose a flavor with at least 3GB of memory.
 
 Modifying one of these variables after the cluster is built leads
-to a rebuild of the instances with the corresponding type. If it
-is the management node flavor, the entire cluster will be rebuild.
+to a live migration of the instance(s) to the new chosen flavor. The
+affected instances will reboot in the process.
 
 #### `os_floating_ip` (**optional**)
 
