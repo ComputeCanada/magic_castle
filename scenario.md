@@ -178,8 +178,8 @@ compute nodes:
 3. `/scratch`
 4. `/etc/slurm`
 
-Modifying this variable after the cluster is built lead to a complete
-cluster rebuild at next `terraform apply`.
+Modifying this variable after the cluster is built leads to a rebuild 
+of the management node at next `terraform apply`.
 
 #### `public_key_path`
 
