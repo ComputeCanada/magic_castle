@@ -1,7 +1,15 @@
 provider "openstack" {}
 
-data "openstack_networking_subnet_v2" "subnet_1" {}
 
+data "openstack_networking_network_v2" "ext_network" {
+  external = "True"
+}
+
+data "openstack_networking_network_v2" "int_network" {
+  external = "False"
+}
+
+data "openstack_networking_subnet_v2" "subnet" {}
 
 data "openstack_images_image_v2" "image" {
   name = "${var.os_image_name}"
@@ -104,12 +112,24 @@ resource "openstack_compute_keypair_v2" "keypair" {
   public_key = "${file(var.public_key_path)}"
 }
 
+resource "openstack_networking_port_v2" "port_mgmt" {
+  name               = "port_mgmt"
+  network_id         = "${data.openstack_networking_network_v2.int_network.id}"
+  security_group_ids = ["${openstack_compute_secgroup_v2.secgroup_1.id}"]
+  fixed_ip {
+    subnet_id     = "${data.openstack_networking_subnet_v2.subnet.id}"
+  }
+}
+
 resource "openstack_compute_instance_v2" "mgmt01" {
   name            = "mgmt01"
   flavor_id       = "${data.openstack_compute_flavor_v2.mgmt.id}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
-  security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${data.template_cloudinit_config.mgmt_config.rendered}"
+
+  network {
+    port = "${openstack_networking_port_v2.port_mgmt.id}"
+  }
 
   block_device {
     uuid                  = "${data.openstack_images_image_v2.image.id}"
@@ -122,7 +142,7 @@ resource "openstack_compute_instance_v2" "mgmt01" {
 }
 
 locals {
-  mgmt01_ip = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
+  mgmt01_ip = "${openstack_networking_port_v2.port_mgmt.all_fixed_ips.0}"
   public_ip = "${openstack_compute_floatingip_associate_v2.fip_1.floating_ip}"
 }
 
@@ -149,7 +169,7 @@ resource "openstack_compute_instance_v2" "node" {
 
 resource "openstack_networking_floatingip_v2" "fip_1" {
   count = "${var.os_floating_ip == "" ? 1 : 0}"
-  pool  = "${var.os_external_network}"
+  pool  = "${data.openstack_networking_network_v2.ext_network.name}"
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
