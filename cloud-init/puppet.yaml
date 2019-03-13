@@ -6,7 +6,7 @@ runcmd:
   - rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
   - yum -y install puppet-agent
   - /opt/puppetlabs/puppet/bin/gem install r10k -v 2.6.4
-  - git clone https://git.computecanada.ca/fafor10/slurm_cloud_puppet.git /root/puppet
+  - git clone --branch sep_volumes https://git.computecanada.ca/fafor10/slurm_cloud_puppet.git /root/puppet
   - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir /root/puppet/modules --puppetfile=/root/puppet/Puppetfile
   - /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules:/root/puppet/site /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
   - crontab /root/crontab
