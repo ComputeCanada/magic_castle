@@ -27,10 +27,6 @@ data "openstack_compute_flavor_v2" "node" {
   name = "${var.os_flavor_node}"
 }
 
-data "external" "openstack_token" {
-  program = ["sh", "${path.module}/gen_auth_token.sh"]
-}
-
 resource "openstack_compute_secgroup_v2" "secgroup_1" {
   name        = "${var.cluster_name}_secgroup"
   description = "Slurm+JupyterHub security group"
