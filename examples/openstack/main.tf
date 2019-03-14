@@ -7,17 +7,16 @@ module "openstack" {
   nb_nodes            = 5
   nb_users            = 10
   shared_storage_size = 100
-  public_key_path     = "./key.pub"
+  public_key_path     = "./pub.key"
   globus_user         = ""
   globus_password     = ""
 
   # OpenStack specifics
-  os_external_network = "net04_ext"
-  os_image_name       = "CentOS-7-x64-2018-05"
-  os_flavor_node      = "p2-3gb"
-  os_flavor_login     = "p2-3gb"
-  os_flavor_mgmt      = "p2-3gb"
-  os_floating_ip      = ""
+  os_image_name        = "CentOS-7-x64-2018-09"
+  os_flavor_node       = "p2-3gb"
+  os_flavor_login      = "p2-3gb"
+  os_flavor_mgmt       = "p4-6gb"
+  os_floating_ip       = ""
 }
 
 output "admin_username" {
@@ -48,7 +47,8 @@ output "public_ip" {
 #   rsa_public_key   = "${module.openstack.rsa_public_key}"
 #   ecdsa_public_key = "${module.openstack.ecdsa_public_key}"
 # }
-#
 # output "domain_name" {
 # 	value = "${module.dns.domain_name}"
 # }
+
+

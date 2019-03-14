@@ -1,26 +1,18 @@
 provider "openstack" {}
 
-data "openstack_networking_subnet_v2" "subnet_1" {}
 
+data "openstack_networking_network_v2" "ext_network" {
+  external = "True"
+}
+
+data "openstack_networking_network_v2" "int_network" {
+  external = "False"
+}
+
+data "openstack_networking_subnet_v2" "subnet" {}
 
 data "openstack_images_image_v2" "image" {
   name = "${var.os_image_name}"
-}
-
-data "openstack_compute_flavor_v2" "mgmt" {
-  name = "${var.os_flavor_mgmt}"
-}
-
-data "openstack_compute_flavor_v2" "login" {
-  name = "${var.os_flavor_login}"
-}
-
-data "openstack_compute_flavor_v2" "node" {
-  name = "${var.os_flavor_node}"
-}
-
-data "external" "openstack_token" {
-  program = ["sh", "${path.module}/gen_auth_token.sh"]
 }
 
 resource "openstack_compute_secgroup_v2" "secgroup_1" {
@@ -53,13 +45,6 @@ resource "openstack_compute_secgroup_v2" "secgroup_1" {
     to_port     = 22
     ip_protocol = "tcp"
     cidr        = "0.0.0.0/0"
-  }
-
-  rule {
-    from_port   = 22
-    to_port     = 22
-    ip_protocol = "tcp"
-    cidr        = "206.87.0.0/16"
   }
 
   rule {
@@ -122,14 +107,26 @@ resource "openstack_blockstorage_volume_v2" "scratch" {
   size        = "${var.scratch_size}"
 }
 
+resource "openstack_networking_port_v2" "port_mgmt" {
+  name               = "port_mgmt"
+  network_id         = "${data.openstack_networking_network_v2.int_network.id}"
+  security_group_ids = ["${openstack_compute_secgroup_v2.secgroup_1.id}"]
+  fixed_ip {
+    subnet_id     = "${data.openstack_networking_subnet_v2.subnet.id}"
+  }
+}
+
 resource "openstack_compute_instance_v2" "mgmt01" {
   name            = "mgmt01"
   image_id        = "${data.openstack_images_image_v2.image.id}"
 
-  flavor_id       = "${data.openstack_compute_flavor_v2.mgmt.id}"
+  flavor_name     = "${var.os_flavor_mgmt}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
-  security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${data.template_cloudinit_config.mgmt_config.rendered}"
+
+  network {
+    port = "${openstack_networking_port_v2.port_mgmt.id}"
+  }
 }
 
 resource "openstack_compute_volume_attach_v2" "va_home" {
@@ -149,19 +146,11 @@ resource "openstack_compute_volume_attach_v2" "va_scratch" {
   depends_on = ["openstack_compute_volume_attach_v2.va_project"]
 }
 
-locals {
-  mgmt01_ip = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
-  public_ip = "${openstack_compute_floatingip_associate_v2.fip_1.floating_ip}"
-  home_dev  = "/dev/vdb"
-  project_dev  = "/dev/vdc"
-  scratch_dev  = "/dev/vdd"
-}
-
 resource "openstack_compute_instance_v2" "login01" {
   name     = "${var.cluster_name}01"
   image_id = "${data.openstack_images_image_v2.image.id}"
 
-  flavor_id       = "${data.openstack_compute_flavor_v2.login.id}"
+  flavor_name     = "${var.os_flavor_login}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
   security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${data.template_cloudinit_config.login_config.rendered}"
@@ -172,7 +161,7 @@ resource "openstack_compute_instance_v2" "node" {
   name     = "node${count.index + 1}"
   image_id = "${data.openstack_images_image_v2.image.id}"
 
-  flavor_id       = "${data.openstack_compute_flavor_v2.node.id}"
+  flavor_name     = "${var.os_flavor_node}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
   security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"
@@ -180,10 +169,18 @@ resource "openstack_compute_instance_v2" "node" {
 
 resource "openstack_networking_floatingip_v2" "fip_1" {
   count = "${var.os_floating_ip == "" ? 1 : 0}"
-  pool  = "${var.os_external_network}"
+  pool  = "${data.openstack_networking_network_v2.ext_network.name}"
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
   floating_ip = "${var.os_floating_ip != "" ? var.os_floating_ip : element(concat(openstack_networking_floatingip_v2.fip_1.*.address, list("")), 0) }"
   instance_id = "${openstack_compute_instance_v2.login01.id}"
+}
+
+locals {
+  mgmt01_ip = "${openstack_networking_port_v2.port_mgmt.all_fixed_ips.0}"
+  public_ip = "${openstack_compute_floatingip_associate_v2.fip_1.floating_ip}"
+  home_dev  = "/dev/vdb"
+  project_dev  = "/dev/vdc"
+  scratch_dev  = "/dev/vdd"
 }
