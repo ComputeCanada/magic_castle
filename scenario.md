@@ -367,15 +367,12 @@ agent connection enabled: `ssh -A centos@cluster_ip`.
 
 If you plan to modify configuration files manually, you will need to deactivate
 Puppet. Otherwise, you might find out that your modifications to the file
-dissapear in a window of 5 minutes.
+dissapear in a window of 5 minutes.  For example, if you plan to modify the 
+`submit.sh` file of JupyterHub, deactivate puppet.
 
-To avoid this, you will have to delete root crontab. To delete root crontab,
-enter : `sudo crontab -r`. This command will need to be run on every node that
-runs a service that will be affected by your modification to a configuration
-file.
-
-For example, if you plan to modify the `submit.sh` file of JupyterHub, delete
-root crontab of the login node.
+puppet is executed every 5 minutes and at every reboot through the root crontab.
+To deactivate it, execute `sudo crontab -e` and comment the lines related to
+`puppet apply`.
 
 ### Replace the User Accounts Password
 
