@@ -118,11 +118,6 @@ resource "openstack_compute_instance_v2" "mgmt01" {
   }
 }
 
-locals {
-  mgmt01_ip = "${openstack_networking_port_v2.port_mgmt.all_fixed_ips.0}"
-  public_ip = "${openstack_compute_floatingip_associate_v2.fip_1.floating_ip}"
-}
-
 resource "openstack_compute_instance_v2" "login01" {
   name     = "${var.cluster_name}01"
   image_id = "${data.openstack_images_image_v2.image.id}"
@@ -152,4 +147,9 @@ resource "openstack_networking_floatingip_v2" "fip_1" {
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
   floating_ip = "${var.os_floating_ip != "" ? var.os_floating_ip : element(concat(openstack_networking_floatingip_v2.fip_1.*.address, list("")), 0) }"
   instance_id = "${openstack_compute_instance_v2.login01.id}"
+}
+
+locals {
+  mgmt01_ip = "${openstack_networking_port_v2.port_mgmt.all_fixed_ips.0}"
+  public_ip = "${openstack_compute_floatingip_associate_v2.fip_1.floating_ip}"
 }
