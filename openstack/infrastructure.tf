@@ -15,18 +15,6 @@ data "openstack_images_image_v2" "image" {
   name = "${var.os_image_name}"
 }
 
-data "openstack_compute_flavor_v2" "mgmt" {
-  name = "${var.os_flavor_mgmt}"
-}
-
-data "openstack_compute_flavor_v2" "login" {
-  name = "${var.os_flavor_login}"
-}
-
-data "openstack_compute_flavor_v2" "node" {
-  name = "${var.os_flavor_node}"
-}
-
 resource "openstack_compute_secgroup_v2" "secgroup_1" {
   name        = "${var.cluster_name}_secgroup"
   description = "Slurm+JupyterHub security group"
@@ -112,7 +100,7 @@ resource "openstack_networking_port_v2" "port_mgmt" {
 
 resource "openstack_compute_instance_v2" "mgmt01" {
   name            = "mgmt01"
-  flavor_id       = "${data.openstack_compute_flavor_v2.mgmt.id}"
+  flavor_name     = "${var.os_flavor_mgmt}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
   user_data       = "${data.template_cloudinit_config.mgmt_config.rendered}"
 
@@ -139,7 +127,7 @@ resource "openstack_compute_instance_v2" "login01" {
   name     = "${var.cluster_name}01"
   image_id = "${data.openstack_images_image_v2.image.id}"
 
-  flavor_id       = "${data.openstack_compute_flavor_v2.login.id}"
+  flavor_name     = "${var.os_flavor_login}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
   security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${data.template_cloudinit_config.login_config.rendered}"
@@ -150,7 +138,7 @@ resource "openstack_compute_instance_v2" "node" {
   name     = "node${count.index + 1}"
   image_id = "${data.openstack_images_image_v2.image.id}"
 
-  flavor_id       = "${data.openstack_compute_flavor_v2.node.id}"
+  flavor_name     = "${var.os_flavor_node}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
   security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
   user_data       = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"
