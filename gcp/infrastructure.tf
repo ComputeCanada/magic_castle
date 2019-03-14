@@ -4,6 +4,26 @@ provider "google" {
   version     = "~> 2.1.0"
 }
 
+resource "google_compute_disk" "home" {
+  name = "home"
+  type = "pd-standard"
+  zone = "${var.zone_region}"
+  size = "${var.home_size}"
+}
+
+resource "google_compute_disk" "project" {
+  name = "project"
+  type = "pd-standard"
+  zone = "${var.zone_region}"
+  size = "${var.project_size}"
+}
+
+resource "google_compute_disk" "scratch" {
+  name = "scratch"
+  type  = "pd-standard"
+  zone = "${var.zone_region}"
+  size = "${var.scratch_size}"
+}
 
 resource "google_compute_instance" "mgmt01" {
   project = "${var.project_name}"
@@ -15,8 +35,25 @@ resource "google_compute_instance" "mgmt01" {
   boot_disk {
     initialize_params {
       image = "${var.gcp_image}"
-      size  = "${var.shared_storage_size}"
     }
+  }
+
+  attached_disk {
+    source      = "${google_compute_disk.home.self_link}"
+    device_name = "${google_compute_disk.home.name}"
+    mode        = "READ_WRITE"
+  }
+
+  attached_disk {
+    source      = "${google_compute_disk.project.self_link}"
+    device_name = "${google_compute_disk.project.name}"
+    mode        = "READ_WRITE"
+  }
+
+  attached_disk {
+    source      = "${google_compute_disk.scratch.self_link}"
+    device_name = "${google_compute_disk.scratch.name}"
+    mode        = "READ_WRITE"
   }
 
   network_interface {
@@ -139,4 +176,7 @@ locals {
   mgmt01_ip = "${google_compute_instance.mgmt01.network_interface.0.network_ip}"
   public_ip = "${google_compute_instance.login01.network_interface.0.access_config.0.nat_ip}"
   cidr = "10.128.0.0/9" # GCP default
+  home_dev    = "/dev/disk/by-id/google-home"
+  project_dev = "/dev/disk/by-id/google-project"
+  scratch_dev = "/dev/disk/by-id/google-scratch"
 }
