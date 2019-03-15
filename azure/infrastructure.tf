@@ -229,6 +229,54 @@ resource "azurerm_virtual_machine" "mgmt01vm" {
   }
 }
 
+resource "azurerm_managed_disk" "home" {
+  name                 = "home"
+  location             = "${var.location}"
+  resource_group_name  = "${azurerm_resource_group.group.name}"
+  storage_account_type = "${var.managed_disk_type}"
+  create_option        = "Empty"
+  disk_size_gb         = "${var.home_size}"
+}
+
+resource "azurerm_managed_disk" "project" {
+  name                 = "project"
+  location             = "${var.location}"
+  resource_group_name  = "${azurerm_resource_group.group.name}"
+  storage_account_type = "${var.managed_disk_type}"
+  create_option        = "Empty"
+  disk_size_gb         = "${var.project_size}"
+}
+
+resource "azurerm_managed_disk" "scratch" {
+  name                 = "scratch"
+  location             = "${var.location}"
+  resource_group_name  = "${azurerm_resource_group.group.name}"
+  storage_account_type = "${var.managed_disk_type}"
+  create_option        = "Empty"
+  disk_size_gb         = "${var.scratch_size}"
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "home" {
+  managed_disk_id    = "${azurerm_managed_disk.home.id}"
+  virtual_machine_id = "${azurerm_virtual_machine.mgmt01vm.id}"
+  lun                = "10"
+  caching            = "ReadWrite"
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "project" {
+  managed_disk_id    = "${azurerm_managed_disk.project.id}"
+  virtual_machine_id = "${azurerm_virtual_machine.mgmt01vm.id}"
+  lun                = "11"
+  caching            = "ReadWrite"
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "scratch" {
+  managed_disk_id    = "${azurerm_managed_disk.scratch.id}"
+  virtual_machine_id = "${azurerm_virtual_machine.mgmt01vm.id}"
+  lun                = "12"
+  caching            = "ReadWrite"
+}
+
 resource "azurerm_virtual_machine" "nodevm" {
   name                  = "node${count.index + 1}"
   count                 = "${var.nb_nodes}"
@@ -271,5 +319,8 @@ locals {
   mgmt01_ip = "${azurerm_network_interface.mgmtNIC.private_ip_address}"
   public_ip = "${azurerm_public_ip.loginIP.ip_address}"
   cidr = "10.0.1.0/24"
+  home_dev = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.home.lun}"
+  project_dev = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.project.lun}"
+  scratch_dev = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.scratch.lun}"
 }
 

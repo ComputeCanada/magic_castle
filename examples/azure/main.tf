@@ -5,7 +5,9 @@ module "azure" {
   cluster_name        = "phoenix"
   nb_nodes            = 5
   nb_users            = 10
-  shared_storage_size = 100
+  home_size           = 100
+  project_size        = 50
+  scratch_size        = 50
   domain_name         = "jupyter2.calculquebec.cloud"
   public_key_path = "./key.pub"
 
