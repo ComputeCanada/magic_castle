@@ -6,7 +6,9 @@ module "gcp" {
   domain_name         = "calculquebec.cloud"
   nb_nodes            = 5
   nb_users            = 10
-  shared_storage_size = 100
+  home_size           = 100
+  project_size        = 50
+  scratch_size        = 50
   public_key_path     = "./key.pub"
   globus_user         = ""
   globus_password     = ""
