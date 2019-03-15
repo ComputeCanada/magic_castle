@@ -167,7 +167,7 @@ resource "azurerm_virtual_machine" "login01vm" {
     name              = "loginDisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"
+    managed_disk_type = "${var.managed_disk_type}"
   }
 
   storage_image_reference {
@@ -203,7 +203,7 @@ resource "azurerm_virtual_machine" "mgmt01vm" {
     name              = "mgmtDisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"
+    managed_disk_type = "${var.managed_disk_type}"
     disk_size_gb      = "${var.shared_storage_size}"
   }
 
@@ -241,7 +241,7 @@ resource "azurerm_virtual_machine" "nodevm" {
     name              = "nodeDisk${count.index + 1}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "Premium_LRS"
+    managed_disk_type = "${var.managed_disk_type}"
   }
 
   storage_image_reference {
