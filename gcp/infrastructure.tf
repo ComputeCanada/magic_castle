@@ -30,16 +30,7 @@ resource "google_compute_instance" "mgmt01" {
     user-data-encoding = "base64"
   }
 
-  metadata_startup_script = <<-EOF
-              #!/bin/bash
-              if yum -q list installed "cloud-init" >/dev/null 2>&1; then
-                true
-              else
-                sudo yum -y install cloud-init
-                sudo reboot
-              fi
-              rm -f /etc/dhcp/dhclient.d/google_hostname.sh
-              EOF
+  metadata_startup_script = "${file("${path.module}/install_cloudinit.sh")}"
 }
 
 resource "google_compute_instance" "login01" {
@@ -66,16 +57,7 @@ resource "google_compute_instance" "login01" {
     user-data-encoding = "base64"
   }
 
-  metadata_startup_script = <<-EOF
-              #!/bin/bash
-              if yum -q list installed "cloud-init" >/dev/null 2>&1; then
-                true
-              else
-                sudo yum -y install cloud-init
-                sudo reboot
-              fi
-              rm -f /etc/dhcp/dhclient.d/google_hostname.sh
-              EOF
+  metadata_startup_script = "${file("${path.module}/install_cloudinit.sh")}"
 }
 
 resource "google_compute_instance" "node" {
@@ -111,16 +93,7 @@ resource "google_compute_instance" "node" {
     user-data-encoding = "base64"
   }
 
-  metadata_startup_script = <<-EOF
-              #!/bin/bash
-              if yum -q list installed "cloud-init" >/dev/null 2>&1; then
-                true
-              else
-                sudo yum -y install cloud-init
-                sudo reboot
-              fi
-              rm -f /etc/dhcp/dhclient.d/google_hostname.sh
-              EOF
+  metadata_startup_script = "${file("${path.module}/install_cloudinit.sh")}"
 }
 
 resource "google_compute_firewall" "default" {
