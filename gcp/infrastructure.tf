@@ -20,7 +20,7 @@ resource "google_compute_disk" "project" {
 
 resource "google_compute_disk" "scratch" {
   name = "scratch"
-  type  = "pd-standard"
+  type = "pd-standard"
   zone = "${var.zone_region}"
   size = "${var.scratch_size}"
 }
