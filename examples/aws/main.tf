@@ -3,14 +3,17 @@ module "aws" {
 
   # JupyterHub + Slurm definition
   cluster_name        = "phoenix"
+  domain              = "calculquebec.cloud"
   nb_nodes            = 5
   nb_users            = 10
-  shared_storage_size = 100
-  domain_name         = "jupyter2.calculquebec.cloud"
+  home_size           = 100
+  project_size        = 50
+  scratch_size        = 50
   public_key_path     = "./key.pub"
 
   # AWS specifics
   region = "ca-central-1"
+  availability_zone = "ca-central-1a"
   instance_type_node = "t2.micro"
   instance_type_mgmt = "t2.micro"
   instance_type_login = "t2.micro"

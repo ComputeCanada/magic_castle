@@ -104,11 +104,6 @@ resource "aws_instance" "mgmt01" {
   key_name                    = "${aws_key_pair.key.key_name}"
   associate_public_ip_address = "true"
 
-  root_block_device {
-    volume_type = "gp2"
-    volume_size = "${var.shared_storage_size}"
-  }
-
   vpc_security_group_ids = [
     "${aws_security_group.allow_any_inside_vpc.id}",
     "${aws_security_group.allow_out_any.id}",
@@ -117,6 +112,51 @@ resource "aws_instance" "mgmt01" {
   tags {
     Name = "mgmt01"
   }
+}
+
+resource "aws_ebs_volume" "home" {
+  availability_zone = "${var.availability_zone}"
+  size              = "${var.home_size}"
+  type              = "gp2"
+  tags = {
+    Name = "home"
+  }
+}
+
+resource "aws_ebs_volume" "project" {
+  availability_zone = "${var.availability_zone}"
+  size              = "${var.project_size}"
+  type              = "gp2"
+  tags = {
+    Name = "project"
+  }
+}
+
+resource "aws_ebs_volume" "scratch" {
+  availability_zone = "${var.availability_zone}"
+  size              = "${var.scratch_size}"
+  type              = "gp2"
+  tags = {
+    Name = "scratch"
+  }
+}
+
+resource "aws_volume_attachment" "home" {
+  device_name = "/dev/sdb"
+  volume_id   = "${aws_ebs_volume.home.id}"
+  instance_id = "${aws_instance.mgmt01.id}"
+}
+
+resource "aws_volume_attachment" "project" {
+  device_name = "/dev/sdc"
+  volume_id   = "${aws_ebs_volume.project.id}"
+  instance_id = "${aws_instance.mgmt01.id}"
+}
+
+resource "aws_volume_attachment" "scratch" {
+  device_name = "/dev/sdd"
+  volume_id   = "${aws_ebs_volume.scratch.id}"
+  instance_id = "${aws_instance.mgmt01.id}"
 }
 
 resource "aws_instance" "login01" {
@@ -163,4 +203,7 @@ locals {
   mgmt01_ip = "${aws_instance.mgmt01.private_ip}"
   public_ip = "${aws_instance.login01.public_ip}"
   cidr      = "${aws_subnet.private_subnet.cidr_block}"
+  home_dev  = "${aws_volume_attachment.home.device_name}"
+  project_dev = "${aws_volume_attachment.project.device_name}"
+  scratch_dev = "${aws_volume_attachment.scratch.device_name}"
 }
