@@ -72,8 +72,27 @@ resource "openstack_compute_keypair_v2" "keypair" {
   public_key = "${file(var.public_key_path)}"
 }
 
+resource "openstack_blockstorage_volume_v2" "home" {
+  name        = "${var.cluster_name}_home"
+  description = "${var.cluster_name} /home"
+  size        = "${var.home_size}"
+}
+
+resource "openstack_blockstorage_volume_v2" "project" {
+  name        = "${var.cluster_name}_project"
+  description = "${var.cluster_name} /project"
+  size        = "${var.project_size}"
+}
+
+resource "openstack_blockstorage_volume_v2" "scratch" {
+  name        = "${var.cluster_name}_scratch"
+  description = "${var.cluster_name} /scratch"
+  size        = "${var.scratch_size}"
+}
+
 resource "openstack_compute_instance_v2" "mgmt01" {
   name            = "mgmt"
+  image_id        = "${data.openstack_images_image_v2.image.id}"
   flavor_name     = "${var.os_flavor_mgmt}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
   security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
@@ -88,14 +107,23 @@ resource "openstack_compute_instance_v2" "mgmt01" {
     access_network = true
     name           = "${var.os_external_network}"
   }
-  block_device {
-    uuid                  = "${var.os_image_id}"
-    source_type           = "image"
-    volume_size           = "${var.shared_storage_size}"
-    boot_index            = 0
-    destination_type      = "volume"
-    delete_on_termination = true
-  }
+}
+
+resource "openstack_compute_volume_attach_v2" "va_home" {
+  instance_id = "${openstack_compute_instance_v2.mgmt01.id}"
+  volume_id   = "${openstack_blockstorage_volume_v2.home.id}"
+}
+
+resource "openstack_compute_volume_attach_v2" "va_project" {
+  instance_id = "${openstack_compute_instance_v2.mgmt01.id}"
+  volume_id  = "${openstack_blockstorage_volume_v2.project.id}"
+  depends_on = ["openstack_compute_volume_attach_v2.va_home"]
+}
+
+resource "openstack_compute_volume_attach_v2" "va_scratch" {
+  instance_id = "${openstack_compute_instance_v2.mgmt01.id}"
+  volume_id   = "${openstack_blockstorage_volume_v2.scratch.id}"
+  depends_on = ["openstack_compute_volume_attach_v2.va_project"]
 }
 
 resource "openstack_compute_instance_v2" "login01" {
@@ -142,4 +170,7 @@ locals {
   mgmt01_ip = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
   public_ip = "${openstack_compute_instance_v2.login01.network.1.fixed_ip_v4}"
   cidr      = "${openstack_networking_subnet_v2.subnet.cidr}"
+  home_dev  = "/dev/vdb"
+  project_dev  = "/dev/vdc"
+  scratch_dev  = "/dev/vdd"
 }
