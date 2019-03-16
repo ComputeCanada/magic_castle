@@ -3,12 +3,12 @@ module "azure" {
 
   # JupyterHub + Slurm definition
   cluster_name        = "phoenix"
+  domain              = "calculquebec.cloud"
   nb_nodes            = 5
   nb_users            = 10
   home_size           = 100
   project_size        = 50
   scratch_size        = 50
-  domain_name         = "jupyter2.calculquebec.cloud"
   public_key_path = "./key.pub"
 
   # Azure specifics
