@@ -495,3 +495,16 @@ memory per cpu to configure how many notebooks will be able to
 run on a single node.
 
 ## Customize Magic Castle Terraform Files
+
+When we initiated the folder containing the `main.tf` by
+calling `terraform init`, Terraform cloned the git repo
+linked in our `main.tf` inside a subfolder named
+`.terraform/modules`.
+
+Terraform uses md5 hashes to refer to the module, so you
+will have to look at the file named `modules.json` to
+determine which directory corresponds to which module.
+
+For example folder `5e8bf3f97f0f6c4558772a46d6c550a8`
+corresponds to the openstack module.
+
