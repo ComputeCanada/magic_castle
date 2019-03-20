@@ -6,7 +6,7 @@ runcmd:
   - rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
   - yum -y install puppet-agent
   - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
-  - git clone https://git.computecanada.ca/fafor10/slurm_cloud_sites.git
+  - git clone https://git.computecanada.ca/fafor10/slurm_cloud_sites.git /root/slurm_cloud_sites
   - ln -s /root/slurm_cloud_sites/basic /root/puppet
   - (cd /root/puppet; /opt/puppetlabs/puppet/bin/librarian-puppet install)
   - /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
