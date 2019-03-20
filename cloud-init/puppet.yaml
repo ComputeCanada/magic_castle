@@ -8,7 +8,7 @@ runcmd:
   - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
   - git clone https://git.computecanada.ca/fafor10/slurm_cloud_sites.git /root/slurm_cloud_sites
   - ln -s /root/slurm_cloud_sites/basic /root/puppet
-  - (cd /root/puppet; HOME=/root /opt/puppetlabs/puppet/bin/librarian-puppet install)
+  - "(cd /root/puppet; HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
   - /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
   - crontab /root/crontab
   # - reboot -n
