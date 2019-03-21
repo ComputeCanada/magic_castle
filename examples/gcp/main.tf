@@ -1,7 +1,8 @@
 module "gcp" {
   source = "git::ssh://gitlab@git.computecanada.ca/fafor10/slurm_cloud.git//gcp"
 
-  # JupyterHub + Slurm definition
+  # Cluster customization
+  puppet_config       = "jupyterhub"
   cluster_name        = "phoenix"
   domain_name         = "calculquebec.cloud"
   nb_nodes            = 5

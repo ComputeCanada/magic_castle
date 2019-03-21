@@ -2,6 +2,7 @@ module "openstack" {
   source = "git::ssh://gitlab@git.computecanada.ca/fafor10/slurm_cloud.git//openstack"
 
   # Cluster customization
+  puppet_config       = "jupyterhub"
   cluster_name        = "phoenix"
   domain              = "calculquebec.cloud"
   nb_nodes            = 5
