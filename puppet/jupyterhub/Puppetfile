@@ -3,7 +3,7 @@
 forge "https://forgeapi.puppetlabs.com"
 
 mod 'computecanada-profile',
-    :git    => 'https://git.computecanada.ca/fafor10/slurm_cloud_puppet.git',
+    :git    => 'https://git.computecanada.ca/magic_castle/puppet-slurm_cloud.git',
     :branch => 'sites'
 mod 'jupyterhub',
-    :git => 'https://git.computecanada.ca/fafor10/puppet_jupyterhub.git'
+    :git => 'https://git.computecanada.ca/magic_castle/puppet-jupyterhub.git'
