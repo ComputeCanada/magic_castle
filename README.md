@@ -35,11 +35,10 @@ https://draw.io/
 
 ### Copying a Child Module
 
-1. Go to https://git.computecanada.ca/fafor10/slurm_cloud.
-2. Star the repo ;).
-3. Click on the `examples` folder.
-4. Click on the `openstack` folder.
-5. Click on `main.tf`
+1. Go to https://git.computecanada.ca/magic_castle/slurm_cloud.
+2. Click on the `examples` folder.
+3. Click on the `openstack` folder.
+4. Click on `main.tf`
 
 This file contains Terraform modules and outputs. Modules are files that defines a set of
 ressources that will be configured based on the inputs provided in the module block.
@@ -52,7 +51,7 @@ our module we would like to be shown on screen once the ressources have been ins
 4. Save a copy of the preceding `main.tf` file inside your new folder.
 ```
 wget https://git.computecanada.ca/\
-     fafor10/slurm_cloud/raw/examples/\
+     magic_castle/slurm_cloud/raw/examples/\
      openstack/arbutus/main.tf
 ```
 
