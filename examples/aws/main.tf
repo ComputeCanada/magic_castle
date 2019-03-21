@@ -1,5 +1,5 @@
 module "aws" {
-  source = "git::ssh://gitlab@git.computecanada.ca/fafor10/slurm_cloud.git//aws"
+  source = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//aws"
 
   # Cluster customization
   puppet_config       = "jupyterhub"

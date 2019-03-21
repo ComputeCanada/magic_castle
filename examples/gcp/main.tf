@@ -1,5 +1,5 @@
 module "gcp" {
-  source = "git::ssh://gitlab@git.computecanada.ca/fafor10/slurm_cloud.git//gcp"
+  source = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//gcp"
 
   # Cluster customization
   puppet_config       = "jupyterhub"
@@ -49,7 +49,7 @@ output "public_ip" {
 
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
-#   source           = "git::ssh://gitlab@git.computecanada.ca/fafor10/slurm_cloud.git//dns/cloudflare"
+#   source           = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//dns/cloudflare"
 #   name             = "${module.gcp.cluster_name}"
 #   domain           = "${module.gcp.domain}"
 #   public_ip        = "${module.gcp.ip}"

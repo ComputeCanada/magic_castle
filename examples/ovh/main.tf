@@ -1,5 +1,5 @@
 module "ovh" {
-  source = "git::ssh://gitlab@git.computecanada.ca/fafor10/slurm_cloud.git//ovh"
+  source = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//ovh"
 
   # Cluster customization
   puppet_config       = "jupyterhub"
@@ -41,7 +41,7 @@ output "public_ip" {
 
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
-#   source           = "git::ssh://gitlab@git.computecanada.ca/fafor10/slurm_cloud.git//dns/cloudflare"
+#   source           = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//dns/cloudflare"
 #   name             = "${module.ovh.cluster_name}"
 #   domain           = "${module.ovh.domain}"
 #   public_ip        = "${module.ovh.ip}"

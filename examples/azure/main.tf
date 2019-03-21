@@ -1,5 +1,5 @@
 module "azure" {
-  source = "git::ssh://gitlab@git.computecanada.ca/fafor10/slurm_cloud.git//azure"
+  source = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//azure"
 
   # Cluster customization
   puppet_config       = "jupyterhub"
