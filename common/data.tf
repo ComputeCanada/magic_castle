@@ -17,8 +17,8 @@ data "template_file" "mgmt" {
   }
 }
 
-data "template_file" "mgmt_puppet" {
-  template = "${file("${path.module}/cloud-init/puppet.yaml")}"
+data "template_file" "mgmt_data" {
+  template = "${file("${local.data_path}")}"
 
   vars {
     admin_passwd    = "${random_string.admin_passwd.result}"
@@ -30,7 +30,17 @@ data "template_file" "mgmt_puppet" {
     nb_users        = "${var.nb_users}"
     globus_user     = ""
     globus_password = ""
+  }
+}
+
+data "template_file" "mgmt_puppet" {
+  template = "${file("${path.module}/cloud-init/puppet.yaml")}"
+
+  vars {
     node_name       = "mgmt01"
+    puppetfile      = "${indent(6, file("${local.puppetfile_path}"))}"
+    site_pp         = "${indent(6, file("${local.site_pp_path}"))}"
+    data            = "${indent(6, "${data.template_file.mgmt_data.rendered}")}"
   }
 }
 
@@ -49,8 +59,8 @@ data "template_cloudinit_config" "mgmt_config" {
   }
 }
 
-data "template_file" "login" {
-  template = "${file("${path.module}/cloud-init/puppet.yaml")}"
+data "template_file" "login_data" {
+  template = "${file("${local.data_path}")}"
 
   vars {
     admin_passwd    = "${random_string.admin_passwd.result}"
@@ -62,7 +72,17 @@ data "template_file" "login" {
     nb_users        = ""
     globus_user     = "${var.globus_user}"
     globus_password = "${var.globus_password}"
-    node_name       = "${var.cluster_name}01"
+  }
+}
+
+data "template_file" "login" {
+  template = "${file("${path.module}/cloud-init/puppet.yaml")}"
+
+  vars {
+    node_name  = "${var.cluster_name}01"
+    puppetfile = "${indent(6, file("${local.puppetfile_path}"))}"
+    site_pp    = "${indent(6, file("${local.site_pp_path}"))}"
+    data       = "${indent(6, "${data.template_file.login_data.rendered}")}"
   }
 }
 
@@ -98,9 +118,8 @@ ssh_keys:
   }
 }
 
-data "template_file" "node" {
-  template = "${file("${path.module}/cloud-init/puppet.yaml")}"
-  count    = "${var.nb_nodes}"
+data "template_file" "node_data" {
+  template = "${file("${local.data_path}")}"
 
   vars {
     admin_passwd    = "${random_string.admin_passwd.result}"
@@ -112,7 +131,18 @@ data "template_file" "node" {
     nb_users        = ""
     globus_user     = ""
     globus_password = ""
+  }
+}
+
+data "template_file" "node" {
+  template = "${file("${path.module}/cloud-init/puppet.yaml")}"
+  count    = "${var.nb_nodes}"
+
+  vars {
     node_name       = "node${count.index + 1}"
+    puppetfile      = "${indent(6, file("${local.puppetfile_path}"))}"
+    site_pp         = "${indent(6, file("${local.site_pp_path}"))}"
+    data            = "${indent(6, "${data.template_file.node_data.rendered}")}"
   }
 }
 

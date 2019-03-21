@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+forge "https://forgeapi.puppetlabs.com"
+
+mod 'computecanada-profile',
+    :git    => 'https://git.computecanada.ca/fafor10/slurm_cloud_puppet.git',
+    :branch => 'sites'
+mod 'jupyterhub',
+    :git => 'https://git.computecanada.ca/fafor10/puppet_jupyterhub.git'

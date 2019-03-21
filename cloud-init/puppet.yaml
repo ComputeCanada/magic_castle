@@ -6,18 +6,33 @@ runcmd:
   - rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
   - yum -y install puppet-agent
   - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
-  - git clone https://git.computecanada.ca/fafor10/slurm_cloud_sites.git /root/slurm_cloud_sites
-  - ln -s /root/slurm_cloud_sites/basic /root/puppet
-  - "(cd /root/puppet; HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
-  - /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
+  - "(cd /etc/puppetlabs/puppet && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
+  - /opt/puppetlabs/bin/puppet apply /etc/puppetlabs/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
   - crontab /root/crontab
   # - reboot -n
 
 write_files:
   - content: |
-      @reboot /usr/bin/flock -n /var/lock/puppet.lock /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
-      */5 * * * * /usr/bin/flock -n /var/lock/puppet.lock /opt/puppetlabs/bin/puppet apply --modulepath=/root/puppet/modules /root/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
+      @reboot /usr/bin/flock -n /var/lock/puppet.lock /opt/puppetlabs/bin/puppet apply /etc/puppetlabs/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
+      */5 * * * * /usr/bin/flock -n /var/lock/puppet.lock /opt/puppetlabs/bin/puppet apply /etc/puppetlabs/puppet/site.pp --color=false --logdest /var/log/puppetlabs/puppet/puppet.log
     path: /root/crontab
+  - content: |
+      ${puppetfile}
+    path: /etc/puppetlabs/puppet/Puppetfile
+  - content: |
+      ${site_pp}
+    path: /etc/puppetlabs/puppet/site.pp
+  - content: |
+      ${data}
+    path: /etc/puppetlabs/puppet/hieradata/data.yaml
+    owner: root:root
+    permissions: "0600"
+  - content: |
+      [main]
+      codedir=$confdir
+      environmentpath=$confdir
+      environment=''
+    path: /etc/puppetlabs/puppet/puppet.conf
   - content: |
       ---
       version: 5
@@ -25,26 +40,9 @@ write_files:
         datadir: /etc/puppetlabs/puppet/hieradata
         data_hash: yaml_data
       hierarchy:
-        - name: "Other YAML hierarchy levels"
-          paths:
-            - "common.yaml"
+        - name: "Data"
+          path: "data.yaml"
     path: /etc/puppetlabs/puppet/hiera.yaml
-  - content: |
-      ---
-      profile::freeipa::base::admin_passwd: "${admin_passwd}"
-      profile::freeipa::base::domain_name: "${domain_name}"
-      profile::freeipa::base::dns_ip: "${dns_ip}"
-      profile::freeipa::guest_accounts::guest_passwd: "${guest_passwd}"
-      profile::freeipa::guest_accounts::nb_accounts: ${nb_users}
-      profile::slurm::base::cluster_name: "${cluster_name}"
-      profile::slurm::base::munge_key: "${munge_key}"
-      profile::slurm::accounting::password: "${admin_passwd}"
-      profile::globus::base::globus_user: "${globus_user}"
-      profile::globus::base::globus_password: "${globus_password}"
-      jupyterhub::domain_name: "${domain_name}"
-    path: /etc/puppetlabs/puppet/hieradata/common.yaml
-    owner: root:root
-    permissions: "0600"
 
 disable_ec2_metadata: false
 timezone: "America/Montreal"
