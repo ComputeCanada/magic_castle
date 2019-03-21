@@ -4,5 +4,5 @@ forge "https://forgeapi.puppetlabs.com"
 
 mod 'computecanada-profile',
     :git    => 'https://git.computecanada.ca/magic_castle/puppet-slurm_cloud.git',
-    :branch => 'sites'
+    :branch => 'master'
 
