@@ -163,22 +163,19 @@ $ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> \
  /sbin/ipa_create_user.sh <username>
 ```
 
-Modifying `nb_users` after the cluster is built leads to a rebuild 
+Modifying `nb_users` after the cluster is built leads to a rebuild
 of the management node at next `terraform apply`.
 
-#### `shared_storage_size`
+#### `home_size`, `project_size`, `scratch_size`
 
-`shared_storage_size` defines the size of the management node single volume.
-This volume hosts four NFS exports that are mounted on the login node and the
-compute nodes:
+`home_size`, `project_size`, and `scratch_size` define the size of the volumes
+for respectively `/home`, `/project` and `/scratch`.
+Each volume is mounted on `mgmt01` and exported with NFS to the
+login and the compute nodes.
 
-1. `/home`
-2. `/project`
-3. `/scratch`
-4. `/etc/slurm`
-
-Modifying this variable after the cluster is built leads to a rebuild 
-of the management node at next `terraform apply`.
+Modifying one of these variable after the cluster is built leads to the
+destruction of the corresponding volume and attachment and the creation
+of a new empty volume and attachment.
 
 #### `public_key_path`
 
@@ -366,7 +363,7 @@ agent connection enabled: `ssh -A centos@cluster_ip`.
 
 If you plan to modify configuration files manually, you will need to deactivate
 Puppet. Otherwise, you might find out that your modifications to the file
-dissapear in a window of 5 minutes.  For example, if you plan to modify the 
+dissapear in a window of 5 minutes.  For example, if you plan to modify the
 `submit.sh` file of JupyterHub, deactivate puppet.
 
 puppet is executed every 5 minutes and at every reboot through the root crontab.
