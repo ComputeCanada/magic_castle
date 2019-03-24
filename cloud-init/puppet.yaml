@@ -3,7 +3,7 @@ packages:
   - git
 
 runcmd:
-  - rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
+  - rpm -Uvh https://yum.puppet.com/puppet6/puppet6-release-el-7.noarch.rpm
   - yum -y install puppet-agent
   - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
   - "(cd /etc/puppetlabs/puppet && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
