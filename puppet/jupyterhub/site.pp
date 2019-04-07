@@ -23,14 +23,14 @@ node /^login\d+$/ {
 }
 
 node /^mgmt\d+$/ {
-  include profile::slurm::controller
-  include profile::slurm::accounting
-  include profile::nfs::server
-  include profile::freeipa::server
-
   include profile::base
-  include profile::freeipa::guest_accounts
+  include profile::freeipa::server
   include profile::rsyslog::server
+  include profile::slurm::controller
+  include profile::nfs::server
+
+  include profile::freeipa::guest_accounts
+  include profile::slurm::accounting
   include profile::squid::server
 }
 
