@@ -51,7 +51,7 @@ write_files:
       if [[ $first_run -eq 1 ]] && [[ ! -z "$email" ]]; then
         cat << EOF | /usr/sbin/sendmail $email
       To: $email
-      From: puppet@$(hostname -f)
+      From: magic.castle+puppet@$(hostname -f)
       Subject: $(hostname -f) is online
       $(cat /var/log/puppetlabs/puppet/puppet.log)
       EOF
