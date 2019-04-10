@@ -45,11 +45,11 @@ write_files:
         touch /var/run/puppetlabs/.disabled
         if [[ ! -z "$email" ]]; then
           cat << EOF | /usr/sbin/sendmail $email
-          To: $email
-          From: puppet@$(hostname -f)
-          Subject: $(hostname -f) is online
-          $(cat /var/log/puppetlabs/puppet/puppet.log)
-          EOF
+      To: $email
+      From: puppet@$(hostname -f)
+      Subject: $(hostname -f) is online
+      $(cat /var/log/puppetlabs/puppet/puppet.log)
+      EOF
         fi
       fi
     path: /sbin/puppet_apply_site.sh
