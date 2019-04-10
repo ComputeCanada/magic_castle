@@ -20,6 +20,7 @@ write_files:
   - content: |
       #!/bin/bash
       email=
+      first_run=0
       while [ "$1" != "" ]; do
         case $1 in
           --notify ) shift
@@ -33,24 +34,27 @@ write_files:
       if [ -f /etc/puppetlabs/puppet/.disabled -o -f /var/run/puppetlabs/.disabled ]; then
         exit 0
       fi
+      test -f /var/log/puppetlabs/puppet/puppet.log
+      first_run=$?
       # Apply puppet plan
       /usr/bin/flock -n /var/lock/puppet.lock \
                     /opt/puppetlabs/bin/puppet apply /etc/puppetlabs/puppet/site.pp \
                                                --color=false \
                                                --logdest /var/log/puppetlabs/puppet/puppet.log
       # Check if puppet has done anything
-      ACTIONS=$(tail -n 2 /var/log/puppetlabs/puppet/puppet.log | grep -c -P "(Compiled catalog|Applied catalog)")
-      if [[ $ACTIONS -eq 2 ]]; then
+      actions=$(tail -n 2 /var/log/puppetlabs/puppet/puppet.log | grep -c -P "(Compiled catalog|Applied catalog)")
+      if [[ $actions -eq 2 ]]; then
         # Disable puppet after no action is required
         touch /var/run/puppetlabs/.disabled
-        if [[ ! -z "$email" ]]; then
-          cat << EOF | /usr/sbin/sendmail $email
+      fi
+      # Send email with results after first run
+      if [[ $first_run -eq 1 ]] && [[ ! -z "$email" ]]; then
+        cat << EOF | /usr/sbin/sendmail $email
       To: $email
       From: puppet@$(hostname -f)
       Subject: $(hostname -f) is online
       $(cat /var/log/puppetlabs/puppet/puppet.log)
       EOF
-        fi
       fi
     path: /sbin/puppet_apply_site.sh
     permissions: "0755"
