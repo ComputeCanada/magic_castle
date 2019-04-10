@@ -32,6 +32,9 @@ variable "data_path" {
   default = ""
  }
 
+variable "email" {
+  default = ""
+}
 
 locals {
   domain_name     = "${var.cluster_name}.${var.domain}"

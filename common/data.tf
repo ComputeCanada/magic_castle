@@ -38,6 +38,7 @@ data "template_file" "mgmt_puppet" {
 
   vars {
     node_name       = "mgmt01"
+    email           = "${var.email}"
     puppetfile      = "${indent(6, file("${local.puppetfile_path}"))}"
     site_pp         = "${indent(6, file("${local.site_pp_path}"))}"
     data            = "${indent(6, "${data.template_file.mgmt_data.rendered}")}"
@@ -80,6 +81,7 @@ data "template_file" "login" {
 
   vars {
     node_name  = "${var.cluster_name}01"
+    email      = "${var.email}"
     puppetfile = "${indent(6, file("${local.puppetfile_path}"))}"
     site_pp    = "${indent(6, file("${local.site_pp_path}"))}"
     data       = "${indent(6, "${data.template_file.login_data.rendered}")}"
@@ -140,6 +142,7 @@ data "template_file" "node" {
 
   vars {
     node_name       = "node${count.index + 1}"
+    email           = "${var.email}"
     puppetfile      = "${indent(6, file("${local.puppetfile_path}"))}"
     site_pp         = "${indent(6, file("${local.site_pp_path}"))}"
     data            = "${indent(6, "${data.template_file.node_data.rendered}")}"
