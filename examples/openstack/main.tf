@@ -11,8 +11,6 @@ module "openstack" {
   project_size        = 50
   scratch_size        = 50
   public_key_path     = "./pub.key"
-  globus_user         = ""
-  globus_password     = ""
 
   # OpenStack specifics
   os_image_name        = "CentOS-7-x64-2018-09"

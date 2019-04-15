@@ -12,10 +12,6 @@ variable "domain" {}
 
 variable "public_key_path" {}
 
-variable "globus_user" {}
-
-variable "globus_password" {}
-
 variable "puppet_config" {
   default = "basic"
 }

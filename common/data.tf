@@ -28,8 +28,6 @@ data "template_file" "mgmt_data" {
     guest_passwd    = "${random_pet.guest_passwd.id}"
     munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
     nb_users        = "${var.nb_users}"
-    globus_user     = ""
-    globus_password = ""
   }
 }
 
@@ -71,8 +69,6 @@ data "template_file" "login_data" {
     guest_passwd    = "${random_pet.guest_passwd.id}"
     munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
     nb_users        = ""
-    globus_user     = "${var.globus_user}"
-    globus_password = "${var.globus_password}"
   }
 }
 
@@ -131,8 +127,6 @@ data "template_file" "node_data" {
     guest_passwd    = "${random_pet.guest_passwd.id}"
     munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
     nb_users        = ""
-    globus_user     = ""
-    globus_password = ""
   }
 }
 

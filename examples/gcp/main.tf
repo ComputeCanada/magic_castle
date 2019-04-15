@@ -11,8 +11,6 @@ module "gcp" {
   project_size        = 50
   scratch_size        = 50
   public_key_path     = "./key.pub"
-  globus_user         = ""
-  globus_password     = ""
 
   # GCP specifics
   project_name       = "crested-return-137823"
