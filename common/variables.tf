@@ -12,6 +12,10 @@ variable "domain" {}
 
 variable "public_key_path" {}
 
+variable "guest_passwd" {
+  default = ""
+}
+
 variable "puppet_config" {
   default = "basic"
 }
