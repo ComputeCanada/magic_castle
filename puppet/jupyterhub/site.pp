@@ -8,6 +8,7 @@ node default {
   include profile::globus::base
   include profile::singularity
   include jupyterhub
+  include profile::fail2ban
 }
 
 node /^login\d+$/ {
@@ -20,6 +21,7 @@ node /^login\d+$/ {
   include profile::globus::base
   include profile::singularity
   include jupyterhub
+  include profile::fail2ban
 }
 
 node /^mgmt\d+$/ {
@@ -43,6 +45,7 @@ node /^node\d+$/ {
   include profile::gpu
   include profile::slurm::node
   include profile::singularity
+  include jupyterhub::node
 
   Class['profile::freeipa::client'] -> Class['profile::nfs::client'] -> Class['profile::slurm::node']
 }

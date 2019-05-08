@@ -7,3 +7,4 @@ mod 'computecanada-profile',
     :branch => 'master'
 mod 'computecanada-jupyterhub',
     :git => 'https://git.computecanada.ca/magic_castle/puppet-jupyterhub.git'
+    :branch => 'master'

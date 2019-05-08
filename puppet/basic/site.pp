@@ -4,6 +4,7 @@ node default {
   include profile::nfs::client
   include profile::rsyslog::client
   include profile::slurm::submitter
+  include profile::fail2ban
 }
 
 node /^login\d+$/ {
@@ -12,6 +13,7 @@ node /^login\d+$/ {
   include profile::nfs::client
   include profile::rsyslog::client
   include profile::slurm::submitter
+  include profile::fail2ban
 }
 
 node /^mgmt\d+$/ {
