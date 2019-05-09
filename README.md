@@ -49,9 +49,6 @@ our module we would like to be shown on screen once the ressources have been ins
 2. Create a new folder. Name it after your favorite superhero: `mkdir hulk`
 3. Move inside the folder: `cd hulk`
 4. Save a copy of the preceding `main.tf` file inside your new folder.
-```
-wget https://git.computecanada.ca/magic_castle/slurm_cloud/raw/examples/openstack/main.tf
-```
 
 This file will be our main canvas to design our new clusters. As long as the module block
 parameters suffice to our need, we will be able to limit our configuration to this sole
