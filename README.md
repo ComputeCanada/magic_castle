@@ -186,16 +186,19 @@ administrative access to the cluster.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### `globus_user` and `globus_password` (**optional**)
+#### `email` (optional)
 
-`globus_user` and `globus_password` are optional credentials that, when provided,
-are used to register a Globus Endpoint on [globus.org](globus.org). This endpoint will point
-to the NFS storage and could be used to demonstrate users how to use Globus or
-transfer file to and from the cloud cluster.
+Once the initial puppet provisioning of an instance is done, 
+the instance can send an email if the variable `email` is defined with
+the recipient address. A cluster of 4 compute nodes will send 6 emails, 
+one for the management node, one for the login and one for each node.
+The email contains the log produced by the first `puppet apply`.
 
-The name of the registered endpoint corresponds to `{cluster_name}.{domain}`.
+The emails can sometime be marked as spam, so look in your spam box
+if nothing shows up even if you provided your email and the provisioning
+is over.
 
-Modifying these variables after the cluster is built leads to a complete
+Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
 #### `os_image_name`
