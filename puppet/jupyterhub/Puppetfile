@@ -6,5 +6,5 @@ mod 'computecanada-profile',
     :git    => 'https://git.computecanada.ca/magic_castle/puppet-slurm_cloud.git',
     :branch => 'master'
 mod 'computecanada-jupyterhub',
-    :git => 'https://git.computecanada.ca/magic_castle/puppet-jupyterhub.git'
+    :git => 'https://git.computecanada.ca/magic_castle/puppet-jupyterhub.git',
     :branch => 'master'
