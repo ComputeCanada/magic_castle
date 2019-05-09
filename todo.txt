@@ -1,6 +1,0 @@
-- slurm
-    1. configure elastic cloud for OpenStack
-        - https://slurm.schedmd.com/elastic_computing.html
-        - Example for GCP : https://github.com/SchedMD/slurm/tree/master/contribs/gcp/scripts
-- Jupyterhub
-    - configure spawner form
