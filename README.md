@@ -52,7 +52,7 @@ our module we would like to be shown on screen once the ressources have been ins
 ```
 wget https://git.computecanada.ca/\
      magic_castle/slurm_cloud/raw/examples/\
-     openstack/arbutus/main.tf
+     openstack/main.tf
 ```
 
 This file will be our main canvas to design our new clusters. As long as the module block
