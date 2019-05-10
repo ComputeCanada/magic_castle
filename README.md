@@ -423,28 +423,24 @@ Try to SSH in your cluster. If the connection times out, your ip address is out
 of the range of you entered or you made a mystake when defining the range.
 Repeat from step 3.
 
-### Increase Jupyter Notebook Job Walltime
+### Add Packages to Jupyter Default Python Kernel
 
-**Require Puppet deactivation on the login node**
-
-By default, the Jupyter Notebook jobs started by the cluster have a
-maximum walltime of 1 hour. To increase this value or modify
-other parameter of the Jupyter Notebook job, edit the following
-file on the login node:
-`/opt/jupyterhub/etc/submit.sh`
-
-### Add Packages to Jupyter Notebook Kernel
-
-**Require Puppet deactivation on the login node**
-
-On the login node, edit the file
-`/opt/jupyterhub/bin/build_venv_tarball.sh` and add new
-`pip install` after the ones already in the file. Once the
-file is edited, call the following command:
+The default Python kernel correspond to the Python installed in `/opt/ipython-kernel`.
+Each compute node has its own copy of the environment. To install packages in
+this environment, on a compute node call:
 
 ```
-$ sudo /opt/jupyterhub/bin/build_venv_tarball.sh
+sudo /opt/ipython-kernel/bin/pip install <package_name>
 ```
+
+This will install the package on a single compute node. To install it on every
+compute node, call the following command as user `centos` and where `N` is the
+number of compute nodes in your cluster.
+
+```
+pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
+```
+
 
 ### Activate Slurm Oversubscription
 
