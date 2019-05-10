@@ -10,9 +10,19 @@ Version: 1.0
 ## Setup
 For the workshop you will need
 
-* Terraform (latest or 0.11.11).
+* Terraform (>=0.11.11).
 * git
-* A Compute Canada Cloud account
+* Access to an OpenStack Cloud (e.g: Arbutus)
+* Ability to communicate with the OpenStack API from your computer
+* An OpenStack project with room for the allocation of at least
+  * 1 floating IP
+  * 1 security group
+  * 3 volumes
+  * 3 instances
+  * 5 ports
+  * 6 VCPUs
+  * 6 GB of RAM
+  * 11 security rules
 
 The project can be used to build clusters with commercial cloud, but it implies cost or access to credit.
 
