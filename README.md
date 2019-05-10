@@ -407,8 +407,7 @@ done
 If you would like to add a user account after the cluster is built. Log in the
 management node and call:
 ```
-$ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> \
- /sbin/ipa_create_user.sh <username>
+$ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.sh <username>
 ```
 
 ### Restrict SSH Access
