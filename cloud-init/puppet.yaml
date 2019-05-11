@@ -42,8 +42,8 @@ write_files:
                                                --color=false \
                                                --logdest /var/log/puppetlabs/puppet/puppet.log
       # Check if puppet has done anything
-      actions=$(tail -n 2 /var/log/puppetlabs/puppet/puppet.log | grep -c -P "(Compiled catalog|Applied catalog)")
-      if [[ $actions -eq 2 ]]; then
+      actions=$(tail -n 2 /var/log/puppetlabs/puppet/puppet.log | grep -Pzc "^.*Applied catalog.*\n.*Compiled catalog.*$")
+      if [[ $actions -eq 1 ]]; then
         # Disable puppet after no action is required
         touch /var/run/puppetlabs/.disabled
       fi
