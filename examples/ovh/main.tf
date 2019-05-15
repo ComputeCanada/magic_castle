@@ -46,7 +46,6 @@ output "public_ip" {
 #   domain           = "${module.ovh.domain}"
 #   public_ip        = "${module.ovh.ip}"
 #   rsa_public_key   = "${module.ovh.rsa_public_key}"
-#   ecdsa_public_key = "${module.ovh.ecdsa_public_key}"
 # }
 # output "domain_name" {
 # 	value = "${module.dns.domain_name}"

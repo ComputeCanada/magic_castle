@@ -46,7 +46,6 @@ output "public_ip" {
 #   domain           = "${module.openstack.domain}"
 #   public_ip        = "${module.openstack.ip}"
 #   rsa_public_key   = "${module.openstack.rsa_public_key}"
-#   ecdsa_public_key = "${module.openstack.ecdsa_public_key}"
 # }
 # output "domain_name" {
 # 	value = "${module.dns.domain_name}"

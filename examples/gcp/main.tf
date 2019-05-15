@@ -52,7 +52,6 @@ output "public_ip" {
 #   domain           = "${module.gcp.domain}"
 #   public_ip        = "${module.gcp.ip}"
 #   rsa_public_key   = "${module.gcp.rsa_public_key}"
-#   ecdsa_public_key = "${module.gcp.ecdsa_public_key}"
 # }
 # output "domain_name" {
 # 	value = "${module.dns.domain_name}"

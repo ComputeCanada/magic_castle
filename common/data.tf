@@ -88,11 +88,6 @@ resource "tls_private_key" "login_rsa" {
   algorithm   = "RSA"
 }
 
-resource "tls_private_key" "login_ecdsa" {
-  algorithm   = "ECDSA"
-  ecdsa_curve = "P256"
-}
-
 data "template_cloudinit_config" "login_config" {
   part {
     filename     = "login.yaml"
@@ -109,9 +104,6 @@ ssh_keys:
   rsa_private: |
     ${indent(4, tls_private_key.login_rsa.private_key_pem)}
   rsa_public: ${tls_private_key.login_rsa.public_key_openssh}
-  ecdsa_private: |
-    ${indent(4, tls_private_key.login_ecdsa.private_key_pem)}
-  ecdsa_public: ${tls_private_key.login_ecdsa.public_key_openssh}
  EOF
   }
 }

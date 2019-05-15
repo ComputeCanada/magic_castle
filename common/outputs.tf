@@ -28,7 +28,3 @@ output "guest_passwd" {
 output "rsa_public_key" {
   value = "${tls_private_key.login_rsa.public_key_openssh}"
 }
-
-output "ecdsa_public_key" {
-  value = "${tls_private_key.login_ecdsa.public_key_openssh}"
-}
