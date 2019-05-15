@@ -85,7 +85,8 @@ data "template_file" "login" {
 }
 
 resource "tls_private_key" "login_rsa" {
-  algorithm   = "RSA"
+  algorithm = "RSA"
+  rsa_bits  = 4096
 }
 
 data "template_cloudinit_config" "login_config" {
