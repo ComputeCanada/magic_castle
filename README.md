@@ -100,6 +100,10 @@ Beware, not all cloud provider module uses the same variables.
 You should refer to the examples specific to the cloud provider
 you want to use.
 
+#### `puppet_config`
+
+
+
 #### `cluster_name`
 
 `cluster_name` is used to:
@@ -449,7 +453,6 @@ number of compute nodes in your cluster.
 pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
 ```
 
-
 ### Activate Slurm Oversubscription
 
 **Require Puppet deactivation on the management node**
@@ -483,7 +486,7 @@ Now that oversubscription is activated, you can modify the
 JupyterHub submit file to allow notebook jobs to run on
 oversubscribed nodes.
 
-Edit `/opt/jupyterhub/etc/submit.sh` and add
+Edit `/etc/jupyterhub/submit.sh` and add
 ```
 #SBATCH --oversubscribe
 ```
