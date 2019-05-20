@@ -318,10 +318,11 @@ logs to the authors of Magic Castle to help you debug.
 ### Modifying the Cluster Infrastructure
 
 You can modify the `main.tf` at any point of your cluster's life and
-apply the modifications while it is running. Depending on the variables
-you modify, Terraform will destroy some or all resources for recreate
-them. We have previously identify the effect of modifying each variable
-in their own section of this document.
+apply the modifications while it is running.
+
+**Warning**: Depending on the variables you modify, Terraform might destroy
+some or all resources, and create new ones. The effects of modifying each
+variable are detailed in the subsections of **Configuring Your Cluster**.
 
 For example, to increase the number of computes nodes by one. Open
 `main.tf`, add 1 to `nb_nodes`, save the document and call
