@@ -3,6 +3,7 @@ packages:
   - git
 
 runcmd:
+  - "(echo 'HostKeyAlgorithms ssh-rsa' >> /etc/ssh/sshd_config && systemctl restart sshd)"
   - yum upgrade -y
   - rpm -Uvh https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
   - yum -y update
