@@ -28,8 +28,7 @@ The project can be used to build clusters with commercial cloud, but it implies 
 
 ## Overview of the Cloud Cluster Architecture
 
-**TODO: Insert image of the cluster and the repartition of the services**
-https://draw.io/
+![Magic Caslte Service Architecture](https://docs.google.com/drawings/d/e/2PACX-1vRGFtPevjgM0_ZrkIBQY881X73eQGaXDJ1Fb48Z0DyOe61h2dYdw0urWF2pQZWUTdcNSAM868sQ2Sii/pub?w=1259&amp;h=960)
 
 ## Building Your First Cloud Cluster
 
