@@ -1,7 +1,7 @@
 # Magic Castle Documentation
 Version: 1.0
 
-## Setup
+## 1. Setup
 
 To use Magic Castle you will need:
 * Terraform (>=0.11.11).
@@ -20,7 +20,7 @@ To use Magic Castle you will need:
 
 The project can be used to build clusters with commercial cloud, but it implies cost or access to credit.
 
-### Setup check
+### 1.1 Setup check
 
 1. Open a terminal
 2. Verify the commands were properly installed by looking at the version
@@ -30,13 +30,13 @@ The project can be used to build clusters with commercial cloud, but it implies 
 
 3. Verify you have added your SSH key inside GitLab. Go to https://git.computecanada.ca/profile/keys
 
-## Cloud Cluster Architecture Overview
+## 2. Cloud Cluster Architecture Overview
 
 ![Magic Castle Service Architecture](https://docs.google.com/drawings/d/e/2PACX-1vRGFtPevjgM0_ZrkIBQY881X73eQGaXDJ1Fb48Z0DyOe61h2dYdw0urWF2pQZWUTdcNSAM868sQ2Sii/pub?w=1259&amp;h=960)
 
-## Initialization
+## 3. Initialization
 
-### Child Module
+### 3.1 Child Module
 
 1. Go to https://git.computecanada.ca/magic_castle/slurm_cloud.
 2. Click on the `examples` folder.
@@ -57,7 +57,7 @@ This file will be our main canvas to design our new clusters. As long as the mod
 parameters suffice to our need, we will be able to limit our configuration to this sole
 file. Further customization will be addressed during the second part of the workshop.
 
-### Terraform
+### 3.2 Terraform
 
 Terraform fetches the plugins required to interact with the cloud provider defined by
 our `main.tf` once when we initialize. To initialize, enter the following command:
@@ -74,12 +74,12 @@ again to make sure you have all plugins.
 The initialization process creates a `.terraform` folder at the root of your current
 folder. You do not need to look at its content for now.
 
-## Configuration
+## 4. Configuration
 
 The order of the input parameters we are about to present does not matter, but
 we recommend leaving it as it is presented in the examples.
 
-### source
+### 4.1 source
 
 The first line of the module block indicates to Terraform where it can find
 the `.tf` files that defines the resources that constitutes your future
@@ -94,7 +94,7 @@ Beware, not all cloud provider module uses the same variables.
 You should refer to the examples specific to the cloud provider
 you want to use.
 
-### puppet_config (**optional**)
+### 4.2 puppet_config (**optional**)
 
 Package installation and configuration - provisioning - of the cluster
 is mainly done by [Puppet](https://en.wikipedia.org/wiki/Puppet_(software)).
@@ -118,7 +118,7 @@ If the variable is left undefined, the default arrangement used is `base`.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### cluster_name
+### 4.3 cluster_name
 
 `cluster_name` is used to:
 
@@ -132,7 +132,7 @@ Define with lowercase alphanumeric characters and start with a letter.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### domain
+### 4.4 domain
 
 `domain` defines:
 
@@ -149,7 +149,7 @@ by CloudFlare.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### nb_nodes
+### 4.5 nb_nodes
 
 `nb_nodes` defines how many compute node instances
 will be created. This integer can be between 0 and your cloud allocation
@@ -164,7 +164,7 @@ cluster, and add more later.
 Modifying this variable after the cluster is built only affects the number
 of compute nodes at next `terraform apply`.
 
-### nb_users
+### 4.6 nb_users
 
 `nb_users` defines how many user accounts will be created in
 FreeIPA. Each user account shares the same randomly generated password.
@@ -187,7 +187,7 @@ $ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_c
 Modifying `nb_users` after the cluster is built leads to a rebuild
 of the management node at next `terraform apply`.
 
-### home_size, project_size, scratch_size
+### 4.7 home_size, project_size, scratch_size
 
 `home_size`, `project_size`, and `scratch_size` define the size of the volumes
 for respectively `/home`, `/project` and `/scratch`.
@@ -198,7 +198,7 @@ Modifying one of these variable after the cluster is built leads to the
 destruction of the corresponding volume and attachment and the creation
 of a new empty volume and attachment.
 
-### public_key_path
+### 4.8 public_key_path
 
 `public_key_path` is a path to an SSH public key file of your choice.
 This key will associated with the `centos` account to provide you
@@ -207,7 +207,7 @@ administrative access to the cluster.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### email (optional)
+### 4.9 email (optional)
 
 Once the initial puppet provisioning of an instance is done, 
 the instance can send an email if the variable `email` is defined with
@@ -222,7 +222,7 @@ is over.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### os_image_name
+### 4.9 os_image_name
 
 `os_image_name` defines the name of the image that will be used as the
 base image for the cluster nodes. For the provisionning to work properly,
@@ -236,7 +236,7 @@ security patches and general OS updates.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### os_flavor_mgmt, os_flavor_login and os_flavor_node
+### 4.10 os_flavor_mgmt, os_flavor_login and os_flavor_node
 
 `os_flavor_*` defines the flavor of one of the three types of servers
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
@@ -248,7 +248,7 @@ Modifying one of these variables after the cluster is built leads
 to a live migration of the instance(s) to the new chosen flavor. The
 affected instances will reboot in the process.
 
-### os_floating_ip (**optional**)
+### 4.11 os_floating_ip (**optional**)
 
 `os_floating_ip` defines pre-allocated floating ip address that will
 be assign to the login node. If this variable is left empty, the
@@ -261,7 +261,7 @@ build.
 Modifying this variable after the cluster is built will change the
 floating ip assigned to the login node.
 
-## Planification
+## 5. Planification
 
 Once your initial cluster configuration is done, you can initiate
 a planning phase where you will ask Terraform to communicate with
@@ -294,7 +294,7 @@ is only a dry-run. If Terraform does not report any error, you can move
 to the next step. Otherwise, read the errors and fix your configuration
 file accordingly.
 
-## Deployment
+## 6. Deployment
 
 To create the resources defined by your module, enter the following command
 ```
@@ -328,7 +328,7 @@ once the instances are booted.
 If unexpected problems occur during provisioning, you can provide these
 logs to the authors of Magic Castle to help you debug.
 
-## Infrastructure Customization
+### 6.1 Deployment Customization
 
 You can modify the `main.tf` at any point of your cluster's life and
 apply the modifications while it is running.
@@ -350,7 +350,7 @@ and eventually automatically add to the Slurm cluster configuration.
 
 You could do the opposite and reduce the number of compute nodes to 0.
 
-## Destruction
+## 7. Destruction
 
 Once you're done working with your cluster and you would like to recover
 the resources, in the same folder as `main.tf`, enter:
@@ -364,7 +364,7 @@ have to confirm by entering `yes`.
 **Beware**, once the cluster is destroyed, nothing will be left, even the
 shared storage will be erased.
 
-## Online Cluster Configuration
+## 8. Online Cluster Configuration
 
 Once the cluster is build and provisioned, you are free to modify
 its software configuration as you please by connecting to it and
@@ -384,7 +384,7 @@ To connect to the management node, follow these steps:
 agent connection enabled: `ssh -A centos@cluster_ip`.
 3. SSH in the management node : `ssh centos@mgmt01`
 
-### Deactivate Puppet
+### 8.1 Deactivate Puppet
 
 If you plan to modify configuration files manually, you will need to deactivate
 Puppet. Otherwise, you might find out that your modifications have dissapeared
@@ -394,7 +394,7 @@ puppet is executed every 5 minutes and at every reboot through the root crontab.
 To deactivate it, execute `sudo crontab -e` and comment the lines mentionning
 `puppet_apply_site.sh`.
 
-### Replace the User Account Password
+### 8.2 Replace the User Account Password
 
 A four words password might not be ideal for workshops with new users
 who barely know how to type. To replace the randomly-generated
@@ -418,14 +418,14 @@ for username in $(ls /home/ | grep user); do
 done
 ```
 
-### Add a User Account
+### 8.3 Add a User Account
 
 To add a user account after the cluster is built, log in `mgmt01` and call:
 ```
 $ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.sh <username>
 ```
 
-### Restrict SSH Access
+### 8.4 Restrict SSH Access
 
 By default, port 22 of the login node is accessible from the world.
 If you know the range of ip addresses that will connect to your cluster,
@@ -447,7 +447,7 @@ Try to SSH in your cluster. If the connection times out, your ip address is out
 of the range of you entered or you made a mystake when defining the range.
 Repeat from step 3.
 
-### Add Packages to Jupyter Default Python Kernel
+### 8.5 Add Packages to Jupyter Default Python Kernel
 
 The default Python kernel correspond to the Python installed in `/opt/ipython-kernel`.
 Each compute node has its own copy of the environment. To install packages in
@@ -465,7 +465,7 @@ number of compute nodes in your cluster.
 pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
 ```
 
-## Customize Magic Castle Terraform Files
+## 8.6 Customize Magic Castle Terraform Files
 
 When we initiated the folder containing the `main.tf` by
 calling `terraform init`, Terraform cloned the git repo
