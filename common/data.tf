@@ -33,9 +33,10 @@ data "template_file" "mgmt_data" {
 
 data "template_file" "mgmt_puppet" {
   template = "${file("${path.module}/cloud-init/puppet.yaml")}"
+  count    = "${var.nb_mgmt}"
 
   vars {
-    node_name       = "mgmt01"
+    node_name       = "${format("mgmt%02d", count.index + 1)}"
     email           = "${var.email}"
     puppetfile      = "${indent(6, file("${local.puppetfile_path}"))}"
     site_pp         = "${indent(6, file("${local.site_pp_path}"))}"
@@ -54,7 +55,7 @@ data "template_cloudinit_config" "mgmt_config" {
     filename     = "mgmt_puppet.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
-    content      = "${data.template_file.mgmt_puppet.rendered}"
+    content      = "${element(data.template_file.mgmt_puppet.*.rendered, count.index)}"
   }
 }
 
@@ -74,9 +75,10 @@ data "template_file" "login_data" {
 
 data "template_file" "login" {
   template = "${file("${path.module}/cloud-init/puppet.yaml")}"
+  count    = "${var.nb_login}"
 
   vars {
-    node_name  = "${var.cluster_name}01"
+    node_name  = "${format("login%02d", count.index + 1)}"
     email      = "${var.email}"
     puppetfile = "${indent(6, file("${local.puppetfile_path}"))}"
     site_pp    = "${indent(6, file("${local.site_pp_path}"))}"
@@ -90,11 +92,13 @@ resource "tls_private_key" "login_rsa" {
 }
 
 data "template_cloudinit_config" "login_config" {
+  count          = "${var.nb_login}"
+
   part {
     filename     = "login.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
-    content      = "${data.template_file.login.rendered}"
+    content      = "${element(data.template_file.login.*.rendered, count.index)}"
   }
   part {
     filename     = "ssh_keys.yaml"

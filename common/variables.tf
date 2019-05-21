@@ -1,5 +1,13 @@
 variable "cluster_name" {}
 
+variable "nb_mgmt" {
+  default = 1
+}
+
+variable nb_login {
+  default = 1
+}
+
 variable "nb_nodes" {}
 
 variable "nb_users" {}
