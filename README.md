@@ -223,7 +223,7 @@ administrative access to the cluster.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.10 email (optional)
+### 4.9 email (optional)
 
 Once the initial puppet provisioning of an instance is done, 
 the instance can send an email if the variable `email` is defined with
@@ -235,12 +235,12 @@ The emails can sometime be marked as spam, so look in your spam box
 if nothing shows up even if you provided your email and the provisioning
 is over.
 
-#### 4.10.1 Post Build Modification Effect
+#### 4.9.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.11 os_image_name
+### 4.10 os_image_name
 
 `os_image_name` defines the name of the image that will be used as the
 base image for the cluster nodes. For the provisionning to work properly,
@@ -251,11 +251,11 @@ should be mainly done through Puppet scripting. Image customization is mostly
 envision to accelerate the provisioning process by applying in advance the
 security patches and general OS updates.
 
-#### 4.11.1 Post Build Modification Effect
+#### 4.10.1 Post Build Modification Effect
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.12 os_flavor_mgmt, os_flavor_login and os_flavor_node
+### 4.11 os_flavor_mgmt, os_flavor_login and os_flavor_node
 
 `os_flavor_*` defines the flavor of one of the three types of servers
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
@@ -263,13 +263,13 @@ defines the compute, memory, and storage capacity of an instance.
 
 For `os_flavor_mgmt`, choose a flavor with at least 3GB of memory.
 
-#### 4.12.1 Post Build Modification Effect
+#### 4.11.1 Post Build Modification Effect
 
 Modifying one of these variables after the cluster is built leads
 to a live migration of the instance(s) to the new chosen flavor. The
 affected instances will reboot in the process.
 
-### 4.13 os_floating_ip (**optional**)
+### 4.12 os_floating_ip (**optional**)
 
 `os_floating_ip` defines pre-allocated floating ip address that will
 be assign to the login node. If this variable is left empty, the
@@ -279,7 +279,7 @@ This variable can be useful if you administered your DNS manually and
 you would like the keep the same domain name for your cluster at each
 build.
 
-#### 4.13.1 Post Build Modification Effect
+#### 4.12.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built will change the
 floating ip assigned to the login node.
