@@ -366,7 +366,7 @@ shared storage will be erased.
 
 ## 8. Online Cluster Configuration
 
-Once the cluster is build and provisioned, you are free to modify
+Once the cluster is online and provisioned, you are free to modify
 its software configuration as you please by connecting to it and
 abusing your administrator privileges. If after modifying the
 configuration, you think it would be good for Magic Castle to
