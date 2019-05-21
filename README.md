@@ -278,14 +278,12 @@ select the same folder that contains `main.tf`.
 
 Second, in a terminal located in the same folder as your OpenStack RC file
 and your `main.tf` file, source the OpenStack RC file.
-
 ```$ source *-openrc.sh```
 
 This command will ask for a password, enter your Compute Canada password.
 
 Terraform should now be able to communicate with OpenStack. To test your
 configuration file, enter the following command
-
 ```$ terraform plan```
 
 This command will validate the syntax of your configuration file and
