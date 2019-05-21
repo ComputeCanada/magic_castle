@@ -102,7 +102,27 @@ you want to use.
 
 #### `puppet_config`
 
+Package installation and configuration - provisioning - of the cluster
+is mainly done by [Puppet](https://en.wikipedia.org/wiki/Puppet_(software)).
+Magic Castle provides arrangements of host configuration with Puppet.
+Each arrangement is defined by three files:
+* `site.pp`: identify the modules for each hostname
+* `Puppetfile`: identify the source of each module
+* `data.yaml`: define values for module variables
 
+There are four arrangments currently available:
+* `base`: SLURM cluster with NFS home, scratch and project;
+* `cvmfs`: `base` + Compute Canada CVMFS;
+* `globus`: `cvmfs` + Globus Endpoint on the login node;
+* `jupyterhub`: `globus` + JupyterHub on the login node.
+
+To get more details on the configuration of each host per arrangement,
+look at the (`puppet` folder in the `slurm_cloud` repo)[https://git.computecanada.ca/magic_castle/slurm_cloud/tree/master/puppet].
+
+If the variable is left undefined, the default arrangement used is `base`.
+
+Modifying this variable after the cluster is built leads to a complete
+cluster rebuild at next `terraform apply`.
 
 #### `cluster_name`
 
