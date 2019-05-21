@@ -101,7 +101,7 @@ The git repository of the project subfolders are divided by cloud provider.
 If you were to fork this project, you would need to replace the
 source value by the link to your own fork.
 
-Beware, not all cloud provider module uses the same variables.
+**Warning**: not all cloud provider module uses the same variables.
 You should refer to the examples specific to the cloud provider
 you want to use.
 
@@ -347,7 +347,7 @@ is completed, Terraform will output the administror password, the user
 account password, the administrator username and the floating ip of the login
 node.
 
-**Beware**, altough the instance creation process is finished once Terraform
+**Warning**: altough the instance creation process is finished once Terraform
 outputs the connection information, you will not be able to
 connect and use the cluster immediately. The instance creation is only the
 first phase of the cluster building process. The provisioning: the
@@ -397,7 +397,7 @@ $ terraform destroy
 As for `apply`, Terraform will output a plan that you will
 have to confirm by entering `yes`.
 
-**Beware**, once the cluster is destroyed, nothing will be left, even the
+**Warning**: once the cluster is destroyed, nothing will be left, even the
 shared storage will be erased.
 
 ## 8. Online Cluster Configuration
