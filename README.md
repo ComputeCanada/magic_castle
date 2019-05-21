@@ -115,6 +115,8 @@ look at the [`puppet` folder in the `slurm_cloud` repo](https://git.computecanad
 
 If the variable is left undefined, the arrangement will be `base`.
 
+#### 4.2.1 Post Build Modification Effect
+
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
@@ -128,6 +130,8 @@ which this Slurm managed cluster is known in the accounting database
 * Define the hostname of the login node.
 
 Define with lowercase alphanumeric characters and start with a letter.
+
+#### 4.3.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
@@ -146,6 +150,8 @@ module following the `openstack` module in the example `main.tf` can
 register the domain name if your domain's nameservers are administred
 by CloudFlare.
 
+#### 4.4.1 Post Build Modification Effect
+
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
@@ -160,6 +166,8 @@ This variable can be modified at any point of your cluster lifetime.
 Terraform will manage the creation or destruction of the virtual machines
 for you. It is therefore possible to start with 0 compute nodes, build the
 cluster, and add more later.
+
+#### 4.5.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built only affects the number
 of compute nodes at next `terraform apply`.
@@ -184,6 +192,8 @@ management node and call:
 $ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.sh <username>
 ```
 
+#### 4.6.1 Post Build Modification Effect
+
 Modifying `nb_users` after the cluster is built leads to a rebuild
 of the management node at next `terraform apply`.
 
@@ -194,6 +204,9 @@ for respectively `/home`, `/project` and `/scratch`.
 Each volume is mounted on `mgmt01` and exported with NFS to the
 login and the compute nodes.
 
+
+#### 4.7.1 Post Build Modification Effect
+
 Modifying one of these variable after the cluster is built leads to the
 destruction of the corresponding volume and attachment and the creation
 of a new empty volume and attachment.
@@ -203,6 +216,9 @@ of a new empty volume and attachment.
 `public_key_path` is a path to an SSH public key file of your choice.
 This key will associated with the `centos` account to provide you
 administrative access to the cluster.
+
+
+#### 4.8.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
@@ -219,6 +235,8 @@ The emails can sometime be marked as spam, so look in your spam box
 if nothing shows up even if you provided your email and the provisioning
 is over.
 
+#### 4.10.1 Post Build Modification Effect
+
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
@@ -233,6 +251,7 @@ should be mainly done through Puppet scripting. Image customization is mostly
 envision to accelerate the provisioning process by applying in advance the
 security patches and general OS updates.
 
+#### 4.11.1 Post Build Modification Effect
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
@@ -243,6 +262,8 @@ in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
 defines the compute, memory, and storage capacity of an instance.
 
 For `os_flavor_mgmt`, choose a flavor with at least 3GB of memory.
+
+#### 4.12.1 Post Build Modification Effect
 
 Modifying one of these variables after the cluster is built leads
 to a live migration of the instance(s) to the new chosen flavor. The
@@ -257,6 +278,8 @@ floating ip will be managed by Terraform.
 This variable can be useful if you administered your DNS manually and
 you would like the keep the same domain name for your cluster at each
 build.
+
+#### 4.13.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built will change the
 floating ip assigned to the login node.
