@@ -472,7 +472,9 @@ To restrict the ip range, you can use OpenStack webpage.
 1. In OpenStack webpage, go to: **Project** → **Network** → **Security Groups**
 2. In the Security Groups table, there should be a line named like your cluster
 with the suffix `_secgroup`. Click on the corresponding **Managed Rules** button.
-3. Find the line with **22 (SSH)** in the **Port Range** column and click on the **Delete Rule** button. Click **Delete Rule** in the following message box.
+3. Find the line with **22 (SSH)** in the **Port Range** column and
+click on the **Delete Rule** button.
+Click **Delete Rule** in the following message box.
 4. Click on the **Add Rule** button.
 5. Select **SSH** in Rule dropping list
 6. Define the range of ip addresses in the CIDR box.
