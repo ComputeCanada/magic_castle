@@ -218,7 +218,7 @@ login and the compute nodes.
 
 #### 4.7.1 Post Build Modification Effect
 
-Modifying one of these variable after the cluster is built leads to the
+Modifying one of these variables after the cluster is built leads to the
 destruction of the corresponding volume and attachment and the creation
 of a new empty volume and attachment.
 
