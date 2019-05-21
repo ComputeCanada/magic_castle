@@ -1,15 +1,9 @@
-# Magic Castle Workshop
+# Magic Castle Documentation
 Version: 1.0
 
-## Summary
-
-## Overview of Real-World Examples
-
-## Workshop Cases
-
 ## Setup
-For the workshop you will need
 
+To use Magic Castle you will need:
 * Terraform (>=0.11.11).
 * git
 * Access to an OpenStack Cloud (e.g: Arbutus)
@@ -26,12 +20,6 @@ For the workshop you will need
 
 The project can be used to build clusters with commercial cloud, but it implies cost or access to credit.
 
-## Overview of the Cloud Cluster Architecture
-
-![Magic Caslte Service Architecture](https://docs.google.com/drawings/d/e/2PACX-1vRGFtPevjgM0_ZrkIBQY881X73eQGaXDJ1Fb48Z0DyOe61h2dYdw0urWF2pQZWUTdcNSAM868sQ2Sii/pub?w=1259&amp;h=960)
-
-## Building Your First Cloud Cluster
-
 ### Setup check
 
 1. Open a terminal
@@ -42,7 +30,13 @@ The project can be used to build clusters with commercial cloud, but it implies 
 
 3. Verify you have added your SSH key inside GitLab. Go to https://git.computecanada.ca/profile/keys
 
-### Copying a Child Module
+## Cloud Cluster Architecture Overview
+
+![Magic Castle Service Architecture](https://docs.google.com/drawings/d/e/2PACX-1vRGFtPevjgM0_ZrkIBQY881X73eQGaXDJ1Fb48Z0DyOe61h2dYdw0urWF2pQZWUTdcNSAM868sQ2Sii/pub?w=1259&amp;h=960)
+
+## Initialization
+
+### Child Module
 
 1. Go to https://git.computecanada.ca/magic_castle/slurm_cloud.
 2. Click on the `examples` folder.
@@ -63,7 +57,7 @@ This file will be our main canvas to design our new clusters. As long as the mod
 parameters suffice to our need, we will be able to limit our configuration to this sole
 file. Further customization will be addressed during the second part of the workshop.
 
-### Initializing Terraform Process
+### Terraform
 
 Terraform fetches the plugins required to interact with the cloud provider defined by
 our `main.tf` once when we initialize. To initialize, enter the following command:
@@ -80,12 +74,12 @@ again to make sure you have all plugins.
 The initialization process creates a `.terraform` folder at the root of your current
 folder. You do not need to look at its content for now.
 
-### Configuring Your Cluster
+## Configuration
 
 The order of the input parameters we are about to present does not matter, but
 we recommend leaving it as it is presented in the examples.
 
-#### source
+### source
 
 The first line of the module block indicates to Terraform where it can find
 the `.tf` files that defines the resources that constitutes your future
@@ -100,7 +94,7 @@ Beware, not all cloud provider module uses the same variables.
 You should refer to the examples specific to the cloud provider
 you want to use.
 
-#### puppet_config (**optional**)
+### puppet_config (**optional**)
 
 Package installation and configuration - provisioning - of the cluster
 is mainly done by [Puppet](https://en.wikipedia.org/wiki/Puppet_(software)).
@@ -124,7 +118,7 @@ If the variable is left undefined, the default arrangement used is `base`.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### cluster_name
+### cluster_name
 
 `cluster_name` is used to:
 
@@ -138,7 +132,7 @@ Define with lowercase alphanumeric characters and start with a letter.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### domain
+### domain
 
 `domain` defines:
 
@@ -155,7 +149,7 @@ by CloudFlare.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### nb_nodes
+### nb_nodes
 
 `nb_nodes` defines how many compute node instances
 will be created. This integer can be between 0 and your cloud allocation
@@ -170,7 +164,7 @@ cluster, and add more later.
 Modifying this variable after the cluster is built only affects the number
 of compute nodes at next `terraform apply`.
 
-#### nb_users
+### nb_users
 
 `nb_users` defines how many user accounts will be created in
 FreeIPA. Each user account shares the same randomly generated password.
@@ -193,7 +187,7 @@ $ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_c
 Modifying `nb_users` after the cluster is built leads to a rebuild
 of the management node at next `terraform apply`.
 
-#### home_size, project_size, scratch_size
+### home_size, project_size, scratch_size
 
 `home_size`, `project_size`, and `scratch_size` define the size of the volumes
 for respectively `/home`, `/project` and `/scratch`.
@@ -204,7 +198,7 @@ Modifying one of these variable after the cluster is built leads to the
 destruction of the corresponding volume and attachment and the creation
 of a new empty volume and attachment.
 
-#### public_key_path
+### public_key_path
 
 `public_key_path` is a path to an SSH public key file of your choice.
 This key will associated with the `centos` account to provide you
@@ -213,7 +207,7 @@ administrative access to the cluster.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### email (optional)
+### email (optional)
 
 Once the initial puppet provisioning of an instance is done, 
 the instance can send an email if the variable `email` is defined with
@@ -228,7 +222,7 @@ is over.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### os_image_name
+### os_image_name
 
 `os_image_name` defines the name of the image that will be used as the
 base image for the cluster nodes. For the provisionning to work properly,
@@ -242,7 +236,7 @@ security patches and general OS updates.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### os_flavor_mgmt, os_flavor_login and os_flavor_node
+### os_flavor_mgmt, os_flavor_login and os_flavor_node
 
 `os_flavor_*` defines the flavor of one of the three types of servers
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
@@ -254,7 +248,7 @@ Modifying one of these variables after the cluster is built leads
 to a live migration of the instance(s) to the new chosen flavor. The
 affected instances will reboot in the process.
 
-#### os_floating_ip (**optional**)
+### os_floating_ip (**optional**)
 
 `os_floating_ip` defines pre-allocated floating ip address that will
 be assign to the login node. If this variable is left empty, the
@@ -267,7 +261,7 @@ build.
 Modifying this variable after the cluster is built will change the
 floating ip assigned to the login node.
 
-### Planning Cluster Deployment
+## Planification
 
 Once your initial cluster configuration is done, you can initiate
 a planning phase where you will ask Terraform to communicate with
@@ -300,7 +294,7 @@ is only a dry-run. If Terraform does not report any error, you can move
 to the next step. Otherwise, read the errors and fix your configuration
 file accordingly.
 
-### Creating the Cluster
+## Deployment
 
 To create the resources defined by your module, enter the following command
 ```
@@ -334,7 +328,7 @@ once the instances are booted.
 If unexpected problems occur during provisioning, you can provide these
 logs to the authors of Magic Castle to help you debug.
 
-### Modifying the Cluster Infrastructure
+## Infrastructure Customization
 
 You can modify the `main.tf` at any point of your cluster's life and
 apply the modifications while it is running.
@@ -356,7 +350,7 @@ and eventually automatically add to the Slurm cluster configuration.
 
 You could do the opposite and reduce the number of compute nodes to 0.
 
-### Destroying the Cluster
+## Destruction
 
 Once you're done working with your cluster and you would like to recover
 the resources, in the same folder as `main.tf`, enter:
@@ -370,7 +364,7 @@ have to confirm by entering `yes`.
 **Beware**, once the cluster is destroyed, nothing will be left, even the
 shared storage will be erased.
 
-## Customizing a Live Cluster
+## Online Cluster Configuration
 
 Once the cluster is build and provisioned, you are free to modify
 its software configuration as you please by connecting to it and
@@ -484,4 +478,3 @@ determine which directory corresponds to which module.
 
 For example folder `5e8bf3f97f0f6c4558772a46d6c550a8`
 corresponds to the openstack module.
-
