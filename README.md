@@ -13,9 +13,9 @@ To use Magic Castle you will need:
   * 1 security group
   * 3 volumes
   * 3 instances
-  * 5 neutron ports
   * 6 VCPUs
   * 6 GB of RAM
+  * 7 neutron ports
   * 11 security rules
 
 The project can be used to build clusters with commercial cloud, but it implies cost or access to credit.
