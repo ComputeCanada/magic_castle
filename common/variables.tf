@@ -4,7 +4,7 @@ variable "nb_mgmt" {
   default = 1
 }
 
-variable nb_login {
+variable "nb_login" {
   default = 1
 }
 
