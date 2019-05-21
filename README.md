@@ -36,7 +36,7 @@ The project can be used to build clusters with commercial cloud, but it implies 
 
 ## 3. Initialization
 
-### 3.1 Child Module
+### 3.1 Main File
 
 1. Go to https://git.computecanada.ca/magic_castle/slurm_cloud.
 2. Click on the `examples` folder.
