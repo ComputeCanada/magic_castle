@@ -6,7 +6,7 @@ Version: 1.0
 To use Magic Castle you will need:
 * Terraform (>=0.11.11).
 * git
-* Access to an OpenStack Cloud (e.g: Arbutus)
+* Access to an OpenStack Cloud (e.g.: Arbutus)
 * Ability to communicate with the OpenStack API from your computer
 * An OpenStack project with room for the allocation of at least
   * 1 floating IP
@@ -43,13 +43,13 @@ The project can be used to build clusters with commercial cloud, but it implies 
 3. Click on the `openstack` folder.
 4. Click on `main.tf`
 
-This file contains Terraform modules and outputs. Modules are files that defines a set of
-ressources that will be configured based on the inputs provided in the module block.
+This file contains Terraform modules and outputs. Modules are files that define a set of
+resources that will be configured based on the inputs provided in the module block.
 Outputs are used to tell Terraform which variables of
-our module we would like to be shown on screen once the ressources have been instantiated.
+our module we would like to be shown on the screen once the resources have been instantiated.
 
 1. Open a Terminal.
-2. Create a new folder. Name it after your favorite superhero: `mkdir hulk`
+2. Create a new folder. Name it after your favourite superhero: `mkdir hulk`
 3. Move inside the folder: `cd hulk`
 4. Save a copy of the preceding `main.tf` file inside your new folder.
 
@@ -67,7 +67,7 @@ $ terraform init
 
 The initialization is specific to the folder where you are currently located.
 The initialization process looks at all `.tf` files and fetches the plugins required
-to build the ressources defined in theses files. If your replace some or all
+to build the resources defined in theses files. If you replace some or all
 `.tf` files inside a folder that has already been initialized, just call the command
 again to make sure you have all plugins.
 
@@ -95,13 +95,13 @@ we recommend leaving it as it is presented in the examples.
 The first line of the module block indicates to Terraform where it can find
 the `.tf` files that defines the resources that constitutes your future
 cluster. We are pointing this variable toward the git repo using the syntax
-defined in [Terraform documentation](https://www.terraform.io/docs/modules/sources.html#generic-git-repository)
+defined in [Terraform documentation.](https://www.terraform.io/docs/modules/sources.html#generic-git-repository)
 
-The git repository of the project subfolders are divided by cloud provider.
+The git repository is divided by cloud providers.
 If you were to fork this project, you would need to replace the
 source value by the link to your own fork.
 
-**Warning**: not all cloud provider module uses the same variables.
+**Warning**: not all cloud provider modules use the same variables.
 You should refer to the examples specific to the cloud provider
 you want to use.
 
@@ -109,13 +109,13 @@ you want to use.
 
 Package installation and configuration - provisioning - of the cluster
 is mainly done by [Puppet](https://en.wikipedia.org/wiki/Puppet_(software)).
-Magic Castle provides arrangements of host configuration with Puppet.
+Magic Castle provides arrangements of host configurations with Puppet.
 Each arrangement is defined by three files:
 * `site.pp`: identify the modules for each hostname
 * `Puppetfile`: identify the source of each module
 * `data.yaml`: define values for module variables
 
-There are four arrangments currently available:
+There are four arrangements currently available:
 * `base`: SLURM cluster with NFS home, scratch and project;
 * `cvmfs`: `base` + Compute Canada CVMFS;
 * `globus`: `cvmfs` + Globus Endpoint on the login node;
@@ -158,7 +158,7 @@ cluster rebuild at next `terraform apply`.
 If you own a domain, you can register the login floating IP address
 under `{cluster_name}.{domain}` manually with your registrar. An optional
 module following the `openstack` module in the example `main.tf` can
-register the domain name if your domain's nameservers are administred
+register the domain name if your domain's nameservers are administered
 by CloudFlare.
 
 #### 4.4.1 Post Build Modification Effect
@@ -170,7 +170,7 @@ cluster rebuild at next `terraform apply`.
 
 `nb_nodes` defines how many compute node instances
 will be created. This integer can be between 0 and your cloud allocation
-instance upper limit minus 2 (you must leave room for a management and
+instance upper limit minus 2 (you must leave room for a management node and
 a login node).
 
 This variable can be modified at any point of your cluster lifetime.
@@ -257,10 +257,10 @@ cluster rebuild at next `terraform apply`.
 base image for the cluster nodes. For the provisionning to work properly,
 this image has to be based on CentOS 7.
 
-You can use custom CentOS 7 image if you wish, but provisioning custommization
+You can use custom CentOS 7 image if you wish, but provisioning customization
 should be mainly done through Puppet scripting. Image customization is mostly
-envision to accelerate the provisioning process by applying in advance the
-security patches and general OS updates.
+envisioned as a way to accelerate the provisioning process by applying the
+security patches and OS updates in advance.
 
 #### 4.10.1 Post Build Modification Effect
 Modifying this variable after the cluster is built leads to a complete
@@ -272,7 +272,7 @@ cluster rebuild at next `terraform apply`.
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
 defines the compute, memory, and storage capacity of an instance.
 
-For `os_flavor_mgmt`, choose a flavor with at least 3GB of memory.
+For `os_flavor_mgmt`, choose a flavor with at least 3 GB of memory.
 
 #### 4.11.1 Post Build Modification Effect
 
@@ -283,7 +283,7 @@ affected instances will reboot in the process.
 ### 4.12 os_floating_ip (**optional**)
 
 `os_floating_ip` defines pre-allocated floating ip address that will
-be assign to the login node. If this variable is left empty, the
+be assigned to the login node. If this variable is left empty, the
 floating ip will be managed by Terraform.
 
 This variable can be useful if you administered your DNS manually and
@@ -305,8 +305,8 @@ described by the `main.tf` configuration file.
 First, you will have to download your OpenStack Open RC
 file. It is project-specific and contains the credentials used
 by Terraform to communicate with OpenStack API. It comes
-as a sourcable shell-script. To download, using OpenStack web
-ui go to : **Project** → **API Access**, then click on **Download OpenStack RC File**
+as a sourceable shell script. To download, using OpenStack webpage go to:
+**Project** → **API Access**, then click on **Download OpenStack RC File**
 then right-click on **OpenStack RC File (Identity API v3)**, **Save Link as...**, then
 select the same folder that contains `main.tf`.
 
@@ -343,18 +343,18 @@ Enter `yes`.
 
 Terraform will then proceed to create the resources defined by the
 configuration file. It should take a few minutes. Once the creation process
-is completed, Terraform will output the administror password, the user
+is completed, Terraform will output the administrator password, the user
 account password, the administrator username and the floating ip of the login
 node.
 
-**Warning**: altough the instance creation process is finished once Terraform
+**Warning**: although the instance creation process is finished once Terraform
 outputs the connection information, you will not be able to
 connect and use the cluster immediately. The instance creation is only the
-first phase of the cluster building process. The provisioning: the
+first phase of the cluster-building process. The provisioning: the
 creation of the user accounts, installation of FreeIPA, Slurm, configuration
 of JupyterHub, etc.; takes around 15 minutes after the instances are created.
 
-You can follow the provisioning process on the insances by looking at:
+You can follow the provisioning process on the issuance by looking at:
 
 * `/var/log/cloud-init-output.log`
 * `/var/log/puppetlabs/puppet/puppet.log` (require admin privileges)
@@ -407,7 +407,7 @@ its software configuration as you please by connecting to it and
 abusing your administrator privileges. If after modifying the
 configuration, you think it would be good for Magic Castle to
 support your new features, make sure to submit an issue on the
-git repo or fork the slurm_cloud_puppet repo and make a pull-request.
+git repo or fork the slurm_cloud_puppet repo and make a pull request.
 
 We will list here a few common customizations that are not currently
 supported directly by Magic Castle, but that are easy to do live.
@@ -416,24 +416,24 @@ Most customizations are done from the management node (`mgmt01`).
 To connect to the management node, follow these steps:
 
 1. Make sure your SSH key is loaded in your ssh-agent.
-2. SSH in your cluster with with forwarding of the authentication
+2. SSH in your cluster with forwarding of the authentication
 agent connection enabled: `ssh -A centos@cluster_ip`.
 3. SSH in the management node : `ssh centos@mgmt01`
 
 ### 8.1 Deactivate Puppet
 
 If you plan to modify configuration files manually, you will need to deactivate
-Puppet. Otherwise, you might find out that your modifications have dissapeared
-in 5 minute window.
+Puppet. Otherwise, you might find out that your modifications have disappeared
+in 5-minute window.
 
 puppet is executed every 5 minutes and at every reboot through the root crontab.
-To deactivate it, execute `sudo crontab -e` and comment the lines mentionning
+To deactivate it, execute `sudo crontab -e` and comment the lines mentioning
 `puppet_apply_site.sh`.
 
 ### 8.2 Replace the User Account Password
 
 A four words password might not be ideal for workshops with new users
-who barely know how to type. To replace the randomly-generated
+who barely know how to type. To replace the randomly generated
 password of the user accounts, follow these steps:
 
 1. Connect to the cluster.
@@ -467,9 +467,9 @@ By default, port 22 of the login node is accessible from the world.
 If you know the range of ip addresses that will connect to your cluster,
 we strongly recommend you to limit the access to port 22 to this range.
 
-To restrict the ip range, you can use OpenStack web ui.
+To restrict the ip range, you can use OpenStack webpage.
 
-1. In OpenStack web ui, go to: **Project** → **Network** → **Security Groups**
+1. In OpenStack webpage, go to: **Project** → **Network** → **Security Groups**
 2. In the Security Groups table, there should be a line named like your cluster
 with the suffix `_secgroup`. Click on the corresponding **Managed Rules** button.
 3. Find the line with **22 (SSH)** in the **Port Range** column and click on the **Delete Rule** button. Click **Delete Rule** in the following message box.
@@ -480,12 +480,12 @@ with the suffix `_secgroup`. Click on the corresponding **Managed Rules** button
 8. Repeat 3 to 6 if you have multiple ip ranges.
 
 Try to SSH in your cluster. If the connection times out, your ip address is out
-of the range of you entered or you made a mystake when defining the range.
+of the range of you entered or you made a mistake when defining the range.
 Repeat from step 3.
 
 ### 8.5 Add Packages to Jupyter Default Python Kernel
 
-The default Python kernel correspond to the Python installed in `/opt/ipython-kernel`.
+The default Python kernel corresponds to the Python installed in `/opt/ipython-kernel`.
 Each compute node has its own copy of the environment. To install packages in
 this environment, on a compute node call:
 
@@ -512,5 +512,5 @@ Terraform uses md5 hashes to refer to the module, so you
 will have to look at the file named `modules.json` to
 determine which directory corresponds to which module.
 
-For example folder `5e8bf3f97f0f6c4558772a46d6c550a8`
+For example, folder `5e8bf3f97f0f6c4558772a46d6c550a8`
 corresponds to the openstack module.
