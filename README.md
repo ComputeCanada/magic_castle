@@ -207,7 +207,7 @@ administrative access to the cluster.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.9 email (optional)
+### 4.10 email (optional)
 
 Once the initial puppet provisioning of an instance is done, 
 the instance can send an email if the variable `email` is defined with
@@ -222,7 +222,7 @@ is over.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.9 os_image_name
+### 4.11 os_image_name
 
 `os_image_name` defines the name of the image that will be used as the
 base image for the cluster nodes. For the provisionning to work properly,
@@ -236,7 +236,7 @@ security patches and general OS updates.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.10 os_flavor_mgmt, os_flavor_login and os_flavor_node
+### 4.12 os_flavor_mgmt, os_flavor_login and os_flavor_node
 
 `os_flavor_*` defines the flavor of one of the three types of servers
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
@@ -248,7 +248,7 @@ Modifying one of these variables after the cluster is built leads
 to a live migration of the instance(s) to the new chosen flavor. The
 affected instances will reboot in the process.
 
-### 4.11 os_floating_ip (**optional**)
+### 4.13 os_floating_ip (**optional**)
 
 `os_floating_ip` defines pre-allocated floating ip address that will
 be assign to the login node. If this variable is left empty, the
