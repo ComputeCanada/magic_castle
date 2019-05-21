@@ -490,7 +490,7 @@ number of compute nodes in your cluster.
 pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
 ```
 
-## 8.6 Customize Magic Castle Terraform Files
+## 9. Customize Magic Castle Terraform Files
 
 When we initiated the folder containing the `main.tf` by
 calling `terraform init`, Terraform cloned the git repo
