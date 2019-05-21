@@ -360,7 +360,7 @@ apply the modifications while it is running.
 
 **Warning**: Depending on the variables you modify, Terraform might destroy
 some or all resources, and create new ones. The effects of modifying each
-variable are detailed in the subsections of **Configuring Your Cluster**.
+variable are detailed in the subsections of **Configuration**.
 
 For example, to increase the number of computes nodes by one. Open
 `main.tf`, add 1 to `nb_nodes`, save the document and call
