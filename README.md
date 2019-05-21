@@ -354,7 +354,7 @@ the future state, and plan the creation of a single new instance. If
 you accept the action plan, the instance will be created, provisioned
 and eventually automatically add to the Slurm cluster configuration.
 
-You could do the inverse and reduce the number of compute nodes to 0.
+You could do the opposite and reduce the number of compute nodes to 0.
 
 ### Destroying the Cluster
 
@@ -401,7 +401,7 @@ puppet is executed every 5 minutes and at every reboot through the root crontab.
 To deactivate it, execute `sudo crontab -e` and comment the lines related to
 `puppet apply`.
 
-### Replace the User Accounts Password
+### Replace the User Account Password
 
 A four words password might not be ideal for workshops with new users
 who barely know how to type. To replace the randomly-generated
@@ -427,8 +427,7 @@ done
 
 ### Add a User Account
 
-If you would like to add a user account after the cluster is built. Log in the
-management node and call:
+To add a user account after the cluster is built, log in `mgmt01` and call:
 ```
 $ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.sh <username>
 ```
@@ -472,48 +471,6 @@ number of compute nodes in your cluster.
 ```
 pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
 ```
-
-### Activate Slurm Oversubscription
-
-**Require Puppet deactivation on the management node**
-
-Sometime, you might be interested in running more jobs than you
-have cores available.
-
-To activate Slurm oversubscription, edit `/etc/slurm/slurm.conf`
-and add `OverSubscribe=YES` at the end of the partition line that
-starts with `PartitionName=`. Once `slurm.conf` is modified, run:
-```
-sudo scontrol reconfigure
-```
-to tell Slurm to reload its configuration file.
-
-`OverSubscribe=YES` indicates to Slurm that
-CPUs allocated to a job may be shared with other jobs if
-each job allows sharing via the `--oversubscribe` option.
-Only the CPUs can be oversubscribed. Therefore, the number
-of jobs that can run on a node corresponds to the memory available
-and the memory allocated per job.
-
-Look at Slurm's documentation to know more:
-https://slurm.schedmd.com/cons_res_share.html
-
-#### Run More Notebooks Than Cores
-
-**Require Puppet deactivation on the login node**
-
-Now that oversubscription is activated, you can modify the
-JupyterHub submit file to allow notebook jobs to run on
-oversubscribed nodes.
-
-Edit `/etc/jupyterhub/submit.sh` and add
-```
-#SBATCH --oversubscribe
-```
-
-Also take time to edit the number of tasks and the amount of
-memory per cpu to configure how many notebooks will be able to
-run on a single node.
 
 ## Customize Magic Castle Terraform Files
 
