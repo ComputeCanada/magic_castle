@@ -113,7 +113,7 @@ There are four arrangments currently available:
 To get more details on the configuration of each host per arrangement,
 look at the [`puppet` folder in the `slurm_cloud` repo](https://git.computecanada.ca/magic_castle/slurm_cloud/tree/master/puppet).
 
-If the variable is left undefined, the default arrangement used is `base`.
+If the variable is left undefined, the arrangement will be `base`.
 
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
