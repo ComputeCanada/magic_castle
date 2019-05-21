@@ -74,6 +74,17 @@ again to make sure you have all plugins.
 The initialization process creates a `.terraform` folder at the root of your current
 folder. You do not need to look at its content for now.
 
+#### 3.2.1 Terraform Modules Upgrade
+
+Once Terraform folder has been initialized, it is possible to fetch the new version
+of the modules used by calling:
+```
+terraform init -upgrade
+```
+
+**Warning**: the upgrade might not be entirely compatible with your `main.tf`. Confirm
+your `main.tf` file is up-to-date by looking at `slurm_cloud` examples folder.
+
 ## 4. Configuration
 
 The order of the input parameters we are about to present does not matter, but
