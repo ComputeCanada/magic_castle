@@ -131,18 +131,18 @@ resource "openstack_compute_instance_v2" "mgmt" {
 }
 
 resource "openstack_compute_volume_attach_v2" "va_home" {
-  instance_id = "${openstack_compute_instance_v2.mgmt.1.id}"
+  instance_id = "${openstack_compute_instance_v2.mgmt.0.id}"
   volume_id   = "${openstack_blockstorage_volume_v2.home.id}"
 }
 
 resource "openstack_compute_volume_attach_v2" "va_project" {
-  instance_id = "${openstack_compute_instance_v2.mgmt.1.id}"
+  instance_id = "${openstack_compute_instance_v2.mgmt.0.id}"
   volume_id  = "${openstack_blockstorage_volume_v2.project.id}"
   depends_on = ["openstack_compute_volume_attach_v2.va_home"]
 }
 
 resource "openstack_compute_volume_attach_v2" "va_scratch" {
-  instance_id = "${openstack_compute_instance_v2.mgmt.1.id}"
+  instance_id = "${openstack_compute_instance_v2.mgmt.0.id}"
   volume_id   = "${openstack_blockstorage_volume_v2.scratch.id}"
   depends_on = ["openstack_compute_volume_attach_v2.va_project"]
 }
@@ -176,7 +176,7 @@ resource "openstack_networking_floatingip_v2" "fip_1" {
 
 resource "openstack_compute_floatingip_associate_v2" "fip_1" {
   floating_ip = "${var.os_floating_ip != "" ? var.os_floating_ip : element(concat(openstack_networking_floatingip_v2.fip_1.*.address, list("")), 0) }"
-  instance_id = "${openstack_compute_instance_v2.login.1.id}"
+  instance_id = "${openstack_compute_instance_v2.login.0.id}"
 }
 
 locals {
