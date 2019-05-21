@@ -111,7 +111,7 @@ There are four arrangments currently available:
 * `jupyterhub`: `globus` + JupyterHub on the login node.
 
 To get more details on the configuration of each host per arrangement,
-look at the (`puppet` folder in the `slurm_cloud` repo)[https://git.computecanada.ca/magic_castle/slurm_cloud/tree/master/puppet].
+look at the [`puppet` folder in the `slurm_cloud` repo](https://git.computecanada.ca/magic_castle/slurm_cloud/tree/master/puppet).
 
 If the variable is left undefined, the default arrangement used is `base`.
 
