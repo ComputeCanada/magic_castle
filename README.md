@@ -13,7 +13,7 @@ To use Magic Castle you will need:
   * 1 security group
   * 3 volumes
   * 3 instances
-  * 5 ports
+  * 5 neutron ports
   * 6 VCPUs
   * 6 GB of RAM
   * 11 security rules
