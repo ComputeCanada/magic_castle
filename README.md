@@ -100,7 +100,7 @@ Beware, not all cloud provider module uses the same variables.
 You should refer to the examples specific to the cloud provider
 you want to use.
 
-#### `puppet_config`
+#### puppet_config (**optional**)
 
 Package installation and configuration - provisioning - of the cluster
 is mainly done by [Puppet](https://en.wikipedia.org/wiki/Puppet_(software)).
@@ -124,7 +124,7 @@ If the variable is left undefined, the default arrangement used is `base`.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### `cluster_name`
+#### cluster_name
 
 `cluster_name` is used to:
 
@@ -138,7 +138,7 @@ Define with lowercase alphanumeric characters and start with a letter.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### `domain`
+#### domain
 
 `domain` defines:
 
@@ -155,7 +155,7 @@ by CloudFlare.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### `nb_nodes`
+#### nb_nodes
 
 `nb_nodes` defines how many compute node instances
 will be created. This integer can be between 0 and your cloud allocation
@@ -170,7 +170,7 @@ cluster, and add more later.
 Modifying this variable after the cluster is built only affects the number
 of compute nodes at next `terraform apply`.
 
-#### `nb_users`
+#### nb_users
 
 `nb_users` defines how many user accounts will be created in
 FreeIPA. Each user account shares the same randomly generated password.
@@ -193,7 +193,7 @@ $ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_c
 Modifying `nb_users` after the cluster is built leads to a rebuild
 of the management node at next `terraform apply`.
 
-#### `home_size`, `project_size`, `scratch_size`
+#### home_size, project_size, scratch_size
 
 `home_size`, `project_size`, and `scratch_size` define the size of the volumes
 for respectively `/home`, `/project` and `/scratch`.
@@ -204,7 +204,7 @@ Modifying one of these variable after the cluster is built leads to the
 destruction of the corresponding volume and attachment and the creation
 of a new empty volume and attachment.
 
-#### `public_key_path`
+#### public_key_path
 
 `public_key_path` is a path to an SSH public key file of your choice.
 This key will associated with the `centos` account to provide you
@@ -213,7 +213,7 @@ administrative access to the cluster.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### `email` (optional)
+#### email (optional)
 
 Once the initial puppet provisioning of an instance is done, 
 the instance can send an email if the variable `email` is defined with
@@ -228,7 +228,7 @@ is over.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### `os_image_name`
+#### os_image_name
 
 `os_image_name` defines the name of the image that will be used as the
 base image for the cluster nodes. For the provisionning to work properly,
@@ -242,7 +242,7 @@ security patches and general OS updates.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-#### `os_flavor_mgmt`, `os_flavor_login` and `os_flavor_node`.
+#### os_flavor_mgmt, os_flavor_login and os_flavor_node
 
 `os_flavor_*` defines the flavor of one of the three types of servers
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
@@ -254,7 +254,7 @@ Modifying one of these variables after the cluster is built leads
 to a live migration of the instance(s) to the new chosen flavor. The
 affected instances will reboot in the process.
 
-#### `os_floating_ip` (**optional**)
+#### os_floating_ip (**optional**)
 
 `os_floating_ip` defines pre-allocated floating ip address that will
 be assign to the login node. If this variable is left empty, the
