@@ -400,6 +400,20 @@ have to confirm by entering `yes`.
 **Warning**: once the cluster is destroyed, nothing will be left, even the
 shared storage will be erased.
 
+### 7.1 Instance Destruction
+
+**Warning**: This feature is not implemented yet.
+
+It is possible to destroy only the instances and keep the rest of the infrastructure
+like the floating ip, the volumes, the generated SSH hostkey, etc. To only destroy
+the instances, call the following command:
+```
+$ terraform apply \
+  -var 'nb_mgmt=0' \
+  -var 'nb_login=0' \
+  -var 'nb_nodes=0'
+```
+
 ## 8. Online Cluster Configuration
 
 Once the cluster is online and provisioned, you are free to modify
