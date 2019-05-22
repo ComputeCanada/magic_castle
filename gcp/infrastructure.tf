@@ -1,7 +1,7 @@
 provider "google" {
-  project     = "${var.project_name}"
-  region      = "${var.zone}"
-  version     = "~> 2.1.0"
+  project = "${var.project_name}"
+  region  = "${var.zone}"
+  version = "~> 2.1.0"
 }
 
 resource "google_compute_disk" "home" {
@@ -136,8 +136,8 @@ resource "google_compute_instance" "node" {
   }
 
   metadata {
-    sshKeys = "centos:${file(var.public_key_path)}"
-    user-data = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"
+    sshKeys            = "centos:${file(var.public_key_path)}"
+    user-data          = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"
     user-data-encoding = "base64"
   }
 
