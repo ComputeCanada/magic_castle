@@ -104,7 +104,7 @@ data "template_cloudinit_config" "login_config" {
 ssh_keys:
   rsa_private: |
     ${indent(4, tls_private_key.login_rsa.private_key_pem)}
-  rsa_public: ${tls_private_key.login_rsa.public_key_openssh} 
+  rsa_public: "${tls_private_key.login_rsa.public_key_openssh} "
  EOF
   }
 }
