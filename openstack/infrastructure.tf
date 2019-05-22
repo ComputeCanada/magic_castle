@@ -108,7 +108,8 @@ resource "openstack_blockstorage_volume_v2" "scratch" {
 }
 
 resource "openstack_networking_port_v2" "port_mgmt" {
-  name               = "port_mgmt"
+  count              = "${var.nb_mgmt}"
+  name               = "${format("port-mgmt%02d", count.index + 1)}"
   network_id         = "${data.openstack_networking_network_v2.int_network.id}"
   security_group_ids = ["${openstack_compute_secgroup_v2.secgroup_1.id}"]
   fixed_ip {
@@ -126,7 +127,7 @@ resource "openstack_compute_instance_v2" "mgmt" {
   user_data       = "${element(data.template_cloudinit_config.mgmt_config.*.rendered, count.index)}"
 
   network {
-    port = "${openstack_networking_port_v2.port_mgmt.id}"
+    port = "${element(openstack_networking_port_v2.port_mgmt.*.rendered, count.index)}"
   }
 }
 
