@@ -30,22 +30,24 @@ resource "azurerm_subnet" "subnet" {
 
 # Create public IPs
 resource "azurerm_public_ip" "loginIP" {
-  name                         = "loginIP"
+  count                        = "${var.nb_login}"
+  name                         = "${format("login-ip-%02d", count.index + 1)}"
   location                     = "${var.location}"
   resource_group_name          = "${azurerm_resource_group.group.name}"
   public_ip_address_allocation = "static"
 }
 
 resource "azurerm_public_ip" "mgmtIP" {
-  name                         = "mgmtIP"
+  count                        = "${var.nb_mgmt}"
+  name                         = "${format("mgmt-ip-%02d", count.index + 1)}"
   location                     = "${var.location}"
   resource_group_name          = "${azurerm_resource_group.group.name}"
   public_ip_address_allocation = "dynamic"
 }
 
 resource "azurerm_public_ip" "nodeIP" {
-  name                         = "nodeIP${count.index + 1}"
   count                        = "${var.nb_nodes}"
+  name                         = "${format("node-ip-%02d", count.index + 1)}"
   location                     = "${var.location}"
   resource_group_name          = "${azurerm_resource_group.group.name}"
   public_ip_address_allocation = "dynamic"
@@ -114,7 +116,8 @@ resource "azurerm_network_security_group" "security_mgmt" {
 
 # Create network interface
 resource "azurerm_network_interface" "loginNIC" {
-  name                      = "loginNIC"
+  count                     = "${var.nb_login}"
+  name                      = "${format("node-nic-%02d", count.index + 1)}"
   location                  = "${var.location}"
   resource_group_name       = "${azurerm_resource_group.group.name}"
   network_security_group_id = "${azurerm_network_security_group.security_login.id}"
@@ -123,12 +126,13 @@ resource "azurerm_network_interface" "loginNIC" {
     name                          = "loginNICConfig"
     subnet_id                     = "${azurerm_subnet.subnet.id}"
     private_ip_address_allocation = "dynamic"
-    public_ip_address_id          = "${azurerm_public_ip.loginIP.id}"
+    public_ip_address_id          = "${element(azurerm_public_ip.loginIP.*.id, count.index)}"
   }
 }
 
 resource "azurerm_network_interface" "mgmtNIC" {
-  name                      = "mgmtNIC"
+  count                     = "${var.nb_mgmt}"
+  name                      = "${format("mgmt-nic-%02d", count.index + 1)}"
   location                  = "${var.location}"
   resource_group_name       = "${azurerm_resource_group.group.name}"
   network_security_group_id = "${azurerm_network_security_group.security_mgmt.id}"
@@ -137,12 +141,13 @@ resource "azurerm_network_interface" "mgmtNIC" {
     name                          = "mgmtNICConfig"
     subnet_id                     = "${azurerm_subnet.subnet.id}"
     private_ip_address_allocation = "dynamic"
-    public_ip_address_id          = "${azurerm_public_ip.mgmtIP.id}"
+    public_ip_address_id          = "${element(azurerm_public_ip.mgmtIP.*.id, count.index)}"
   }
 }
 
 resource "azurerm_network_interface" "nodeNIC" {
-  name                      = "nodeNIC${count.index + 1}"
+  count                     = "${var.nb_nodes}"
+  name                      = "${format("node-nic-%02d", count.index + 1)}"
   count                     = "${var.nb_nodes}"
   location                  = "${var.location}"
   resource_group_name       = "${azurerm_resource_group.group.name}"
@@ -156,11 +161,12 @@ resource "azurerm_network_interface" "nodeNIC" {
 }
 
 # Create virtual machine
-resource "azurerm_virtual_machine" "login01vm" {
-  name                  = "login01"
+resource "azurerm_virtual_machine" "login" {
+  count                 = "${var.nb_login}"
+  name                  = "${format("login%02d", count.index + 1)}"
   location              = "${var.location}"
   resource_group_name   = "${azurerm_resource_group.group.name}"
-  network_interface_ids = ["${azurerm_network_interface.loginNIC.id}"]
+  network_interface_ids = ["${element(azurerm_network_interface.loginNIC.*.id, count.index)}"]
   vm_size               = "${var.vm_size_login}"
 
   storage_os_disk {
@@ -178,9 +184,9 @@ resource "azurerm_virtual_machine" "login01vm" {
   }
 
   os_profile {
-    computer_name  = "${var.cluster_name}01"
+    computer_name  = "${format("login%02d", count.index + 1)}"
     admin_username = "${var.ssh_user}"
-    custom_data = "${data.template_cloudinit_config.login_config.rendered}"
+    custom_data  = "${element(data.template_cloudinit_config.login_config.*.rendered, count.index)}"
   }
 
   os_profile_linux_config {
@@ -192,11 +198,12 @@ resource "azurerm_virtual_machine" "login01vm" {
   }
 }
 
-resource "azurerm_virtual_machine" "mgmt01vm" {
-  name                  = "mgmt01"
+resource "azurerm_virtual_machine" "mgmt" {
+  count                 = "${var.nb_mgmt}"
+  name                  = "${format("mgmt%02d", count.index + 1)}"
   location              = "${var.location}"
   resource_group_name   = "${azurerm_resource_group.group.name}"
-  network_interface_ids = ["${azurerm_network_interface.mgmtNIC.id}"]
+  network_interface_ids = ["${element(azurerm_network_interface.mgmtNIC.*.id, count.index)}"]
   vm_size               = "${var.vm_size_mgmt}"
 
   storage_os_disk {
@@ -215,9 +222,9 @@ resource "azurerm_virtual_machine" "mgmt01vm" {
   }
 
   os_profile {
-    computer_name  = "mgmt01"
+    computer_name  = "${format("mgmt%02d", count.index + 1)}"
     admin_username = "${var.ssh_user}"
-    custom_data = "${data.template_cloudinit_config.mgmt_config.rendered}"
+    custom_data  = "${element(data.template_cloudinit_config.mgmt_config.*.rendered, count.index)}"
   }
 
   os_profile_linux_config {
@@ -257,22 +264,25 @@ resource "azurerm_managed_disk" "scratch" {
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "home" {
+  count              = "${var.nb_mgmt > 0 ? 1 : 0}"
   managed_disk_id    = "${azurerm_managed_disk.home.id}"
-  virtual_machine_id = "${azurerm_virtual_machine.mgmt01vm.id}"
+  virtual_machine_id = "${azurerm_virtual_machine.mgmt.0.id}"
   lun                = "10"
   caching            = "ReadWrite"
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "project" {
+  count              = "${var.nb_mgmt > 0 ? 1 : 0}"
   managed_disk_id    = "${azurerm_managed_disk.project.id}"
-  virtual_machine_id = "${azurerm_virtual_machine.mgmt01vm.id}"
+  virtual_machine_id = "${azurerm_virtual_machine.mgmt.0.id}"
   lun                = "11"
   caching            = "ReadWrite"
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "scratch" {
+  count              = "${var.nb_mgmt > 0 ? 1 : 0}"
   managed_disk_id    = "${azurerm_managed_disk.scratch.id}"
-  virtual_machine_id = "${azurerm_virtual_machine.mgmt01vm.id}"
+  virtual_machine_id = "${azurerm_virtual_machine.mgmt.0.id}"
   lun                = "12"
   caching            = "ReadWrite"
 }
@@ -303,7 +313,6 @@ resource "azurerm_virtual_machine" "nodevm" {
     computer_name  = "node${count.index + 1}"
     admin_username = "${var.ssh_user}"
     custom_data  = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"
-
   }
 
   os_profile_linux_config {
@@ -316,8 +325,8 @@ resource "azurerm_virtual_machine" "nodevm" {
 }
 
 locals {
-  mgmt01_ip = "${azurerm_network_interface.mgmtNIC.private_ip_address}"
-  public_ip = "${azurerm_public_ip.loginIP.ip_address}"
+  mgmt01_ip = "${azurerm_network_interface.mgmtNIC.0.private_ip_address}"
+  public_ip = "${azurerm_public_ip.loginIP.0.ip_address}"
   cidr = "10.0.1.0/24"
   home_dev = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.home.lun}"
   project_dev = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.project.lun}"
