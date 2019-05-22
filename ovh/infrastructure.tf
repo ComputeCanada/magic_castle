@@ -1,7 +1,7 @@
 provider "openstack" {}
 
-resource "openstack_compute_secgroup_v2" "secgroup_1" {
-  name        = "slurm_cloud"
+resource "openstack_compute_secgroup_v2" "secgroup" {
+  name        = "${var.cluster_name}_secgroup"
   description = "Slurm+JupyterHub security group"
 
   rule {
@@ -54,13 +54,13 @@ resource "openstack_compute_secgroup_v2" "secgroup_1" {
   }
 }
 
-resource "openstack_networking_network_v2" "network_1" {
-  name = "network_1"
+resource "openstack_networking_network_v2" "network" {
+  name = "${var.cluster_name}_network"
 }
 
 resource "openstack_networking_subnet_v2" "subnet" {
-  name        = "subnet"
-  network_id  = "${openstack_networking_network_v2.network_1.id}"
+  name        = "${var.cluster_name}_subnet"
+  network_id  = "${openstack_networking_network_v2.network.id}"
   ip_version  = 4
   cidr        = "10.0.1.0/24"
   no_gateway  = true
@@ -90,17 +90,18 @@ resource "openstack_blockstorage_volume_v2" "scratch" {
   size        = "${var.scratch_size}"
 }
 
-resource "openstack_compute_instance_v2" "mgmt01" {
-  name            = "mgmt"
+resource "openstack_compute_instance_v2" "mgmt" {
+  count           = "${var.nb_mgmt}"
+  name            = "${format("mgmt%02d", count.index + 1)}"
   image_id        = "${data.openstack_images_image_v2.image.id}"
   flavor_name     = "${var.os_flavor_mgmt}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
-  security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
-  user_data       = "${data.template_cloudinit_config.mgmt_config.rendered}"
+  security_groups = ["${openstack_compute_secgroup_v2.secgroup.name}"]
+  user_data       = "${element(data.template_cloudinit_config.mgmt_config.*.rendered, count.index)}"
   # Networks must be defined in this order
   network =
   {
-    name = "${openstack_networking_network_v2.network_1.name}"
+    name = "${openstack_networking_network_v2.network.name}"
   }
   network =
   {
@@ -110,34 +111,38 @@ resource "openstack_compute_instance_v2" "mgmt01" {
 }
 
 resource "openstack_compute_volume_attach_v2" "va_home" {
-  instance_id = "${openstack_compute_instance_v2.mgmt01.id}"
+  count       = "${var.nb_mgmt > 0 ? 1 : 0}"
+  instance_id = "${openstack_compute_instance_v2.mgmt.0.id}"
   volume_id   = "${openstack_blockstorage_volume_v2.home.id}"
 }
 
 resource "openstack_compute_volume_attach_v2" "va_project" {
-  instance_id = "${openstack_compute_instance_v2.mgmt01.id}"
-  volume_id  = "${openstack_blockstorage_volume_v2.project.id}"
-  depends_on = ["openstack_compute_volume_attach_v2.va_home"]
+  count       = "${var.nb_mgmt > 0 ? 1 : 0}"
+  instance_id = "${openstack_compute_instance_v2.mgmt.0.id}"
+  volume_id   = "${openstack_blockstorage_volume_v2.project.id}"
+  depends_on  = ["openstack_compute_volume_attach_v2.va_home"]
 }
 
 resource "openstack_compute_volume_attach_v2" "va_scratch" {
-  instance_id = "${openstack_compute_instance_v2.mgmt01.id}"
+  count       = "${var.nb_mgmt > 0 ? 1 : 0}"
+  instance_id = "${openstack_compute_instance_v2.mgmt.0.id}"
   volume_id   = "${openstack_blockstorage_volume_v2.scratch.id}"
-  depends_on = ["openstack_compute_volume_attach_v2.va_project"]
+  depends_on  = ["openstack_compute_volume_attach_v2.va_project"]
 }
 
-resource "openstack_compute_instance_v2" "login01" {
-  name     = "${var.cluster_name}01"
+resource "openstack_compute_instance_v2" "login" {
+  count    = "${var.nb_login}"
+  name     = "${format("login%02d", count.index + 1)}"
   image_id = "${var.os_image_id}"
 
-  flavor_name       = "${var.os_flavor_login}"
+  flavor_name     = "${var.os_flavor_login}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
-  security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
-  user_data       = "${data.template_cloudinit_config.login_config.rendered}"
+  security_groups = ["${openstack_compute_secgroup_v2.secgroup.name}"]
+  user_data       = "${element(data.template_cloudinit_config.login_config.*.rendered, count.index)}"
   # Networks must be defined in this order
   network =
   {
-    name = "${openstack_networking_network_v2.network_1.name}"
+    name = "${openstack_networking_network_v2.network.name}"
   }
   network =
   {
@@ -153,11 +158,11 @@ resource "openstack_compute_instance_v2" "node" {
 
   flavor_name     = "${var.os_flavor_node}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
-  security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
+  security_groups = ["${openstack_compute_secgroup_v2.secgroup.name}"]
   user_data       = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"
   network =
   {
-    name = "${openstack_networking_network_v2.network_1.name}"
+    name = "${openstack_networking_network_v2.network.name}"
   }
   network =
   {
@@ -167,8 +172,8 @@ resource "openstack_compute_instance_v2" "node" {
 }
 
 locals {
-  mgmt01_ip = "${openstack_compute_instance_v2.mgmt01.network.0.fixed_ip_v4}"
-  public_ip = "${openstack_compute_instance_v2.login01.network.1.fixed_ip_v4}"
+  mgmt01_ip = "${openstack_compute_instance_v2.mgmt.0.network.0.fixed_ip_v4}"
+  public_ip = "${openstack_compute_instance_v2.login.0.network.1.fixed_ip_v4}"
   cidr      = "${openstack_networking_subnet_v2.subnet.cidr}"
   home_dev  = "/dev/vdb"
   project_dev  = "/dev/vdc"
