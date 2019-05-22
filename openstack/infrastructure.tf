@@ -123,7 +123,7 @@ resource "openstack_compute_instance_v2" "mgmt" {
 
   flavor_name     = "${var.os_flavor_mgmt}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
-  user_data       = "${data.template_cloudinit_config.mgmt_config.rendered}"
+  user_data       = "${element(data.template_cloudinit_config.mgmt_config.*.rendered, count.index)}"
 
   network {
     port = "${openstack_networking_port_v2.port_mgmt.id}"
@@ -158,7 +158,7 @@ resource "openstack_compute_instance_v2" "login" {
   flavor_name     = "${var.os_flavor_login}"
   key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
   security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
-  user_data       = "${data.template_cloudinit_config.login_config.rendered}"
+  user_data       = "${element(data.template_cloudinit_config.login_config.*.rendered, count.index)}"
 }
 
 resource "openstack_compute_instance_v2" "node" {
