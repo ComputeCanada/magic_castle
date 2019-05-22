@@ -45,6 +45,8 @@ data "template_file" "mgmt_puppet" {
 }
 
 data "template_cloudinit_config" "mgmt_config" {
+  count    = "${var.nb_mgmt}"
+
   part {
     filename     = "mgmt.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
