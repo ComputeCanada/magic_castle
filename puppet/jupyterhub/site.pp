@@ -4,14 +4,9 @@ node default {
   include profile::nfs::client
   include profile::cvmfs::client
   include profile::rsyslog::client
-  include profile::slurm::submitter
-  include profile::globus::base
-  include profile::singularity
-  include jupyterhub
-  include profile::fail2ban
 }
 
-node /^login\d+$/ {
+node /^login01$/ {
   include profile::base
   include profile::freeipa::client
   include profile::nfs::client
@@ -24,7 +19,7 @@ node /^login\d+$/ {
   include profile::fail2ban
 }
 
-node /^mgmt\d+$/ {
+node /^mgmt01$/ {
   include profile::base
   include profile::freeipa::server
   include profile::rsyslog::server

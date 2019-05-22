@@ -3,8 +3,6 @@ node default {
   include profile::freeipa::client
   include profile::nfs::client
   include profile::rsyslog::client
-  include profile::slurm::submitter
-  include profile::fail2ban
 }
 
 node /^login\d+$/ {
@@ -16,7 +14,7 @@ node /^login\d+$/ {
   include profile::fail2ban
 }
 
-node /^mgmt\d+$/ {
+node /^mgmt01$/ {
   include profile::slurm::controller
   include profile::slurm::accounting
   include profile::nfs::server
