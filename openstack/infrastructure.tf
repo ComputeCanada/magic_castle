@@ -178,14 +178,14 @@ resource "openstack_networking_floatingip_v2" "fip" {
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip" {
-  count       = "${var.nb_login}"
-  floating_ip = "${var.os_floating_ip != "" ? var.os_floating_ip : element(concat(openstack_networking_floatingip_v2.fip.*.address, list("")), 0) }"
+  count       = "${var.nb_login > 0 ? 1 : 0}"
+  floating_ip = "${element(concat(openstack_networking_floatingip_v2.fip.*.address, list(var.os_floating_ip)), 0)}"
   instance_id = "${openstack_compute_instance_v2.login.0.id}"
 }
 
 locals {
   mgmt01_ip = "${openstack_networking_port_v2.port_mgmt.all_fixed_ips.0}"
-  public_ip = "${element(concat(openstack_compute_floatingip_associate_v2.fip.*.floating_ip, list("")), 0)}"
+  public_ip = "${element(concat(openstack_networking_floatingip_v2.fip.*.address, list(var.os_floating_ip)), 0)}"
   home_dev  = "/dev/vdb"
   project_dev  = "/dev/vdc"
   scratch_dev  = "/dev/vdd"
