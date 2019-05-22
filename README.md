@@ -402,17 +402,17 @@ shared storage will be erased.
 
 ### 7.1 Instance Destruction
 
-**Warning**: This feature is not implemented yet.
+**Warning**: This feature is not merged in master yet.
 
 It is possible to destroy only the instances and keep the rest of the infrastructure
-like the floating ip, the volumes, the generated SSH hostkey, etc. To only destroy
-the instances, call the following command:
-```
-$ terraform apply \
-  -var 'nb_mgmt=0' \
-  -var 'nb_login=0' \
-  -var 'nb_nodes=0'
-```
+like the floating ip, the volumes, the generated SSH hostkey, etc.
+* To destroy the management node, set `nb_mgmt = 0`;
+* To destroy the login node, set `nb_login = 0`;
+* To destroy the compute nodes, set `nb_nodes = 0`.
+
+These variables need to be defined in the `openstack` module of your `main.tf` file.
+To recreate the instance, replace the 0 by a 1, or remove the variable from you
+`main.tf`.
 
 ## 8. Online Cluster Configuration
 
