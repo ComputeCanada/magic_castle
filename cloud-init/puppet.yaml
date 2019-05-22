@@ -4,9 +4,6 @@ packages:
 
 runcmd:
   - "(echo -e '\nHostKeyAlgorithms ssh-rsa\n' >> /etc/ssh/sshd_config && systemctl restart sshd)"
-  - find /etc/ssh ! -name 'ssh_host_rsa_key*' -name 'ssh_host*' -exec rm {} \;
-  - sed -i '/ecdsa/s/^/#/' /usr/lib/systemd/system/sshd-keygen.service
-  - sed -i '/ed25519/s/^/#/' /usr/lib/systemd/system/sshd-keygen.service
   - yum upgrade -y
   - yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
   - yum -y install puppet-agent
