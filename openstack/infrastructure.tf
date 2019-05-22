@@ -185,7 +185,7 @@ resource "openstack_compute_floatingip_associate_v2" "fip" {
 }
 
 locals {
-  mgmt01_ip = "${openstack_networking_port_v2.port_mgmt.all_fixed_ips.0}"
+  mgmt01_ip = "${openstack_networking_port_v2.port_mgmt.0.all_fixed_ips.0}"
   public_ip = "${element(concat(openstack_networking_floatingip_v2.fip.*.address, list(var.os_floating_ip)), 0)}"
   home_dev  = "/dev/vdb"
   project_dev  = "/dev/vdc"
