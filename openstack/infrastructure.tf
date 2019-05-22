@@ -131,20 +131,23 @@ resource "openstack_compute_instance_v2" "mgmt" {
 }
 
 resource "openstack_compute_volume_attach_v2" "va_home" {
+  count       = "${var.nb_mgmt > 0 ? 1 : 0}"
   instance_id = "${openstack_compute_instance_v2.mgmt.0.id}"
   volume_id   = "${openstack_blockstorage_volume_v2.home.id}"
 }
 
 resource "openstack_compute_volume_attach_v2" "va_project" {
+  count       = "${var.nb_mgmt > 0 ? 1 : 0}"
   instance_id = "${openstack_compute_instance_v2.mgmt.0.id}"
-  volume_id  = "${openstack_blockstorage_volume_v2.project.id}"
-  depends_on = ["openstack_compute_volume_attach_v2.va_home"]
+  volume_id   = "${openstack_blockstorage_volume_v2.project.id}"
+  depends_on  = ["openstack_compute_volume_attach_v2.va_home"]
 }
 
 resource "openstack_compute_volume_attach_v2" "va_scratch" {
+  count       = "${var.nb_mgmt > 0 ? 1 : 0}"
   instance_id = "${openstack_compute_instance_v2.mgmt.0.id}"
   volume_id   = "${openstack_blockstorage_volume_v2.scratch.id}"
-  depends_on = ["openstack_compute_volume_attach_v2.va_project"]
+  depends_on  = ["openstack_compute_volume_attach_v2.va_project"]
 }
 
 resource "openstack_compute_instance_v2" "login" {
