@@ -25,35 +25,18 @@ resource "google_compute_disk" "scratch" {
   size = "${var.scratch_size}"
 }
 
-resource "google_compute_instance" "mgmt01" {
-  project = "${var.project_name}"
-  zone = "${var.zone_region}"
-  name = "mgmt01"
+resource "google_compute_instance" "mgmt" {
+  project      = "${var.project_name}"
+  zone         = "${var.zone_region}"
+  count        = "${var.nb_mgmt}"
+  name         = "${format("mgmt%02d", count.index + 1)}"
   machine_type = "${var.machine_type_mgmt}"
-  tags         = ["mgmt01"]
+  tags         = ["${format("mgmt%02d", count.index + 1)}"]
 
   boot_disk {
     initialize_params {
       image = "${var.gcp_image}"
     }
-  }
-
-  attached_disk {
-    source      = "${google_compute_disk.home.self_link}"
-    device_name = "${google_compute_disk.home.name}"
-    mode        = "READ_WRITE"
-  }
-
-  attached_disk {
-    source      = "${google_compute_disk.project.self_link}"
-    device_name = "${google_compute_disk.project.name}"
-    mode        = "READ_WRITE"
-  }
-
-  attached_disk {
-    source      = "${google_compute_disk.scratch.self_link}"
-    device_name = "${google_compute_disk.scratch.name}"
-    mode        = "READ_WRITE"
   }
 
   network_interface {
@@ -62,20 +45,48 @@ resource "google_compute_instance" "mgmt01" {
   }
 
   metadata {
-    sshKeys = "centos:${file(var.public_key_path)}"
-    user-data = "${data.template_cloudinit_config.mgmt_config.rendered}"
+    sshKeys            = "centos:${file(var.public_key_path)}"
+    user-data          = "${element(data.template_cloudinit_config.mgmt_config.*.rendered, count.index)}"
     user-data-encoding = "base64"
   }
 
   metadata_startup_script = "${file("${path.module}/install_cloudinit.sh")}"
+
+  lifecycle {
+    ignore_changes = ["attached_disk"]
+  }
 }
 
-resource "google_compute_instance" "login01" {
-  project = "${var.project_name}"
-  zone = "${var.zone_region}"
-  name = "login01"
+resource "google_compute_attached_disk" "home" {
+  count       = "${var.nb_mgmt > 0 ? 1 : 0}"
+  disk        = "${google_compute_disk.home.self_link}"
+  device_name = "${google_compute_disk.home.name}"
+  mode        = "READ_WRITE"
+  instance    = "${google_compute_instance.mgmt.0.self_link}"
+}
+
+resource "google_compute_attached_disk" "project" {
+  count       = "${var.nb_mgmt > 0 ? 1 : 0}"
+  disk        = "${google_compute_disk.project.self_link}"
+  device_name = "${google_compute_disk.project.name}"
+  mode        = "READ_WRITE"
+  instance    = "${google_compute_instance.mgmt.0.self_link}"
+}
+
+resource "google_compute_attached_disk" "scratch" {
+  count       = "${var.nb_mgmt > 0 ? 1 : 0}"
+  disk        = "${google_compute_disk.scratch.self_link}"
+  device_name = "${google_compute_disk.scratch.name}"
+  mode        = "READ_WRITE"
+  instance    = "${google_compute_instance.mgmt.0.self_link}"
+}
+
+resource "google_compute_instance" "login" {
+  project      = "${var.project_name}"
+  zone         = "${var.zone_region}"
+  name         = "${format("login%02d", count.index + 1)}"
   machine_type = "${var.machine_type_login}"
-  tags         = ["login01"]
+  tags         = ["${format("login%02d", count.index + 1)}"]
 
   boot_disk {
     initialize_params {
@@ -89,8 +100,8 @@ resource "google_compute_instance" "login01" {
   }
 
   metadata {
-    sshKeys = "centos:${file(var.public_key_path)}"
-    user-data = "${data.template_cloudinit_config.login_config.rendered}"
+    sshKeys            = "centos:${file(var.public_key_path)}"
+    user-data          = "${element(data.template_cloudinit_config.login_config.*.rendered, count.index)}"
     user-data-encoding = "base64"
   }
 
@@ -98,10 +109,10 @@ resource "google_compute_instance" "login01" {
 }
 
 resource "google_compute_instance" "node" {
-  count = "${var.nb_nodes}"
-  project = "${var.project_name}"
-  zone = "${var.zone_region}"
-  name = "node${count.index + 1}"
+  count        = "${var.nb_nodes}"
+  project      = "${var.project_name}"
+  zone         = "${var.zone_region}"
+  name         = "node${count.index + 1}"
   machine_type = "${var.machine_type_node}"
   scheduling {
     # Instances with guest accelerators do not support live migration.
@@ -142,12 +153,12 @@ resource "google_compute_firewall" "default" {
     ports    = ["80", "443"]
   }
 
-  target_tags   = ["login01"]
+  target_tags   = ["${google_compute_instance.login.0.name}"]
 }
 
 locals {
-  mgmt01_ip = "${google_compute_instance.mgmt01.network_interface.0.network_ip}"
-  public_ip = "${google_compute_instance.login01.network_interface.0.access_config.0.nat_ip}"
+  mgmt01_ip = "${google_compute_instance.mgmt.0.network_interface.0.network_ip}"
+  public_ip = "${google_compute_instance.login.0.network_interface.0.access_config.0.nat_ip}"
   cidr = "10.128.0.0/9" # GCP default
   home_dev    = "/dev/disk/by-id/google-home"
   project_dev = "/dev/disk/by-id/google-project"
