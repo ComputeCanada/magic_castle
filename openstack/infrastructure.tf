@@ -127,7 +127,7 @@ resource "openstack_compute_instance_v2" "mgmt" {
   user_data       = "${element(data.template_cloudinit_config.mgmt_config.*.rendered, count.index)}"
 
   network {
-    port = "${element(openstack_networking_port_v2.port_mgmt.*.rendered, count.index)}"
+    port = "${element(openstack_networking_port_v2.port_mgmt.*.id, count.index)}"
   }
 }
 
