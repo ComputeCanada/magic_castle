@@ -108,7 +108,7 @@ resource "openstack_blockstorage_volume_v2" "scratch" {
 }
 
 resource "openstack_networking_port_v2" "port_mgmt" {
-  count              = "${var.nb_mgmt}"
+  count              = "${max(var.nb_mgmt, 1)}"
   name               = "${format("port-mgmt%02d", count.index + 1)}"
   network_id         = "${data.openstack_networking_network_v2.int_network.id}"
   security_group_ids = ["${openstack_compute_secgroup_v2.secgroup_1.id}"]
