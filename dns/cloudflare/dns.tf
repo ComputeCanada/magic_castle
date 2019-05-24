@@ -41,7 +41,7 @@ resource "cloudflare_record" "login_sshfp_rsa_sha256" {
 resource "cloudflare_record" "login01_record" {
   domain = "${var.domain}"
   name   = "${var.name}"
-  value  = "${var.public_ip.0}"
+  value  = "${element(var.public_ip, 0)}"
   type   = "A"
 }
 
