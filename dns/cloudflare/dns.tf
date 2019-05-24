@@ -69,6 +69,6 @@ resource "cloudflare_record" "login01_sshfp_rsa_sha256" {
   }
 }
 
-output "domain_name" {
-  value = "${var.name}.${var.domain}"
+output "hostnames" {
+  value = "${concat(list(cloudflare_record.login01_record.hostname), cloudflare_record.login_record.*.hostname)}"
 }

@@ -54,6 +54,6 @@ output "public_ip" {
 #   rsa_public_key   = "${module.gcp.rsa_public_key}"
 #   nb_login         = "${module.openstack.nb_login}"
 # }
-# output "domain_name" {
-# 	value = "${module.dns.domain_name}"
+# output "hostnames" {
+# 	value = "${module.dns.hostnames}"
 # }
