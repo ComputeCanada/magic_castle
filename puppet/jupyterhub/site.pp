@@ -24,6 +24,7 @@ node /^login0*(?:[2-9]|[1-9]\d\d*)$/ {
   include profile::cvmfs::client
   include profile::rsyslog::client
   include profile::slurm::submitter
+  include profile::fail2ban
 }
 
 node /^mgmt01$/ {
@@ -41,7 +42,6 @@ node /^mgmt01$/ {
 node /^mgmt0*(?:[2-9]|[1-9]\d\d*)$/ {
   include profile::base
   include profile::freeipa::client
-  include profile::cvmfs::client
   include profile::rsyslog::client
 }
 
