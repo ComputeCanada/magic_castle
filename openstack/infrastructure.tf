@@ -174,7 +174,7 @@ resource "openstack_compute_instance_v2" "node" {
 }
 
 resource "openstack_networking_floatingip_v2" "fip" {
-  count = "${max(max(var.nb_login - len(var.os_floating_ips), 1 - len(var.os_floating_ips)), 0)}"
+  count = "${max(max(var.nb_login - length(var.os_floating_ips), 1 - length(var.os_floating_ips)), 0)}"
   pool  = "${data.openstack_networking_network_v2.ext_network.name}"
 }
 
