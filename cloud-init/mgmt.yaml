@@ -1,9 +1,9 @@
 #cloud-config
 
 mounts:
-  - [ ${home_dev}1, /mnt/home]
-  - [ ${project_dev}1, /project]
-  - [ ${scratch_dev}1, /scratch]
+  - [ ${home_dev}1, /mnt/home, nofail]
+  - [ ${project_dev}1, /project, nofail]
+  - [ ${scratch_dev}1, /scratch, nofail]
 
 runcmd:
   - parted -s ${home_dev} mklabel gpt
