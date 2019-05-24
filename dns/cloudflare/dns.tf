@@ -6,18 +6,20 @@ variable "public_ip" {
 }
 variable "rsa_public_key" {}
 
+variable "nb_login" {}
+
 resource "cloudflare_record" "login_record" {
-  count  = "${length(var.public_ip)}"
+  count  = "${var.nb_login}"
   domain = "${var.domain}"
-  name   = "${format(var.name + "%d", count.index + 1)}"
+  name   = "${join("", list(var.name, format("%d", count.index + 1)))}"
   value  = "${element(var.public_ip, count.index)}"
   type   = "A"
 }
 
 resource "cloudflare_record" "login_sshfp_rsa_sha1" {
-  count  = "${length(var.public_ip)}"
+  count  = "${var.nb_login}"
   domain = "${var.domain}"
-  name   = "${format(var.name + "%d", count.index + 1)}"
+  name   = "${join("", list(var.name, format("%d", count.index + 1)))}"
   type   = "SSHFP"
   data   = {
     algorithm   = 1
@@ -27,9 +29,9 @@ resource "cloudflare_record" "login_sshfp_rsa_sha1" {
 }
 
 resource "cloudflare_record" "login_sshfp_rsa_sha256" {
-  count  = "${length(var.public_ip)}"
+  count  = "${var.nb_login}"
   domain = "${var.domain}"
-  name   = "${format(var.name + "%d", count.index + 1)}"
+  name   = "${join("", list(var.name, format("%d", count.index + 1)))}"
   type   = "SSHFP"
   data   = {
     algorithm   = 1
@@ -46,7 +48,6 @@ resource "cloudflare_record" "login01_record" {
 }
 
 resource "cloudflare_record" "login01_sshfp_rsa_sha1" {
-  count  = "${length(var.public_ip)}"
   domain = "${var.domain}"
   name   = "${var.name}"
   type   = "SSHFP"
