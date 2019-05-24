@@ -39,7 +39,7 @@ data "template_file" "client_data" {
     cluster_name    = "${var.cluster_name}"
     dns_ip          = "${local.mgmt01_ip}"
     domain_name     = "${local.domain_name}"
-    guest_passwd    = "${random_pet.guest_passwd.id}"
+    guest_passwd    = ""
     munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
     nb_users        = ""
   }
