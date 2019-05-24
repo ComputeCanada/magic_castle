@@ -251,7 +251,40 @@ is over.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.10 os_image_name
+### 4.10 nb_login (optional)
+
+`nb_login` defines how many login node instances will be created.
+
+This variable can be modified at any point of your cluster lifetime.
+Terraform will manage the creation or destruction of the virtual machines
+for you. It is therefore possible to start with 0 login nodess, build the
+cluster, and add more later.
+
+#### 4.10.1 Post Build Modification Effect
+
+Modifying this variable after the cluster is built only affects the number
+of login nodes at next `terraform apply`.
+
+### 4.11 nb_mgmt (optional)
+
+`nb_mgmt` defines how many management node instances will be created.
+
+This variable can be modified at any point of your cluster lifetime.
+Terraform will manage the creation or destruction of the virtual machines
+for you.
+
+**Warning**: All other type of instances depend on the existence of at
+least one management node named `mgmt01`. While it is possible to have
+`nb_mgmt` equals to 0 and `nb_login` or `nb_nodes` greater than 0, if
+you decide to go down that route, you are on your own.
+
+#### 4.11.1 Post Build Modification Effect
+
+Modifying this variable after the cluster is built only affects the number
+of management nodes at next `terraform apply`. However, putting that number
+to 0 will render other type of nodes almost unusable.
+
+### 4.12 os_image_name
 
 `os_image_name` defines the name of the image that will be used as the
 base image for the cluster nodes. For the provisionning to work properly,
@@ -262,11 +295,11 @@ should be mainly done through Puppet scripting. Image customization is mostly
 envisioned as a way to accelerate the provisioning process by applying the
 security patches and OS updates in advance.
 
-#### 4.10.1 Post Build Modification Effect
+#### 4.12.1 Post Build Modification Effect
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.11 os_flavor_mgmt, os_flavor_login and os_flavor_node
+### 4.13 os_flavor_mgmt, os_flavor_login and os_flavor_node
 
 `os_flavor_*` defines the flavor of one of the three types of servers
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
@@ -274,23 +307,23 @@ defines the compute, memory, and storage capacity of an instance.
 
 For `os_flavor_mgmt`, choose a flavor with at least 3 GB of memory.
 
-#### 4.11.1 Post Build Modification Effect
+#### 4.13.1 Post Build Modification Effect
 
 Modifying one of these variables after the cluster is built leads
 to a live migration of the instance(s) to the new chosen flavor. The
 affected instances will reboot in the process.
 
-### 4.12 os_floating_ip (**optional**)
+### 4.14 os_floating_ips (optional)
 
-`os_floating_ip` defines pre-allocated floating ip address that will
-be assigned to the login node. If this variable is left empty, the
-floating ip will be managed by Terraform.
+`os_floating_ips` defines a list of pre-allocated floating ip addresses
+that will be assigned to the login nodes. If this variable is left empty,
+(e.g. : `[]`) the login nodes' floating ips will be managed by Terraform.
 
-This variable can be useful if you administered your DNS manually and
+This variable can be useful if you administer your DNS manually and
 you would like the keep the same domain name for your cluster at each
 build.
 
-#### 4.12.1 Post Build Modification Effect
+#### 4.14.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built will change the
 floating ip assigned to the login node.
@@ -402,17 +435,11 @@ shared storage will be erased.
 
 ### 7.1 Instance Destruction
 
-**Warning**: This feature is not merged in master yet.
-
 It is possible to destroy only the instances and keep the rest of the infrastructure
 like the floating ip, the volumes, the generated SSH hostkey, etc.
 * To destroy the management node, set `nb_mgmt = 0`;
 * To destroy the login node, set `nb_login = 0`;
 * To destroy the compute nodes, set `nb_nodes = 0`.
-
-These variables need to be defined in the `openstack` module of your `main.tf` file.
-To recreate the instance, replace the 0 by a 1, or remove the variable from you
-`main.tf`.
 
 ## 8. Online Cluster Configuration
 
