@@ -31,6 +31,21 @@ data "template_file" "mgmt_data" {
   }
 }
 
+data "template_file" "client_data" {
+  template = "${file("${local.data_path}")}"
+
+  vars {
+    admin_passwd    = "${random_string.admin_passwd.result}"
+    cluster_name    = "${var.cluster_name}"
+    dns_ip          = "${local.mgmt01_ip}"
+    domain_name     = "${local.domain_name}"
+    guest_passwd    = "${random_pet.guest_passwd.id}"
+    munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
+    nb_users        = ""
+  }
+}
+
+
 data "template_file" "mgmt_puppet" {
   template = "${file("${path.module}/cloud-init/puppet.yaml")}"
   count    = "${var.nb_mgmt}"
@@ -40,7 +55,9 @@ data "template_file" "mgmt_puppet" {
     email           = "${var.email}"
     puppetfile      = "${indent(6, file("${local.puppetfile_path}"))}"
     site_pp         = "${indent(6, file("${local.site_pp_path}"))}"
-    data            = "${indent(6, "${data.template_file.mgmt_data.rendered}")}"
+    data            = "${indent(6, "${count.index == 0 ?
+                                      data.template_file.mgmt_data.rendered :
+                                      data.template_file.client_data.rendered }")}"
   }
 }
 
@@ -61,20 +78,6 @@ data "template_cloudinit_config" "mgmt_config" {
   }
 }
 
-data "template_file" "login_data" {
-  template = "${file("${local.data_path}")}"
-
-  vars {
-    admin_passwd    = "${random_string.admin_passwd.result}"
-    cluster_name    = "${var.cluster_name}"
-    dns_ip          = "${local.mgmt01_ip}"
-    domain_name     = "${local.domain_name}"
-    guest_passwd    = "${random_pet.guest_passwd.id}"
-    munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
-    nb_users        = ""
-  }
-}
-
 data "template_file" "login" {
   template = "${file("${path.module}/cloud-init/puppet.yaml")}"
   count    = "${var.nb_login}"
@@ -84,7 +87,7 @@ data "template_file" "login" {
     email      = "${var.email}"
     puppetfile = "${indent(6, file("${local.puppetfile_path}"))}"
     site_pp    = "${indent(6, file("${local.site_pp_path}"))}"
-    data       = "${indent(6, "${data.template_file.login_data.rendered}")}"
+    data       = "${indent(6, "${data.template_file.client_data.rendered}")}"
   }
 }
 
@@ -115,20 +118,6 @@ ssh_keys:
   }
 }
 
-data "template_file" "node_data" {
-  template = "${file("${local.data_path}")}"
-
-  vars {
-    admin_passwd    = "${random_string.admin_passwd.result}"
-    cluster_name    = "${var.cluster_name}"
-    dns_ip          = "${local.mgmt01_ip}"
-    domain_name     = "${local.domain_name}"
-    guest_passwd    = "${random_pet.guest_passwd.id}"
-    munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
-    nb_users        = ""
-  }
-}
-
 data "template_file" "node" {
   template = "${file("${path.module}/cloud-init/puppet.yaml")}"
   count    = "${var.nb_nodes}"
@@ -138,7 +127,7 @@ data "template_file" "node" {
     email           = "${var.email}"
     puppetfile      = "${indent(6, file("${local.puppetfile_path}"))}"
     site_pp         = "${indent(6, file("${local.site_pp_path}"))}"
-    data            = "${indent(6, "${data.template_file.node_data.rendered}")}"
+    data            = "${indent(6, "${data.template_file.client_data.rendered}")}"
   }
 }
 
