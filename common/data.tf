@@ -28,6 +28,7 @@ data "template_file" "mgmt_data" {
     guest_passwd    = "${random_pet.guest_passwd.id}"
     munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
     nb_users        = "${var.nb_users}"
+    nfs_ip          = ""
   }
 }
 
@@ -42,6 +43,7 @@ data "template_file" "client_data" {
     guest_passwd    = ""
     munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
     nb_users        = ""
+    nfs_ip          = "${local.mgmt01_ip}"
   }
 }
 
