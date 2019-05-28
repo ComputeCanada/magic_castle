@@ -2,7 +2,7 @@
 profile::freeipa::base::admin_passwd: "${admin_passwd}"
 profile::freeipa::base::domain_name: "${domain_name}"
 profile::freeipa::base::dns_ip: "${dns_ip}"
-profile::freeipa::nfs::client::server: "${nfs_ip}"
+profile::nfs::client::server: "${nfs_ip}"
 profile::freeipa::guest_accounts::guest_passwd: "${guest_passwd}"
 profile::freeipa::guest_accounts::nb_accounts: ${nb_users}
 profile::slurm::base::cluster_name: "${cluster_name}"
