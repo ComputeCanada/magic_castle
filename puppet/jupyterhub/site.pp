@@ -4,7 +4,7 @@ node default {
   include profile::rsyslog::client
 }
 
-node /^login01$/ {
+node /^login\d+$/ {
   include profile::base
   include profile::freeipa::client
   include profile::nfs::client
@@ -14,16 +14,6 @@ node /^login01$/ {
   include profile::globus::base
   include profile::singularity
   include jupyterhub
-  include profile::fail2ban
-}
-
-node /^login0*(?:[2-9]|[1-9]\d\d*)$/ {
-  include profile::base
-  include profile::freeipa::client
-  include profile::nfs::client
-  include profile::cvmfs::client
-  include profile::rsyslog::client
-  include profile::slurm::submitter
   include profile::fail2ban
 }
 

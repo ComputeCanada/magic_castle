@@ -4,16 +4,7 @@ node default {
   include profile::rsyslog::client
 }
 
-node /^login01$/ {
-  include profile::base
-  include profile::freeipa::client
-  include profile::nfs::client
-  include profile::rsyslog::client
-  include profile::slurm::submitter
-  include profile::fail2ban
-}
-
-node /^login0*(?:[2-9]|[1-9]\d\d*)$/ {
+node /^login\d+$/ {
   include profile::base
   include profile::freeipa::client
   include profile::nfs::client
