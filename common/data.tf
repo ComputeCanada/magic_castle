@@ -28,6 +28,7 @@ data "template_file" "data" {
     munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
     nb_users        = "${var.nb_users}"
     dns_ip          = "${local.mgmt01_ip}"
+    freeipa_ip      = "${local.mgmt01_ip}"
     nfs_ip          = "${local.mgmt01_ip}"
     rsyslog_ip      = "${local.mgmt01_ip}"
     slurmctld_ip    = "${local.mgmt01_ip}"
