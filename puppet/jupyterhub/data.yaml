@@ -12,7 +12,7 @@ profile::slurm::accounting::password: "${admin_passwd}"
 profile::freeipa::client::server_ip: "${freeipa_ip}"
 profile::nfs::client::server_ip: "${nfs_ip}"
 profile::rsyslog::client::server_ip: "${rsyslog_ip}"
-profile::cvmfs::client:squid_ip: "${squid_ip}"
+profile::cvmfs::client::squid_ip: "${squid_ip}"
 profile::slurm::base::slurmctld_ip: "${slurmctld_ip}"
 profile::slurm::base::slurmdbd_ip: "${slurmdbd_ip}"
 
