@@ -42,8 +42,8 @@ resource "null_resource" "deploy_certs" {
   provisioner "remote-exec" {
     inline = [
       "sudo mkdir -p /etc/letsencrypt/live/${var.name}.${var.domain}/",
-      "sudo install -m 744 -o root -g root /home/centos/fullchain.pem /etc/letsencrypt/live/${var.name}.${var.domain}/",
-      "sudo install -m 700 -o root -g root /home/centos/privkey.pem /etc/letsencrypt/live/${var.name}.${var.domain}/",
+      "sudo install -m 644 -o root -g root /home/centos/fullchain.pem /etc/letsencrypt/live/${var.name}.${var.domain}/",
+      "sudo install -m 600 -o root -g root /home/centos/privkey.pem /etc/letsencrypt/live/${var.name}.${var.domain}/",
       "rm fullchain.pem privkey.pem",
     ]
   }
