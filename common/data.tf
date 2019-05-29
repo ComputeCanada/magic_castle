@@ -30,6 +30,8 @@ data "template_file" "data" {
     dns_ip          = "${local.mgmt01_ip}"
     nfs_ip          = "${local.mgmt01_ip}"
     rsyslog_ip      = "${local.mgmt01_ip}"
+    slurmctld_ip    = "${local.mgmt01_ip}"
+    slurmdbd_ip     = "${local.mgmt01_ip}"
     squid_ip        = "${local.mgmt01_ip}"
   }
 }
