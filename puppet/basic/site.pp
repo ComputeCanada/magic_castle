@@ -39,5 +39,6 @@ node /^node\d+$/ {
   include profile::gpu
   include profile::slurm::node
 
-  Class['profile::freeipa::client'] -> Class['profile::nfs::client'] -> Class['profile::slurm::node']
+  Class['profile::freeipa::client'] -> Class['profile::slurm::node']
+  Class['profile::nfs::client'] -> Class['profile::slurm::node']
 }
