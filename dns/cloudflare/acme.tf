@@ -39,12 +39,49 @@ resource "null_resource" "deploy_certs" {
     destination = "/home/centos/fullchain.pem"
   }
 
+  provisioner "file" {
+    content     = "${acme_certificate.certificate.certificate_pem}"
+    destination = "/home/centos/cert.pem"
+  }
+
+  provisioner "file" {
+    content     = "${acme_certificate.certificate.issuer_pem}"
+    destination = "/home/centos/chain.pem"
+  }
+
+  provisioner "file" {
+    destination = "/home/centos/renewal.conf"
+    content     = <<EOF
+version = 0.31.0
+archive_dir = /etc/letsencrypt/archive/${var.name}.${var.domain}
+cert = /etc/letsencrypt/live/${var.name}.${var.domain}/cert.pem
+privkey = /etc/letsencrypt/live/${var.name}.${var.domain}/privkey.pem
+chain = /etc/letsencrypt/live/${var.name}.${var.domain}/chain.pem
+fullchain = /etc/letsencrypt/live/${var.name}.${var.domain}/fullchain.pem
+
+[renewalparams]
+authenticator = nginx
+installer = nginx
+account = ${basename(acme_certificate.certificate.id)}
+server = https://acme-v02.api.letsencrypt.org/directory
+
+EOF
+  }
+
   provisioner "remote-exec" {
     inline = [
-      "sudo mkdir -p /etc/letsencrypt/live/${var.name}.${var.domain}/",
-      "sudo install -m 644 -o root -g root /home/centos/fullchain.pem /etc/letsencrypt/live/${var.name}.${var.domain}/",
-      "sudo install -m 600 -o root -g root /home/centos/privkey.pem /etc/letsencrypt/live/${var.name}.${var.domain}/",
-      "rm fullchain.pem privkey.pem",
+      "sudo mkdir -p /etc/letsencrypt/{archive,live}/${var.name}.${var.domain}/",
+      "sudo install -m 644 -o root -g root /home/centos/fullchain.pem /etc/letsencrypt/archive/${var.name}.${var.domain}/fullchain1.pem",
+      "sudo install -m 644 -o root -g root /home/centos/chain.pem /etc/letsencrypt/archive/${var.name}.${var.domain}/chain1.pem",
+      "sudo install -m 644 -o root -g root /home/centos/cert.pem /etc/letsencrypt/archive/${var.name}.${var.domain}/cert1.pem",
+      "sudo install -m 600 -o root -g root /home/centos/privkey.pem /etc/letsencrypt/archive/${var.name}.${var.domain}/privkey1.pem",
+      "sudo ln -sf /etc/letsencrypt/archive/${var.name}.${var.domain}/privkey1.pem /etc/letsencrypt/live/${var.name}.${var.domain}/privkey.pem",
+      "sudo ln -sf /etc/letsencrypt/archive/${var.name}.${var.domain}/fullchain1.pem /etc/letsencrypt/live/${var.name}.${var.domain}/fullchain.pem",
+      "sudo ln -sf /etc/letsencrypt/archive/${var.name}.${var.domain}/cert1.pem /etc/letsencrypt/live/${var.name}.${var.domain}/cert.pem",
+      "sudo ln -sf /etc/letsencrypt/archive/${var.name}.${var.domain}/chain1.pem /etc/letsencrypt/live/${var.name}.${var.domain}/chain.pem",
+      "rm cert.pem chain.pem fullchain.pem privkey.pem",
+      "sudo mkdir -p /etc/letsencrypt/renewal/",
+      "sudo mv renewal.conf /etc/letsencrypt/renewal/${var.name}.${var.domain}.conf",
     ]
   }
 }
