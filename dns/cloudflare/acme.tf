@@ -71,17 +71,17 @@ EOF
   provisioner "remote-exec" {
     inline = [
       "sudo mkdir -p /etc/letsencrypt/{archive,live}/${var.name}.${var.domain}/",
+      "sudo mkdir -p /etc/letsencrypt/renewal/",
       "sudo install -m 644 -o root -g root /home/centos/fullchain.pem /etc/letsencrypt/archive/${var.name}.${var.domain}/fullchain1.pem",
       "sudo install -m 644 -o root -g root /home/centos/chain.pem /etc/letsencrypt/archive/${var.name}.${var.domain}/chain1.pem",
       "sudo install -m 644 -o root -g root /home/centos/cert.pem /etc/letsencrypt/archive/${var.name}.${var.domain}/cert1.pem",
       "sudo install -m 600 -o root -g root /home/centos/privkey.pem /etc/letsencrypt/archive/${var.name}.${var.domain}/privkey1.pem",
+      "sudo install -m 644 -o root -g root renewal.conf /etc/letsencrypt/renewal/${var.name}.${var.domain}.conf",
       "sudo ln -sf /etc/letsencrypt/archive/${var.name}.${var.domain}/privkey1.pem /etc/letsencrypt/live/${var.name}.${var.domain}/privkey.pem",
       "sudo ln -sf /etc/letsencrypt/archive/${var.name}.${var.domain}/fullchain1.pem /etc/letsencrypt/live/${var.name}.${var.domain}/fullchain.pem",
       "sudo ln -sf /etc/letsencrypt/archive/${var.name}.${var.domain}/cert1.pem /etc/letsencrypt/live/${var.name}.${var.domain}/cert.pem",
       "sudo ln -sf /etc/letsencrypt/archive/${var.name}.${var.domain}/chain1.pem /etc/letsencrypt/live/${var.name}.${var.domain}/chain.pem",
-      "rm cert.pem chain.pem fullchain.pem privkey.pem",
-      "sudo mkdir -p /etc/letsencrypt/renewal/",
-      "sudo mv renewal.conf /etc/letsencrypt/renewal/${var.name}.${var.domain}.conf",
+      "rm cert.pem chain.pem fullchain.pem privkey.pem renewal.conf",
     ]
   }
 }
