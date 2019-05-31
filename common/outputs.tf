@@ -22,7 +22,9 @@ output "guest_usernames" {
 }
 
 output "guest_passwd" {
-  value = "${random_pet.guest_passwd.id}"
+  value = "${var.guest_passwd == "" ?
+             random_pet.guest_passwd.id :
+             var.guest_passwd}"
 }
 
 output "rsa_public_key" {
