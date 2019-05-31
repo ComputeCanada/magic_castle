@@ -24,9 +24,7 @@ data "template_file" "data" {
     admin_passwd    = "${random_string.admin_passwd.result}"
     cluster_name    = "${var.cluster_name}"
     domain_name     = "${local.domain_name}"
-    guest_passwd    = "${var.guest_passwd == "" ?
-                        random_pet.guest_passwd.id :
-                        var.guest_passwd}"
+    guest_passwd    = "${var.guest_passwd == "" ? random_pet.guest_passwd.id : var.guest_passwd}"
     munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
     nb_users        = "${var.nb_users}"
     dns_ip          = "${local.mgmt01_ip}"
