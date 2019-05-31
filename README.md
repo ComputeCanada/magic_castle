@@ -251,7 +251,20 @@ is over.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.10 nb_login (optional)
+### 4.10 guest_passwd (optional)
+
+Defines the password for the guest user accounts instead of using a
+randomly generated one.
+
+The password has to have **at least 8 characters**. Otherwise, the guest
+account password will not be properly configured.
+
+#### 4.10.1 Post Build Modification Effect
+
+Modifying this variable after the cluster is built leads to a complete
+cluster rebuild at next `terraform apply`.
+
+### 4.11 nb_login (optional)
 
 `nb_login` defines how many login node instances will be created.
 
@@ -260,12 +273,12 @@ Terraform will manage the creation or destruction of the virtual machines
 for you. It is therefore possible to start with 0 login nodess, build the
 cluster, and add more later.
 
-#### 4.10.1 Post Build Modification Effect
+#### 4.11.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built only affects the number
 of login nodes at next `terraform apply`.
 
-### 4.11 nb_mgmt (optional)
+### 4.12 nb_mgmt (optional)
 
 `nb_mgmt` defines how many management node instances will be created.
 
@@ -278,13 +291,13 @@ least one management node named `mgmt01`. While it is possible to have
 `nb_mgmt` equals to 0 and `nb_login` or `nb_nodes` greater than 0, if
 you decide to go down that route, you are on your own.
 
-#### 4.11.1 Post Build Modification Effect
+#### 4.12.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built only affects the number
 of management nodes at next `terraform apply`. However, putting that number
 to 0 will render other type of nodes almost unusable.
 
-### 4.12 os_image_name
+### 4.13 os_image_name
 
 `os_image_name` defines the name of the image that will be used as the
 base image for the cluster nodes. For the provisionning to work properly,
@@ -295,11 +308,11 @@ should be mainly done through Puppet scripting. Image customization is mostly
 envisioned as a way to accelerate the provisioning process by applying the
 security patches and OS updates in advance.
 
-#### 4.12.1 Post Build Modification Effect
+#### 4.13.1 Post Build Modification Effect
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.13 os_flavor_mgmt, os_flavor_login and os_flavor_node
+### 4.14 os_flavor_mgmt, os_flavor_login and os_flavor_node
 
 `os_flavor_*` defines the flavor of one of the three types of servers
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
@@ -307,13 +320,13 @@ defines the compute, memory, and storage capacity of an instance.
 
 For `os_flavor_mgmt`, choose a flavor with at least 3 GB of memory.
 
-#### 4.13.1 Post Build Modification Effect
+#### 4.14.1 Post Build Modification Effect
 
 Modifying one of these variables after the cluster is built leads
 to a live migration of the instance(s) to the new chosen flavor. The
 affected instances will reboot in the process.
 
-### 4.14 os_floating_ips (optional)
+### 4.15 os_floating_ips (optional)
 
 `os_floating_ips` defines a list of pre-allocated floating ip addresses
 that will be assigned to the login nodes. If this variable is left empty,
@@ -323,7 +336,7 @@ This variable can be useful if you administer your DNS manually and
 you would like the keep the same domain name for your cluster at each
 build.
 
-#### 4.14.1 Post Build Modification Effect
+#### 4.15.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built will change the
 floating ip assigned to the login node.
