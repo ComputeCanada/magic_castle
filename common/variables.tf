@@ -44,6 +44,10 @@ variable "email" {
   default = ""
 }
 
+variable "sudoer_username" {
+  default = "centos"
+}
+
 locals {
   domain_name     = "${var.cluster_name}.${var.domain}"
   site_pp_path    = "${var.site_pp_path != "" ? var.site_pp_path : "${path.module}/../puppet/${var.puppet_config}/site.pp"}"

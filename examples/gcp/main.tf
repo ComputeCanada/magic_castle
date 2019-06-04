@@ -26,11 +26,8 @@ module "gcp" {
 
 }
 
-output "admin_username" {
-  value = "${module.gcp.admin_username}"
-}
-output "freeipa_admin_passwd" {
-  value = "${module.gcp.freeipa_admin_passwd}"
+output "sudoer_username" {
+  value = "${module.gcp.sudoer_username}"
 }
 
 output "guest_usernames" {
@@ -53,6 +50,7 @@ output "public_ip" {
 #   public_ip        = "${module.gcp.ip}"
 #   rsa_public_key   = "${module.gcp.rsa_public_key}"
 #   nb_login         = "${module.openstack.nb_login}"
+#   sudoer_username  = "${module.openstack.sudoer_username}"
 # }
 # output "hostnames" {
 # 	value = "${module.dns.hostnames}"

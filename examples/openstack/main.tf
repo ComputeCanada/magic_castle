@@ -22,11 +22,8 @@ module "openstack" {
   os_floating_ips      = []
 }
 
-output "admin_username" {
-  value = "${module.openstack.admin_username}"
-}
-output "freeipa_admin_passwd" {
-  value = "${module.openstack.freeipa_admin_passwd}"
+output "sudoer_username" {
+  value = "${module.openstack.sudoer_username}"
 }
 
 output "guest_usernames" {
@@ -49,6 +46,7 @@ output "public_ip" {
 #   public_ip        = "${module.openstack.ip}"
 #   rsa_public_key   = "${module.openstack.rsa_public_key}"
 #   nb_login         = "${module.openstack.nb_login}"
+#   sudoer_username  = "${module.openstack.sudoer_username}"
 # }
 # output "hostnames" {
 # 	value = "${module.dns.hostnames}"

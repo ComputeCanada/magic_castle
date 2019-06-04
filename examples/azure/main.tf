@@ -27,10 +27,6 @@ output "domain_name" {
 	value = "${module.azure.domain_name}"
 }
 
-output "admin_passwd" {
-	value = "${module.azure.admin_passwd}"
-}
-
 output "guest_passwd" {
 	value = "${module.azure.guest_passwd}"
 }

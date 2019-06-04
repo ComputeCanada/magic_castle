@@ -9,12 +9,12 @@ output "domain" {
   value = "${var.domain}"
 }
 
-output "admin_username" {
-  value = "centos"
+output "sudoer_username" {
+  value = "${var.sudoer_username}"
 }
 
-output "freeipa_admin_passwd" {
-  value = "${random_string.admin_passwd.result}"
+output "freeipa_passwd" {
+  value = "${random_string.freeipa_passwd.result}"
 }
 
 output "guest_usernames" {

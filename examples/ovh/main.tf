@@ -20,11 +20,8 @@ module "ovh" {
   os_flavor_mgmt      = "s1-2"
 }
 
-output "admin_username" {
-  value = "${module.ovh.admin_username}"
-}
-output "freeipa_admin_passwd" {
-  value = "${module.ovh.freeipa_admin_passwd}"
+output "sudoer_username" {
+  value = "${module.ovh.sudoer_username}"
 }
 
 output "guest_usernames" {
@@ -46,6 +43,7 @@ output "public_ip" {
 #   domain           = "${module.ovh.domain}"
 #   public_ip        = "${module.ovh.ip}"
 #   rsa_public_key   = "${module.ovh.rsa_public_key}"
+#   sudoer_username  = "${module.ovh.sudoer_username}"
 # }
 # output "domain_name" {
 # 	value = "${module.dns.domain_name}"

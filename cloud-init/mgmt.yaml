@@ -19,6 +19,5 @@ runcmd:
   - mkdir -p /project
   - mkdir -p /scratch
   - mount -L home /mnt/home
-  - 'test ! -d /mnt/home/centos && cp -rp /home/centos /mnt/home/centos'
   - mount -L project /project
   - mount -L scratch /scratch

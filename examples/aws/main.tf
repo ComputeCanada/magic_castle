@@ -28,10 +28,6 @@ output "domain_name" {
 	value = "${module.aws.domain_name}"
 }
 
-output "admin_passwd" {
-	value = "${module.aws.admin_passwd}"
-}
-
 output "guest_passwd" {
 	value = "${module.aws.guest_passwd}"
 }

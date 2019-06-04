@@ -1,4 +1,9 @@
-resource "random_string" "admin_passwd" {
+resource "random_string" "munge_key" {
+  length  = 32
+  special = false
+}
+
+resource "random_string" "freeipa_passwd" {
   length  = 16
   special = false
 }
@@ -21,11 +26,12 @@ data "template_file" "data" {
   template = "${file("${local.data_path}")}"
 
   vars {
-    admin_passwd    = "${random_string.admin_passwd.result}"
+    sudoer_username = "${var.sudoer_username}"
+    freeipa_passwd  = "${random_string.freeipa_passwd.result}"
     cluster_name    = "${var.cluster_name}"
     domain_name     = "${local.domain_name}"
     guest_passwd    = "${var.guest_passwd == "" ? random_pet.guest_passwd.id : var.guest_passwd}"
-    munge_key       = "${base64sha512(random_string.admin_passwd.result)}"
+    munge_key       = "${base64sha512(random_string.munge_key.result)}"
     nb_users        = "${var.nb_users}"
     dns_ip          = "${local.mgmt01_ip}"
     freeipa_ip      = "${local.mgmt01_ip}"
@@ -42,11 +48,13 @@ data "template_file" "mgmt_puppet" {
   count    = "${var.nb_mgmt}"
 
   vars {
-    node_name  = "${format("mgmt%02d", count.index + 1)}"
-    email      = "${var.email}"
-    puppetfile = "${indent(6, file("${local.puppetfile_path}"))}"
-    site_pp    = "${indent(6, file("${local.site_pp_path}"))}"
-    data       = "${indent(6, "${data.template_file.data.rendered}")}"
+    node_name           = "${format("mgmt%02d", count.index + 1)}"
+    sudoer_username     = "${var.sudoer_username}"
+    ssh_authorized_keys = "[${file(var.public_key_path)}]"
+    email               = "${var.email}"
+    puppetfile          = "${indent(6, file("${local.puppetfile_path}"))}"
+    site_pp             = "${indent(6, file("${local.site_pp_path}"))}"
+    data                = "${indent(6, "${data.template_file.data.rendered}")}"
   }
 }
 
@@ -72,11 +80,13 @@ data "template_file" "login" {
   count    = "${var.nb_login}"
 
   vars {
-    node_name  = "${format("login%02d", count.index + 1)}"
-    email      = "${var.email}"
-    puppetfile = "${indent(6, file("${local.puppetfile_path}"))}"
-    site_pp    = "${indent(6, file("${local.site_pp_path}"))}"
-    data       = "${indent(6, "${data.template_file.data.rendered}")}"
+    node_name           = "${format("login%02d", count.index + 1)}"
+    sudoer_username     = "${var.sudoer_username}"
+    ssh_authorized_keys = "[${file(var.public_key_path)}]"
+    email               = "${var.email}"
+    puppetfile          = "${indent(6, file("${local.puppetfile_path}"))}"
+    site_pp             = "${indent(6, file("${local.site_pp_path}"))}"
+    data                = "${indent(6, "${data.template_file.data.rendered}")}"
   }
 }
 
@@ -113,11 +123,13 @@ data "template_file" "node" {
   count    = "${var.nb_nodes}"
 
   vars {
-    node_name  = "node${count.index + 1}"
-    email      = "${var.email}"
-    puppetfile = "${indent(6, file("${local.puppetfile_path}"))}"
-    site_pp    = "${indent(6, file("${local.site_pp_path}"))}"
-    data       = "${indent(6, "${data.template_file.data.rendered}")}"
+    node_name           = "node${count.index + 1}"
+    sudoer_username     = "${var.sudoer_username}"
+    ssh_authorized_keys = "[${file(var.public_key_path)}]"
+    email               = "${var.email}"
+    puppetfile          = "${indent(6, file("${local.puppetfile_path}"))}"
+    site_pp             = "${indent(6, file("${local.site_pp_path}"))}"
+    data                = "${indent(6, "${data.template_file.data.rendered}")}"
   }
 }
 

@@ -1,5 +1,7 @@
 ---
-profile::freeipa::base::admin_passwd: "${admin_passwd}"
+profile::base::sudoer_username: "${sudoer_username}"
+
+profile::freeipa::base::admin_passwd: "${freeipa_passwd}"
 profile::freeipa::base::domain_name: "${domain_name}"
 
 profile::freeipa::guest_accounts::guest_passwd: "${guest_passwd}"

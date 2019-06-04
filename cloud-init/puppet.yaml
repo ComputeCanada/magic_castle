@@ -2,7 +2,16 @@
 packages:
   - git
 
+users:
+  - name: ${sudoer_username}
+    groups: adm, wheel, systemd-journal
+    homedir: /${sudoer_username}
+    selinux_user: unconfined_u
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys: ${ssh_authorized_keys}
+
 runcmd:
+  - restorecon -R /${sudoer_username}
   - "(echo -e '\nHostKeyAlgorithms ssh-rsa\n' >> /etc/ssh/sshd_config && systemctl restart sshd)"
   - yum upgrade -y
   - yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
