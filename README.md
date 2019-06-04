@@ -135,14 +135,11 @@ cluster rebuild at next `terraform apply`.
 
 ### 4.3 cluster_name
 
-`cluster_name` is used to:
-
-* Define the `ClusterName` variable in `slurm.conf`.  This is the name by
-which this Slurm managed cluster is known in the accounting database
+Defines the `ClusterName` variable in `slurm.conf` and the name of
+the cluster in the Slurm accounting database
 ([see `slurm.conf` documentation](https://slurm.schedmd.com/slurm.conf.html)).
-* Define the hostname of the login node.
 
-Define with lowercase alphanumeric characters and start with a letter.
+**Requirements**: Define with lowercase alphanumeric characters and start with a letter.
 
 #### 4.3.1 Post Build Modification Effect
 
@@ -151,8 +148,7 @@ cluster rebuild at next `terraform apply`.
 
 ### 4.4 domain
 
-`domain` defines:
-
+Defines
 * the Kerberos realm name when initializing FreeIPA.
 * the internal domain name and the resolv.conf search domain as
 `int.{cluster_name}.{domain}`
@@ -170,7 +166,7 @@ cluster rebuild at next `terraform apply`.
 
 ### 4.5 nb_nodes
 
-`nb_nodes` defines how many compute node instances
+Defines how many compute node instances
 will be created. This integer can be between 0 and your cloud allocation
 instance upper limit minus 2 (you must leave room for a management node and
 a login node).
@@ -187,7 +183,7 @@ of compute nodes at next `terraform apply`.
 
 ### 4.6 nb_users
 
-`nb_users` defines how many user accounts will be created in
+Defines how many user accounts will be created in
 FreeIPA. Each user account shares the same randomly generated password.
 The usernames are defined as `userX` where `X` is a number between 1 and
 the value of `nb_users` (zero-padded, i.e.: `user01 if X < 100`, `user1 if X < 10`).
@@ -212,7 +208,7 @@ of the management node at next `terraform apply`.
 
 ### 4.7 home_size, project_size, scratch_size
 
-`home_size`, `project_size`, and `scratch_size` define the size of the volumes
+Define the size of the volumes
 for respectively `/home`, `/project` and `/scratch`.
 Each volume is mounted on `mgmt01` and exported with NFS to the
 login and the compute nodes.
@@ -225,7 +221,7 @@ of a new empty volume and attachment.
 
 ### 4.8 public_key_path
 
-`public_key_path` is a path to an SSH public key file of your choice.
+Path to an SSH public key file of your choice.
 This key will associated with the sudoer account to provide you
 administrative access to the cluster.
 
@@ -283,7 +279,7 @@ cluster rebuild at next `terraform apply`.
 
 **default value**: `1`
 
-`nb_login` defines how many login node instances will be created.
+Defines how many login node instances will be created.
 
 This variable can be modified at any point of your cluster lifetime.
 Terraform will manage the creation or destruction of the virtual machines
@@ -299,7 +295,7 @@ of login nodes at next `terraform apply`.
 
 **default value**: `1`
 
-`nb_mgmt` defines how many management node instances will be created.
+Defines how many management node instances will be created.
 
 This variable can be modified at any point of your cluster lifetime.
 Terraform will manage the creation or destruction of the virtual machines
@@ -318,7 +314,7 @@ to 0 will render other type of nodes almost unusable.
 
 ### 4.14 os_image_name
 
-`os_image_name` defines the name of the image that will be used as the
+Defines the name of the image that will be used as the
 base image for the cluster nodes. For the provisionning to work properly,
 this image has to be based on CentOS 7.
 
@@ -333,7 +329,7 @@ cluster rebuild at next `terraform apply`.
 
 ### 4.15 os_flavor_mgmt, os_flavor_login and os_flavor_node
 
-`os_flavor_*` defines the flavor of one of the three types of servers
+Define the flavor of one of the three types of servers
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
 defines the compute, memory, and storage capacity of an instance.
 
@@ -349,7 +345,7 @@ affected instances will reboot in the process.
 
 **default value**: None
 
-`os_floating_ips` defines a list of pre-allocated floating ip addresses
+Defines a list of pre-allocated floating ip addresses
 that will be assigned to the login nodes. If this variable is left empty,
 (e.g. : `[]`) the login nodes' floating ips will be managed by Terraform.
 
@@ -518,7 +514,8 @@ password of the user accounts, follow these steps:
 3. Create a variable containing the new human defined password: `NEW_PASSWD=<human_passwd>`.
 This password must respect the FreeIPA password policy. To display the policy enter
 ```
-$ kinit admin # Enter FreeIPA admin password provided by Terraform
+# Enter FreeIPA admin password available in /etc/puppetlabs/puppet/hieradata/data.yaml
+$ kinit admin
 $ ipa pwpolicy-show
 $ kdestroy
 ```
