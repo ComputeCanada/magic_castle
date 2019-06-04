@@ -251,6 +251,8 @@ cluster rebuild at next `terraform apply`.
 
 ### 4.10 guest_passwd (optional)
 
+**default value**: 4 random words separated by a dot
+
 Defines the password for the guest user accounts instead of using a
 randomly generated one.
 
