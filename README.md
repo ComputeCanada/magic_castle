@@ -107,7 +107,7 @@ you want to use.
 
 ### 4.2 puppet_config (**optional**)
 
-**default value**: `base`
+**default value**: `basic`
 
 Package installation and configuration - provisioning - of the cluster
 is mainly done by [Puppet](https://en.wikipedia.org/wiki/Puppet_(software)).
@@ -118,15 +118,15 @@ Each arrangement is defined by three files:
 * `data.yaml`: define values for module variables
 
 There are four arrangements currently available:
-* `base`: SLURM cluster with NFS home, scratch and project;
-* `cvmfs`: `base` + Compute Canada CVMFS;
+* `basic`: SLURM cluster with NFS home, scratch and project;
+* `cvmfs`: `basic` + Compute Canada CVMFS;
 * `globus`: `cvmfs` + Globus Endpoint on the login node;
 * `jupyterhub`: `globus` + JupyterHub on the login node.
 
 To get more details on the configuration of each host per arrangement,
 look at the [`puppet` folder in the `slurm_cloud` repo](https://git.computecanada.ca/magic_castle/slurm_cloud/tree/master/puppet).
 
-If the variable is left undefined, the arrangement will be `base`.
+If the variable is left undefined, the arrangement will be `basic`.
 
 #### 4.2.1 Post Build Modification Effect
 
