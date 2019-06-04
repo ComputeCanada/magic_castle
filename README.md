@@ -107,6 +107,8 @@ you want to use.
 
 ### 4.2 puppet_config (**optional**)
 
+**default value**: `base`
+
 Package installation and configuration - provisioning - of the cluster
 is mainly done by [Puppet](https://en.wikipedia.org/wiki/Puppet_(software)).
 Magic Castle provides arrangements of host configurations with Puppet.
@@ -193,14 +195,14 @@ the value of `nb_users` (zero-padded, i.e.: `user01 if X < 100`, `user1 if X < 1
 Each user has a home folder on a shared NFS storage hosted by the management
 node.
 
-User accounts do not have administrator privileges. If you wish to use `sudo`,
-you will have to login using the administrator account named `centos` and the
+User accounts do not have sudoer privileges. If you wish to use `sudo`,
+you will have to login using the sudoer account and the
 SSH key defined by `public_key_path`.
 
 If you would like to add a user account after the cluster is built. Log in the
 management node and call:
 ```
-$ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.sh <username>
+$ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.sh <username>
 ```
 
 #### 4.6.1 Post Build Modification Effect
@@ -215,7 +217,6 @@ for respectively `/home`, `/project` and `/scratch`.
 Each volume is mounted on `mgmt01` and exported with NFS to the
 login and the compute nodes.
 
-
 #### 4.7.1 Post Build Modification Effect
 
 Modifying one of these variables after the cluster is built leads to the
@@ -225,9 +226,8 @@ of a new empty volume and attachment.
 ### 4.8 public_key_path
 
 `public_key_path` is a path to an SSH public key file of your choice.
-This key will associated with the `centos` account to provide you
+This key will associated with the sudoer account to provide you
 administrative access to the cluster.
-
 
 #### 4.8.1 Post Build Modification Effect
 
@@ -235,6 +235,8 @@ Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
 ### 4.9 email (optional)
+
+**default value**: none
 
 Once the initial puppet provisioning of an instance is done, 
 the instance can send an email if the variable `email` is defined with
@@ -264,7 +266,22 @@ account password will not be properly configured.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.11 nb_login (optional)
+### 4.11 suoder_username (optional)
+
+**default value**: `centos`
+
+Defines the username of the account with sudo privileges. The account
+ssh authorized keys are configured with the SSH public key from 
+`public_key_path`.
+
+#### 4.11.1 Post Build Modification Effect
+
+Modifying this variable after the cluster is built leads to a complete
+cluster rebuild at next `terraform apply`.
+
+### 4.12 nb_login (optional)
+
+**default value**: `1`
 
 `nb_login` defines how many login node instances will be created.
 
@@ -273,12 +290,14 @@ Terraform will manage the creation or destruction of the virtual machines
 for you. It is therefore possible to start with 0 login nodess, build the
 cluster, and add more later.
 
-#### 4.11.1 Post Build Modification Effect
+#### 4.12.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built only affects the number
 of login nodes at next `terraform apply`.
 
-### 4.12 nb_mgmt (optional)
+### 4.13 nb_mgmt (optional)
+
+**default value**: `1`
 
 `nb_mgmt` defines how many management node instances will be created.
 
@@ -291,13 +310,13 @@ least one management node named `mgmt01`. While it is possible to have
 `nb_mgmt` equals to 0 and `nb_login` or `nb_nodes` greater than 0, if
 you decide to go down that route, you are on your own.
 
-#### 4.12.1 Post Build Modification Effect
+#### 4.13.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built only affects the number
 of management nodes at next `terraform apply`. However, putting that number
 to 0 will render other type of nodes almost unusable.
 
-### 4.13 os_image_name
+### 4.14 os_image_name
 
 `os_image_name` defines the name of the image that will be used as the
 base image for the cluster nodes. For the provisionning to work properly,
@@ -308,11 +327,11 @@ should be mainly done through Puppet scripting. Image customization is mostly
 envisioned as a way to accelerate the provisioning process by applying the
 security patches and OS updates in advance.
 
-#### 4.13.1 Post Build Modification Effect
+#### 4.14.1 Post Build Modification Effect
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.14 os_flavor_mgmt, os_flavor_login and os_flavor_node
+### 4.15 os_flavor_mgmt, os_flavor_login and os_flavor_node
 
 `os_flavor_*` defines the flavor of one of the three types of servers
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
@@ -320,13 +339,15 @@ defines the compute, memory, and storage capacity of an instance.
 
 For `os_flavor_mgmt`, choose a flavor with at least 3 GB of memory.
 
-#### 4.14.1 Post Build Modification Effect
+#### 4.15.1 Post Build Modification Effect
 
 Modifying one of these variables after the cluster is built leads
 to a live migration of the instance(s) to the new chosen flavor. The
 affected instances will reboot in the process.
 
-### 4.15 os_floating_ips (optional)
+### 4.16 os_floating_ips (optional)
+
+**default value**: None
 
 `os_floating_ips` defines a list of pre-allocated floating ip addresses
 that will be assigned to the login nodes. If this variable is left empty,
@@ -336,10 +357,10 @@ This variable can be useful if you administer your DNS manually and
 you would like the keep the same domain name for your cluster at each
 build.
 
-#### 4.15.1 Post Build Modification Effect
+#### 4.16.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built will change the
-floating ip assigned to the login node.
+floating ip assigned to each login node.
 
 ## 5. Planification
 
@@ -389,8 +410,8 @@ Enter `yes`.
 
 Terraform will then proceed to create the resources defined by the
 configuration file. It should take a few minutes. Once the creation process
-is completed, Terraform will output the administrator password, the user
-account password, the administrator username and the floating ip of the login
+is completed, Terraform will output the guest account usernames and password,
+the sudoer username and the floating ip of the login
 node.
 
 **Warning**: although the instance creation process is finished once Terraform
@@ -472,7 +493,9 @@ To connect to the management node, follow these steps:
 1. Make sure your SSH key is loaded in your ssh-agent.
 2. SSH in your cluster with forwarding of the authentication
 agent connection enabled: `ssh -A centos@cluster_ip`.
-3. SSH in the management node : `ssh centos@mgmt01`
+Replace `centos` by the value of `sudoer_username` if it is
+different.
+3. SSH in the management node : `ssh mgmt01`
 
 ### 8.1 Deactivate Puppet
 
@@ -512,7 +535,7 @@ done
 
 To add a user account after the cluster is built, log in `mgmt01` and call:
 ```
-$ IPA_ADMIN_PASSWD=<admin_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.sh <username>
+$ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.sh <username>
 ```
 
 ### 8.4 Restrict SSH Access
@@ -550,8 +573,8 @@ sudo /opt/ipython-kernel/bin/pip install <package_name>
 ```
 
 This will install the package on a single compute node. To install it on every
-compute node, call the following command as user `centos` and where `N` is the
-number of compute nodes in your cluster.
+compute node, call the following command from the sudoer account and where `N`
+is the number of compute nodes in your cluster.
 
 ```
 pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
@@ -567,6 +590,3 @@ linked in our `main.tf` inside a subfolder named
 Terraform uses md5 hashes to refer to the module, so you
 will have to look at the file named `modules.json` to
 determine which directory corresponds to which module.
-
-For example, folder `5e8bf3f97f0f6c4558772a46d6c550a8`
-corresponds to the openstack module.
