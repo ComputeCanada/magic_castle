@@ -30,6 +30,7 @@ profile::globus::base::globus_password: your_globus_password
 ```
 Replace `your_globus_username` and `your_globus_password` by their respective
 value.
+
 2. The globus server installation is triggered when there modifications to the
 file `/etc/globus-connect-server.conf`. Open that file, and add an empty line
 at the end.
