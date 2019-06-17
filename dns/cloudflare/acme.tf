@@ -16,6 +16,7 @@ resource "acme_registration" "reg" {
 resource "acme_certificate" "certificate" {
   account_key_pem           = "${acme_registration.reg.account_key_pem}"
   common_name               = "${var.name}.${var.domain}"
+  subject_alternative_names = ["*.${var.name}.${var.domain}"]
 
   dns_challenge {
     provider = "cloudflare"
