@@ -48,6 +48,15 @@ resource "cloudflare_record" "login_A" {
   type   = "A"
 }
 
+resource "cloudflare_record" "jupyter_A" {
+  # count  = "${max(var.nb_login, 1)}"
+  domain = "${var.domain}"
+  name   = "jupyter.${var.name}"
+  # value  = "${element(var.public_ip, count.index)}"
+  value  = "${element(var.public_ip, 0)}"
+  type   = "A"
+}
+
 resource "cloudflare_record" "login_sshfp_rsa_sha1" {
   domain = "${var.domain}"
   name   = "${var.name}"
