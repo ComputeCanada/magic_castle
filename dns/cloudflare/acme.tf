@@ -2,19 +2,20 @@ provider "acme" {
   server_url = "https://acme-v02.api.letsencrypt.org/directory"
 }
 
-variable "sudoer_username" {}
+variable "sudoer_username" {
+}
 
 resource "tls_private_key" "private_key" {
   algorithm = "RSA"
 }
 
 resource "acme_registration" "reg" {
-  account_key_pem = "${tls_private_key.private_key.private_key_pem}"
+  account_key_pem = tls_private_key.private_key.private_key_pem
   email_address   = "felix-antoine.fortin@calculquebec.ca"
 }
 
 resource "acme_certificate" "certificate" {
-  account_key_pem           = "${acme_registration.reg.account_key_pem}"
+  account_key_pem           = acme_registration.reg.account_key_pem
   common_name               = "${var.name}.${var.domain}"
   subject_alternative_names = ["*.${var.name}.${var.domain}"]
 
@@ -24,16 +25,16 @@ resource "acme_certificate" "certificate" {
 }
 
 resource "null_resource" "deploy_certs" {
-  count = "${var.nb_login}"
+  count = var.nb_login
 
   connection {
-      type     = "ssh"
-      user     = "${var.sudoer_username}"
-      host     = "${element(var.public_ip, count.index)}"
+    type = "ssh"
+    user = var.sudoer_username
+    host = element(var.public_ip, count.index)
   }
 
   provisioner "file" {
-    content     = "${acme_certificate.certificate.private_key_pem}"
+    content     = acme_certificate.certificate.private_key_pem
     destination = "privkey.pem"
   }
 
@@ -43,12 +44,12 @@ resource "null_resource" "deploy_certs" {
   }
 
   provisioner "file" {
-    content     = "${acme_certificate.certificate.certificate_pem}"
+    content     = acme_certificate.certificate.certificate_pem
     destination = "cert.pem"
   }
 
   provisioner "file" {
-    content     = "${acme_certificate.certificate.issuer_pem}"
+    content     = acme_certificate.certificate.issuer_pem
     destination = "chain.pem"
   }
 
@@ -69,6 +70,7 @@ account = ${basename(acme_certificate.certificate.id)}
 server = https://acme-v02.api.letsencrypt.org/directory
 
 EOF
+
   }
 
   provisioner "remote-exec" {
