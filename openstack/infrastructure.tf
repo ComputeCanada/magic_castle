@@ -1,18 +1,19 @@
-provider "openstack" {}
-
+provider "openstack" {
+}
 
 data "openstack_networking_network_v2" "ext_network" {
-  external = "True"
+  external = true
 }
 
 data "openstack_networking_network_v2" "int_network" {
-  external = "False"
+  external = false
 }
 
-data "openstack_networking_subnet_v2" "subnet" {}
+data "openstack_networking_subnet_v2" "subnet" {
+}
 
 data "openstack_images_image_v2" "image" {
-  name = "${var.os_image_name}"
+  name = var.os_image_name
 }
 
 resource "openstack_compute_secgroup_v2" "secgroup_1" {
@@ -86,108 +87,133 @@ resource "openstack_compute_secgroup_v2" "secgroup_1" {
 
 resource "openstack_compute_keypair_v2" "keypair" {
   name       = "${var.cluster_name}_key"
-  public_key = "${file(var.public_key_path)}"
+  public_key = file(var.public_key_path)
 }
 
 resource "openstack_blockstorage_volume_v2" "home" {
   name        = "${var.cluster_name}_home"
   description = "${var.cluster_name} /home"
-  size        = "${var.home_size}"
+  size        = var.home_size
 }
 
 resource "openstack_blockstorage_volume_v2" "project" {
   name        = "${var.cluster_name}_project"
   description = "${var.cluster_name} /project"
-  size        = "${var.project_size}"
+  size        = var.project_size
 }
 
 resource "openstack_blockstorage_volume_v2" "scratch" {
   name        = "${var.cluster_name}_scratch"
   description = "${var.cluster_name} /scratch"
-  size        = "${var.scratch_size}"
+  size        = var.scratch_size
 }
 
 resource "openstack_networking_port_v2" "port_mgmt" {
-  count              = "${max(var.nb_mgmt, 1)}"
-  name               = "${format("port-mgmt%02d", count.index + 1)}"
-  network_id         = "${data.openstack_networking_network_v2.int_network.id}"
-  security_group_ids = ["${openstack_compute_secgroup_v2.secgroup_1.id}"]
+  count              = max(var.nb_mgmt, 1)
+  name               = format("port-mgmt%02d", count.index + 1)
+  network_id         = data.openstack_networking_network_v2.int_network.id
+  security_group_ids = [openstack_compute_secgroup_v2.secgroup_1.id]
   fixed_ip {
-    subnet_id     = "${data.openstack_networking_subnet_v2.subnet.id}"
+    subnet_id = data.openstack_networking_subnet_v2.subnet.id
   }
 }
 
 resource "openstack_compute_instance_v2" "mgmt" {
-  count           = "${var.nb_mgmt}"
-  name            = "${format("mgmt%02d", count.index + 1)}"
-  image_id        = "${data.openstack_images_image_v2.image.id}"
+  count    = var.nb_mgmt
+  name     = format("mgmt%02d", count.index + 1)
+  image_id = data.openstack_images_image_v2.image.id
 
-  flavor_name     = "${var.os_flavor_mgmt}"
-  key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
-  user_data       = "${element(data.template_cloudinit_config.mgmt_config.*.rendered, count.index)}"
+  flavor_name = var.os_flavor_mgmt
+  key_pair    = openstack_compute_keypair_v2.keypair.name
+  user_data = element(
+    data.template_cloudinit_config.mgmt_config.*.rendered,
+    count.index,
+  )
 
   network {
-    port = "${element(openstack_networking_port_v2.port_mgmt.*.id, count.index)}"
+    port = element(openstack_networking_port_v2.port_mgmt.*.id, count.index)
   }
 }
 
 resource "openstack_compute_volume_attach_v2" "va_home" {
-  count       = "${var.nb_mgmt > 0 ? 1 : 0}"
-  instance_id = "${openstack_compute_instance_v2.mgmt.0.id}"
-  volume_id   = "${openstack_blockstorage_volume_v2.home.id}"
+  count       = var.nb_mgmt > 0 ? 1 : 0
+  instance_id = openstack_compute_instance_v2.mgmt[0].id
+  volume_id   = openstack_blockstorage_volume_v2.home.id
 }
 
 resource "openstack_compute_volume_attach_v2" "va_project" {
-  count       = "${var.nb_mgmt > 0 ? 1 : 0}"
-  instance_id = "${openstack_compute_instance_v2.mgmt.0.id}"
-  volume_id   = "${openstack_blockstorage_volume_v2.project.id}"
-  depends_on  = ["openstack_compute_volume_attach_v2.va_home"]
+  count       = var.nb_mgmt > 0 ? 1 : 0
+  instance_id = openstack_compute_instance_v2.mgmt[0].id
+  volume_id   = openstack_blockstorage_volume_v2.project.id
+  depends_on  = [openstack_compute_volume_attach_v2.va_home]
 }
 
 resource "openstack_compute_volume_attach_v2" "va_scratch" {
-  count       = "${var.nb_mgmt > 0 ? 1 : 0}"
-  instance_id = "${openstack_compute_instance_v2.mgmt.0.id}"
-  volume_id   = "${openstack_blockstorage_volume_v2.scratch.id}"
-  depends_on  = ["openstack_compute_volume_attach_v2.va_project"]
+  count       = var.nb_mgmt > 0 ? 1 : 0
+  instance_id = openstack_compute_instance_v2.mgmt[0].id
+  volume_id   = openstack_blockstorage_volume_v2.scratch.id
+  depends_on  = [openstack_compute_volume_attach_v2.va_project]
 }
 
 resource "openstack_compute_instance_v2" "login" {
-  count    = "${var.nb_login}"
-  name     = "${format("login%02d", count.index + 1)}"
-  image_id = "${data.openstack_images_image_v2.image.id}"
+  count    = var.nb_login
+  name     = format("login%02d", count.index + 1)
+  image_id = data.openstack_images_image_v2.image.id
 
-  flavor_name     = "${var.os_flavor_login}"
-  key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
-  security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
-  user_data       = "${element(data.template_cloudinit_config.login_config.*.rendered, count.index)}"
+  flavor_name     = var.os_flavor_login
+  key_pair        = openstack_compute_keypair_v2.keypair.name
+  security_groups = [openstack_compute_secgroup_v2.secgroup_1.name]
+  user_data = element(
+    data.template_cloudinit_config.login_config.*.rendered,
+    count.index,
+  )
 }
 
 resource "openstack_compute_instance_v2" "node" {
-  count    = "${var.nb_nodes}"
+  count    = var.nb_nodes
   name     = "node${count.index + 1}"
-  image_id = "${data.openstack_images_image_v2.image.id}"
+  image_id = data.openstack_images_image_v2.image.id
 
-  flavor_name     = "${var.os_flavor_node}"
-  key_pair        = "${openstack_compute_keypair_v2.keypair.name}"
-  security_groups = ["${openstack_compute_secgroup_v2.secgroup_1.name}"]
-  user_data       = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"
+  flavor_name     = var.os_flavor_node
+  key_pair        = openstack_compute_keypair_v2.keypair.name
+  security_groups = [openstack_compute_secgroup_v2.secgroup_1.name]
+  user_data = element(
+    data.template_cloudinit_config.node_config.*.rendered,
+    count.index,
+  )
 }
 
 resource "openstack_networking_floatingip_v2" "fip" {
-  count = "${max(max(var.nb_login - length(var.os_floating_ips), 1 - length(var.os_floating_ips)), 0)}"
-  pool  = "${data.openstack_networking_network_v2.ext_network.name}"
+  count = max(
+    max(
+      var.nb_login - length(var.os_floating_ips),
+      1 - length(var.os_floating_ips),
+    ),
+    0,
+  )
+  pool = data.openstack_networking_network_v2.ext_network.name
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip" {
-  count       = "${var.nb_login}"
-  floating_ip = "${element(concat(var.os_floating_ips, openstack_networking_floatingip_v2.fip.*.address), count.index)}"
-  instance_id = "${element(openstack_compute_instance_v2.login.*.id, count.index)}"
+  count = var.nb_login
+  floating_ip = element(
+    concat(
+      var.os_floating_ips,
+      openstack_networking_floatingip_v2.fip.*.address,
+    ),
+    count.index,
+  )
+  instance_id = element(openstack_compute_instance_v2.login.*.id, count.index)
 }
 
 locals {
-  mgmt01_ip   = "${openstack_networking_port_v2.port_mgmt.0.all_fixed_ips.0}"
-  public_ip   = "${concat(var.os_floating_ips, openstack_networking_floatingip_v2.fip.*.address)}"
+  mgmt01_ip = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
+  public_ip = concat(
+    var.os_floating_ips,
+    openstack_networking_floatingip_v2.fip.*.address,
+  )
   home_dev    = "/dev/vdb"
   project_dev = "/dev/vdc"
   scratch_dev = "/dev/vdd"
 }
+

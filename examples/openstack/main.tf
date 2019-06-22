@@ -23,31 +23,31 @@ module "openstack" {
 }
 
 output "sudoer_username" {
-  value = "${module.openstack.sudoer_username}"
+  value = module.openstack.sudoer_username
 }
 
 output "guest_usernames" {
-  value = "${module.openstack.guest_usernames}"
+  value = module.openstack.guest_usernames
 }
 
 output "guest_passwd" {
-  value = "${module.openstack.guest_passwd}"
+  value = module.openstack.guest_passwd
 }
 
 output "public_ip" {
-  value = "${module.openstack.ip}"
+  value = module.openstack.ip
 }
 
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
 #   source           = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//dns/cloudflare"
-#   name             = "${module.openstack.cluster_name}"
-#   domain           = "${module.openstack.domain}"
-#   public_ip        = "${module.openstack.ip}"
-#   rsa_public_key   = "${module.openstack.rsa_public_key}"
-#   nb_login         = "${module.openstack.nb_login}"
-#   sudoer_username  = "${module.openstack.sudoer_username}"
+#   name             = module.openstack.cluster_name
+#   domain           = module.openstack.domain
+#   public_ip        = module.openstack.ip
+#   rsa_public_key   = module.openstack.rsa_public_key
+#   nb_login         = module.openstack.nb_login
+#   sudoer_username  = module.openstack.sudoer_username
 # }
 # output "hostnames" {
-# 	value = "${module.dns.hostnames}"
+# 	value = module.dns.hostnames
 # }
