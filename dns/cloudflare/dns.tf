@@ -17,6 +17,13 @@ variable "rsa_public_key" {
 variable "nb_login" {
 }
 
+data "external" "key2fp" {
+  program = ["python", "${path.module}/key2fp.py"]
+  query = {
+    ssh_key = var.rsa_public_key
+  }
+}
+
 resource "cloudflare_record" "loginX_A" {
   count  = var.nb_login
   domain = var.domain
@@ -31,9 +38,9 @@ resource "cloudflare_record" "loginX_sshfp_rsa_sha1" {
   name   = join("", [var.name, format("%d", count.index + 1)])
   type   = "SSHFP"
   data = {
-    algorithm   = 1
+    algorithm   = data.external.key2fp.result["algorithm"]
     type        = 1
-    fingerprint = sha1(base64decode(element(split(" ", var.rsa_public_key), 1)))
+    fingerprint = data.external.key2fp.result["sha1"]
   }
 }
 
@@ -43,9 +50,9 @@ resource "cloudflare_record" "loginX_sshfp_rsa_sha256" {
   name   = join("", [var.name, format("%d", count.index + 1)])
   type   = "SSHFP"
   data = {
-    algorithm   = 1
+    algorithm   = data.external.key2fp.result["algorithm"]
     type        = 2
-    fingerprint = sha256(base64decode(element(split(" ", var.rsa_public_key), 1)))
+    fingerprint = data.external.key2fp.result["sha256"]
   }
 }
 
@@ -72,9 +79,9 @@ resource "cloudflare_record" "login_sshfp_rsa_sha1" {
   name   = var.name
   type   = "SSHFP"
   data = {
-    algorithm   = 1
+    algorithm   = data.external.key2fp.result["algorithm"]
     type        = 1
-    fingerprint = sha1(base64decode(element(split(" ", var.rsa_public_key), 1)))
+    fingerprint = data.external.key2fp.result["sha1"]
   }
 }
 
@@ -83,9 +90,9 @@ resource "cloudflare_record" "login_sshfp_rsa_sha256" {
   name   = var.name
   type   = "SSHFP"
   data = {
-    algorithm   = 1
+    algorithm   = data.external.key2fp.result["algorithm"]
     type        = 2
-    fingerprint = sha256(base64decode(element(split(" ", var.rsa_public_key), 1)))
+    fingerprint = data.external.key2fp.result["sha256"]
   }
 }
 
@@ -95,4 +102,3 @@ output "hostnames" {
     cloudflare_record.loginX_A.*.hostname,
   )
 }
-
