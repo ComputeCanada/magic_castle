@@ -9,55 +9,55 @@ variable "ssh_user" {
 # Create a resource group
 resource "azurerm_resource_group" "group" {
   name     = "myResourceGroup"
-  location = "${var.location}"
+  location = var.location
 }
 
 # Create virtual network
 resource "azurerm_virtual_network" "virtualNetwork" {
   name                = "myVnet"
   address_space       = ["10.0.0.0/16"]
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.group.name}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.group.name
 }
 
 # Create subnet
 resource "azurerm_subnet" "subnet" {
   name                 = "mySubnet"
-  resource_group_name  = "${azurerm_resource_group.group.name}"
-  virtual_network_name = "${azurerm_virtual_network.virtualNetwork.name}"
-  address_prefix       = "${local.cidr}"
+  resource_group_name  = azurerm_resource_group.group.name
+  virtual_network_name = azurerm_virtual_network.virtualNetwork.name
+  address_prefix       = local.cidr
 }
 
 # Create public IPs
 resource "azurerm_public_ip" "loginIP" {
-  count                        = "${var.nb_login}"
-  name                         = "${format("login-ip-%02d", count.index + 1)}"
-  location                     = "${var.location}"
-  resource_group_name          = "${azurerm_resource_group.group.name}"
+  count                        = var.nb_login
+  name                         = format("login-ip-%02d", count.index + 1)
+  location                     = var.location
+  resource_group_name          = azurerm_resource_group.group.name
   public_ip_address_allocation = "static"
 }
 
 resource "azurerm_public_ip" "mgmtIP" {
-  count                        = "${var.nb_mgmt}"
-  name                         = "${format("mgmt-ip-%02d", count.index + 1)}"
-  location                     = "${var.location}"
-  resource_group_name          = "${azurerm_resource_group.group.name}"
+  count                        = var.nb_mgmt
+  name                         = format("mgmt-ip-%02d", count.index + 1)
+  location                     = var.location
+  resource_group_name          = azurerm_resource_group.group.name
   public_ip_address_allocation = "dynamic"
 }
 
 resource "azurerm_public_ip" "nodeIP" {
-  count                        = "${var.nb_nodes}"
-  name                         = "${format("node-ip-%02d", count.index + 1)}"
-  location                     = "${var.location}"
-  resource_group_name          = "${azurerm_resource_group.group.name}"
+  count                        = var.nb_nodes
+  name                         = format("node-ip-%02d", count.index + 1)
+  location                     = var.location
+  resource_group_name          = azurerm_resource_group.group.name
   public_ip_address_allocation = "dynamic"
 }
 
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "security_login" {
   name                = "myNetworkSecurityGroup"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.group.name}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.group.name
 
   security_rule {
     name                       = "SSH"
@@ -98,8 +98,8 @@ resource "azurerm_network_security_group" "security_login" {
 
 resource "azurerm_network_security_group" "security_mgmt" {
   name                = "myNetworkSecurityGroup"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.group.name}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.group.name
 
   security_rule {
     name                       = "SSH"
@@ -116,64 +116,63 @@ resource "azurerm_network_security_group" "security_mgmt" {
 
 # Create network interface
 resource "azurerm_network_interface" "loginNIC" {
-  count                     = "${var.nb_login}"
-  name                      = "${format("node-nic-%02d", count.index + 1)}"
-  location                  = "${var.location}"
-  resource_group_name       = "${azurerm_resource_group.group.name}"
-  network_security_group_id = "${azurerm_network_security_group.security_login.id}"
+  count                     = var.nb_login
+  name                      = format("node-nic-%02d", count.index + 1)
+  location                  = var.location
+  resource_group_name       = azurerm_resource_group.group.name
+  network_security_group_id = azurerm_network_security_group.security_login.id
 
   ip_configuration {
     name                          = "loginNICConfig"
-    subnet_id                     = "${azurerm_subnet.subnet.id}"
+    subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "dynamic"
-    public_ip_address_id          = "${element(azurerm_public_ip.loginIP.*.id, count.index)}"
+    public_ip_address_id          = element(azurerm_public_ip.loginIP.*.id, count.index)
   }
 }
 
 resource "azurerm_network_interface" "mgmtNIC" {
-  count                     = "${var.nb_mgmt}"
-  name                      = "${format("mgmt-nic-%02d", count.index + 1)}"
-  location                  = "${var.location}"
-  resource_group_name       = "${azurerm_resource_group.group.name}"
-  network_security_group_id = "${azurerm_network_security_group.security_mgmt.id}"
+  count                     = var.nb_mgmt
+  name                      = format("mgmt-nic-%02d", count.index + 1)
+  location                  = var.location
+  resource_group_name       = azurerm_resource_group.group.name
+  network_security_group_id = azurerm_network_security_group.security_mgmt.id
 
   ip_configuration {
     name                          = "mgmtNICConfig"
-    subnet_id                     = "${azurerm_subnet.subnet.id}"
+    subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "dynamic"
-    public_ip_address_id          = "${element(azurerm_public_ip.mgmtIP.*.id, count.index)}"
+    public_ip_address_id          = element(azurerm_public_ip.mgmtIP.*.id, count.index)
   }
 }
 
 resource "azurerm_network_interface" "nodeNIC" {
-  count                     = "${var.nb_nodes}"
-  name                      = "${format("node-nic-%02d", count.index + 1)}"
-  count                     = "${var.nb_nodes}"
-  location                  = "${var.location}"
-  resource_group_name       = "${azurerm_resource_group.group.name}"
+  count               = var.nb_nodes
+  name                = format("node-nic-%02d", count.index + 1)
+  location            = var.location
+  resource_group_name = azurerm_resource_group.group.name
 
   ip_configuration {
     name                          = "nodeNICConfig"
-    subnet_id                     = "${azurerm_subnet.subnet.id}"
+    subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "dynamic"
-    public_ip_address_id          = "${element(azurerm_public_ip.nodeIP.*.id, count.index)}"
+    public_ip_address_id          = element(azurerm_public_ip.nodeIP.*.id, count.index)
   }
 }
 
 # Create virtual machine
 resource "azurerm_virtual_machine" "login" {
-  count                 = "${var.nb_login}"
-  name                  = "${format("login%02d", count.index + 1)}"
-  location              = "${var.location}"
-  resource_group_name   = "${azurerm_resource_group.group.name}"
-  network_interface_ids = ["${element(azurerm_network_interface.loginNIC.*.id, count.index)}"]
-  vm_size               = "${var.vm_size_login}"
+  count                 = var.nb_login
+  name                  = format("login%02d", count.index + 1)
+  location              = var.location
+  resource_group_name   = azurerm_resource_group.group.name
+  network_interface_ids = [element(azurerm_network_interface.loginNIC.*.id, count.index)]
+  vm_size               = var.vm_size_login
 
   storage_os_disk {
     name              = "loginDisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "${var.managed_disk_type}"
+    managed_disk_type = var.managed_disk_type
   }
 
   storage_image_reference {
@@ -184,34 +183,37 @@ resource "azurerm_virtual_machine" "login" {
   }
 
   os_profile {
-    computer_name  = "${format("login%02d", count.index + 1)}"
-    admin_username = "${var.ssh_user}"
-    custom_data  = "${element(data.template_cloudinit_config.login_config.*.rendered, count.index)}"
+    computer_name  = format("login%02d", count.index + 1)
+    admin_username = var.ssh_user
+    custom_data = element(
+      data.template_cloudinit_config.login_config.*.rendered,
+      count.index,
+    )
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
     ssh_keys {
       path     = "/home/${var.ssh_user}/.ssh/authorized_keys"
-      key_data = "${file(var.public_key_path)}"
+      key_data = file(var.public_key_path)
     }
   }
 }
 
 resource "azurerm_virtual_machine" "mgmt" {
-  count                 = "${var.nb_mgmt}"
-  name                  = "${format("mgmt%02d", count.index + 1)}"
-  location              = "${var.location}"
-  resource_group_name   = "${azurerm_resource_group.group.name}"
-  network_interface_ids = ["${element(azurerm_network_interface.mgmtNIC.*.id, count.index)}"]
-  vm_size               = "${var.vm_size_mgmt}"
+  count                 = var.nb_mgmt
+  name                  = format("mgmt%02d", count.index + 1)
+  location              = var.location
+  resource_group_name   = azurerm_resource_group.group.name
+  network_interface_ids = [element(azurerm_network_interface.mgmtNIC.*.id, count.index)]
+  vm_size               = var.vm_size_mgmt
 
   storage_os_disk {
     name              = "mgmtDisk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "${var.managed_disk_type}"
-    disk_size_gb      = "${var.shared_storage_size}"
+    managed_disk_type = var.managed_disk_type
+    disk_size_gb      = var.shared_storage_size
   }
 
   storage_image_reference {
@@ -222,84 +224,87 @@ resource "azurerm_virtual_machine" "mgmt" {
   }
 
   os_profile {
-    computer_name  = "${format("mgmt%02d", count.index + 1)}"
-    admin_username = "${var.ssh_user}"
-    custom_data  = "${element(data.template_cloudinit_config.mgmt_config.*.rendered, count.index)}"
+    computer_name  = format("mgmt%02d", count.index + 1)
+    admin_username = var.ssh_user
+    custom_data = element(
+      data.template_cloudinit_config.mgmt_config.*.rendered,
+      count.index,
+    )
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
     ssh_keys {
       path     = "/home/${var.ssh_user}/.ssh/authorized_keys"
-      key_data = "${file(var.public_key_path)}"
+      key_data = file(var.public_key_path)
     }
   }
 }
 
 resource "azurerm_managed_disk" "home" {
   name                 = "home"
-  location             = "${var.location}"
-  resource_group_name  = "${azurerm_resource_group.group.name}"
-  storage_account_type = "${var.managed_disk_type}"
+  location             = var.location
+  resource_group_name  = azurerm_resource_group.group.name
+  storage_account_type = var.managed_disk_type
   create_option        = "Empty"
-  disk_size_gb         = "${var.home_size}"
+  disk_size_gb         = var.home_size
 }
 
 resource "azurerm_managed_disk" "project" {
   name                 = "project"
-  location             = "${var.location}"
-  resource_group_name  = "${azurerm_resource_group.group.name}"
-  storage_account_type = "${var.managed_disk_type}"
+  location             = var.location
+  resource_group_name  = azurerm_resource_group.group.name
+  storage_account_type = var.managed_disk_type
   create_option        = "Empty"
-  disk_size_gb         = "${var.project_size}"
+  disk_size_gb         = var.project_size
 }
 
 resource "azurerm_managed_disk" "scratch" {
   name                 = "scratch"
-  location             = "${var.location}"
-  resource_group_name  = "${azurerm_resource_group.group.name}"
-  storage_account_type = "${var.managed_disk_type}"
+  location             = var.location
+  resource_group_name  = azurerm_resource_group.group.name
+  storage_account_type = var.managed_disk_type
   create_option        = "Empty"
-  disk_size_gb         = "${var.scratch_size}"
+  disk_size_gb         = var.scratch_size
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "home" {
-  count              = "${var.nb_mgmt > 0 ? 1 : 0}"
-  managed_disk_id    = "${azurerm_managed_disk.home.id}"
-  virtual_machine_id = "${azurerm_virtual_machine.mgmt.0.id}"
+  count              = var.nb_mgmt > 0 ? 1 : 0
+  managed_disk_id    = azurerm_managed_disk.home.id
+  virtual_machine_id = azurerm_virtual_machine.mgmt[0].id
   lun                = "10"
   caching            = "ReadWrite"
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "project" {
-  count              = "${var.nb_mgmt > 0 ? 1 : 0}"
-  managed_disk_id    = "${azurerm_managed_disk.project.id}"
-  virtual_machine_id = "${azurerm_virtual_machine.mgmt.0.id}"
+  count              = var.nb_mgmt > 0 ? 1 : 0
+  managed_disk_id    = azurerm_managed_disk.project.id
+  virtual_machine_id = azurerm_virtual_machine.mgmt[0].id
   lun                = "11"
   caching            = "ReadWrite"
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "scratch" {
-  count              = "${var.nb_mgmt > 0 ? 1 : 0}"
-  managed_disk_id    = "${azurerm_managed_disk.scratch.id}"
-  virtual_machine_id = "${azurerm_virtual_machine.mgmt.0.id}"
+  count              = var.nb_mgmt > 0 ? 1 : 0
+  managed_disk_id    = azurerm_managed_disk.scratch.id
+  virtual_machine_id = azurerm_virtual_machine.mgmt[0].id
   lun                = "12"
   caching            = "ReadWrite"
 }
 
 resource "azurerm_virtual_machine" "nodevm" {
   name                  = "node${count.index + 1}"
-  count                 = "${var.nb_nodes}"
-  location              = "${var.location}"
-  resource_group_name   = "${azurerm_resource_group.group.name}"
-  network_interface_ids = ["${element(azurerm_network_interface.nodeNIC.*.id, count.index)}"]
-  vm_size               = "${var.vm_size_node}"
+  count                 = var.nb_nodes
+  location              = var.location
+  resource_group_name   = azurerm_resource_group.group.name
+  network_interface_ids = [element(azurerm_network_interface.nodeNIC.*.id, count.index)]
+  vm_size               = var.vm_size_node
 
   storage_os_disk {
     name              = "nodeDisk${count.index + 1}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
-    managed_disk_type = "${var.managed_disk_type}"
+    managed_disk_type = var.managed_disk_type
   }
 
   storage_image_reference {
@@ -311,25 +316,28 @@ resource "azurerm_virtual_machine" "nodevm" {
 
   os_profile {
     computer_name  = "node${count.index + 1}"
-    admin_username = "${var.ssh_user}"
-    custom_data  = "${element(data.template_cloudinit_config.node_config.*.rendered, count.index)}"
+    admin_username = var.ssh_user
+    custom_data = element(
+      data.template_cloudinit_config.node_config.*.rendered,
+      count.index,
+    )
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
     ssh_keys {
       path     = "/home/${var.ssh_user}/.ssh/authorized_keys"
-      key_data = "${file(var.public_key_path)}"
+      key_data = file(var.public_key_path)
     }
   }
 }
 
 locals {
-  mgmt01_ip = "${azurerm_network_interface.mgmtNIC.0.private_ip_address}"
-  public_ip = "${azurerm_public_ip.loginIP.0.ip_address}"
-  cidr = "10.0.1.0/24"
-  home_dev = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.home.lun}"
-  project_dev = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.project.lun}"
-  scratch_dev = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.scratch.lun}"
+  mgmt01_ip   = azurerm_network_interface.mgmtNIC[0].private_ip_address
+  public_ip   = azurerm_public_ip.loginIP[0].ip_address
+  cidr        = "10.0.1.0/24"
+  home_dev    = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.home[0].lun}"
+  project_dev = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.project[0].lun}"
+  scratch_dev = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.scratch[0].lun}"
 }
 

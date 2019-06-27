@@ -11,5 +11,6 @@ variable "vm_size_node" {
 }
 
 variable "managed_disk_type" {
-    default = "Premium_LRS"
+  default = "Premium_LRS"
 }
+
