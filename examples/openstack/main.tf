@@ -1,3 +1,7 @@
+terraform {
+  required_version = ">= 0.12"
+}
+
 module "openstack" {
   source = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//openstack"
 
