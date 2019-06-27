@@ -25,7 +25,7 @@ resource "acme_certificate" "certificate" {
 }
 
 resource "null_resource" "deploy_certs" {
-  count = var.nb_login
+  count = length(var.public_ip)
 
   connection {
     type = "ssh"

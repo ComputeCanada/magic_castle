@@ -29,7 +29,3 @@ output "guest_passwd" {
 output "rsa_public_key" {
   value = tls_private_key.login_rsa.public_key_openssh
 }
-
-output "nb_login" {
-  value = var.nb_login
-}

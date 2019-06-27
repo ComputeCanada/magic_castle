@@ -14,9 +14,6 @@ variable "public_ip" {
 variable "rsa_public_key" {
 }
 
-variable "nb_login" {
-}
-
 data "external" "key2fp" {
   program = ["python", "${path.module}/key2fp.py"]
   query = {
@@ -25,7 +22,7 @@ data "external" "key2fp" {
 }
 
 resource "cloudflare_record" "loginX_A" {
-  count  = var.nb_login
+  count  = length(var.public_ip)
   domain = var.domain
   name   = join("", [var.name, format("%d", count.index + 1)])
   value  = element(var.public_ip, count.index)
@@ -33,7 +30,7 @@ resource "cloudflare_record" "loginX_A" {
 }
 
 resource "cloudflare_record" "loginX_sshfp_rsa_sha1" {
-  count  = var.nb_login
+  count  = length(var.public_ip)
   domain = var.domain
   name   = join("", [var.name, format("%d", count.index + 1)])
   type   = "SSHFP"
@@ -45,7 +42,7 @@ resource "cloudflare_record" "loginX_sshfp_rsa_sha1" {
 }
 
 resource "cloudflare_record" "loginX_sshfp_rsa_sha256" {
-  count  = var.nb_login
+  count  = length(var.public_ip)
   domain = var.domain
   name   = join("", [var.name, format("%d", count.index + 1)])
   type   = "SSHFP"
@@ -57,7 +54,7 @@ resource "cloudflare_record" "loginX_sshfp_rsa_sha256" {
 }
 
 resource "cloudflare_record" "login_A" {
-  count  = max(var.nb_login, 1)
+  count  = max(length(var.public_ip), 1)
   domain = var.domain
   name   = var.name
   value  = element(var.public_ip, count.index)
@@ -65,7 +62,6 @@ resource "cloudflare_record" "login_A" {
 }
 
 resource "cloudflare_record" "jupyter_A" {
-  # count  = "${max(var.nb_login, 1)}"
   domain = var.domain
   name   = "jupyter.${var.name}"
 
