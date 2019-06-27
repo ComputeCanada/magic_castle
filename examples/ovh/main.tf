@@ -2,15 +2,15 @@ module "ovh" {
   source = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//ovh"
 
   # Cluster customization
-  puppet_config       = "jupyterhub"
-  cluster_name        = "phoenix"
-  domain              = "calculquebec.cloud"
-  nb_nodes            = 5
-  nb_users            = 10
-  home_size           = 100
-  project_size        = 50
-  scratch_size        = 50
-  public_key_path     = "./key.pub"
+  puppet_config   = "jupyterhub"
+  cluster_name    = "phoenix"
+  domain          = "calculquebec.cloud"
+  nb_nodes        = 5
+  nb_users        = 10
+  home_size       = 100
+  project_size    = 50
+  scratch_size    = 50
+  public_key_path = "./key.pub"
 
   # OpenStack specifics
   os_external_network = "Ext-Net"
@@ -21,19 +21,19 @@ module "ovh" {
 }
 
 output "sudoer_username" {
-  value = "${module.ovh.sudoer_username}"
+  value = module.ovh.sudoer_username
 }
 
 output "guest_usernames" {
-  value = "${module.ovh.guest_usernames}"
+  value = module.ovh.guest_usernames
 }
 
 output "guest_passwd" {
-  value = "${module.ovh.guest_passwd}"
+  value = module.ovh.guest_passwd
 }
 
 output "public_ip" {
-  value = "${module.ovh.ip}"
+  value = module.ovh.ip
 }
 
 ## Uncomment to register your domain name with CloudFlare
