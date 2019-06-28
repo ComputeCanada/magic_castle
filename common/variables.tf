@@ -57,3 +57,44 @@ variable "email" {
 variable "sudoer_username" {
   default = "centos"
 }
+
+variable "firewall_rules" {
+  default = [
+    {
+      "from_port"    = 22,
+      "to_port"      = 22,
+      "ip_protocol"  = "tcp",
+      "cidr"         = "0.0.0.0/0"
+    },
+    {
+      "from_port"    = 80,
+      "to_port"      = 80,
+      "ip_protocol"  = "tcp",
+      "cidr"         = "0.0.0.0/0"
+    },
+    {
+      "from_port"    = 443,
+      "to_port"      = 443,
+      "ip_protocol"  = "tcp",
+      "cidr"         = "0.0.0.0/0"
+    },
+    {
+      "from_port"    = 2811,
+      "to_port"      = 2811,
+      "ip_protocol"  = "tcp",
+      "cidr"         = "54.237.254.192/29"
+    },
+    {
+      "from_port"    = 7512,
+      "to_port"      = 7512,
+      "ip_protocol"  = "tcp",
+      "cidr"         = "54.237.254.192/29"
+    },
+    {
+      "from_port"   = 50000
+      "to_port"     = 51000
+      "ip_protocol" = "tcp"
+      "cidr"        = "0.0.0.0/0"
+    }
+  ]
+}

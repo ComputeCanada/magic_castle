@@ -41,47 +41,14 @@ resource "openstack_compute_secgroup_v2" "secgroup_1" {
     self        = true
   }
 
-  rule {
-    from_port   = 22
-    to_port     = 22
-    ip_protocol = "tcp"
-    cidr        = "0.0.0.0/0"
-  }
-
-  rule {
-    from_port   = 80
-    to_port     = 80
-    ip_protocol = "tcp"
-    cidr        = "0.0.0.0/0"
-  }
-
-  rule {
-    from_port   = 443
-    to_port     = 443
-    ip_protocol = "tcp"
-    cidr        = "0.0.0.0/0"
-  }
-
-  # Globus
-  rule {
-    from_port   = 2811
-    to_port     = 2811
-    ip_protocol = "tcp"
-    cidr        = "54.237.254.192/29"
-  }
-
-  rule {
-    from_port   = 7512
-    to_port     = 7512
-    ip_protocol = "tcp"
-    cidr        = "54.237.254.192/29"
-  }
-
-  rule {
-    from_port   = 50000
-    to_port     = 51000
-    ip_protocol = "tcp"
-    cidr        = "0.0.0.0/0"
+  dynamic "rule" {
+    for_each = var.firewall_rules
+    content {
+      from_port   = rule.value.from_port
+      to_port     = rule.value.to_port
+      ip_protocol = rule.value.ip_protocol
+      cidr        = rule.value.cidr
+    }
   }
 }
 
