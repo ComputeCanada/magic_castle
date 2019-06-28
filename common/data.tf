@@ -9,6 +9,7 @@ resource "random_string" "freeipa_passwd" {
 }
 
 resource "random_pet" "guest_passwd" {
+  count     = var.guest_passwd != "" ? 0 : 1
   length    = 4
   separator = "."
 }
@@ -30,7 +31,7 @@ data "template_file" "data" {
     freeipa_passwd  = random_string.freeipa_passwd.result
     cluster_name    = var.cluster_name
     domain_name     = local.domain_name
-    guest_passwd    = var.guest_passwd == "" ? random_pet.guest_passwd.id : var.guest_passwd
+    guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : random_pet.guest_passwd[0].id
     munge_key       = base64sha512(random_string.munge_key.result)
     nb_users        = var.nb_users
     dns_ip          = local.mgmt01_ip
