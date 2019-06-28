@@ -126,7 +126,7 @@ resource "azurerm_network_interface" "loginNIC" {
     name                          = "loginNICConfig"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "dynamic"
-    public_ip_address_id          = element(azurerm_public_ip.loginIP.*.id, count.index)
+    public_ip_address_id          = azurerm_public_ip.loginIP[count.index].id
   }
 }
 
@@ -141,7 +141,7 @@ resource "azurerm_network_interface" "mgmtNIC" {
     name                          = "mgmtNICConfig"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "dynamic"
-    public_ip_address_id          = element(azurerm_public_ip.mgmtIP.*.id, count.index)
+    public_ip_address_id          = azurerm_public_ip.mgmtIP[count.index].id
   }
 }
 
@@ -155,7 +155,7 @@ resource "azurerm_network_interface" "nodeNIC" {
     name                          = "nodeNICConfig"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "dynamic"
-    public_ip_address_id          = element(azurerm_public_ip.nodeIP.*.id, count.index)
+    public_ip_address_id          = azurerm_public_ip.nodeIP[count.index].id
   }
 }
 
@@ -165,7 +165,7 @@ resource "azurerm_virtual_machine" "login" {
   name                  = format("login%02d", count.index + 1)
   location              = var.location
   resource_group_name   = azurerm_resource_group.group.name
-  network_interface_ids = [element(azurerm_network_interface.loginNIC.*.id, count.index)]
+  network_interface_ids = [azurerm_network_interface.loginNIC[count.index].id]
   vm_size               = var.vm_size_login
 
   storage_os_disk {
@@ -185,10 +185,7 @@ resource "azurerm_virtual_machine" "login" {
   os_profile {
     computer_name  = format("login%02d", count.index + 1)
     admin_username = var.ssh_user
-    custom_data = element(
-      data.template_cloudinit_config.login_config.*.rendered,
-      count.index,
-    )
+    custom_data = data.template_cloudinit_config.login_config[count.index].rendered
   }
 
   os_profile_linux_config {
@@ -205,7 +202,7 @@ resource "azurerm_virtual_machine" "mgmt" {
   name                  = format("mgmt%02d", count.index + 1)
   location              = var.location
   resource_group_name   = azurerm_resource_group.group.name
-  network_interface_ids = [element(azurerm_network_interface.mgmtNIC.*.id, count.index)]
+  network_interface_ids = [azurerm_network_interface.mgmtNIC[count.index].id]
   vm_size               = var.vm_size_mgmt
 
   storage_os_disk {
@@ -226,10 +223,7 @@ resource "azurerm_virtual_machine" "mgmt" {
   os_profile {
     computer_name  = format("mgmt%02d", count.index + 1)
     admin_username = var.ssh_user
-    custom_data = element(
-      data.template_cloudinit_config.mgmt_config.*.rendered,
-      count.index,
-    )
+    custom_data = data.template_cloudinit_config.mgmt_config[count.index].rendered
   }
 
   os_profile_linux_config {
@@ -297,7 +291,7 @@ resource "azurerm_virtual_machine" "nodevm" {
   count                 = var.nb_nodes
   location              = var.location
   resource_group_name   = azurerm_resource_group.group.name
-  network_interface_ids = [element(azurerm_network_interface.nodeNIC.*.id, count.index)]
+  network_interface_ids = [azurerm_network_interface.nodeNIC[count.index].id]
   vm_size               = var.vm_size_node
 
   storage_os_disk {
@@ -317,10 +311,7 @@ resource "azurerm_virtual_machine" "nodevm" {
   os_profile {
     computer_name  = "node${count.index + 1}"
     admin_username = var.ssh_user
-    custom_data = element(
-      data.template_cloudinit_config.node_config.*.rendered,
-      count.index,
-    )
+    custom_data = data.template_cloudinit_config.node_config[count.index].rendered
   }
 
   os_profile_linux_config {

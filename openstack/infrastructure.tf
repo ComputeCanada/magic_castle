@@ -125,13 +125,10 @@ resource "openstack_compute_instance_v2" "mgmt" {
 
   flavor_name = var.os_flavor_mgmt
   key_pair    = openstack_compute_keypair_v2.keypair.name
-  user_data = element(
-    data.template_cloudinit_config.mgmt_config.*.rendered,
-    count.index,
-  )
+  user_data   = data.template_cloudinit_config.mgmt_config[count.index].rendered
 
   network {
-    port = element(openstack_networking_port_v2.port_mgmt.*.id, count.index)
+    port = openstack_networking_port_v2.port_mgmt[count.index].id
   }
 }
 
@@ -163,10 +160,7 @@ resource "openstack_compute_instance_v2" "login" {
   flavor_name     = var.os_flavor_login
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup_1.name]
-  user_data = element(
-    data.template_cloudinit_config.login_config.*.rendered,
-    count.index,
-  )
+  user_data       = data.template_cloudinit_config.login_config[count.index].rendered
 }
 
 resource "openstack_compute_instance_v2" "node" {
@@ -177,10 +171,7 @@ resource "openstack_compute_instance_v2" "node" {
   flavor_name     = var.os_flavor_node
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup_1.name]
-  user_data = element(
-    data.template_cloudinit_config.node_config.*.rendered,
-    count.index,
-  )
+  user_data       = data.template_cloudinit_config.node_config[count.index].rendered
 }
 
 resource "openstack_networking_floatingip_v2" "fip" {
@@ -199,21 +190,20 @@ resource "openstack_compute_floatingip_associate_v2" "fip" {
   floating_ip = element(
     concat(
       var.os_floating_ips,
-      openstack_networking_floatingip_v2.fip.*.address,
+      openstack_networking_floatingip_v2.fip[*].address,
     ),
     count.index,
   )
-  instance_id = element(openstack_compute_instance_v2.login.*.id, count.index)
+  instance_id = openstack_compute_instance_v2.login[count.index].id
 }
 
 locals {
   mgmt01_ip = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
   public_ip = concat(
     var.os_floating_ips,
-    openstack_networking_floatingip_v2.fip.*.address,
+    openstack_networking_floatingip_v2.fip[*].address,
   )
   home_dev    = "/dev/vdb"
   project_dev = "/dev/vdc"
   scratch_dev = "/dev/vdd"
 }
-

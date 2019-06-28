@@ -71,7 +71,7 @@ data "template_cloudinit_config" "mgmt_config" {
     filename     = "mgmt_puppet.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
-    content      = element(data.template_file.mgmt_puppet.*.rendered, count.index)
+    content      = data.template_file.mgmt_puppet[count.index].rendered
   }
 }
 
@@ -102,7 +102,7 @@ data "template_cloudinit_config" "login_config" {
     filename     = "login.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
-    content      = element(data.template_file.login.*.rendered, count.index)
+    content      = data.template_file.login[count.index].rendered
   }
   part {
     filename     = "ssh_keys.yaml"
@@ -141,6 +141,6 @@ data "template_cloudinit_config" "node_config" {
     filename     = "node.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
-    content      = element(data.template_file.node.*.rendered, count.index)
+    content      = data.template_file.node[count.index].rendered
   }
 }

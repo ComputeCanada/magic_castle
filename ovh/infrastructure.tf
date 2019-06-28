@@ -98,10 +98,7 @@ resource "openstack_compute_instance_v2" "mgmt" {
   flavor_name     = var.os_flavor_mgmt
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup.name]
-  user_data = element(
-    data.template_cloudinit_config.mgmt_config.*.rendered,
-    count.index,
-  )
+  user_data       = data.template_cloudinit_config.mgmt_config[count.index].rendered
 
   # Networks must be defined in this order
   network {
@@ -141,10 +138,7 @@ resource "openstack_compute_instance_v2" "login" {
   flavor_name     = var.os_flavor_login
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup.name]
-  user_data = element(
-    data.template_cloudinit_config.login_config.*.rendered,
-    count.index,
-  )
+  user_data       = data.template_cloudinit_config.login_config[count.index].rendered
 
   # Networks must be defined in this order
   network {
@@ -164,10 +158,7 @@ resource "openstack_compute_instance_v2" "node" {
   flavor_name     = var.os_flavor_node
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup.name]
-  user_data = element(
-    data.template_cloudinit_config.node_config.*.rendered,
-    count.index,
-  )
+  user_data       = data.template_cloudinit_config.node_config[count.index].rendered
 
   network {
     name = openstack_networking_network_v2.network.name

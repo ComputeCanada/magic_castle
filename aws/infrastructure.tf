@@ -100,10 +100,7 @@ resource "aws_instance" "mgmt" {
   count         = var.nb_mgmt
   instance_type = var.instance_type_mgmt
   ami           = "ami-dcad28b8" # CentOS 7 -  ca-central-1
-  user_data     = element(
-    data.template_cloudinit_config.mgmt_config.*.rendered,
-    count.index,
-  )
+  user_data     = data.template_cloudinit_config.mgmt_config[count.index].rendered
 
   subnet_id                   = aws_subnet.private_subnet.id
   key_name                    = aws_key_pair.key.key_name
@@ -174,10 +171,7 @@ resource "aws_instance" "login" {
   count         = var.nb_login
   instance_type = var.instance_type_login
   ami           = "ami-dcad28b8" # CentOS 7 -  ca-central-1
-  user_data = element(
-    data.template_cloudinit_config.login_config.*.rendered,
-    count.index,
-  )
+  user_data = data.template_cloudinit_config.login_config[count.index].rendered
 
   subnet_id                   = aws_subnet.private_subnet.id
   key_name                    = aws_key_pair.key.key_name
@@ -200,10 +194,7 @@ resource "aws_instance" "node" {
   # CentOS 7 -  ca-central-1
   ami           = "ami-dcad28b8"
   instance_type = var.instance_type_node
-  user_data = element(
-    data.template_cloudinit_config.node_config.*.rendered,
-    count.index,
-  )
+  user_data = data.template_cloudinit_config.node_config[count.index].rendered
 
   subnet_id                   = aws_subnet.private_subnet.id
   key_name                    = aws_key_pair.key.key_name

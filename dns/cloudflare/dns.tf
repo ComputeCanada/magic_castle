@@ -25,7 +25,7 @@ resource "cloudflare_record" "loginX_A" {
   count  = length(var.public_ip)
   domain = var.domain
   name   = join("", [var.name, format("%d", count.index + 1)])
-  value  = element(var.public_ip, count.index)
+  value  = var.public_ip[count.index]
   type   = "A"
 }
 
@@ -57,7 +57,7 @@ resource "cloudflare_record" "login_A" {
   count  = max(length(var.public_ip), 1)
   domain = var.domain
   name   = var.name
-  value  = element(var.public_ip, count.index)
+  value  = var.public_ip[count.index]
   type   = "A"
 }
 
@@ -65,8 +65,7 @@ resource "cloudflare_record" "jupyter_A" {
   domain = var.domain
   name   = "jupyter.${var.name}"
 
-  # value  = "${element(var.public_ip, count.index)}"
-  value = element(var.public_ip, 0)
+  value = var.public_ip[0]
   type  = "A"
 }
 
@@ -95,6 +94,6 @@ resource "cloudflare_record" "login_sshfp_rsa_sha256" {
 output "hostnames" {
   value = concat(
     [cloudflare_record.login_A[0].hostname],
-    cloudflare_record.loginX_A.*.hostname,
+    cloudflare_record.loginX_A[*].hostname,
   )
 }
