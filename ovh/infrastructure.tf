@@ -26,32 +26,14 @@ resource "openstack_compute_secgroup_v2" "secgroup" {
     self        = true
   }
 
-  rule {
-    from_port   = 22
-    to_port     = 22
-    ip_protocol = "tcp"
-    cidr        = "132.203.0.0/16"
-  }
-
-  rule {
-    from_port   = 22
-    to_port     = 22
-    ip_protocol = "tcp"
-    cidr        = "132.219.0.0/16"
-  }
-
-  rule {
-    from_port   = 80
-    to_port     = 80
-    ip_protocol = "tcp"
-    cidr        = "0.0.0.0/0"
-  }
-
-  rule {
-    from_port   = 443
-    to_port     = 443
-    ip_protocol = "tcp"
-    cidr        = "0.0.0.0/0"
+  dynamic "rule" {
+    for_each = var.firewall_rules
+    content {
+      from_port   = rule.value.from_port
+      to_port     = rule.value.to_port
+      ip_protocol = rule.value.ip_protocol
+      cidr        = rule.value.cidr
+    }
   }
 }
 
