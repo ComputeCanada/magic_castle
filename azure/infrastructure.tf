@@ -34,7 +34,7 @@ resource "azurerm_public_ip" "loginIP" {
   name                         = format("login-ip-%02d", count.index + 1)
   location                     = var.location
   resource_group_name          = azurerm_resource_group.group.name
-  public_ip_address_allocation = "static"
+  allocation_method            = "Static"
 }
 
 resource "azurerm_public_ip" "mgmtIP" {
@@ -42,7 +42,7 @@ resource "azurerm_public_ip" "mgmtIP" {
   name                         = format("mgmt-ip-%02d", count.index + 1)
   location                     = var.location
   resource_group_name          = azurerm_resource_group.group.name
-  public_ip_address_allocation = "dynamic"
+  allocation_method            = "Dynamic"
 }
 
 resource "azurerm_public_ip" "nodeIP" {
@@ -50,7 +50,7 @@ resource "azurerm_public_ip" "nodeIP" {
   name                         = format("node-ip-%02d", count.index + 1)
   location                     = var.location
   resource_group_name          = azurerm_resource_group.group.name
-  public_ip_address_allocation = "dynamic"
+  allocation_method            = "Dynamic"
 }
 
 # Create Network Security Group and rule
@@ -206,11 +206,10 @@ resource "azurerm_virtual_machine" "mgmt" {
   vm_size               = var.vm_size_mgmt
 
   storage_os_disk {
-    name              = "mgmtDisk"
+    name              = "mgmtDisk${count.index + 1}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = var.managed_disk_type
-    disk_size_gb      = var.shared_storage_size
   }
 
   storage_image_reference {
@@ -327,8 +326,7 @@ locals {
   mgmt01_ip   = azurerm_network_interface.mgmtNIC[0].private_ip_address
   public_ip   = azurerm_public_ip.loginIP[0].ip_address
   cidr        = "10.0.1.0/24"
-  home_dev    = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.home[0].lun}"
-  project_dev = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.project[0].lun}"
-  scratch_dev = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.scratch[0].lun}"
+  home_dev    = "/dev/disk/azure/scsi1/lun10"
+  project_dev = "/dev/disk/azure/scsi1/lun11"
+  scratch_dev = "/dev/disk/azure/scsi1/lun12"
 }
-

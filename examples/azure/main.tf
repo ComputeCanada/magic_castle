@@ -27,10 +27,6 @@ output "public_ip" {
   value = module.azure.ip
 }
 
-output "domain_name" {
-  value = module.azure.domain_name
-}
-
 output "guest_passwd" {
   value = module.azure.guest_passwd
 }
