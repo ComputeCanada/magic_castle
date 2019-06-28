@@ -48,21 +48,25 @@ resource "aws_security_group" "allow_out_any" {
   }
 }
 
-resource "aws_security_group" "allow_in_ssh" {
-  name = "allow_in_ssh"
+resource "aws_security_group" "allow_in_services" {
+  name = "allow_in_services"
 
-  description = "Allows SSH traffic into instances"
+  description = "Allows services traffic into login nodes"
   vpc_id      = aws_vpc.vpc.id
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = var.firewall_rules
+    iterator = rule
+    content {
+      from_port = rule.value.from_port
+      to_port   = rule.value.to_port
+      protocol  = rule.value.protocol
+      cidr      = rule.value.cidr
+    }
   }
 
   tags = {
-    Name = "allow_in_ssh"
+    Name = "allow_in_services"
   }
 }
 
@@ -178,7 +182,7 @@ resource "aws_instance" "login" {
   associate_public_ip_address = "true"
 
   vpc_security_group_ids = [
-    aws_security_group.allow_in_ssh.id,
+    aws_security_group.allow_in_services.id,
     aws_security_group.allow_any_inside_vpc.id,
     aws_security_group.allow_out_any.id,
   ]
