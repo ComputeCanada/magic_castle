@@ -187,13 +187,7 @@ resource "openstack_networking_floatingip_v2" "fip" {
 
 resource "openstack_compute_floatingip_associate_v2" "fip" {
   count = var.nb_login
-  floating_ip = element(
-    concat(
-      var.os_floating_ips,
-      openstack_networking_floatingip_v2.fip[*].address,
-    ),
-    count.index,
-  )
+  floating_ip = local.public_ip[count.index]
   instance_id = openstack_compute_instance_v2.login[count.index].id
 }
 
