@@ -43,12 +43,12 @@ output "public_ip" {
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
 #   source           = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//dns/cloudflare"
-#   name             = "${module.ovh.cluster_name}"
-#   domain           = "${module.ovh.domain}"
-#   public_ip        = "${module.ovh.ip}"
-#   rsa_public_key   = "${module.ovh.rsa_public_key}"
-#   sudoer_username  = "${module.ovh.sudoer_username}"
+#   name             = module.ovh.cluster_name
+#   domain           = module.ovh.domain
+#   public_ip        = module.ovh.ip
+#   rsa_public_key   = module.ovh.rsa_public_key
+#   sudoer_username  = module.ovh.sudoer_username
 # }
 # output "domain_name" {
-# 	value = "${module.dns.domain_name}"
+# 	value = module.dns.domain_name
 # }

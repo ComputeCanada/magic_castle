@@ -49,7 +49,6 @@ output "public_ip" {
 #   domain           = module.openstack.domain
 #   public_ip        = module.openstack.ip
 #   rsa_public_key   = module.openstack.rsa_public_key
-#   nb_login         = module.openstack.nb_login
 #   sudoer_username  = module.openstack.sudoer_username
 # }
 # output "hostnames" {

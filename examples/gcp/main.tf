@@ -50,13 +50,12 @@ output "public_ip" {
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
 #   source           = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//dns/cloudflare"
-#   name             = "${module.gcp.cluster_name}"
-#   domain           = "${module.gcp.domain}"
-#   public_ip        = "${module.gcp.ip}"
-#   rsa_public_key   = "${module.gcp.rsa_public_key}"
-#   nb_login         = "${module.openstack.nb_login}"
-#   sudoer_username  = "${module.openstack.sudoer_username}"
+#   name             = module.gcp.cluster_name
+#   domain           = module.gcp.domain
+#   public_ip        = module.gcp.ip
+#   rsa_public_key   = module.gcp.rsa_public_key
+#   sudoer_username  = module.openstack.sudoer_username
 # }
 # output "hostnames" {
-# 	value = "${module.dns.hostnames}"
+# 	value = module.dns.hostnames
 # }
