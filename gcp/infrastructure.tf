@@ -25,6 +25,12 @@ resource "google_compute_disk" "scratch" {
   size = var.scratch_size
 }
 
+resource "google_compute_address" "mgmt01" {
+  name         = "mgmt01"
+  address_type = "INTERNAL"
+  region       = var.zone
+}
+
 resource "google_compute_instance" "mgmt" {
   project      = var.project_name
   zone         = var.zone_region
@@ -41,6 +47,7 @@ resource "google_compute_instance" "mgmt" {
 
   network_interface {
     subnetwork = "default"
+    network_ip = google_compute_address.mgmt01.address
     access_config {
     }
   }
@@ -83,6 +90,7 @@ resource "google_compute_attached_disk" "scratch" {
 }
 
 resource "google_compute_instance" "login" {
+  count        = var.nb_login
   project      = var.project_name
   zone         = var.zone_region
   name         = format("login%02d", count.index + 1)
@@ -148,20 +156,23 @@ resource "google_compute_instance" "node" {
 }
 
 resource "google_compute_firewall" "default" {
-  name    = "firewall"
+  count   = length(var.firewall_rules)
+  name    = lower(var.firewall_rules[count.index].name)
   network = "default"
 
+  source_ranges = [var.firewall_rules[count.index].cidr]
+
   allow {
-    protocol = "tcp"
-    ports    = ["80", "443"]
+    protocol = var.firewall_rules[count.index].ip_protocol
+    ports    = ["${var.firewall_rules[count.index].from_port}-${var.firewall_rules[count.index].to_port}"]
   }
 
-  target_tags = [google_compute_instance.login.name]
+  target_tags = google_compute_instance.login[*].name
 }
 
 locals {
-  mgmt01_ip   = google_compute_instance.mgmt[0].network_interface[0].network_ip
-  public_ip   = google_compute_instance.login.network_interface[0].access_config[0].nat_ip
+  mgmt01_ip   = google_compute_address.mgmt01.address
+  public_ip   = google_compute_instance.login[*].network_interface[0].access_config[0].nat_ip
   cidr        = "10.128.0.0/9" # GCP default
   home_dev    = "/dev/disk/by-id/google-home"
   project_dev = "/dev/disk/by-id/google-project"
