@@ -1,6 +1,7 @@
 #cloud-config
 packages:
   - git
+  - pciutils
 
 users:
   - name: ${sudoer_username}
