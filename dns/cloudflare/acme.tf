@@ -56,7 +56,7 @@ resource "null_resource" "deploy_certs" {
   provisioner "file" {
     destination = "renewal.conf"
     content     = <<EOF
-version = 0.31.0
+version = 0.34.2
 archive_dir = /etc/letsencrypt/archive/${var.name}.${var.domain}
 cert = /etc/letsencrypt/live/${var.name}.${var.domain}/cert.pem
 privkey = /etc/letsencrypt/live/${var.name}.${var.domain}/privkey.pem
