@@ -12,8 +12,8 @@ node /^login\d+$/ {
   include profile::slurm::submitter
   include profile::globus::base
   include profile::singularity
-  include jupyterhub
   include profile::freeipa::client
+  include jupyterhub
   include profile::nfs::client
 }
 
