@@ -234,9 +234,9 @@ cluster rebuild at next `terraform apply`.
 
 **default value**: none
 
-Once the initial puppet provisioning of an instance is done, 
+Once the initial puppet provisioning of an instance is done,
 the instance can send an email if the variable `email` is defined with
-the recipient address. A cluster of 4 compute nodes will send 6 emails, 
+the recipient address. A cluster of 4 compute nodes will send 6 emails,
 one for the management node, one for the login and one for each node.
 The email contains the log produced by the first `puppet apply`.
 
@@ -269,7 +269,7 @@ cluster rebuild at next `terraform apply`.
 **default value**: `centos`
 
 Defines the username of the account with sudo privileges. The account
-ssh authorized keys are configured with the SSH public key from 
+ssh authorized keys are configured with the SSH public key from
 `public_key_path`.
 
 #### 4.11.1 Post Build Modification Effect
@@ -359,6 +359,33 @@ build.
 
 Modifying this variable after the cluster is built will change the
 floating ip assigned to each login node.
+
+### 4.17 os_ext_network (optional)
+
+**default value**: None
+
+Defines the name of the external network that provides the floating
+IPs. Define this only if your OpenStack cloud provides multiple
+external networks, otherwise, Terraform can find it automatically.
+
+#### 4.17.1 Post Build Modification Effect
+
+Modifying this variable after the cluster is built will change the
+floating ip assigned to each login node.
+
+### 4.18 os_int_network (optional)
+
+**default value**: None
+
+Defines the name of the internal network that provides the subnet
+on which the instances are connected. Define this only if you
+have more than one network defined in your OpenStack project.
+Otherwise, Terraform can find it automatically.
+
+#### 4.18.1 Post Build Modification Effect
+
+Modifying this variable after the cluster is built leads to a complete
+cluster rebuild at next `terraform apply`.
 
 ## 5. Planification
 
