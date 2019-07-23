@@ -73,7 +73,7 @@ To tear down the cluster, from the `my_new_cluster` folder, call: `terraform des
 
 1. Uncomment the `dns` module in your `main.tf`.
 2. Download and install the CloudFlare module: `terraform init`.
-2. Export the following environment variables `CLOUDFLARE_EMAIL` and `CLOUDFLARE_TOKEN`.
+2. Export the following environment variables `CLOUDFLARE_EMAIL`, `CLOUDFLARE_TOKEN` and `CLOUDFLARE_API_KEY`. TOKEN and API_KEY contain the same value, different providers expect different environment variables.
 3. Run `terraform apply`.
 
 ## Verifying the cluster state
