@@ -9,8 +9,7 @@ ipa otptoken-add
 kdestroy
 ```
 
-The user can then scan the QR code with his password manager app or copy the
-URI text.
+The user can then scan the QR code with his password manager app or copy the URI.
 
 # References
 * https://www.freeipa.org/page/V4/OTP
