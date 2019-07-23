@@ -2,14 +2,17 @@ provider "openstack" {
 }
 
 data "openstack_networking_network_v2" "ext_network" {
+  name     = var.os_ext_network
   external = true
 }
 
 data "openstack_networking_network_v2" "int_network" {
+  name     = var.os_int_network
   external = false
 }
 
 data "openstack_networking_subnet_v2" "subnet" {
+  network_id = data.openstack_networking_network_v2.int_network.id
 }
 
 data "openstack_images_image_v2" "image" {
