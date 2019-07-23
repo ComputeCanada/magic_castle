@@ -9,3 +9,6 @@ ipa otptoken-add
 
 The user can then scan the QR code with his password manager app or copy the
 URI text.
+
+# References
+* https://www.freeipa.org/page/V4/OTP
