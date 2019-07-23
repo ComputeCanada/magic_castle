@@ -2,7 +2,7 @@
 
 ## Local Setup
 
-- Install [Terraform](https://www.terraform.io/downloads.html)
+- Install [Terraform >= 0.12](https://www.terraform.io/downloads.html)
 
 ## OpenStack Cloud
 
