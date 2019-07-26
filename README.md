@@ -4,7 +4,7 @@ Version: 1.0
 ## 1. Setup
 
 To use Magic Castle you will need:
-* Terraform (< 0.12).
+* Terraform (>= 0.12).
 * git
 * Access to an OpenStack Cloud (e.g.: Arbutus)
 * Ability to communicate with the OpenStack API from your computer
