@@ -1,11 +1,22 @@
 #cloud-config
+packages:
+  - git
+  - pciutils
+  - unzip
 
-mounts:
-  - [ ${home_dev}1, /mnt/home, nofail]
-  - [ ${project_dev}1, /project, nofail]
-  - [ ${scratch_dev}1, /scratch, nofail]
+users:
+  - name: ${sudoer_username}
+    groups: adm, wheel, systemd-journal
+    homedir: /${sudoer_username}
+    selinux_user: unconfined_u
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys: ${ssh_authorized_keys}
 
 runcmd:
+  - restorecon -R /${sudoer_username}
+  - "(echo -e '\nHostKeyAlgorithms ssh-rsa\n' >> /etc/ssh/sshd_config && systemctl restart sshd)"
+  - yum upgrade -y
+# Partition
   - parted -s ${home_dev} mklabel gpt
   - parted -s ${project_dev} mklabel gpt
   - parted -s ${scratch_dev} mklabel gpt
@@ -21,3 +32,62 @@ runcmd:
   - mount -L home /mnt/home
   - mount -L project /project
   - mount -L scratch /scratch
+# puppet master configuration
+  - yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
+  - yum -y install puppetserver
+  - mkdir /var/autosign
+  - chown puppet:puppet /var/autosign
+  - chmod 750 /var/autosign
+  - touch /var/log/autosign.log
+  - chown puppet:puppet /var/log/autosign.log
+  - /opt/puppetlabs/puppet/bin/gem install autosign
+  - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section master
+  - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section master
+  - /opt/puppetlabs/bin/puppet config set certname ${node_name}
+  - chown puppet:puppet /etc/autosign.conf
+  - systemctl enable puppetserver
+  - systemctl enable puppet
+  - rm -rf /etc/puppetlabs/code/environments/production
+  - git clone --single-branch --branch ${puppetenv_branch} ${puppetenv_git} /etc/puppetlabs/code/environments/production
+  - mv /etc/puppetlabs/code/data/common.yaml /etc/puppetlabs/code/environments/production/data/common.yaml
+  - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
+  - "(cd /etc/puppetlabs/code/environments/production/ && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
+  - reboot -n
+
+mounts:
+  - [ ${home_dev}1, /mnt/home, nofail]
+  - [ ${project_dev}1, /project, nofail]
+  - [ ${scratch_dev}1, /scratch, nofail]
+
+write_files:
+  - content: |
+      ${hieradata}
+    path: /etc/puppetlabs/code/data/common.yaml
+  - content: |
+      127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 puppet
+    path: /etc/hosts
+    permissions: "0644"
+  - content: |
+      facts : {
+        blocklist : [ "EC2" ],
+      }
+    path: /etc/puppetlabs/facter/facter.conf
+    permissions: "0644"
+  - content: |
+      ---
+      general:
+        loglevel: warn
+        logfile: "/var/log/autosign.log"
+      jwt_token:
+        secret: "${puppetmaster_password}"
+        validity: '7200'
+        journalfile: "/root/var/autosign/autosign.journal"
+      password_list:
+        password: "${puppetmaster_password}"
+    path: /etc/autosign.conf
+    permissions: "0640"
+
+disable_ec2_metadata: false
+timezone: "America/Montreal"
+fqdn: "${node_name}"
+output: { all: "| tee -a /var/log/cloud-init-output.log" }

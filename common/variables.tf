@@ -34,24 +34,12 @@ variable "guest_passwd" {
   default = ""
 }
 
-variable "puppet_config" {
-  default = "basic"
+variable "puppetenv_git" {
+  default = "https://git.computecanada.ca/magic_castle/puppet_env"
 }
 
-variable "puppetfile_path" {
-  default = ""
-}
-
-variable "site_pp_path" {
-  default = ""
-}
-
-variable "data_path" {
-  default = ""
-}
-
-variable "email" {
-  default = ""
+variable "puppetenv_branch" {
+  default = "master"
 }
 
 variable "sudoer_username" {

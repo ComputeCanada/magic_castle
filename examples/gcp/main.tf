@@ -6,7 +6,6 @@ module "gcp" {
   source = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//gcp"
 
   # Cluster customization
-  puppet_config   = "jupyterhub"
   cluster_name    = "phoenix"
   domain_name     = "calculquebec.cloud"
   nb_nodes        = 5
