@@ -131,6 +131,9 @@ resource "openstack_compute_instance_v2" "login" {
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup_1.name]
   user_data       = data.template_cloudinit_config.login_config[count.index].rendered
+  network {
+    uuid = data.openstack_networking_network_v2.int_network.id
+  }
 }
 
 resource "openstack_compute_instance_v2" "node" {
@@ -142,6 +145,9 @@ resource "openstack_compute_instance_v2" "node" {
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup_1.name]
   user_data       = data.template_cloudinit_config.node_config[count.index].rendered
+  network {
+    uuid = data.openstack_networking_network_v2.int_network.id
+  }
 }
 
 resource "openstack_networking_floatingip_v2" "fip" {
