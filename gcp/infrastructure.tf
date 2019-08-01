@@ -5,24 +5,27 @@ provider "google" {
 }
 
 resource "google_compute_disk" "home" {
-  name = "home"
-  type = "pd-standard"
-  zone = var.zone_region
-  size = var.home_size
+  count = lower(var.storage["type"]) == "nfs" ? 1 : 0
+  name  = "home"
+  type  = "pd-standard"
+  zone  = var.zone_region
+  size  = var.storage["home_size"]
 }
 
 resource "google_compute_disk" "project" {
-  name = "project"
-  type = "pd-standard"
-  zone = var.zone_region
-  size = var.project_size
+  count = lower(var.storage["type"]) == "nfs" ? 1 : 0
+  name  = "project"
+  type  = "pd-standard"
+  zone  = var.zone_region
+  size  = var.storage["project_size"]
 }
 
 resource "google_compute_disk" "scratch" {
-  name = "scratch"
-  type = "pd-standard"
-  zone = var.zone_region
-  size = var.scratch_size
+  count = lower(var.storage["type"]) == "nfs" ? 1 : 0
+  name  = "scratch"
+  type  = "pd-standard"
+  zone  = var.zone_region
+  size  = var.storage["scratch_size"]
 }
 
 resource "google_compute_address" "mgmt01" {
@@ -66,25 +69,25 @@ resource "google_compute_instance" "mgmt" {
 }
 
 resource "google_compute_attached_disk" "home" {
-  count       = var.nb_mgmt > 0 ? 1 : 0
-  disk        = google_compute_disk.home.self_link
-  device_name = google_compute_disk.home.name
+  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  disk        = google_compute_disk.home[0].self_link
+  device_name = google_compute_disk.home[0].name
   mode        = "READ_WRITE"
   instance    = google_compute_instance.mgmt[0].self_link
 }
 
 resource "google_compute_attached_disk" "project" {
-  count       = var.nb_mgmt > 0 ? 1 : 0
-  disk        = google_compute_disk.project.self_link
-  device_name = google_compute_disk.project.name
+  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  disk        = google_compute_disk.project[0].self_link
+  device_name = google_compute_disk.project[0].name
   mode        = "READ_WRITE"
   instance    = google_compute_instance.mgmt[0].self_link
 }
 
 resource "google_compute_attached_disk" "scratch" {
-  count       = var.nb_mgmt > 0 ? 1 : 0
-  disk        = google_compute_disk.scratch.self_link
-  device_name = google_compute_disk.scratch.name
+  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  disk        = google_compute_disk.scratch[0].self_link
+  device_name = google_compute_disk.scratch[0].name
   mode        = "READ_WRITE"
   instance    = google_compute_instance.mgmt[0].self_link
 }
