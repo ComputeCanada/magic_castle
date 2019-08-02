@@ -1,5 +1,5 @@
 # Magic Castle Documentation
-Version: 2.1
+Version: 3.0
 
 ## 1. Setup
 
@@ -105,35 +105,7 @@ source value by the link to your own fork.
 You should refer to the examples specific to the cloud provider
 you want to use.
 
-### 4.2 puppet_config (**optional**)
-
-**default value**: `basic`
-
-Package installation and configuration - provisioning - of the cluster
-is mainly done by [Puppet](https://en.wikipedia.org/wiki/Puppet_(software)).
-Magic Castle provides arrangements of host configurations with Puppet.
-Each arrangement is defined by three files:
-* `site.pp`: identify the modules for each hostname
-* `Puppetfile`: identify the source of each module
-* `data.yaml`: define values for module variables
-
-There are four arrangements currently available:
-* `basic`: SLURM cluster with NFS home, scratch and project;
-* `cvmfs`: `basic` + Compute Canada CVMFS;
-* `globus`: `cvmfs` + Globus Endpoint on the login node;
-* `jupyterhub`: `globus` + JupyterHub on the login node.
-
-To get more details on the configuration of each host per arrangement,
-look at the [`puppet` folder in the `slurm_cloud` repo](https://git.computecanada.ca/magic_castle/slurm_cloud/tree/master/puppet).
-
-If the variable is left undefined, the arrangement will be `basic`.
-
-#### 4.2.1 Post Build Modification Effect
-
-Modifying this variable after the cluster is built leads to a complete
-cluster rebuild at next `terraform apply`.
-
-### 4.3 cluster_name
+### 4.2 cluster_name
 
 Defines the `ClusterName` variable in `slurm.conf` and the name of
 the cluster in the Slurm accounting database
@@ -141,12 +113,12 @@ the cluster in the Slurm accounting database
 
 **Requirements**: Define with lowercase alphanumeric characters and start with a letter.
 
-#### 4.3.1 Post Build Modification Effect
+#### 4.2.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.4 domain
+### 4.3 domain
 
 Defines
 * the Kerberos realm name when initializing FreeIPA.
@@ -159,12 +131,12 @@ module following the `openstack` module in the example `main.tf` can
 register the domain name if your domain's nameservers are administered
 by CloudFlare.
 
-#### 4.4.1 Post Build Modification Effect
+#### 4.3.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.5 nb_nodes
+### 4.4 nb_nodes
 
 Defines how many compute node instances
 will be created. This integer can be between 0 and your cloud allocation
@@ -176,12 +148,12 @@ Terraform will manage the creation or destruction of the virtual machines
 for you. It is therefore possible to start with 0 compute nodes, build the
 cluster, and add more later.
 
-#### 4.5.1 Post Build Modification Effect
+#### 4.4.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built only affects the number
 of compute nodes at next `terraform apply`.
 
-### 4.6 nb_users
+### 4.5 nb_users
 
 Defines how many user accounts will be created in
 FreeIPA. Each user account shares the same randomly generated password.
@@ -201,12 +173,12 @@ management node and call:
 $ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.sh <username>
 ```
 
-#### 4.6.1 Post Build Modification Effect
+#### 4.5.1 Post Build Modification Effect
 
 Modifying `nb_users` after the cluster is built leads to a rebuild
 of the management node at next `terraform apply`.
 
-### 4.7 Storage: type, home_size, project_size, scratch_size
+### 4.6 Storage: type, home_size, project_size, scratch_size
 
 Define the type of network storage and the size of the volumes
 for respectively `/home`, `/project` and `/scratch`.
@@ -214,43 +186,24 @@ for respectively `/home`, `/project` and `/scratch`.
 If `type` is set to `nfs`, each volume is mounted on `mgmt01` and
 exported with NFS to the login and the compute nodes.
 
-#### 4.7.1 Post Build Modification Effect
+#### 4.6.1 Post Build Modification Effect
 
 Modifying one of these variables after the cluster is built leads to the
 destruction of the corresponding volume and attachment and the creation
 of a new empty volume and attachment.
 
-### 4.8 public_key_path
+### 4.7 public_key_path
 
 Path to an SSH public key file of your choice.
 This key will associated with the sudoer account to provide you
 administrative access to the cluster.
 
-#### 4.8.1 Post Build Modification Effect
+#### 4.7.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.9 email (optional)
-
-**default value**: none
-
-Once the initial puppet provisioning of an instance is done,
-the instance can send an email if the variable `email` is defined with
-the recipient address. A cluster of 4 compute nodes will send 6 emails,
-one for the management node, one for the login and one for each node.
-The email contains the log produced by the first `puppet apply`.
-
-The emails can sometime be marked as spam, so look in your spam box
-if nothing shows up even if you provided your email and the provisioning
-is over.
-
-#### 4.9.1 Post Build Modification Effect
-
-Modifying this variable after the cluster is built leads to a complete
-cluster rebuild at next `terraform apply`.
-
-### 4.10 guest_passwd (optional)
+### 4.8 guest_passwd (optional)
 
 **default value**: 4 random words separated by a dot
 
@@ -260,12 +213,12 @@ randomly generated one.
 The password has to have **at least 8 characters**. Otherwise, the guest
 account password will not be properly configured.
 
-#### 4.10.1 Post Build Modification Effect
+#### 4.8.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.11 suoder_username (optional)
+### 4.9 suoder_username (optional)
 
 **default value**: `centos`
 
@@ -273,12 +226,12 @@ Defines the username of the account with sudo privileges. The account
 ssh authorized keys are configured with the SSH public key from
 `public_key_path`.
 
-#### 4.11.1 Post Build Modification Effect
+#### 4.9.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.12 nb_login (optional)
+### 4.10 nb_login (optional)
 
 **default value**: `1`
 
@@ -289,12 +242,12 @@ Terraform will manage the creation or destruction of the virtual machines
 for you. It is therefore possible to start with 0 login nodess, build the
 cluster, and add more later.
 
-#### 4.12.1 Post Build Modification Effect
+#### 4.10.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built only affects the number
 of login nodes at next `terraform apply`.
 
-### 4.13 nb_mgmt (optional)
+### 4.11 nb_mgmt (optional)
 
 **default value**: `1`
 
@@ -309,13 +262,13 @@ least one management node named `mgmt01`. While it is possible to have
 `nb_mgmt` equals to 0 and `nb_login` or `nb_nodes` greater than 0, if
 you decide to go down that route, you are on your own.
 
-#### 4.13.1 Post Build Modification Effect
+#### 4.11.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built only affects the number
 of management nodes at next `terraform apply`. However, putting that number
 to 0 will render other type of nodes almost unusable.
 
-### 4.14 os_image_name
+### 4.12 os_image_name
 
 Defines the name of the image that will be used as the
 base image for the cluster nodes. For the provisionning to work properly,
@@ -326,11 +279,11 @@ should be mainly done through Puppet scripting. Image customization is mostly
 envisioned as a way to accelerate the provisioning process by applying the
 security patches and OS updates in advance.
 
-#### 4.14.1 Post Build Modification Effect
+#### 4.12.1 Post Build Modification Effect
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.15 os_flavor_mgmt, os_flavor_login and os_flavor_node
+### 4.13 os_flavor_mgmt, os_flavor_login and os_flavor_node
 
 Define the flavor of one of the three types of servers
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
@@ -338,13 +291,13 @@ defines the compute, memory, and storage capacity of an instance.
 
 For `os_flavor_mgmt`, choose a flavor with at least 3 GB of memory.
 
-#### 4.15.1 Post Build Modification Effect
+#### 4.13.1 Post Build Modification Effect
 
 Modifying one of these variables after the cluster is built leads
 to a live migration of the instance(s) to the new chosen flavor. The
 affected instances will reboot in the process.
 
-### 4.16 os_floating_ips (optional)
+### 4.14 os_floating_ips (optional)
 
 **default value**: None
 
@@ -356,12 +309,12 @@ This variable can be useful if you administer your DNS manually and
 you would like the keep the same domain name for your cluster at each
 build.
 
-#### 4.16.1 Post Build Modification Effect
+#### 4.14.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built will change the
 floating ip assigned to each login node.
 
-### 4.17 os_ext_network (optional)
+### 4.15 os_ext_network (optional)
 
 **default value**: None
 
@@ -369,12 +322,12 @@ Defines the name of the external network that provides the floating
 IPs. Define this only if your OpenStack cloud provides multiple
 external networks, otherwise, Terraform can find it automatically.
 
-#### 4.17.1 Post Build Modification Effect
+#### 4.15.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built will change the
 floating ip assigned to each login node.
 
-### 4.18 os_int_network (optional)
+### 4.16 os_int_network (optional)
 
 **default value**: None
 
@@ -383,7 +336,7 @@ on which the instances are connected. Define this only if you
 have more than one network defined in your OpenStack project.
 Otherwise, Terraform can find it automatically.
 
-#### 4.18.1 Post Build Modification Effect
+#### 4.16.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
