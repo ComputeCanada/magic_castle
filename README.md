@@ -403,7 +403,7 @@ of JupyterHub, etc.; takes around 15 minutes after the instances are created.
 You can follow the provisioning process on the issuance by looking at:
 
 * `/var/log/cloud-init-output.log`
-* `/var/log/puppetlabs/puppet/puppet.log` (require admin privileges)
+* `sudo journalctl -u puppet`
 
 once the instances are booted.
 
