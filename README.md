@@ -1,5 +1,5 @@
 # Magic Castle Documentation
-Version: 2.0
+Version: 2.1
 
 ## 1. Setup
 
