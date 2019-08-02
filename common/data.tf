@@ -1,11 +1,13 @@
 locals {
-  domain_name     = "${var.cluster_name}.${var.domain}"
-  site_pp_path    = var.site_pp_path != "" ? var.site_pp_path : "${path.module}/../puppet/${var.puppet_config}/site.pp"
-  puppetfile_path = var.puppetfile_path != "" ? var.puppetfile_path : "${path.module}/../puppet/${var.puppet_config}/Puppetfile"
-  data_path       = var.data_path != "" ? var.data_path : "${path.module}/../puppet/${var.puppet_config}/data.yaml"
+  domain_name = "${var.cluster_name}.${var.domain}"
 }
 
 resource "random_string" "munge_key" {
+  length  = 32
+  special = false
+}
+
+resource "random_string" "puppetmaster_password" {
   length  = 32
   special = false
 }
@@ -21,48 +23,46 @@ resource "random_pet" "guest_passwd" {
   separator = "."
 }
 
+data "http" "hieradata_template" {
+  url = "${replace(var.puppetenv_git, ".git", "")}/raw/${var.puppetenv_branch}/data/common.yaml.tmpl"
+}
+
+data "template_file" "hieradata" {
+  template = data.http.hieradata_template.body
+
+  vars = {
+    sudoer_username       = var.sudoer_username
+    freeipa_passwd        = random_string.freeipa_passwd.result
+    cluster_name          = var.cluster_name
+    domain_name           = local.domain_name
+    guest_passwd          = var.guest_passwd != "" ? var.guest_passwd : random_pet.guest_passwd[0].id
+    munge_key             = base64sha512(random_string.munge_key.result)
+    nb_users              = var.nb_users
+    freeipa_ip            = local.mgmt01_ip
+    nfs_ip                = local.mgmt01_ip
+    rsyslog_ip            = local.mgmt01_ip
+    slurmctld_ip          = local.mgmt01_ip
+    slurmdbd_ip           = local.mgmt01_ip
+    squid_ip              = local.mgmt01_ip
+  }
+}
+
 data "template_file" "mgmt" {
   template = file("${path.module}/cloud-init/mgmt.yaml")
-  vars = {
-    home_dev    = local.home_dev
-    project_dev = local.project_dev
-    scratch_dev = local.scratch_dev
-  }
-}
-
-data "template_file" "data" {
-  template = file(local.data_path)
-
-  vars = {
-    sudoer_username = var.sudoer_username
-    freeipa_passwd  = random_string.freeipa_passwd.result
-    cluster_name    = var.cluster_name
-    domain_name     = local.domain_name
-    guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : random_pet.guest_passwd[0].id
-    munge_key       = base64sha512(random_string.munge_key.result)
-    nb_users        = var.nb_users
-    dns_ip          = local.mgmt01_ip
-    freeipa_ip      = local.mgmt01_ip
-    nfs_ip          = local.mgmt01_ip
-    rsyslog_ip      = local.mgmt01_ip
-    slurmctld_ip    = local.mgmt01_ip
-    slurmdbd_ip     = local.mgmt01_ip
-    squid_ip        = local.mgmt01_ip
-  }
-}
-
-data "template_file" "mgmt_puppet" {
-  template = file("${path.module}/cloud-init/puppet.yaml")
   count    = var.nb_mgmt
 
   vars = {
-    node_name           = format("mgmt%02d", count.index + 1)
-    sudoer_username     = var.sudoer_username
-    ssh_authorized_keys = "[${file(var.public_key_path)}]"
-    email               = var.email
-    puppetfile          = indent(6, file(local.puppetfile_path))
-    site_pp             = indent(6, file(local.site_pp_path))
-    data                = indent(6, data.template_file.data.rendered)
+    puppetenv_git         = "${replace(replace(var.puppetenv_git, ".git", ""), "//*$/", ".git")}"
+    puppetenv_branch      = var.puppetenv_branch
+    puppetmaster          = local.mgmt01_ip
+    puppetmaster_password = random_string.puppetmaster_password.result
+    hieradata             = indent(6, data.template_file.hieradata.rendered)
+    node_name             = format("mgmt%02d", count.index + 1)
+    sudoer_username       = var.sudoer_username
+    ssh_authorized_keys   = "[${file(var.public_key_path)}]"
+    home_dev              = local.home_dev
+    project_dev           = local.project_dev
+    scratch_dev           = local.scratch_dev
   }
 }
 
@@ -73,13 +73,7 @@ data "template_cloudinit_config" "mgmt_config" {
     filename     = "mgmt.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
-    content      = data.template_file.mgmt.rendered
-  }
-  part {
-    filename     = "mgmt_puppet.yaml"
-    merge_type   = "list(append)+dict(recurse_array)+str()"
-    content_type = "text/cloud-config"
-    content      = data.template_file.mgmt_puppet[count.index].rendered
+    content      = data.template_file.mgmt[count.index].rendered
   }
 }
 
@@ -88,13 +82,11 @@ data "template_file" "login" {
   count    = var.nb_login
 
   vars = {
-    node_name           = format("login%02d", count.index + 1)
-    sudoer_username     = var.sudoer_username
-    ssh_authorized_keys = "[${file(var.public_key_path)}]"
-    email               = var.email
-    puppetfile          = indent(6, file(local.puppetfile_path))
-    site_pp             = indent(6, file(local.site_pp_path))
-    data                = indent(6, data.template_file.data.rendered)
+    node_name             = format("login%02d", count.index + 1)
+    sudoer_username       = var.sudoer_username
+    ssh_authorized_keys   = "[${file(var.public_key_path)}]"
+    puppetmaster          = local.mgmt01_ip
+    puppetmaster_password = random_string.puppetmaster_password.result
   }
 }
 
@@ -133,13 +125,11 @@ data "template_file" "node" {
   count = var.nb_nodes
 
   vars = {
-    node_name           = "node${count.index + 1}"
-    sudoer_username     = var.sudoer_username
-    ssh_authorized_keys = "[${file(var.public_key_path)}]"
-    email               = var.email
-    puppetfile          = indent(6, file(local.puppetfile_path))
-    site_pp             = indent(6, file(local.site_pp_path))
-    data                = indent(6, data.template_file.data.rendered)
+    node_name             = "node${count.index + 1}"
+    sudoer_username       = var.sudoer_username
+    ssh_authorized_keys   = "[${file(var.public_key_path)}]"
+    puppetmaster          = local.mgmt01_ip
+    puppetmaster_password = random_string.puppetmaster_password.result
   }
 }
 

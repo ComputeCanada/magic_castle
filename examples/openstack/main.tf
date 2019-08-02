@@ -6,7 +6,6 @@ module "openstack" {
   source = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//openstack"
 
   # Cluster customization
-  puppet_config = "jupyterhub"
   cluster_name  = "phoenix"
   domain        = "calculquebec.cloud"
   nb_nodes      = 5
@@ -20,6 +19,7 @@ module "openstack" {
   }
 
   public_key_path = "./pub.key"
+
   # Shared password, randomly chosen if blank
   guest_passwd    = ""
 

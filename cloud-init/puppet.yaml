@@ -18,85 +18,28 @@ runcmd:
   - yum upgrade -y
   - yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
   - yum -y install puppet-agent
-  - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
-  - "(cd /etc/puppetlabs/puppet && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
-  - systemctl stop crond
-  - crontab /root/crontab
+  - /opt/puppetlabs/bin/puppet config set certname ${node_name}
+  - systemctl enable puppet
   - reboot -n
 
 write_files:
   - content: |
-      @reboot /sbin/puppet_apply_site.sh --notify ${email}
-      */5 * * * * /sbin/puppet_apply_site.sh --notify ${email}
-    path: /root/crontab
+      127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+      ${puppetmaster} puppet
+    path: /etc/hosts
+    permissions: "0644"
   - content: |
-      #!/bin/bash
-      email=
-      first_run=0
-      while [ "$1" != "" ]; do
-        case $1 in
-          --notify ) shift
-                     email=$1
-                     ;;
-          * )        exit 1
-        esac
-        shift
-      done
-      # Check if puppet is disabled
-      if [ -f /etc/puppetlabs/puppet/.disabled -o -f /var/run/puppetlabs/.disabled ]; then
-        exit 0
-      fi
-      test -f /var/log/puppetlabs/puppet/puppet.log
-      first_run=$?
-      # Apply puppet plan
-      /usr/bin/flock -n /var/lock/puppet.lock \
-                    /opt/puppetlabs/bin/puppet apply /etc/puppetlabs/puppet/site.pp \
-                                               --color=false \
-                                               --logdest /var/log/puppetlabs/puppet/puppet.log
-      # Check if puppet has done anything
-      actions=$(tail -n 2 /var/log/puppetlabs/puppet/puppet.log | grep -Pzc "^.*Compiled catalog.*\n.*Applied catalog.*$")
-      if [[ $actions -eq 1 ]]; then
-        # Disable puppet after no action is required
-        touch /var/run/puppetlabs/.disabled
-      fi
-      # Send email with results after first run
-      if [[ $first_run -eq 1 ]] && [[ ! -z "$email" ]]; then
-        cat << EOF | /usr/sbin/sendmail $email
-      To: $email
-      From: magic.castle+puppet@$(hostname -f)
-      Subject: $(hostname -f) is online
-      $(cat /var/log/puppetlabs/puppet/puppet.log)
-      EOF
-      fi
-    path: /sbin/puppet_apply_site.sh
-    permissions: "0755"
-  - content: |
-      ${puppetfile}
-    path: /etc/puppetlabs/puppet/Puppetfile
-  - content: |
-      ${site_pp}
-    path: /etc/puppetlabs/puppet/site.pp
-  - content: |
-      ${data}
-    path: /etc/puppetlabs/puppet/hieradata/data.yaml
-    owner: root:root
-    permissions: "0600"
-  - content: |
-      [main]
-      codedir=$confdir
-      environmentpath=$confdir
-      environment=''
-    path: /etc/puppetlabs/puppet/puppet.conf
+      facts : {
+        blocklist : [ "EC2" ],
+      }
+    path: /etc/puppetlabs/facter/facter.conf
+    permissions: "0644"
   - content: |
       ---
-      version: 5
-      defaults:
-        datadir: /etc/puppetlabs/puppet/hieradata
-        data_hash: yaml_data
-      hierarchy:
-        - name: "Data"
-          path: "data.yaml"
-    path: /etc/puppetlabs/puppet/hiera.yaml
+      custom_attributes:
+        1.2.840.113549.1.9.7: "${puppetmaster_password}"
+    path: /etc/puppetlabs/puppet/csr_attributes.yaml
+    permissions: "0640"
 
 disable_ec2_metadata: false
 timezone: "America/Montreal"

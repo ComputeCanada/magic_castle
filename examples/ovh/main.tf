@@ -6,7 +6,6 @@ module "ovh" {
   source = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//ovh"
 
   # Cluster customization
-  puppet_config   = "jupyterhub"
   cluster_name    = "phoenix"
   domain          = "calculquebec.cloud"
   nb_nodes        = 5
