@@ -215,51 +215,54 @@ resource "azurerm_virtual_machine" "mgmt" {
 }
 
 resource "azurerm_managed_disk" "home" {
+  count                = lower(var.storage["type"]) == "nfs" ? 1 : 0
   name                 = "home"
   location             = var.location
   resource_group_name  = azurerm_resource_group.group.name
   storage_account_type = var.managed_disk_type
   create_option        = "Empty"
-  disk_size_gb         = var.home_size
+  disk_size_gb         = var.storage["home_size"]
 }
 
 resource "azurerm_managed_disk" "project" {
+  count                = lower(var.storage["type"]) == "nfs" ? 1 : 0
   name                 = "project"
   location             = var.location
   resource_group_name  = azurerm_resource_group.group.name
   storage_account_type = var.managed_disk_type
   create_option        = "Empty"
-  disk_size_gb         = var.project_size
+  disk_size_gb         = var.storage["project_size"]
 }
 
 resource "azurerm_managed_disk" "scratch" {
+  count                = lower(var.storage["type"]) == "nfs" ? 1 : 0
   name                 = "scratch"
   location             = var.location
   resource_group_name  = azurerm_resource_group.group.name
   storage_account_type = var.managed_disk_type
   create_option        = "Empty"
-  disk_size_gb         = var.scratch_size
+  disk_size_gb         = var.storage["scratch_size"]
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "home" {
-  count              = var.nb_mgmt > 0 ? 1 : 0
-  managed_disk_id    = azurerm_managed_disk.home.id
+  count              = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  managed_disk_id    = azurerm_managed_disk.home[0].id
   virtual_machine_id = azurerm_virtual_machine.mgmt[0].id
   lun                = "10"
   caching            = "ReadWrite"
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "project" {
-  count              = var.nb_mgmt > 0 ? 1 : 0
-  managed_disk_id    = azurerm_managed_disk.project.id
+  count              = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  managed_disk_id    = azurerm_managed_disk.project[0].id
   virtual_machine_id = azurerm_virtual_machine.mgmt[0].id
   lun                = "11"
   caching            = "ReadWrite"
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "scratch" {
-  count              = var.nb_mgmt > 0 ? 1 : 0
-  managed_disk_id    = azurerm_managed_disk.scratch.id
+  count              = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  managed_disk_id    = azurerm_managed_disk.scratch[0].id
   virtual_machine_id = azurerm_virtual_machine.mgmt[0].id
   lun                = "12"
   caching            = "ReadWrite"

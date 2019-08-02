@@ -56,21 +56,24 @@ resource "openstack_compute_keypair_v2" "keypair" {
 }
 
 resource "openstack_blockstorage_volume_v2" "home" {
+  count       = lower(var.storage["type"]) == "nfs" ? 1 : 0
   name        = "${var.cluster_name}_home"
   description = "${var.cluster_name} /home"
-  size        = var.home_size
+  size        = var.storage["home_size"]
 }
 
 resource "openstack_blockstorage_volume_v2" "project" {
+  count       = lower(var.storage["type"]) == "nfs" ? 1 : 0
   name        = "${var.cluster_name}_project"
   description = "${var.cluster_name} /project"
-  size        = var.project_size
+  size        = var.storage["project_size"]
 }
 
 resource "openstack_blockstorage_volume_v2" "scratch" {
+  count       = lower(var.storage["type"]) == "nfs" ? 1 : 0
   name        = "${var.cluster_name}_scratch"
   description = "${var.cluster_name} /scratch"
-  size        = var.scratch_size
+  size        = var.storage["scratch_size"]
 }
 
 resource "openstack_compute_instance_v2" "mgmt" {
@@ -93,22 +96,22 @@ resource "openstack_compute_instance_v2" "mgmt" {
 }
 
 resource "openstack_compute_volume_attach_v2" "va_home" {
-  count       = var.nb_mgmt > 0 ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
-  volume_id   = openstack_blockstorage_volume_v2.home.id
+  volume_id   = openstack_blockstorage_volume_v2.home[0].id
 }
 
 resource "openstack_compute_volume_attach_v2" "va_project" {
-  count       = var.nb_mgmt > 0 ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
-  volume_id   = openstack_blockstorage_volume_v2.project.id
+  volume_id   = openstack_blockstorage_volume_v2.project[0].id
   depends_on  = [openstack_compute_volume_attach_v2.va_home]
 }
 
 resource "openstack_compute_volume_attach_v2" "va_scratch" {
-  count       = var.nb_mgmt > 0 ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
-  volume_id   = openstack_blockstorage_volume_v2.scratch.id
+  volume_id   = openstack_blockstorage_volume_v2.scratch[0].id
   depends_on  = [openstack_compute_volume_attach_v2.va_project]
 }
 

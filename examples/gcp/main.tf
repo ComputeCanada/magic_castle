@@ -11,9 +11,14 @@ module "gcp" {
   domain_name     = "calculquebec.cloud"
   nb_nodes        = 5
   nb_users        = 10
-  home_size       = 100
-  project_size    = 50
-  scratch_size    = 50
+
+  storage = {
+    type         = "nfs"
+    home_size    = 100
+    project_size = 50
+    scratch_size = 50
+  }
+
   public_key_path = "./key.pub"
 
   # GCP specifics

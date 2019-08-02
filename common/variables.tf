@@ -15,13 +15,13 @@ variable "nb_nodes" {
 variable "nb_users" {
 }
 
-variable "home_size" {
-}
-
-variable "project_size" {
-}
-
-variable "scratch_size" {
+variable "storage" {
+  type = object({
+    type=string,
+    home_size=number,
+    project_size=number,
+    scratch_size=number
+  })
 }
 
 variable "domain" {

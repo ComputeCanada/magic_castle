@@ -121,8 +121,9 @@ resource "aws_instance" "mgmt" {
 }
 
 resource "aws_ebs_volume" "home" {
+  count             = lower(var.storage["type"]) == "nfs" ? 1 : 0
   availability_zone = var.availability_zone
-  size              = var.home_size
+  size              = var.storage["home_size"]
   type              = "gp2"
 
   tags = {
@@ -131,8 +132,9 @@ resource "aws_ebs_volume" "home" {
 }
 
 resource "aws_ebs_volume" "project" {
+  count             = lower(var.storage["type"]) == "nfs" ? 1 : 0
   availability_zone = var.availability_zone
-  size              = var.project_size
+  size              = var.storage["project_size"]
   type              = "gp2"
 
   tags = {
@@ -141,8 +143,9 @@ resource "aws_ebs_volume" "project" {
 }
 
 resource "aws_ebs_volume" "scratch" {
+  count             = lower(var.storage["type"]) == "nfs" ? 1 : 0
   availability_zone = var.availability_zone
-  size              = var.scratch_size
+  size              = var.storage["scratch_size"]
   type              = "gp2"
 
   tags = {
@@ -151,23 +154,23 @@ resource "aws_ebs_volume" "scratch" {
 }
 
 resource "aws_volume_attachment" "home" {
-  count       = var.nb_mgmt > 0 ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
   device_name = "/dev/sdb"
-  volume_id   = aws_ebs_volume.home.id
+  volume_id   = aws_ebs_volume.home[0].id
   instance_id = aws_instance.mgmt[0].id
 }
 
 resource "aws_volume_attachment" "project" {
-  count       = var.nb_mgmt > 0 ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
   device_name = "/dev/sdc"
-  volume_id   = aws_ebs_volume.project.id
+  volume_id   = aws_ebs_volume.project[0].id
   instance_id = aws_instance.mgmt[0].id
 }
 
 resource "aws_volume_attachment" "scratch" {
-  count       = var.nb_mgmt > 0 ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
   device_name = "/dev/sdd"
-  volume_id   = aws_ebs_volume.scratch.id
+  volume_id   = aws_ebs_volume.scratch[0].id
   instance_id = aws_instance.mgmt[0].id
 }
 
@@ -218,8 +221,7 @@ locals {
   mgmt01_ip   = aws_instance.mgmt[0].private_ip
   public_ip   = aws_instance.login[0].public_ip
   cidr        = aws_subnet.private_subnet.cidr_block
-  home_dev    = aws_volume_attachment.home[0].device_name
-  project_dev = aws_volume_attachment.project[0].device_name
-  scratch_dev = aws_volume_attachment.scratch[0].device_name
+  home_dev    = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? aws_volume_attachment.home[0].device_name : ""
+  project_dev = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? aws_volume_attachment.project[0].device_name : ""
+  scratch_dev = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? aws_volume_attachment.scratch[0].device_name : ""
 }
-
