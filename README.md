@@ -476,15 +476,17 @@ Replace `centos` by the value of `sudoer_username` if it is
 different.
 3. SSH in the management node : `ssh mgmt01`
 
-### 8.1 Deactivate Puppet
+### 8.1 Disable Puppet
 
-If you plan to modify configuration files manually, you will need to deactivate
+If you plan to modify configuration files manually, you will need to disable
 Puppet. Otherwise, you might find out that your modifications have disappeared
-in 5-minute window.
+in a 30-minute window.
 
-puppet is executed every 5 minutes and at every reboot through the root crontab.
-To deactivate it, execute `sudo crontab -e` and comment the lines mentioning
-`puppet_apply_site.sh`.
+puppet is executed every 30 minutes and at every reboot through the puppet agent
+service. To disable puppet:
+```bash
+sudo puppet agent --disable "<MESSAGE>"
+```
 
 ### 8.2 Replace the User Account Password
 
