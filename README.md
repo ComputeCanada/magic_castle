@@ -206,12 +206,13 @@ $ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa
 Modifying `nb_users` after the cluster is built leads to a rebuild
 of the management node at next `terraform apply`.
 
-### 4.7 home_size, project_size, scratch_size
+### 4.7 Storage: type, home_size, project_size, scratch_size
 
-Define the size of the volumes
+Define the type of network storage and the size of the volumes
 for respectively `/home`, `/project` and `/scratch`.
-Each volume is mounted on `mgmt01` and exported with NFS to the
-login and the compute nodes.
+
+If `type` is set to `nfs`, each volume is mounted on `mgmt01` and
+exported with NFS to the login and the compute nodes.
 
 #### 4.7.1 Post Build Modification Effect
 
