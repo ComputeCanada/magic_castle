@@ -194,9 +194,13 @@ of a new empty volume and attachment.
 
 ### 4.7 public_key_path
 
-Path to an SSH public key file of your choice.
+Path to an SSH public key file of your choice (see note).
 This key will associated with the sudoer account to provide you
 administrative access to the cluster.
+
+**Note**: The SSH key type has to be ECDSA or RSA for some cloud providers
+including AWS and OpenStack because they do not support ed25519 and DSA
+is deprecated.
 
 #### 4.7.1 Post Build Modification Effect
 
