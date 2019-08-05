@@ -24,7 +24,7 @@ resource "random_pet" "guest_passwd" {
 }
 
 data "http" "hieradata_template" {
-  url = "${replace(var.puppetenv_git, ".git", "")}/raw/${var.puppetenv_branch}/data/common.yaml.tmpl"
+  url = "${replace(var.puppetenv_git, ".git", "")}/raw/${var.puppetenv_rev}/data/common.yaml.tmpl"
 }
 
 data "template_file" "hieradata" {
@@ -53,7 +53,7 @@ data "template_file" "mgmt" {
 
   vars = {
     puppetenv_git         = "${replace(replace(var.puppetenv_git, ".git", ""), "//*$/", ".git")}"
-    puppetenv_branch      = var.puppetenv_branch
+    puppetenv_rev         = var.puppetenv_rev
     puppetmaster          = local.mgmt01_ip
     puppetmaster_password = random_string.puppetmaster_password.result
     hieradata             = indent(6, data.template_file.hieradata.rendered)

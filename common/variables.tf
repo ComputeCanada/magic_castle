@@ -38,7 +38,7 @@ variable "puppetenv_git" {
   default = "https://git.computecanada.ca/magic_castle/puppet_env"
 }
 
-variable "puppetenv_branch" {
+variable "puppetenv_rev" {
   default = "master"
 }
 

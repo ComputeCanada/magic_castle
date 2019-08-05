@@ -48,7 +48,8 @@ runcmd:
   - systemctl enable puppetserver
   - systemctl enable puppet
   - rm -rf /etc/puppetlabs/code/environments/production
-  - git clone --single-branch --branch ${puppetenv_branch} ${puppetenv_git} /etc/puppetlabs/code/environments/production
+  - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/production
+  - "(cd /etc/puppetlabs/code/environments/production; git checkout ${puppetenv_rev})"
   - mv /etc/puppetlabs/code/data/common.yaml /etc/puppetlabs/code/environments/production/data/common.yaml
   - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
   - "(cd /etc/puppetlabs/code/environments/production/ && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
