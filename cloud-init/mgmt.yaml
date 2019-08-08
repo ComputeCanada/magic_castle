@@ -50,7 +50,7 @@ runcmd:
   - rm -rf /etc/puppetlabs/code/environments/production
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/production
   - "(cd /etc/puppetlabs/code/environments/production; git checkout ${puppetenv_rev})"
-  - mv /etc/puppetlabs/code/data/common.yaml /etc/puppetlabs/code/environments/production/data/common.yaml
+  - mv /etc/puppetlabs/code/data/terraform_data.yaml /etc/puppetlabs/code/environments/production/data/terraform_data.yaml
   - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
   - "(cd /etc/puppetlabs/code/environments/production/ && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
   - reboot -n
@@ -63,7 +63,7 @@ mounts:
 write_files:
   - content: |
       ${hieradata}
-    path: /etc/puppetlabs/code/data/common.yaml
+    path: /etc/puppetlabs/code/data/terraform_data.yaml
   - content: |
       127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 puppet
     path: /etc/hosts

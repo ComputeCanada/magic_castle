@@ -24,26 +24,21 @@ resource "random_pet" "guest_passwd" {
 }
 
 data "http" "hieradata_template" {
-  url = "${replace(var.puppetenv_git, ".git", "")}/raw/${var.puppetenv_rev}/data/common.yaml.tmpl"
+  url = "${replace(var.puppetenv_git, ".git", "")}/raw/${var.puppetenv_rev}/data/terraform_data.yaml.tmpl"
 }
 
 data "template_file" "hieradata" {
   template = data.http.hieradata_template.body
 
   vars = {
-    sudoer_username       = var.sudoer_username
-    freeipa_passwd        = random_string.freeipa_passwd.result
-    cluster_name          = var.cluster_name
-    domain_name           = local.domain_name
-    guest_passwd          = var.guest_passwd != "" ? var.guest_passwd : random_pet.guest_passwd[0].id
-    munge_key             = base64sha512(random_string.munge_key.result)
-    nb_users              = var.nb_users
-    freeipa_ip            = local.mgmt01_ip
-    nfs_ip                = local.mgmt01_ip
-    rsyslog_ip            = local.mgmt01_ip
-    slurmctld_ip          = local.mgmt01_ip
-    slurmdbd_ip           = local.mgmt01_ip
-    squid_ip              = local.mgmt01_ip
+    sudoer_username = var.sudoer_username
+    freeipa_passwd  = random_string.freeipa_passwd.result
+    cluster_name    = var.cluster_name
+    domain_name     = local.domain_name
+    guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : random_pet.guest_passwd[0].id
+    munge_key       = base64sha512(random_string.munge_key.result)
+    nb_users        = var.nb_users
+    mgmt01_ip       = local.mgmt01_ip
   }
 }
 
