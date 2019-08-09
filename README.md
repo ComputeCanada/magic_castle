@@ -23,8 +23,9 @@ The project can be used to build clusters with commercial cloud, but it implies 
 
 1. Open a terminal
 2. Verify Terraform was properly installed by looking at the version
-
-    * `terraform version`
+```
+$ terraform version
+```
 
 3. Verify you have added your SSH key inside GitLab. Go to https://git.computecanada.ca/profile/keys
 
