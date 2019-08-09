@@ -39,7 +39,7 @@ The project can be used to build clusters with commercial cloud, but it implies 
 1. Go to https://git.computecanada.ca/magic_castle/slurm_cloud/releases.
 2. Download the latest release of Magic Castle for OpenStack.
 3. Open a Terminal.
-4. Uncompress the release: tar xvf magic_castle*.tar.gz
+4. Uncompress the release: `tar xvf magic_castle*.tar.gz`
 5. Rename the release folder after your favourite superhero: `mv magic_castle* hulk`
 3. Move inside the folder: `cd hulk`
 
