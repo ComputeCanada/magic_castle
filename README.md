@@ -555,11 +555,4 @@ pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
 
 ## 9. Customize Magic Castle Terraform Files
 
-When we initiated the folder containing the `main.tf` by
-calling `terraform init`, Terraform cloned the git repo
-linked in our `main.tf` inside a subfolder named
-`.terraform/modules`.
-
-Terraform uses md5 hashes to refer to the module, so you
-will have to look at the file named `modules.json` to
-determine which directory corresponds to which module.
+You can modify the Terraform module files in the `openstack` folder.
