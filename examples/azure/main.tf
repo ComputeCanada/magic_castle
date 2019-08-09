@@ -18,7 +18,7 @@ module "azure" {
     scratch_size = 50
   }
 
-  public_key_path = "./key.pub"
+  public_key_path = "~/.ssh/id_rsa.pub"
 
   # Azure specifics
   location      = "eastus"

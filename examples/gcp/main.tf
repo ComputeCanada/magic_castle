@@ -18,7 +18,7 @@ module "gcp" {
     scratch_size = 50
   }
 
-  public_key_path = "./key.pub"
+  public_key_path = "~/.ssh/id_rsa.pub"
 
   # GCP specifics
   project_name = "crested-return-137823"
