@@ -11,6 +11,7 @@
   - [Microsoft Azure](azure/README.md)
   - [Google Cloud Platform (GCP)](gcp/README.md)
   - [OVH Public Cloud (OVH)](ovh/README.md)
+- For more details, refer to [Magic Castle Documentation](https://git.computecanada.ca/magic_castle/docs)
 
 ## Using Cloudflare DNS Service
 
