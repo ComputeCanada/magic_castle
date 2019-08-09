@@ -85,15 +85,11 @@ we recommend leaving it as it is presented in the examples.
 
 The first line of the module block indicates to Terraform where it can find
 the `.tf` files that defines the resources that constitutes your future
-cluster. We are pointing this variable toward the git repo using the syntax
-defined in [Terraform documentation.](https://www.terraform.io/docs/modules/sources.html#generic-git-repository)
-
-The git repository is divided by cloud providers.
-If you were to fork this project, you would need to replace the
-source value by the link to your own fork.
+cluster. We are pointing this variable at the cloud provider folder in the
+release folder (i.e.: `./openstack`).
 
 **Warning**: not all cloud provider modules use the same variables.
-You should refer to the examples specific to the cloud provider
+You should refer to the documentation specific to the cloud provider
 you want to use.
 
 ### 4.2 cluster_name
