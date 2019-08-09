@@ -27,8 +27,6 @@ The project can be used to build clusters with commercial cloud, but it implies 
 $ terraform version
 ```
 
-3. Verify you have added your SSH key inside GitLab. Go to https://git.computecanada.ca/profile/keys
-
 ## 2. Cloud Cluster Architecture Overview
 
 ![Magic Castle Service Architecture](https://docs.google.com/drawings/d/e/2PACX-1vRGFtPevjgM0_ZrkIBQY881X73eQGaXDJ1Fb48Z0DyOe61h2dYdw0urWF2pQZWUTdcNSAM868sQ2Sii/pub?w=1259&amp;h=960)
