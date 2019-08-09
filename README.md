@@ -1,11 +1,10 @@
 # Magic Castle Documentation
-Version: 3.0
+Version: 4.0
 
 ## 1. Setup
 
 To use Magic Castle you will need:
 * Terraform (>= 0.12).
-* git
 * Access to an OpenStack Cloud (e.g.: Arbutus)
 * Ability to communicate with the OpenStack API from your computer
 * An OpenStack project with room for the allocation of at least
@@ -23,9 +22,8 @@ The project can be used to build clusters with commercial cloud, but it implies 
 ### 1.1 Setup check
 
 1. Open a terminal
-2. Verify the commands were properly installed by looking at the version
+2. Verify Terraform was properly installed by looking at the version
 
-    * `git version`
     * `terraform version`
 
 3. Verify you have added your SSH key inside GitLab. Go to https://git.computecanada.ca/profile/keys
@@ -38,20 +36,17 @@ The project can be used to build clusters with commercial cloud, but it implies 
 
 ### 3.1 Main File
 
-1. Go to https://git.computecanada.ca/magic_castle/slurm_cloud.
-2. Click on the `examples` folder.
-3. Click on the `openstack` folder.
-4. Click on `main.tf`
+1. Go to https://git.computecanada.ca/magic_castle/slurm_cloud/releases.
+2. Download the latest release of Magic Castle for OpenStack.
+3. Open a Terminal.
+4. Uncompress the release: tar xvf magic_castle*.tar.gz
+5. Rename the release folder after your favourite superhero: `mv magic_castle* hulk`
+3. Move inside the folder: `cd hulk`
 
-This file contains Terraform modules and outputs. Modules are files that define a set of
+The file `main.tf` contains Terraform modules and outputs. Modules are files that define a set of
 resources that will be configured based on the inputs provided in the module block.
 Outputs are used to tell Terraform which variables of
 our module we would like to be shown on the screen once the resources have been instantiated.
-
-1. Open a Terminal.
-2. Create a new folder. Name it after your favourite superhero: `mkdir hulk`
-3. Move inside the folder: `cd hulk`
-4. Save a copy of the preceding `main.tf` file inside your new folder.
 
 This file will be our main canvas to design our new clusters. As long as the module block
 parameters suffice to our need, we will be able to limit our configuration to this sole
