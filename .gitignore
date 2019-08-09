@@ -6,3 +6,4 @@ os_venv/*
 venv
 */venv
 *.tar.*
+releases/
