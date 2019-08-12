@@ -45,6 +45,8 @@ runcmd:
   - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section master
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - chown puppet:puppet /etc/autosign.conf
+  - sed -i 's/^\(After=.*\)$/\1 puppetserver.service/' /usr/lib/systemd/system/puppet.service
+  - systemctl daemon-reload
   - systemctl enable puppetserver
   - systemctl enable puppet
   - rm -rf /etc/puppetlabs/code/environments/production
