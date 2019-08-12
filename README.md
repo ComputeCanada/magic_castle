@@ -1,6 +1,18 @@
 # Magic Castle Documentation
 Version: 4.0
 
+## Table of Content
+
+1. [Setup](#1-setup)
+2. [Cloud Cluster Architecture Overview](#2-cloud-cluster-architecture-overview)
+3. [Initialization](#3-initialization)
+4. [Configuration](#4-configuration)
+5. [Planification](#5-planification)
+6. [Deployment](#6-deployment)
+7. [Destruction](#7-destruction)
+8. [Online Cluster Configuration](#8-online-cluster-configuration)
+9. [Customize Magic Castle Terraform Files](#9-customize-magic-castle-terraform-files)
+
 ## 1. Setup
 
 To use Magic Castle you will need:
