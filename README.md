@@ -187,7 +187,7 @@ administrative access to the cluster.
 
 **Note 1**: You will need to add the private key associated with this public
 key to your local authentication agent (i.e: `ssh-add`) if you use the CloudFlare
-DNS module. The DNS module use the SSH key to copy files to the login node
+DNS module. The DNS module uses the SSH key to copy files to the login node
 after the cluster instances are created.
 
 **Note 2**: The SSH key type has to be ECDSA or RSA for some cloud providers
