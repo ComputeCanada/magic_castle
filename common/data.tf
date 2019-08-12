@@ -1,5 +1,5 @@
 locals {
-  domain_name = "${var.cluster_name}.${var.domain}"
+  domain_name = "${lower(var.cluster_name)}.${lower(var.domain)}"
 }
 
 resource "random_string" "munge_key" {

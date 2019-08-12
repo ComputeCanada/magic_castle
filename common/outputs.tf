@@ -7,7 +7,7 @@ output "cluster_name" {
 }
 
 output "domain" {
-  value = var.domain
+  value = "${lower(var.domain)}"
 }
 
 output "sudoer_username" {
