@@ -185,7 +185,12 @@ Path to an SSH public key file of your choice (see note).
 This key will associated with the sudoer account to provide you
 administrative access to the cluster.
 
-**Note**: The SSH key type has to be ECDSA or RSA for some cloud providers
+**Note 1**: You will need to add the private key associated with this public
+key to your local authentication agent (i.e: `ssh-add`) if you use the CloudFlare
+DNS module. The DNS module use the SSH key to copy files to the login node
+after the cluster instances are created.
+
+**Note 2**: The SSH key type has to be ECDSA or RSA for some cloud providers
 including AWS and OpenStack because they do not support ed25519 and DSA
 is deprecated.
 
