@@ -53,6 +53,9 @@ runcmd:
   - mv /etc/puppetlabs/code/data/terraform_data.yaml /etc/puppetlabs/code/environments/production/data/terraform_data.yaml
   - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
   - "(cd /etc/puppetlabs/code/environments/production/ && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
+  - systemctl disable kdump
+  - sed -i 's/crashkernel=auto/crashkernel=no/' /etc/default/grub
+  - grub2-mkconfig -o /boot/grub2/grub.cfg
   - reboot -n
 
 mounts:

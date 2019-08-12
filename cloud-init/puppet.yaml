@@ -20,6 +20,9 @@ runcmd:
   - yum -y install puppet-agent
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - systemctl enable puppet
+  - systemctl disable kdump
+  - sed -i 's/crashkernel=auto/crashkernel=no/' /etc/default/grub
+  - grub2-mkconfig -o /boot/grub2/grub.cfg
   - reboot -n
 
 write_files:
