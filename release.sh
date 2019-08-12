@@ -35,6 +35,8 @@ for provider in "${CLOUD[@]}"; do
     cp $provider/README.md $cur_folder
     cd $FOLDER
     tar czvf magic_castle-$provider-$VERSION.tar.gz magic_castle-$provider-$VERSION 
+    zip magic_castle-$provider-$VERSION.zip -r magic_castle-$provider-$VERSION
     cd -
     cp $FOLDER/magic_castle-$provider-$VERSION.tar.gz releases/
+    cp $FOLDER/magic_castle-$provider-$VERSION.zip releases/
 done
