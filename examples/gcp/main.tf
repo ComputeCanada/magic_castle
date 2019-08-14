@@ -7,7 +7,7 @@ module "gcp" {
 
   # Cluster customization
   cluster_name    = "phoenix"
-  domain_name     = "calculquebec.cloud"
+  domain          = "calculquebec.cloud"
   nb_nodes        = 5
   nb_users        = 10
 
@@ -57,7 +57,7 @@ output "public_ip" {
 #   domain           = module.gcp.domain
 #   public_ip        = module.gcp.ip
 #   rsa_public_key   = module.gcp.rsa_public_key
-#   sudoer_username  = module.openstack.sudoer_username
+#   sudoer_username  = module.gcp.sudoer_username
 # }
 # output "hostnames" {
 # 	value = module.dns.hostnames
