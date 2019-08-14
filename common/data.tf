@@ -94,24 +94,25 @@ data "template_cloudinit_config" "login_config" {
   count = var.nb_login
 
   part {
-    filename     = "login.yaml"
-    merge_type   = "list(append)+dict(recurse_array)+str()"
-    content_type = "text/cloud-config"
-    content      = data.template_file.login[count.index].rendered
-  }
-  part {
     filename     = "ssh_keys.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = <<EOF
+runcmd:
+  - chmod 644 /etc/ssh/ssh_host_rsa_key.pub
+  - chgrp ssh_keys /etc/ssh/ssh_host_rsa_key.pub
 ssh_keys:
   rsa_private: |
     ${indent(4, tls_private_key.login_rsa.private_key_pem)}
   rsa_public: |
     ${tls_private_key.login_rsa.public_key_openssh}
-
 EOF
-
+  }
+  part {
+    filename     = "login.yaml"
+    merge_type   = "list(append)+dict(recurse_array)+str()"
+    content_type = "text/cloud-config"
+    content      = data.template_file.login[count.index].rendered
   }
 }
 
