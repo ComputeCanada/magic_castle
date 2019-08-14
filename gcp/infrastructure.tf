@@ -45,6 +45,7 @@ resource "google_compute_instance" "mgmt" {
   boot_disk {
     initialize_params {
       image = var.gcp_image
+      type  = "pd-ssd"
     }
   }
 
@@ -103,6 +104,7 @@ resource "google_compute_instance" "login" {
   boot_disk {
     initialize_params {
       image = var.gcp_image
+      type  = "pd-ssd"
     }
   }
 
@@ -140,6 +142,7 @@ resource "google_compute_instance" "node" {
   boot_disk {
     initialize_params {
       image = var.gcp_image
+      type  = "pd-ssd"
     }
   }
 
