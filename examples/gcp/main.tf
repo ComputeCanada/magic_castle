@@ -26,13 +26,12 @@ module "gcp" {
   zone_region  = "us-central1-a"
   gcp_image    = "centos-7"
 
-  # Minimun size to install freeipa-server
-  machine_type_mgmt  = "g1-small"
-  machine_type_login = "g1-small"
-  machine_type_node  = "n1-standard-1"
+  machine_type_mgmt  = "n1-standard-2"
+  machine_type_login = "n1-standard-2"
+  machine_type_node  = "n1-standard-2"
 
   # ["GPU card", count]
-  gpu_per_node = ["nvidia-tesla-k80", 1]
+  gpu_per_node = ["nvidia-tesla-k80", 0]
 }
 
 output "sudoer_username" {
