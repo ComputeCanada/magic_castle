@@ -170,7 +170,10 @@ resource "google_compute_firewall" "default" {
 
   allow {
     protocol = var.firewall_rules[count.index].ip_protocol
-    ports    = ["${var.firewall_rules[count.index].from_port}-${var.firewall_rules[count.index].to_port}"]
+    ports    = [ var.firewall_rules[count.index].from_port != var.firewall_rules[count.index].to_port ?
+                 "${var.firewall_rules[count.index].from_port}-${var.firewall_rules[count.index].to_port}" :
+                 var.firewall_rules[count.index].from_port
+    ]
   }
 
   target_tags = google_compute_instance.login[*].name
