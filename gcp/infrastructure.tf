@@ -1,6 +1,6 @@
 provider "google" {
   project = var.project_name
-  region  = var.zone
+  region  = var.region
   #  version = "~> 2.1.0"
 }
 
@@ -8,7 +8,7 @@ resource "google_compute_disk" "home" {
   count = lower(var.storage["type"]) == "nfs" ? 1 : 0
   name  = "home"
   type  = "pd-standard"
-  zone  = var.zone_region
+  zone  = var.zone
   size  = var.storage["home_size"]
 }
 
@@ -16,7 +16,7 @@ resource "google_compute_disk" "project" {
   count = lower(var.storage["type"]) == "nfs" ? 1 : 0
   name  = "project"
   type  = "pd-standard"
-  zone  = var.zone_region
+  zone  = var.zone
   size  = var.storage["project_size"]
 }
 
@@ -24,19 +24,19 @@ resource "google_compute_disk" "scratch" {
   count = lower(var.storage["type"]) == "nfs" ? 1 : 0
   name  = "scratch"
   type  = "pd-standard"
-  zone  = var.zone_region
+  zone  = var.zone
   size  = var.storage["scratch_size"]
 }
 
 resource "google_compute_address" "mgmt01" {
   name         = "mgmt01"
   address_type = "INTERNAL"
-  region       = var.zone
+  region       = var.region
 }
 
 resource "google_compute_instance" "mgmt" {
   project      = var.project_name
-  zone         = var.zone_region
+  zone         = var.zone
   count        = var.nb_mgmt
   name         = format("mgmt%02d", count.index + 1)
   machine_type = var.machine_type_mgmt
@@ -95,7 +95,7 @@ resource "google_compute_attached_disk" "scratch" {
 resource "google_compute_instance" "login" {
   count        = var.nb_login
   project      = var.project_name
-  zone         = var.zone_region
+  zone         = var.zone
   name         = format("login%02d", count.index + 1)
   machine_type = var.machine_type_login
   tags         = [format("login%02d", count.index + 1)]
@@ -124,7 +124,7 @@ resource "google_compute_instance" "login" {
 resource "google_compute_instance" "node" {
   count        = var.nb_nodes
   project      = var.project_name
-  zone         = var.zone_region
+  zone         = var.zone
   name         = "node${count.index + 1}"
   machine_type = var.machine_type_node
   scheduling {

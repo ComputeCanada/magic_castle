@@ -4,7 +4,7 @@ variable "project_name" {
 variable "zone" {
 }
 
-variable "zone_region" {
+variable "region" {
 }
 
 variable "machine_type_mgmt" {
