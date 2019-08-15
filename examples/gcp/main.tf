@@ -8,6 +8,7 @@ module "gcp" {
   # Cluster customization
   cluster_name    = "phoenix"
   domain          = "calculquebec.cloud"
+  sudoer_username = "castle"
   nb_nodes        = 5
   nb_users        = 10
 
@@ -22,8 +23,8 @@ module "gcp" {
 
   # GCP specifics
   project_name = "crested-return-137823"
-  zone         = "us-central1"
-  zone_region  = "us-central1-a"
+  region       = "us-central1"
+  zone         = "us-central1-a"
   gcp_image    = "centos-7"
 
   machine_type_mgmt  = "n1-standard-2"
