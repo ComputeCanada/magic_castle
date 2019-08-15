@@ -23,16 +23,14 @@ runcmd:
   - parted -s -a opt ${home_dev} mkpart primary ext4 0% 100%
   - parted -s -a opt ${project_dev} mkpart primary ext4 0% 100%
   - parted -s -a opt ${scratch_dev} mkpart primary ext4 0% 100%
-  - mkfs.xfs -L home ${home_dev}1
-  - mkfs.xfs -L project ${project_dev}1
-  - mkfs.xfs -L scratch ${scratch_dev}1
+  - mkfs.xfs -L home $(readlink -f ${home_dev})1
+  - mkfs.xfs -L project $(readlink -f ${project_dev})1
+  - mkfs.xfs -L scratch $(readlink -f ${scratch_dev})1
   - mkdir -p /mnt/home
   - mkdir -p /project
   - mkdir -p /scratch
-  - mount -L home /mnt/home
-  - mount -L project /project
-  - mount -L scratch /scratch
-# puppet master configuration
+  - mount -a
+  # puppet master configuration
   - yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
   - yum -y install puppetserver
   - mkdir /var/autosign
@@ -61,9 +59,9 @@ runcmd:
   - reboot -n
 
 mounts:
-  - [ ${home_dev}1, /mnt/home, nofail]
-  - [ ${project_dev}1, /project, nofail]
-  - [ ${scratch_dev}1, /scratch, nofail]
+  - [ LABEL=home, /mnt/home, xfs ]
+  - [ LABEL=project, /project, xfs ]
+  - [ LABEL=scratch, /scratch, xfs ]
 
 write_files:
   - content: |
