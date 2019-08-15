@@ -4,6 +4,34 @@ provider "google" {
   #  version = "~> 2.1.0"
 }
 
+resource "google_compute_network" "network" {
+  name = "${var.cluster_name}-network"
+}
+
+resource "google_compute_subnetwork" "subnet" {
+  name          = "${var.cluster_name}-subnet"
+  network       = google_compute_network.network.self_link
+  ip_cidr_range = "10.0.0.0/16"
+  region        = var.region
+}
+
+resource "google_compute_router" "router" {
+  name    = "${var.cluster_name}-router"
+  region  = var.region
+  network = google_compute_network.network.self_link
+  bgp {
+    asn = 64514
+  }
+}
+
+resource "google_compute_router_nat" "nat" {
+  name                               = "${var.cluster_name}-nat"
+  router                             = google_compute_router.router.name
+  region                             = var.region
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+}
+
 resource "google_compute_disk" "home" {
   count = lower(var.storage["type"]) == "nfs" ? 1 : 0
   name  = "home"
@@ -31,6 +59,7 @@ resource "google_compute_disk" "scratch" {
 resource "google_compute_address" "mgmt01" {
   name         = "mgmt01"
   address_type = "INTERNAL"
+  subnetwork   = google_compute_subnetwork.subnet.self_link
   region       = var.region
 }
 
@@ -50,7 +79,7 @@ resource "google_compute_instance" "mgmt" {
   }
 
   network_interface {
-    subnetwork = "default"
+    subnetwork = google_compute_subnetwork.subnet.self_link
     network_ip = google_compute_address.mgmt01.address
     access_config {
     }
@@ -93,6 +122,11 @@ resource "google_compute_attached_disk" "scratch" {
   instance    = google_compute_instance.mgmt[0].self_link
 }
 
+resource "google_compute_address" "static" {
+  count = max(var.nb_login, 1)
+  name  = format("login%02d-ipv4", count.index + 1)
+}
+
 resource "google_compute_instance" "login" {
   count        = var.nb_login
   project      = var.project_name
@@ -109,8 +143,9 @@ resource "google_compute_instance" "login" {
   }
 
   network_interface {
-    subnetwork = "default"
+    subnetwork = google_compute_subnetwork.subnet.self_link
     access_config {
+      nat_ip = google_compute_address.static[count.index].address
     }
   }
 
@@ -147,9 +182,7 @@ resource "google_compute_instance" "node" {
   }
 
   network_interface {
-    subnetwork = "default"
-    access_config {
-    }
+    subnetwork = google_compute_subnetwork.subnet.self_link
   }
 
   metadata = {
@@ -161,10 +194,30 @@ resource "google_compute_instance" "node" {
   metadata_startup_script = file("${path.module}/install_cloudinit.sh")
 }
 
+resource "google_compute_firewall" "allow_all_internal" {
+  name = "allow-all-internal"
+  network = google_compute_network.network.self_link
+
+  source_ranges = [google_compute_subnetwork.subnet.ip_cidr_range]
+
+  allow {
+    protocol = "tcp"
+  }
+
+  allow {
+    protocol = "udp"
+  }
+
+  allow {
+    protocol = "icmp"
+  }
+
+}
+
 resource "google_compute_firewall" "default" {
   count   = length(var.firewall_rules)
   name    = lower(var.firewall_rules[count.index].name)
-  network = "default"
+  network = google_compute_network.network.self_link
 
   source_ranges = [var.firewall_rules[count.index].cidr]
 
@@ -181,8 +234,8 @@ resource "google_compute_firewall" "default" {
 
 locals {
   mgmt01_ip   = google_compute_address.mgmt01.address
-  public_ip   = google_compute_instance.login[*].network_interface[0].access_config[0].nat_ip
-  cidr        = "10.128.0.0/9" # GCP default
+  public_ip   = google_compute_address.static[*].address
+  cidr        = google_compute_subnetwork.subnet.ip_cidr_range
   home_dev    = "/dev/disk/by-id/google-home"
   project_dev = "/dev/disk/by-id/google-project"
   scratch_dev = "/dev/disk/by-id/google-scratch"
