@@ -7,4 +7,4 @@ venv
 */venv
 *.tar.*
 releases/
-dev/
+*dev/
