@@ -235,7 +235,6 @@ resource "google_compute_firewall" "default" {
 locals {
   mgmt01_ip   = google_compute_address.mgmt01.address
   public_ip   = google_compute_address.static[*].address
-  cidr        = google_compute_subnetwork.subnet.ip_cidr_range
   home_dev    = "/dev/disk/by-id/google-home"
   project_dev = "/dev/disk/by-id/google-project"
   scratch_dev = "/dev/disk/by-id/google-scratch"
