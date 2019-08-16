@@ -26,6 +26,7 @@ for provider in "${CLOUD[@]}"; do
     mkdir -p $cur_folder
     mkdir -p $cur_folder/$provider/cloud-init/
     cp -rf $provider/*.tf $cur_folder/$provider/
+    cp -rf $provider/*.sh $cur_folder/$provider/
     cp -rf cloud-init/*.yaml $cur_folder/$provider/cloud-init/
     cp -rf dns $cur_folder
     cp examples/$provider/main.tf $cur_folder
