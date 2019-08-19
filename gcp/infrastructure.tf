@@ -68,7 +68,7 @@ resource "google_compute_instance" "mgmt" {
   project      = var.project_name
   zone         = var.zone
   count        = var.nb_mgmt
-  name         = format("mgmt%02d", count.index + 1)
+  name         = format("mgmt%02d.int.%s", count.index + 1, local.domain_name)
   machine_type = var.machine_type_mgmt
   tags         = [format("mgmt%02d", count.index + 1)]
 
@@ -132,7 +132,7 @@ resource "google_compute_instance" "login" {
   count        = var.nb_login
   project      = var.project_name
   zone         = var.zone
-  name         = format("login%02d", count.index + 1)
+  name         = format("login%02d.int.%s", count.index + 1, local.domain_name)
   machine_type = var.machine_type_login
   tags         = [format("login%02d", count.index + 1)]
 
@@ -163,7 +163,7 @@ resource "google_compute_instance" "node" {
   count        = var.nb_nodes
   project      = var.project_name
   zone         = var.zone
-  name         = "node${count.index + 1}"
+  name         = format("node%d.int.%s", count.index + 1, local.domain_name)
   machine_type = var.machine_type_node
   scheduling {
     # Instances with guest accelerators do not support live migration.
