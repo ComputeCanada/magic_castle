@@ -56,8 +56,9 @@ resource "google_compute_disk" "scratch" {
   size  = var.storage["scratch_size"]
 }
 
-resource "google_compute_address" "mgmt01" {
-  name         = "mgmt01"
+resource "google_compute_address" "mgmt" {
+  count        = var.nb_mgmt
+  name         = format("mgmt%02d", count.index + 1)
   address_type = "INTERNAL"
   subnetwork   = google_compute_subnetwork.subnet.self_link
   region       = var.region
@@ -80,7 +81,7 @@ resource "google_compute_instance" "mgmt" {
 
   network_interface {
     subnetwork = google_compute_subnetwork.subnet.self_link
-    network_ip = google_compute_address.mgmt01.address
+    network_ip = google_compute_address.mgmt[count.index].address
     access_config {
     }
   }
@@ -233,7 +234,7 @@ resource "google_compute_firewall" "default" {
 }
 
 locals {
-  mgmt01_ip   = google_compute_address.mgmt01.address
+  mgmt01_ip   = google_compute_address.mgmt[0].address
   public_ip   = google_compute_address.static[*].address
   home_dev    = "/dev/disk/by-id/google-home"
   project_dev = "/dev/disk/by-id/google-project"
