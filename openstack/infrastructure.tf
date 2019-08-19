@@ -115,14 +115,12 @@ resource "openstack_compute_volume_attach_v2" "va_project" {
   count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
   volume_id   = openstack_blockstorage_volume_v2.project[0].id
-  depends_on  = [openstack_compute_volume_attach_v2.va_home]
 }
 
 resource "openstack_compute_volume_attach_v2" "va_scratch" {
   count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
   volume_id   = openstack_blockstorage_volume_v2.scratch[0].id
-  depends_on  = [openstack_compute_volume_attach_v2.va_project]
 }
 
 resource "openstack_compute_instance_v2" "login" {
@@ -176,7 +174,7 @@ locals {
     var.os_floating_ips,
     openstack_networking_floatingip_v2.fip[*].address,
   )
-  home_dev    = "/dev/vdb"
-  project_dev = "/dev/vdc"
-  scratch_dev = "/dev/vdd"
+  home_dev    = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v2.home[0].id, 0, 20)}"
+  project_dev = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v2.project[0].id, 0, 20)}"
+  scratch_dev = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v2.scratch[0].id, 0, 20)}"
 }
