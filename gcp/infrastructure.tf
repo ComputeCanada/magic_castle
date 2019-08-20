@@ -70,7 +70,7 @@ resource "google_compute_instance" "mgmt" {
   count        = var.nb_mgmt
   name         = format("%s-mgmt%02d", var.cluster_name, count.index + 1)
   machine_type = var.machine_type_mgmt
-  tags         = [format("mgmt%02d", count.index + 1)]
+  tags         = ["mgmt"]
 
   boot_disk {
     initialize_params {
@@ -134,7 +134,7 @@ resource "google_compute_instance" "login" {
   zone         = var.zone
   name         = format("%s-login%02d", var.cluster_name, count.index + 1)
   machine_type = var.machine_type_login
-  tags         = [format("login%02d", count.index + 1)]
+  tags         = ["login"]
 
   boot_disk {
     initialize_params {
@@ -173,7 +173,7 @@ resource "google_compute_instance" "node" {
     type  = var.gpu_per_node[0]
     count = var.gpu_per_node[1]
   }
-  tags = ["node${count.index + 1}"]
+  tags = ["node"]
 
   boot_disk {
     initialize_params {
@@ -230,7 +230,7 @@ resource "google_compute_firewall" "default" {
     ]
   }
 
-  target_tags = google_compute_instance.login[*].name
+  target_tags = ["login"]
 }
 
 locals {
