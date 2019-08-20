@@ -87,7 +87,6 @@ resource "google_compute_instance" "mgmt" {
   }
 
   metadata = {
-    sshKeys            = "centos:${file(var.public_key_path)}"
     user-data          = data.template_cloudinit_config.mgmt_config[count.index].rendered
     user-data-encoding = "base64"
   }
@@ -151,7 +150,6 @@ resource "google_compute_instance" "login" {
   }
 
   metadata = {
-    sshKeys            = "centos:${file(var.public_key_path)}"
     user-data          = data.template_cloudinit_config.login_config[count.index].rendered
     user-data-encoding = "base64"
   }
@@ -187,7 +185,6 @@ resource "google_compute_instance" "node" {
   }
 
   metadata = {
-    sshKeys            = "centos:${file(var.public_key_path)}"
     user-data          = data.template_cloudinit_config.node_config[count.index].rendered
     user-data-encoding = "base64"
   }
