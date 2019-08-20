@@ -58,7 +58,7 @@ resource "google_compute_disk" "scratch" {
 
 resource "google_compute_address" "mgmt" {
   count        = var.nb_mgmt
-  name         = format("mgmt%02d", count.index + 1)
+  name         = format("%s-mgmt%02d-ipv4", var.cluster_name, count.index + 1)
   address_type = "INTERNAL"
   subnetwork   = google_compute_subnetwork.subnet.self_link
   region       = var.region
@@ -68,7 +68,7 @@ resource "google_compute_instance" "mgmt" {
   project      = var.project_name
   zone         = var.zone
   count        = var.nb_mgmt
-  name         = format("mgmt%02d.int.%s", count.index + 1, local.domain_name)
+  name         = format("%s-mgmt%02d", var.cluster_name, count.index + 1)
   machine_type = var.machine_type_mgmt
   tags         = [format("mgmt%02d", count.index + 1)]
 
@@ -132,7 +132,7 @@ resource "google_compute_instance" "login" {
   count        = var.nb_login
   project      = var.project_name
   zone         = var.zone
-  name         = format("login%02d.int.%s", count.index + 1, local.domain_name)
+  name         = format("%s-login%02d", var.cluster_name, count.index + 1)
   machine_type = var.machine_type_login
   tags         = [format("login%02d", count.index + 1)]
 
@@ -163,7 +163,7 @@ resource "google_compute_instance" "node" {
   count        = var.nb_nodes
   project      = var.project_name
   zone         = var.zone
-  name         = format("node%d.int.%s", count.index + 1, local.domain_name)
+  name         = format("%s-node%d", var.cluster_name, count.index + 1)
   machine_type = var.machine_type_node
   scheduling {
     # Instances with guest accelerators do not support live migration.
@@ -196,7 +196,7 @@ resource "google_compute_instance" "node" {
 }
 
 resource "google_compute_firewall" "allow_all_internal" {
-  name = "allow-all-internal"
+  name = format("%s-allow-all-internal", var.cluster_name)
   network = google_compute_network.network.self_link
 
   source_ranges = [google_compute_subnetwork.subnet.ip_cidr_range]
@@ -217,7 +217,7 @@ resource "google_compute_firewall" "allow_all_internal" {
 
 resource "google_compute_firewall" "default" {
   count   = length(var.firewall_rules)
-  name    = lower(var.firewall_rules[count.index].name)
+  name    = format("%s-%s", var.cluster_name, lower(var.firewall_rules[count.index].name))
   network = google_compute_network.network.self_link
 
   source_ranges = [var.firewall_rules[count.index].cidr]
