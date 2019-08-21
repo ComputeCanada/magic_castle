@@ -1,6 +1,6 @@
 # GCP
 
-1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/install)
+1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/downloads-interactive)
 2. Login to your Google account : `gcloud auth application-default login`
 3. Initiate the Terraform state : `terraform init`.
 4. Adapt the cluster variables in the `main.tf` file (i.e.: # guest accounts, # nodes, domain name, ssh key, etc).
