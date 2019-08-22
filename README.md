@@ -1,5 +1,5 @@
 # Magic Castle Documentation
-Version: 4.0
+Version: 4.6
 
 ## Table of Content
 
@@ -7,11 +7,12 @@ Version: 4.0
 2. [Cloud Cluster Architecture Overview](#2-cloud-cluster-architecture-overview)
 3. [Initialization](#3-initialization)
 4. [Configuration](#4-configuration)
-5. [Planification](#5-planification)
-6. [Deployment](#6-deployment)
-7. [Destruction](#7-destruction)
-8. [Online Cluster Configuration](#8-online-cluster-configuration)
-9. [Customize Magic Castle Terraform Files](#9-customize-magic-castle-terraform-files)
+5. [Cloud Specific Configuration](#5-cloud-specific-configuration)
+6. [Planification](#6-planification)
+7. [Deployment](#7-deployment)
+8. [Destruction](#8-destruction)
+9. [Online Cluster Configuration](#9-online-cluster-configuration)
+10. [Customize Magic Castle Terraform Files](#10-customize-magic-castle-terraform-files)
 
 ## 1. Setup
 
@@ -169,7 +170,7 @@ SSH key defined by `public_key_path`.
 If you would like to add a user account after the cluster is built. Log in the
 management node and call:
 ```
-$ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.sh <username>
+$ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.py <username>
 ```
 
 #### 4.5.1 Post Build Modification Effect
@@ -276,7 +277,11 @@ Modifying this variable after the cluster is built only affects the number
 of management nodes at next `terraform apply`. However, putting that number
 to 0 will render other type of nodes almost unusable.
 
-### 4.12 os_image_name
+## 5. Cloud Specific Configuration
+
+### 5.1 OpenStack
+
+#### 5.1.1 os_image_name
 
 Defines the name of the image that will be used as the
 base image for the cluster nodes. For the provisionning to work properly,
@@ -287,11 +292,12 @@ should be mainly done through Puppet scripting. Image customization is mostly
 envisioned as a way to accelerate the provisioning process by applying the
 security patches and OS updates in advance.
 
-#### 4.12.1 Post Build Modification Effect
+##### 5.1.1.1 Post Build Modification Effect
+
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-### 4.13 os_flavor_mgmt, os_flavor_login and os_flavor_node
+###$ 5.1.2 os_flavor_mgmt, os_flavor_login and os_flavor_node
 
 Define the flavor of one of the three types of servers
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
@@ -299,13 +305,13 @@ defines the compute, memory, and storage capacity of an instance.
 
 For `os_flavor_mgmt`, choose a flavor with at least 3 GB of memory.
 
-#### 4.13.1 Post Build Modification Effect
+#### 5.1.2.1 Post Build Modification Effect
 
 Modifying one of these variables after the cluster is built leads
 to a live migration of the instance(s) to the new chosen flavor. The
 affected instances will reboot in the process.
 
-### 4.14 os_floating_ips (optional)
+#### 5.1.3 os_floating_ips (optional)
 
 **default value**: None
 
@@ -317,12 +323,12 @@ This variable can be useful if you administer your DNS manually and
 you would like the keep the same domain name for your cluster at each
 build.
 
-#### 4.14.1 Post Build Modification Effect
+##### 5.1.3.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built will change the
 floating ip assigned to each login node.
 
-### 4.15 os_ext_network (optional)
+#### 5.1.4 os_ext_network (optional)
 
 **default value**: None
 
@@ -330,12 +336,12 @@ Defines the name of the external network that provides the floating
 IPs. Define this only if your OpenStack cloud provides multiple
 external networks, otherwise, Terraform can find it automatically.
 
-#### 4.15.1 Post Build Modification Effect
+##### 5.1.4.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built will change the
 floating ip assigned to each login node.
 
-### 4.16 os_int_network (optional)
+#### 5.1.5 os_int_network (optional)
 
 **default value**: None
 
@@ -344,12 +350,12 @@ on which the instances are connected. Define this only if you
 have more than one network defined in your OpenStack project.
 Otherwise, Terraform can find it automatically.
 
-#### 4.16.1 Post Build Modification Effect
+#### 5.1.5.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-## 5. Planification
+## 6. Planification
 
 Once your initial cluster configuration is done, you can initiate
 a planning phase where you will ask Terraform to communicate with
@@ -384,7 +390,7 @@ is only a dry-run. If Terraform does not report any error, you can move
 to the next step. Otherwise, read the errors and fix your configuration
 file accordingly.
 
-## 6. Deployment
+## 7. Deployment
 
 To create the resources defined by your module, enter the following command
 ```
@@ -418,7 +424,7 @@ once the instances are booted.
 If unexpected problems occur during provisioning, you can provide these
 logs to the authors of Magic Castle to help you debug.
 
-### 6.1 Deployment Customization
+### 7.1 Deployment Customization
 
 You can modify the `main.tf` at any point of your cluster's life and
 apply the modifications while it is running.
@@ -440,7 +446,7 @@ and eventually automatically add to the Slurm cluster configuration.
 
 You could do the opposite and reduce the number of compute nodes to 0.
 
-## 7. Destruction
+## 8. Destruction
 
 Once you're done working with your cluster and you would like to recover
 the resources, in the same folder as `main.tf`, enter:
@@ -454,7 +460,7 @@ have to confirm by entering `yes`.
 **Warning**: once the cluster is destroyed, nothing will be left, even the
 shared storage will be erased.
 
-### 7.1 Instance Destruction
+### 8.1 Instance Destruction
 
 It is possible to destroy only the instances and keep the rest of the infrastructure
 like the floating ip, the volumes, the generated SSH hostkey, etc.
@@ -462,7 +468,7 @@ like the floating ip, the volumes, the generated SSH hostkey, etc.
 * To destroy the login node, set `nb_login = 0`;
 * To destroy the compute nodes, set `nb_nodes = 0`.
 
-## 8. Online Cluster Configuration
+## 9. Online Cluster Configuration
 
 Once the cluster is online and provisioned, you are free to modify
 its software configuration as you please by connecting to it and
@@ -484,7 +490,7 @@ Replace `centos` by the value of `sudoer_username` if it is
 different.
 3. SSH in the management node : `ssh mgmt01`
 
-### 8.1 Disable Puppet
+### 9.1 Disable Puppet
 
 If you plan to modify configuration files manually, you will need to disable
 Puppet. Otherwise, you might find out that your modifications have disappeared
@@ -496,7 +502,7 @@ service. To disable puppet:
 sudo puppet agent --disable "<MESSAGE>"
 ```
 
-### 8.2 Replace the User Account Password
+### 9.2 Replace the User Account Password
 
 A four words password might not be ideal for workshops with new users
 who barely know how to type. To replace the randomly generated
@@ -521,14 +527,33 @@ for username in $(ls /home/ | grep user); do
 done
 ```
 
-### 8.3 Add a User Account
+### 9.3 Add a User Account
 
 To add a user account after the cluster is built, log in `mgmt01` and call:
-```
-$ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.sh <username>
+```bash
+$ kinit admin
+$ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.py <username>
+$ kdestroy
 ```
 
-### 8.4 Restrict SSH Access
+### 9.4 Increase the Number of Guest Accounts
+
+The number of guest accounts is originally set in the Terraform main file. If you wish
+to increase the number of guest accounts after creating the cluster with Terraform, you
+can modify the hieradata file of the Puppet environment.
+
+1. On `mgmt01` and with `sudo`, open the file
+```
+/etc/puppetlabs/code/environments/production/data/terraform_data.yaml
+```
+2. Increase the number associated with the field `profile::freeipa::guest_accounts::nb_accounts:`
+to the number of guest accounts you want.
+3. Save the file.
+4. Restart puppet on `mgmt01`: `sudo systemctl restart puppet`.
+5. The accounts will be created in the following minutes.
+
+
+### 9.5 Restrict SSH Access
 
 By default, port 22 of the login node is accessible from the world.
 If you know the range of ip addresses that will connect to your cluster,
@@ -552,7 +577,7 @@ Try to SSH in your cluster. If the connection times out, your ip address is out
 of the range of you entered or you made a mistake when defining the range.
 Repeat from step 3.
 
-### 8.5 Add Packages to Jupyter Default Python Kernel
+### 9.6 Add Packages to Jupyter Default Python Kernel
 
 The default Python kernel corresponds to the Python installed in `/opt/ipython-kernel`.
 Each compute node has its own copy of the environment. To install packages in
@@ -570,6 +595,6 @@ is the number of compute nodes in your cluster.
 pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
 ```
 
-## 9. Customize Magic Castle Terraform Files
+## 10. Customize Magic Castle Terraform Files
 
 You can modify the Terraform module files in the `openstack` folder.
