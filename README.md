@@ -350,7 +350,7 @@ on which the instances are connected. Define this only if you
 have more than one network defined in your OpenStack project.
 Otherwise, Terraform can find it automatically.
 
-#### 5.1.5.1 Post Build Modification Effect
+##### 5.1.5.1 Post Build Modification Effect
 
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
