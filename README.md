@@ -297,7 +297,7 @@ security patches and OS updates in advance.
 Modifying this variable after the cluster is built leads to a complete
 cluster rebuild at next `terraform apply`.
 
-###$ 5.1.2 os_flavor_mgmt, os_flavor_login and os_flavor_node
+#### 5.1.2 os_flavor_mgmt, os_flavor_login and os_flavor_node
 
 Define the flavor of one of the three types of servers
 in the cluster: mgmt, login and node (compute node). A flavor in OpenStack
