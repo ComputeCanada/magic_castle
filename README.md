@@ -161,10 +161,7 @@ the cluster in the Slurm accounting database
 
 **Requirements**: Define with lowercase alphanumeric characters and start with a letter.
 
-#### 4.2.1 Post Build Modification Effect
-
-Modifying this variable after the cluster is built leads to a complete
-cluster rebuild at next `terraform apply`.
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
 ### 4.3 domain
 
@@ -179,10 +176,7 @@ module following the current module in the example `main.tf` can
 register the domain name if your domain's nameservers are administered
 by CloudFlare.
 
-#### 4.3.1 Post Build Modification Effect
-
-Modifying this variable after the cluster is built leads to a complete
-cluster rebuild at next `terraform apply`.
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
 ### 4.4 image
 
@@ -206,10 +200,7 @@ Azure requires multiple fields to define which image to choose. This field
 is therefore not only a string, but a map that needs to contain the following
 fields `publisher`, `offer` and `sku`.
 
-#### 4.4.3 Post Build Modification Effect
-
-Modifying this variable after the cluster is built leads to a complete
-cluster rebuild at next `terraform apply`.
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
 ### 4.5 nb_users
 
@@ -228,10 +219,7 @@ in `public_keys`.
 If you would like to add a user account after the cluster is built, refer to
 section [9.3](#93-add-a-user-account) and [9.4](#94-increase-the-number-of-guest-accounts).
 
-#### 4.5.1 Post Build Modification Effect
-
-Modifying `nb_users` after the cluster is built leads to a rebuild
-of the management node at next `terraform apply`.
+**Post Build Modification Effect**: rebuild of all management nodes at next `terraform apply`.
 
 ### 4.6 instances
 
@@ -321,10 +309,7 @@ after the cluster instances are created.
 including AWS and OpenStack because they do not support ed25519 and DSA
 is deprecated.
 
-#### 4.8.1 Post Build Modification Effect
-
-Modifying this variable after the cluster is built leads to a complete
-cluster rebuild at next `terraform apply`.
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
 ### 4.9 guest_passwd (optional)
 
@@ -336,10 +321,7 @@ randomly generated one.
 The password has to have **at least 8 characters**. Otherwise, the guest
 account password will not be properly configured.
 
-#### 4.9.1 Post Build Modification Effect
-
-Modifying this variable after the cluster is built leads to a complete
-cluster rebuild at next `terraform apply`.
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
 ### 4.10 suoder_username (optional)
 
@@ -349,10 +331,7 @@ Defines the username of the account with sudo privileges. The account
 ssh authorized keys are configured with the SSH public key with
 `public_keys`.
 
-#### 4.10.1 Post Build Modification Effect
-
-Modifying this variable after the cluster is built leads to a complete
-cluster rebuild at next `terraform apply`.
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
 ## 5. Cloud Specific Configuration
 
@@ -370,10 +349,7 @@ This variable can be useful if you administer your DNS manually and
 you would like the keep the same domain name for your cluster at each
 build.
 
-##### 5.1.1.1 Post Build Modification Effect
-
-Modifying this variable after the cluster is built will change the
-floating ip assigned to each login node.
+**Post Build Modification Effect**: change the floating ips assigned to the login nodes.
 
 #### 5.1.2 os_ext_network (optional)
 
@@ -383,10 +359,7 @@ Defines the name of the external network that provides the floating
 IPs. Define this only if your OpenStack cloud provides multiple
 external networks, otherwise, Terraform can find it automatically.
 
-##### 5.1.2.1 Post Build Modification Effect
-
-Modifying this variable after the cluster is built will change the
-floating ip assigned to each login node.
+**Post Build Modification Effect**: change the floating ips assigned to the login nodes.
 
 #### 5.1.3 os_int_network (optional)
 
@@ -397,10 +370,7 @@ on which the instances are connected. Define this only if you
 have more than one network defined in your OpenStack project.
 Otherwise, Terraform can find it automatically.
 
-##### 5.1.3.1 Post Build Modification Effect
-
-Modifying this variable after the cluster is built leads to a complete
-cluster rebuild at next `terraform apply`.
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
 ## 6. Planification
 
