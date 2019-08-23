@@ -43,7 +43,7 @@ data "template_file" "hieradata" {
 }
 
 data "template_cloudinit_config" "mgmt_config" {
-  count = var.nb_mgmt
+  count = var.instances["mgmt"]["count"]
   part {
     filename     = "mgmt.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
@@ -58,7 +58,7 @@ data "template_cloudinit_config" "mgmt_config" {
         hieradata             = data.template_file.hieradata.rendered,
         node_name             = format("mgmt%02d", count.index + 1),
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = "[${file(var.public_key_path)}]",
+        ssh_authorized_keys   = var.public_keys,
         home_dev              = local.home_dev,
         project_dev           = local.project_dev,
         scratch_dev           = local.scratch_dev,
@@ -73,7 +73,7 @@ resource "tls_private_key" "login_rsa" {
 }
 
 data "template_cloudinit_config" "login_config" {
-  count = var.nb_login
+  count = var.instances["login"]["count"]
 
   part {
     filename     = "ssh_keys.yaml"
@@ -99,7 +99,7 @@ EOF
       {
         node_name             = format("login%02d", count.index + 1),
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = "[${file(var.public_key_path)}]",
+        ssh_authorized_keys   = var.public_keys,
         puppetmaster          = local.mgmt01_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
       }
@@ -108,7 +108,7 @@ EOF
 }
 
 data "template_cloudinit_config" "node_config" {
-  count = var.nb_nodes
+  count = var.instances["node"]["count"]
   part {
     filename     = "node.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
@@ -118,7 +118,7 @@ data "template_cloudinit_config" "node_config" {
       {
         node_name             = format("node%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = "[${file(var.public_key_path)}]",
+        ssh_authorized_keys   = var.public_keys,
         puppetmaster          = local.mgmt01_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
       }

@@ -57,7 +57,7 @@ resource "google_compute_disk" "scratch" {
 }
 
 resource "google_compute_address" "mgmt" {
-  count        = var.nb_mgmt
+  count        = var.instances["mgmt"]["count"]
   name         = format("%s-mgmt%02d-ipv4", var.cluster_name, count.index + 1)
   address_type = "INTERNAL"
   subnetwork   = google_compute_subnetwork.subnet.self_link
@@ -67,14 +67,14 @@ resource "google_compute_address" "mgmt" {
 resource "google_compute_instance" "mgmt" {
   project      = var.project_name
   zone         = var.zone
-  count        = var.nb_mgmt
+  count        = var.instances["mgmt"]["count"]
   name         = format("%s-mgmt%02d", var.cluster_name, count.index + 1)
-  machine_type = var.machine_type_mgmt
+  machine_type = var.instances["mgmt"]["type"]
   tags         = ["mgmt"]
 
   boot_disk {
     initialize_params {
-      image = var.gcp_image
+      image = var.image
       type  = "pd-ssd"
     }
   }
@@ -99,7 +99,7 @@ resource "google_compute_instance" "mgmt" {
 }
 
 resource "google_compute_attached_disk" "home" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   disk        = google_compute_disk.home[0].self_link
   device_name = google_compute_disk.home[0].name
   mode        = "READ_WRITE"
@@ -107,7 +107,7 @@ resource "google_compute_attached_disk" "home" {
 }
 
 resource "google_compute_attached_disk" "project" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   disk        = google_compute_disk.project[0].self_link
   device_name = google_compute_disk.project[0].name
   mode        = "READ_WRITE"
@@ -115,7 +115,7 @@ resource "google_compute_attached_disk" "project" {
 }
 
 resource "google_compute_attached_disk" "scratch" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   disk        = google_compute_disk.scratch[0].self_link
   device_name = google_compute_disk.scratch[0].name
   mode        = "READ_WRITE"
@@ -123,21 +123,21 @@ resource "google_compute_attached_disk" "scratch" {
 }
 
 resource "google_compute_address" "static" {
-  count = max(var.nb_login, 1)
+  count = max(var.instances["login"]["count"], 1)
   name  = format("login%02d-ipv4", count.index + 1)
 }
 
 resource "google_compute_instance" "login" {
-  count        = var.nb_login
+  count        = var.instances["login"]["count"]
   project      = var.project_name
   zone         = var.zone
   name         = format("%s-login%02d", var.cluster_name, count.index + 1)
-  machine_type = var.machine_type_login
+  machine_type = var.instances["login"]["type"]
   tags         = ["login"]
 
   boot_disk {
     initialize_params {
-      image = var.gcp_image
+      image = var.image
       type  = "pd-ssd"
     }
   }
@@ -158,24 +158,24 @@ resource "google_compute_instance" "login" {
 }
 
 resource "google_compute_instance" "node" {
-  count        = var.nb_nodes
+  count        = var.instances["node"]["count"]
   project      = var.project_name
   zone         = var.zone
   name         = format("%s-node%d", var.cluster_name, count.index + 1)
-  machine_type = var.machine_type_node
+  machine_type = var.instances["node"]["type"]
   scheduling {
     # Instances with guest accelerators do not support live migration.
-    on_host_maintenance = var.gpu_per_node[1] ? "TERMINATE" : "MIGRATE"
+    on_host_maintenance = var.gpu_per_node["count"] > 0 ? "TERMINATE" : "MIGRATE"
   }
   guest_accelerator {
-    type  = var.gpu_per_node[0]
-    count = var.gpu_per_node[1]
+    type  = var.gpu_per_node["type"]
+    count = var.gpu_per_node["count"]
   }
   tags = ["node"]
 
   boot_disk {
     initialize_params {
-      image = var.gcp_image
+      image = var.image
       type  = "pd-ssd"
     }
   }

@@ -52,7 +52,7 @@ resource "openstack_networking_subnet_v2" "subnet" {
 
 resource "openstack_compute_keypair_v2" "keypair" {
   name       = "slurm_cloud_key"
-  public_key = file(var.public_key_path)
+  public_key = var.public_keys[0]
 }
 
 resource "openstack_blockstorage_volume_v2" "home" {
@@ -77,10 +77,11 @@ resource "openstack_blockstorage_volume_v2" "scratch" {
 }
 
 resource "openstack_compute_instance_v2" "mgmt" {
-  count           = var.nb_mgmt
-  name            = format("mgmt%02d", count.index + 1)
-  image_id        = data.openstack_images_image_v2.image.id
-  flavor_name     = var.os_flavor_mgmt
+  count       = var.instances["mgmt"]["count"]
+  flavor_name = var.instances["mgmt"]["type"]
+  image_name  = var.image
+  name        = format("mgmt%02d", count.index + 1)
+
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup.name]
   user_data       = data.template_cloudinit_config.mgmt_config[count.index].rendered
@@ -96,31 +97,31 @@ resource "openstack_compute_instance_v2" "mgmt" {
 }
 
 resource "openstack_compute_volume_attach_v2" "va_home" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
   volume_id   = openstack_blockstorage_volume_v2.home[0].id
 }
 
 resource "openstack_compute_volume_attach_v2" "va_project" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
   volume_id   = openstack_blockstorage_volume_v2.project[0].id
   depends_on  = [openstack_compute_volume_attach_v2.va_home]
 }
 
 resource "openstack_compute_volume_attach_v2" "va_scratch" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
   volume_id   = openstack_blockstorage_volume_v2.scratch[0].id
   depends_on  = [openstack_compute_volume_attach_v2.va_project]
 }
 
 resource "openstack_compute_instance_v2" "login" {
-  count    = var.nb_login
-  name     = format("login%02d", count.index + 1)
-  image_id = var.os_image_id
+  count       = var.instances["login"]["count"]
+  flavor_name = var.instances["login"]["type"]
+  image_name  = var.image
+  name        = format("login%02d", count.index + 1)
 
-  flavor_name     = var.os_flavor_login
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup.name]
   user_data       = data.template_cloudinit_config.login_config[count.index].rendered
@@ -136,11 +137,11 @@ resource "openstack_compute_instance_v2" "login" {
 }
 
 resource "openstack_compute_instance_v2" "node" {
-  count    = var.nb_nodes
-  name     = "node${count.index + 1}"
-  image_id = var.os_image_id
+  count       = var.instances["node"]["count"]
+  flavor_name = var.instances["node"]["type"]
+  image_name  = var.image
+  name        = "node${count.index + 1}"
 
-  flavor_name     = var.os_flavor_node
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup.name]
   user_data       = data.template_cloudinit_config.node_config[count.index].rendered

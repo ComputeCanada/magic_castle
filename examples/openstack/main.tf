@@ -5,11 +5,16 @@ terraform {
 module "openstack" {
   source = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//openstack"
 
-  # Cluster customization
-  cluster_name  = "phoenix"
-  domain        = "calculquebec.cloud"
-  nb_nodes      = 5
-  nb_users      = 10
+  cluster_name = "phoenix"
+  domain       = "calculquebec.cloud"
+  image        = "CentOS-7-x64-2019-07"
+  nb_users     = 10
+
+  instances = {
+    mgmt  = { type = "p4-6gb", count = 1 },
+    login = { type = "p2-3gb", count = 1 },
+    node  = { type = "p2-3gb", count = 1 }
+  }
 
   storage = {
     type         = "nfs"
@@ -18,17 +23,13 @@ module "openstack" {
     scratch_size = 50
   }
 
-  public_key_path = "~/.ssh/id_rsa.pub"
+  public_keys = [file("~/.ssh/id_rsa.pub")]
 
   # Shared password, randomly chosen if blank
-  guest_passwd    = ""
+  guest_passwd = ""
 
-  # OpenStack specifics
-  os_image_name        = "CentOS-7-x64-2018-09"
-  os_flavor_node       = "p2-3gb"
-  os_flavor_login      = "p2-3gb"
-  os_flavor_mgmt       = "p4-6gb"
-  os_floating_ips      = []
+  # OpenStack specific
+  os_floating_ips = []
 }
 
 output "sudoer_username" {

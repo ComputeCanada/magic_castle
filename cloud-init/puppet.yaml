@@ -10,7 +10,10 @@ users:
     homedir: /${sudoer_username}
     selinux_user: unconfined_u
     sudo: ALL=(ALL) NOPASSWD:ALL
-    ssh_authorized_keys: ${ssh_authorized_keys}
+    ssh_authorized_keys:
+%{ for key in ssh_authorized_keys ~}
+      - ${key}
+%{ endfor ~}
 
 runcmd:
   - restorecon -R /${sudoer_username}

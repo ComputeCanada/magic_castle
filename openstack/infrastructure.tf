@@ -16,7 +16,7 @@ data "openstack_networking_subnet_v2" "subnet" {
 }
 
 data "openstack_images_image_v2" "image" {
-  name = var.os_image_name
+  name = var.image
 }
 
 resource "openstack_compute_secgroup_v2" "secgroup_1" {
@@ -57,7 +57,7 @@ resource "openstack_compute_secgroup_v2" "secgroup_1" {
 
 resource "openstack_compute_keypair_v2" "keypair" {
   name       = "${var.cluster_name}_key"
-  public_key = file(var.public_key_path)
+  public_key = var.public_keys[0]
 }
 
 resource "openstack_blockstorage_volume_v2" "home" {
@@ -82,7 +82,7 @@ resource "openstack_blockstorage_volume_v2" "scratch" {
 }
 
 resource "openstack_networking_port_v2" "port_mgmt" {
-  count              = max(var.nb_mgmt, 1)
+  count              = max(var.instances["mgmt"]["count"], 1)
   name               = format("port-mgmt%02d", count.index + 1)
   network_id         = data.openstack_networking_network_v2.int_network.id
   security_group_ids = [openstack_compute_secgroup_v2.secgroup_1.id]
@@ -92,11 +92,11 @@ resource "openstack_networking_port_v2" "port_mgmt" {
 }
 
 resource "openstack_compute_instance_v2" "mgmt" {
-  count    = var.nb_mgmt
+  count    = var.instances["mgmt"]["count"]
   name     = format("mgmt%02d", count.index + 1)
   image_id = data.openstack_images_image_v2.image.id
 
-  flavor_name = var.os_flavor_mgmt
+  flavor_name = var.instances["mgmt"]["type"]
   key_pair    = openstack_compute_keypair_v2.keypair.name
   user_data   = data.template_cloudinit_config.mgmt_config[count.index].rendered
 
@@ -106,29 +106,29 @@ resource "openstack_compute_instance_v2" "mgmt" {
 }
 
 resource "openstack_compute_volume_attach_v2" "va_home" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
   volume_id   = openstack_blockstorage_volume_v2.home[0].id
 }
 
 resource "openstack_compute_volume_attach_v2" "va_project" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
   volume_id   = openstack_blockstorage_volume_v2.project[0].id
 }
 
 resource "openstack_compute_volume_attach_v2" "va_scratch" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
   volume_id   = openstack_blockstorage_volume_v2.scratch[0].id
 }
 
 resource "openstack_compute_instance_v2" "login" {
-  count    = var.nb_login
+  count    = var.instances["login"]["count"]
   name     = format("login%02d", count.index + 1)
   image_id = data.openstack_images_image_v2.image.id
 
-  flavor_name     = var.os_flavor_login
+  flavor_name     = var.instances["login"]["type"]
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup_1.name]
   user_data       = data.template_cloudinit_config.login_config[count.index].rendered
@@ -138,11 +138,11 @@ resource "openstack_compute_instance_v2" "login" {
 }
 
 resource "openstack_compute_instance_v2" "node" {
-  count    = var.nb_nodes
+  count    = var.instances["node"]["count"]
   name     = "node${count.index + 1}"
   image_id = data.openstack_images_image_v2.image.id
 
-  flavor_name     = var.os_flavor_node
+  flavor_name     = var.instances["node"]["type"]
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup_1.name]
   user_data       = data.template_cloudinit_config.node_config[count.index].rendered
@@ -154,7 +154,7 @@ resource "openstack_compute_instance_v2" "node" {
 resource "openstack_networking_floatingip_v2" "fip" {
   count = max(
     max(
-      var.nb_login - length(var.os_floating_ips),
+      var.instances["login"]["count"] - length(var.os_floating_ips),
       1 - length(var.os_floating_ips),
     ),
     0,
@@ -163,7 +163,7 @@ resource "openstack_networking_floatingip_v2" "fip" {
 }
 
 resource "openstack_compute_floatingip_associate_v2" "fip" {
-  count = var.nb_login
+  count = var.instances["login"]["count"]
   floating_ip = local.public_ip[count.index]
   instance_id = openstack_compute_instance_v2.login[count.index].id
 }

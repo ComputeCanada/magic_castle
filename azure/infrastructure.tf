@@ -2,10 +2,6 @@
 provider "azurerm" {
 }
 
-variable "ssh_user" {
-  default = "centos"
-}
-
 # Create a resource group
 resource "azurerm_resource_group" "group" {
   name     = "myResourceGroup"
@@ -30,7 +26,7 @@ resource "azurerm_subnet" "subnet" {
 
 # Create public IPs
 resource "azurerm_public_ip" "loginIP" {
-  count                        = var.nb_login
+  count                        = var.instances["login"]["count"]
   name                         = format("login-ip-%02d", count.index + 1)
   location                     = var.location
   resource_group_name          = azurerm_resource_group.group.name
@@ -38,7 +34,7 @@ resource "azurerm_public_ip" "loginIP" {
 }
 
 resource "azurerm_public_ip" "mgmtIP" {
-  count                        = var.nb_mgmt
+  count                        = var.instances["mgmt"]["count"]
   name                         = format("mgmt-ip-%02d", count.index + 1)
   location                     = var.location
   resource_group_name          = azurerm_resource_group.group.name
@@ -46,7 +42,7 @@ resource "azurerm_public_ip" "mgmtIP" {
 }
 
 resource "azurerm_public_ip" "nodeIP" {
-  count                        = var.nb_nodes
+  count                        = var.instances["node"]["count"]
   name                         = format("node-ip-%02d", count.index + 1)
   location                     = var.location
   resource_group_name          = azurerm_resource_group.group.name
@@ -96,8 +92,8 @@ resource "azurerm_network_security_group" "security_mgmt" {
 
 # Create network interface
 resource "azurerm_network_interface" "loginNIC" {
-  count                     = var.nb_login
-  name                      = format("node-nic-%02d", count.index + 1)
+  count                     = var.instances["login"]["count"]
+  name                      = format("login-nic-%02d", count.index + 1)
   location                  = var.location
   resource_group_name       = azurerm_resource_group.group.name
   network_security_group_id = azurerm_network_security_group.security_login.id
@@ -111,7 +107,7 @@ resource "azurerm_network_interface" "loginNIC" {
 }
 
 resource "azurerm_network_interface" "mgmtNIC" {
-  count                     = var.nb_mgmt
+  count                     = var.instances["mgmt"]["count"]
   name                      = format("mgmt-nic-%02d", count.index + 1)
   location                  = var.location
   resource_group_name       = azurerm_resource_group.group.name
@@ -126,7 +122,7 @@ resource "azurerm_network_interface" "mgmtNIC" {
 }
 
 resource "azurerm_network_interface" "nodeNIC" {
-  count               = var.nb_nodes
+  count               = var.instances["node"]["count"]
   name                = format("node-nic-%02d", count.index + 1)
   location            = var.location
   resource_group_name = azurerm_resource_group.group.name
@@ -141,12 +137,12 @@ resource "azurerm_network_interface" "nodeNIC" {
 
 # Create virtual machine
 resource "azurerm_virtual_machine" "login" {
-  count                 = var.nb_login
+  count                 = var.instances["login"]["count"]
+  vm_size               = var.instances["login"]["type"]
   name                  = format("login%02d", count.index + 1)
   location              = var.location
   resource_group_name   = azurerm_resource_group.group.name
   network_interface_ids = [azurerm_network_interface.loginNIC[count.index].id]
-  vm_size               = var.vm_size_login
 
   storage_os_disk {
     name              = "loginDisk"
@@ -156,34 +152,30 @@ resource "azurerm_virtual_machine" "login" {
   }
 
   storage_image_reference {
-    publisher = "OpenLogic"
-    offer     = "CentOS"
-    sku       = "7-CI"
+    publisher = var.image["publisher"]
+    offer     = var.image["offer"]
+    sku       = var.image["sku"]
     version   = "latest"
   }
 
   os_profile {
     computer_name  = format("login%02d", count.index + 1)
-    admin_username = var.ssh_user
+    admin_username = "azure"
     custom_data = data.template_cloudinit_config.login_config[count.index].rendered
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
-    ssh_keys {
-      path     = "/home/${var.ssh_user}/.ssh/authorized_keys"
-      key_data = file(var.public_key_path)
-    }
   }
 }
 
 resource "azurerm_virtual_machine" "mgmt" {
-  count                 = var.nb_mgmt
+  count                 = var.instances["mgmt"]["count"]
+  vm_size               = var.instances["mgmt"]["type"]
   name                  = format("mgmt%02d", count.index + 1)
   location              = var.location
   resource_group_name   = azurerm_resource_group.group.name
   network_interface_ids = [azurerm_network_interface.mgmtNIC[count.index].id]
-  vm_size               = var.vm_size_mgmt
 
   storage_os_disk {
     name              = "mgmtDisk${count.index + 1}"
@@ -193,24 +185,20 @@ resource "azurerm_virtual_machine" "mgmt" {
   }
 
   storage_image_reference {
-    publisher = "OpenLogic"
-    offer     = "CentOS"
-    sku       = "7-CI"
+    publisher = var.image["publisher"]
+    offer     = var.image["offer"]
+    sku       = var.image["sku"]
     version   = "latest"
   }
 
   os_profile {
     computer_name  = format("mgmt%02d", count.index + 1)
-    admin_username = var.ssh_user
+    admin_username = "azure"
     custom_data = data.template_cloudinit_config.mgmt_config[count.index].rendered
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
-    ssh_keys {
-      path     = "/home/${var.ssh_user}/.ssh/authorized_keys"
-      key_data = file(var.public_key_path)
-    }
   }
 }
 
@@ -245,7 +233,7 @@ resource "azurerm_managed_disk" "scratch" {
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "home" {
-  count              = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count              = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   managed_disk_id    = azurerm_managed_disk.home[0].id
   virtual_machine_id = azurerm_virtual_machine.mgmt[0].id
   lun                = "10"
@@ -253,7 +241,7 @@ resource "azurerm_virtual_machine_data_disk_attachment" "home" {
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "project" {
-  count              = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count              = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   managed_disk_id    = azurerm_managed_disk.project[0].id
   virtual_machine_id = azurerm_virtual_machine.mgmt[0].id
   lun                = "11"
@@ -261,7 +249,7 @@ resource "azurerm_virtual_machine_data_disk_attachment" "project" {
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "scratch" {
-  count              = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count              = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   managed_disk_id    = azurerm_managed_disk.scratch[0].id
   virtual_machine_id = azurerm_virtual_machine.mgmt[0].id
   lun                = "12"
@@ -270,11 +258,11 @@ resource "azurerm_virtual_machine_data_disk_attachment" "scratch" {
 
 resource "azurerm_virtual_machine" "nodevm" {
   name                  = "node${count.index + 1}"
-  count                 = var.nb_nodes
+  count                 = var.instances["node"]["count"]
+  vm_size               = var.instances["node"]["type"]
   location              = var.location
   resource_group_name   = azurerm_resource_group.group.name
   network_interface_ids = [azurerm_network_interface.nodeNIC[count.index].id]
-  vm_size               = var.vm_size_node
 
   storage_os_disk {
     name              = "nodeDisk${count.index + 1}"
@@ -284,24 +272,20 @@ resource "azurerm_virtual_machine" "nodevm" {
   }
 
   storage_image_reference {
-    publisher = "OpenLogic"
-    offer     = "CentOS"
-    sku       = "7-CI"
+    publisher = var.image["publisher"]
+    offer     = var.image["offer"]
+    sku       = var.image["sku"]
     version   = "latest"
   }
 
   os_profile {
     computer_name  = "node${count.index + 1}"
-    admin_username = var.ssh_user
+    admin_username = "azure"
     custom_data = data.template_cloudinit_config.node_config[count.index].rendered
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
-    ssh_keys {
-      path     = "/home/${var.ssh_user}/.ssh/authorized_keys"
-      key_data = file(var.public_key_path)
-    }
   }
 }
 

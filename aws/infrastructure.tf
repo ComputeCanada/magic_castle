@@ -96,14 +96,14 @@ resource "aws_security_group" "allow_any_inside_vpc" {
 
 resource "aws_key_pair" "key" {
   key_name   = "slurm-cloud-key"
-  public_key = file(var.public_key_path)
+  public_key = var.public_keys[0]
 }
 
 # Instances
 resource "aws_instance" "mgmt" {
-  count         = var.nb_mgmt
-  instance_type = var.instance_type_mgmt
-  ami           = "ami-dcad28b8" # CentOS 7 -  ca-central-1
+  count         = var.instances["mgmt"]["count"]
+  instance_type = var.instances["mgmt"]["type"]
+  ami           = var.image
   user_data     = data.template_cloudinit_config.mgmt_config[count.index].rendered
 
   subnet_id                   = aws_subnet.private_subnet.id
@@ -154,30 +154,30 @@ resource "aws_ebs_volume" "scratch" {
 }
 
 resource "aws_volume_attachment" "home" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   device_name = "/dev/sdb"
   volume_id   = aws_ebs_volume.home[0].id
   instance_id = aws_instance.mgmt[0].id
 }
 
 resource "aws_volume_attachment" "project" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   device_name = "/dev/sdc"
   volume_id   = aws_ebs_volume.project[0].id
   instance_id = aws_instance.mgmt[0].id
 }
 
 resource "aws_volume_attachment" "scratch" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? 1 : 0
+  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   device_name = "/dev/sdd"
   volume_id   = aws_ebs_volume.scratch[0].id
   instance_id = aws_instance.mgmt[0].id
 }
 
 resource "aws_instance" "login" {
-  count         = var.nb_login
-  instance_type = var.instance_type_login
-  ami           = "ami-dcad28b8" # CentOS 7 -  ca-central-1
+  count         = var.instances["login"]["count"]
+  instance_type = var.instances["login"]["type"]
+  ami           = var.image
   user_data = data.template_cloudinit_config.login_config[count.index].rendered
 
   subnet_id                   = aws_subnet.private_subnet.id
@@ -196,11 +196,10 @@ resource "aws_instance" "login" {
 }
 
 resource "aws_instance" "node" {
-  count = var.nb_nodes
+  count         = var.instances["node"]["count"]
+  instance_type = var.instances["node"]["type"]
+  ami           = var.image
 
-  # CentOS 7 -  ca-central-1
-  ami           = "ami-dcad28b8"
-  instance_type = var.instance_type_node
   user_data = data.template_cloudinit_config.node_config[count.index].rendered
 
   subnet_id                   = aws_subnet.private_subnet.id
@@ -221,7 +220,7 @@ locals {
   mgmt01_ip   = aws_instance.mgmt[0].private_ip
   public_ip   = aws_instance.login[0].public_ip
   cidr        = aws_subnet.private_subnet.cidr_block
-  home_dev    = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? aws_volume_attachment.home[0].device_name : ""
-  project_dev = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? aws_volume_attachment.project[0].device_name : ""
-  scratch_dev = (lower(var.storage["type"]) == "nfs" && var.nb_mgmt > 0) ? aws_volume_attachment.scratch[0].device_name : ""
+  home_dev    = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? aws_volume_attachment.home[0].device_name : ""
+  project_dev = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? aws_volume_attachment.project[0].device_name : ""
+  scratch_dev = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? aws_volume_attachment.scratch[0].device_name : ""
 }

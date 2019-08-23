@@ -5,12 +5,16 @@ terraform {
 module "gcp" {
   source = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//gcp"
 
-  # Cluster customization
-  cluster_name    = "phoenix"
-  domain          = "calculquebec.cloud"
-  sudoer_username = "castle"
-  nb_nodes        = 5
-  nb_users        = 10
+  cluster_name = "phoenix"
+  domain       = "calculquebec.cloud"
+  image        = "centos-7"
+  nb_users     = 10
+
+  instances = {
+    mgmt  = { type = "n1-standard-2", count = 1 },
+    login = { type = "n1-standard-2", count = 1 },
+    node  = { type = "n1-standard-2", count = 1 }
+  }
 
   storage = {
     type         = "nfs"
@@ -19,20 +23,19 @@ module "gcp" {
     scratch_size = 50
   }
 
-  public_key_path = "~/.ssh/id_rsa.pub"
+  public_keys = [file("~/.ssh/id_rsa.pub")]
+
+  # Shared password, randomly chosen if blank
+  guest_passwd = ""
 
   # GCP specifics
   project_name = "crested-return-137823"
   region       = "us-central1"
   zone         = "us-central1-a"
-  gcp_image    = "centos-7"
-
-  machine_type_mgmt  = "n1-standard-2"
-  machine_type_login = "n1-standard-2"
-  machine_type_node  = "n1-standard-2"
-
-  # ["GPU card", count]
-  gpu_per_node = ["nvidia-tesla-k80", 0]
+  gpu_per_node = {
+    type = "nvidia-tesla-k80"
+    count = 0
+  }
 }
 
 output "sudoer_username" {

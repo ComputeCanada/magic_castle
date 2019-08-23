@@ -1,18 +1,19 @@
 variable "cluster_name" {
 }
 
-variable "nb_mgmt" {
-  default = 1
-}
-
-variable "nb_login" {
-  default = 1
-}
-
-variable "nb_nodes" {
-}
-
 variable "nb_users" {
+  type = number
+}
+
+variable "instances" {
+  type = object({
+    mgmt=object({type=string, count=number}),
+    login=object({type=string, count=number}),
+    node=object({type=string, count=number}),
+  })
+}
+
+variable "image" {
 }
 
 variable "storage" {
@@ -27,7 +28,7 @@ variable "storage" {
 variable "domain" {
 }
 
-variable "public_key_path" {
+variable "public_keys" {
 }
 
 variable "guest_passwd" {

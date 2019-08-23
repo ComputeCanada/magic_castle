@@ -5,11 +5,20 @@ terraform {
 module "azure" {
   source = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//azure"
 
-  # Cluster customization
-  cluster_name    = "phoenix"
-  domain          = "calculquebec.cloud"
-  nb_nodes        = 5
-  nb_users        = 10
+  cluster_name = "phoenix"
+  domain       = "calculquebec.cloud"
+  image        = {
+    publisher = "OpenLogic",
+    offer     = "CentOS",
+    sku       = "7-CI"
+  }
+  nb_users     = 10
+
+  instances = {
+    mgmt  = { type = "Standard_DS2_v2", count = 1 },
+    login = { type = "Standard_DS1_v2", count = 1 },
+    node  = { type = "Standard_DS1_v2", count = 1 }
+  }
 
   storage = {
     type         = "nfs"
@@ -18,19 +27,40 @@ module "azure" {
     scratch_size = 50
   }
 
-  public_key_path = "~/.ssh/id_rsa.pub"
+  public_keys = [file("~/.ssh/id_rsa.pub")]
+
+  # Shared password, randomly chosen if blank
+  guest_passwd = ""
 
   # Azure specifics
-  location      = "eastus"
-  vm_size_mgmt  = "Standard_DS1_v2"
-  vm_size_login = "Standard_DS1_v2"
-  vm_size_node  = "Standard_DS1_v2"
+  location = "eastus"
+}
+
+output "sudoer_username" {
+  value = module.azure.sudoer_username
+}
+
+output "guest_usernames" {
+  value = module.azure.guest_usernames
+}
+
+output "guest_passwd" {
+  value = module.azure.guest_passwd
 }
 
 output "public_ip" {
   value = module.azure.ip
 }
 
-output "guest_passwd" {
-  value = module.azure.guest_passwd
-}
+## Uncomment to register your domain name with CloudFlare
+# module "dns" {
+#   source           = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//dns/cloudflare"
+#   name             = module.azure.cluster_name
+#   domain           = module.azure.domain
+#   public_ip        = module.azure.ip
+#   rsa_public_key   = module.azure.rsa_public_key
+#   sudoer_username  = module.azure.sudoer_username
+# }
+# output "hostnames" {
+# 	value = module.dns.hostnames
+# }
