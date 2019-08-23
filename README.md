@@ -97,7 +97,7 @@ $ terraform version
 ### 3.1 Main File
 
 1. Go to https://git.computecanada.ca/magic_castle/slurm_cloud/releases.
-2. Download the latest release of Magic Castle for OpenStack.
+2. Download the latest release of Magic Castle for your cloud provider.
 3. Open a Terminal.
 4. Uncompress the release: `tar xvf magic_castle*.tar.gz`
 5. Rename the release folder after your favourite superhero: `mv magic_castle* hulk`
@@ -175,7 +175,7 @@ Defines
 
 If you own a domain, you can register the login floating IP address
 under `{cluster_name}.{domain}` manually with your registrar. An optional
-module following the `openstack` module in the example `main.tf` can
+module following the current module in the example `main.tf` can
 register the domain name if your domain's nameservers are administered
 by CloudFlare.
 
