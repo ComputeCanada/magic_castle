@@ -174,14 +174,11 @@ Each user has a home folder on a shared NFS storage hosted by the management
 node.
 
 User accounts do not have sudoer privileges. If you wish to use `sudo`,
-you will have to login using the sudoer account and the
-SSH key defined by `public_key_path`.
+you will have to login using the sudoer account and the SSH keys lists
+in `public_keys`.
 
-If you would like to add a user account after the cluster is built. Log in the
-management node and call:
-```
-$ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.py <username>
-```
+If you would like to add a user account after the cluster is built, refer to
+section [9.3](#93-add-a-user-account) and [9.4](#94-increase-the-number-of-guest-accounts).
 
 #### 4.5.1 Post Build Modification Effect
 
