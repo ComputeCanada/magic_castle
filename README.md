@@ -170,7 +170,7 @@ Defines
 * the internal domain name and the resolv.conf search domain as
 `int.{cluster_name}.{domain}`
 
-If you own a domain, you can register the login floating IP address
+If you own a domain, you can register the login external IP address
 under `{cluster_name}.{domain}` manually with your registrar. An optional
 module following the current module in the example `main.tf` can
 register the domain name if your domain's nameservers are administered
