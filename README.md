@@ -18,21 +18,69 @@ Version: 5.0
 
 To use Magic Castle you will need:
 * Terraform (>= 0.12).
-* Access to an OpenStack Cloud (e.g.: Arbutus)
-* Ability to communicate with the OpenStack API from your computer
-* An OpenStack project with room for the allocation of at least
-  * 1 floating IP
-  * 1 security group
-  * 3 volumes
-  * 3 instances
-  * 6 VCPUs
-  * 6 GB of RAM
-  * 7 neutron ports
-  * 11 security rules
+* Access to a Cloud (e.g.: Compute Canada Arbutus)
+* Ability to communicate with the cloud provider API from your computer
+* A cloud project with enough room for the resource described in section [1.2](#12-quotas).
 
-The project can be used to build clusters with commercial cloud, but it implies cost or access to credit.
+### 1.1 Quotas
 
-### 1.1 Setup check
+#### 1.1.1 OpenStack
+
+* 1 floating IP
+* 1 security group
+* 3 volumes
+* 3 instances
+* 6 VCPUs
+* 7 neutron port
+* 8 GB of RAM
+* 11 security rules
+* 50 Volume Storage (GB)
+
+#### 1.1.2 Google Cloud
+
+**Global**
+* 1 Network
+* 1 Subnetwork
+* 1 In-use IP address
+* 1 Static IP address
+* 1 Route
+* 11 Firewall rules
+
+**Region**
+* 1 In-use IP addresses
+* 8 CPUs
+* 30 Local SSD (GB)
+* 50 Persistent Disk Standard (GB)
+
+To look and edit your GCP quota go to :
+[https://console.cloud.google.com/iam-admin/quotas](https://console.cloud.google.com/iam-admin/quotas)
+
+### 1.2 Authentication
+
+#### 1.2.1 OpenStack
+
+First, download your OpenStack Open RC file.
+It is project-specific and contains the credentials used
+by Terraform to communicate with OpenStack API. It comes
+as a sourceable shell script. To download, using OpenStack webpage go to:
+**Project** → **API Access**, then click on **Download OpenStack RC File**
+then right-click on **OpenStack RC File (Identity API v3)**, **Save Link as...**, then
+select the same folder that contains `main.tf`.
+
+Second, in a terminal located in the same folder as your OpenStack RC file
+and your `main.tf` file, source the OpenStack RC file.
+```
+$ source *-openrc.sh
+```
+
+This command will ask for a password, enter your OpenStack password.
+
+#### 1.2.2 Google Cloud
+
+1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/downloads-interactive)
+2. In a terminal, enter : `gcloud auth application-default login`
+
+### 1.3 Setup check
 
 1. Open a terminal
 2. Verify Terraform was properly installed by looking at the version
@@ -358,33 +406,17 @@ cluster rebuild at next `terraform apply`.
 
 Once your initial cluster configuration is done, you can initiate
 a planning phase where you will ask Terraform to communicate with
-OpenStack and verify that your cluster can be built as it is
+your cloud provider and verify that your cluster can be built as it is
 described by the `main.tf` configuration file.
 
-First, you will have to download your OpenStack Open RC
-file. It is project-specific and contains the credentials used
-by Terraform to communicate with OpenStack API. It comes
-as a sourceable shell script. To download, using OpenStack webpage go to:
-**Project** → **API Access**, then click on **Download OpenStack RC File**
-then right-click on **OpenStack RC File (Identity API v3)**, **Save Link as...**, then
-select the same folder that contains `main.tf`.
-
-Second, in a terminal located in the same folder as your OpenStack RC file
-and your `main.tf` file, source the OpenStack RC file.
-```
-$ source *-openrc.sh
-```
-
-This command will ask for a password, enter your Compute Canada password.
-
-Terraform should now be able to communicate with OpenStack. To test your
-configuration file, enter the following command
+Terraform should now be able to communicate with your cloud provier.
+To test your configuration file, enter the following command
 ```
 $ terraform plan
 ```
 
 This command will validate the syntax of your configuration file and
-communicate with OpenStack, but it will not create new resources. It
+communicate with the provier, but it will not create new resources. It
 is only a dry-run. If Terraform does not report any error, you can move
 to the next step. Otherwise, read the errors and fix your configuration
 file accordingly.
