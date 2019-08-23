@@ -65,7 +65,7 @@ mounts:
 
 write_files:
   - content: |
-      ${hieradata}
+      ${ indent(6, hieradata) }
     path: /etc/puppetlabs/code/data/terraform_data.yaml
   - content: |
       127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 puppet

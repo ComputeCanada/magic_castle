@@ -42,46 +42,28 @@ data "template_file" "hieradata" {
   }
 }
 
-data "template_file" "mgmt" {
-  template = file("${path.module}/cloud-init/mgmt.yaml")
-  count    = var.nb_mgmt
-
-  vars = {
-    puppetenv_git         = "${replace(replace(var.puppetenv_git, ".git", ""), "//*$/", ".git")}"
-    puppetenv_rev         = var.puppetenv_rev
-    puppetmaster          = local.mgmt01_ip
-    puppetmaster_password = random_string.puppetmaster_password.result
-    hieradata             = indent(6, data.template_file.hieradata.rendered)
-    node_name             = format("mgmt%02d", count.index + 1)
-    sudoer_username       = var.sudoer_username
-    ssh_authorized_keys   = "[${file(var.public_key_path)}]"
-    home_dev              = local.home_dev
-    project_dev           = local.project_dev
-    scratch_dev           = local.scratch_dev
-  }
-}
-
 data "template_cloudinit_config" "mgmt_config" {
   count = var.nb_mgmt
-
   part {
     filename     = "mgmt.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
-    content      = data.template_file.mgmt[count.index].rendered
-  }
-}
-
-data "template_file" "login" {
-  template = file("${path.module}/cloud-init/puppet.yaml")
-  count    = var.nb_login
-
-  vars = {
-    node_name             = format("login%02d", count.index + 1)
-    sudoer_username       = var.sudoer_username
-    ssh_authorized_keys   = "[${file(var.public_key_path)}]"
-    puppetmaster          = local.mgmt01_ip
-    puppetmaster_password = random_string.puppetmaster_password.result
+    content      = templatefile(
+      "${path.module}/cloud-init/mgmt.yaml",
+      {
+        puppetenv_git         = replace(replace(var.puppetenv_git, ".git", ""), "//*$/", ".git"),
+        puppetenv_rev         = var.puppetenv_rev,
+        puppetmaster          = local.mgmt01_ip,
+        puppetmaster_password = random_string.puppetmaster_password.result,
+        hieradata             = data.template_file.hieradata.rendered,
+        node_name             = format("mgmt%02d", count.index + 1),
+        sudoer_username       = var.sudoer_username,
+        ssh_authorized_keys   = "[${file(var.public_key_path)}]",
+        home_dev              = local.home_dev,
+        project_dev           = local.project_dev,
+        scratch_dev           = local.scratch_dev,
+      }
+    )
   }
 }
 
@@ -112,20 +94,16 @@ EOF
     filename     = "login.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
-    content      = data.template_file.login[count.index].rendered
-  }
-}
-
-data "template_file" "node" {
-  template = file("${path.module}/cloud-init/puppet.yaml")
-  count = var.nb_nodes
-
-  vars = {
-    node_name             = "node${count.index + 1}"
-    sudoer_username       = var.sudoer_username
-    ssh_authorized_keys   = "[${file(var.public_key_path)}]"
-    puppetmaster          = local.mgmt01_ip
-    puppetmaster_password = random_string.puppetmaster_password.result
+    content      = templatefile(
+      "${path.module}/cloud-init/puppet.yaml",
+      {
+        node_name             = format("login%02d", count.index + 1),
+        sudoer_username       = var.sudoer_username,
+        ssh_authorized_keys   = "[${file(var.public_key_path)}]",
+        puppetmaster          = local.mgmt01_ip,
+        puppetmaster_password = random_string.puppetmaster_password.result,
+      }
+    )
   }
 }
 
@@ -135,6 +113,15 @@ data "template_cloudinit_config" "node_config" {
     filename     = "node.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
-    content      = data.template_file.node[count.index].rendered
+    content      = templatefile(
+      "${path.module}/cloud-init/puppet.yaml",
+      {
+        node_name             = format("node%d", count.index + 1),
+        sudoer_username       = var.sudoer_username,
+        ssh_authorized_keys   = "[${file(var.public_key_path)}]",
+        puppetmaster          = local.mgmt01_ip,
+        puppetmaster_password = random_string.puppetmaster_password.result,
+      }
+    )
   }
 }
