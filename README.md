@@ -155,7 +155,7 @@ Defines the `ClusterName` variable in `slurm.conf` and the name of
 the cluster in the Slurm accounting database
 ([see `slurm.conf` documentation](https://slurm.schedmd.com/slurm.conf.html)).
 
-**Requirements**: Define with lowercase alphanumeric characters and start with a letter.
+**Requirement**: Must be lowercase alphanumeric characters and start with a letter.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
@@ -172,12 +172,12 @@ module following the current module in the example `main.tf` can
 register the domain name if your domain's nameservers are administered
 by CloudFlare.
 
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
-
 **Requirement**: Must be a fully qualified DNS name and
 (RFC-1035-valid)[https://tools.ietf.org/html/rfc1035].
 Valid format is a series of labels 1-63 characters long matching the
 regular expression [a-z]([-a-z0-9]*[a-z0-9]), concatenated with periods.
+
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
 ### 4.4 image
 
@@ -219,6 +219,8 @@ in `public_keys`.
 
 If you would like to add a user account after the cluster is built, refer to
 section [9.3](#93-add-a-user-account) and [9.4](#94-increase-the-number-of-guest-accounts).
+
+**Requirement**: Must be an integer, minimum value is 0.
 
 **Post Build Modification Effect**: rebuild of all management nodes at next `terraform apply`.
 
