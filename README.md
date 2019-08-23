@@ -146,12 +146,7 @@ should be mainly done through Puppet scripting. Image customization is mostly
 envisioned as a way to accelerate the provisioning process by applying the
 security patches and OS updates in advance.
 
-#### 4.4.1 Post Build Modification Effect
-
-Modifying this variable after the cluster is built leads to a complete
-cluster rebuild at next `terraform apply`.
-
-#### 4.4.2 AWS
+#### 4.4.1 AWS
 
 The image field needs to correspond to the Amazon Machine Image id or AMI.
 The AMI is specific to each region, so make sure to use the right AMI for
@@ -162,6 +157,11 @@ the region you chose.
 Azure requires multiple fields to define which image to choose. This field
 is therefore not only a string, but a map that needs to contain the following
 fields `publisher`, `offer` and `sku`.
+
+#### 4.4.3 Post Build Modification Effect
+
+Modifying this variable after the cluster is built leads to a complete
+cluster rebuild at next `terraform apply`.
 
 ### 4.5 nb_users
 
