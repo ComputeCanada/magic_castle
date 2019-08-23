@@ -588,7 +588,9 @@ By default, port 22 of the login node is accessible from the world.
 If you know the range of ip addresses that will connect to your cluster,
 we strongly recommend you to limit the access to port 22 to this range.
 
-To restrict the ip range, you can use OpenStack webpage.
+#### 9.5.1 OpenStack
+
+You can use OpenStack webpage.
 
 1. In OpenStack webpage, go to: **Project** → **Network** → **Security Groups**
 2. In the Security Groups table, there should be a line named like your cluster
@@ -626,4 +628,5 @@ pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
 
 ## 10. Customize Magic Castle Terraform Files
 
-You can modify the Terraform module files in the `openstack` folder.
+You can modify the Terraform module files in the folder named after your cloud
+provied (e.g: `gcp`, `openstack`, `aws`, etc.)
