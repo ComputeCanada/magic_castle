@@ -298,8 +298,8 @@ cluster rebuild at next `terraform apply`.
 **default value**: `centos`
 
 Defines the username of the account with sudo privileges. The account
-ssh authorized keys are configured with the SSH public key from
-`public_key_path`.
+ssh authorized keys are configured with the SSH public key with
+`public_keys`.
 
 #### 4.10.1 Post Build Modification Effect
 
