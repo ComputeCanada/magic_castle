@@ -263,7 +263,6 @@ of a new empty volume and attachment.
 ### 4.8 public_keys
 
 List of SSH public keys that will have access to your cluster sudoer account.
-(see note).
 
 **Note 1**: You will need to add the private key associated with this public
 key to your local authentication agent (i.e: `ssh-add`) if you use the CloudFlare
