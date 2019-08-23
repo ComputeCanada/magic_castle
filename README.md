@@ -318,8 +318,7 @@ is deprecated.
 Defines the password for the guest user accounts instead of using a
 randomly generated one.
 
-The password has to have **at least 8 characters**. Otherwise, the guest
-account password will not be properly configured.
+**Requirement**: Minimum length **8 characters**.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
