@@ -188,6 +188,8 @@ should be mainly done through Puppet scripting. Image customization is mostly
 envisioned as a way to accelerate the provisioning process by applying the
 security patches and OS updates in advance.
 
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+
 #### 4.4.1 AWS
 
 The image field needs to correspond to the Amazon Machine Image id or AMI.
@@ -199,8 +201,6 @@ the region you chose.
 Azure requires multiple fields to define which image to choose. This field
 is therefore not only a string, but a map that needs to contain the following
 fields `publisher`, `offer` and `sku`.
-
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
 ### 4.5 nb_users
 
@@ -290,11 +290,8 @@ for respectively `/home`, `/project` and `/scratch`.
 If `type` is set to `nfs`, each volume is mounted on `mgmt01` and
 exported with NFS to the login and the compute nodes.
 
-#### 4.7.1 Post Build Modification Effect
-
-Modifying one of these variables after the cluster is built leads to the
-destruction of the corresponding volume and attachment and the creation
-of a new empty volume and attachment.
+**Post Build Modification Effect**: destruction of the corresponding volumes and attachments, and creation
+of new empty volumes and attachments.
 
 ### 4.8 public_keys
 
