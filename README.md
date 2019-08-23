@@ -512,7 +512,7 @@ password of the user accounts, follow these steps:
 3. Create a variable containing the new human defined password: `NEW_PASSWD=<human_passwd>`.
 This password must respect the FreeIPA password policy. To display the policy enter
 ```
-# Enter FreeIPA admin password available in /etc/puppetlabs/puppet/hieradata/data.yaml
+# Enter FreeIPA admin password available in /etc/puppetlabs/code/environments/production/data/terraform_data.yaml
 $ kinit admin
 $ ipa pwpolicy-show
 $ kdestroy
