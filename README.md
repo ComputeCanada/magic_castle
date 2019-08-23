@@ -433,7 +433,7 @@ some or all resources, and create new ones. The effects of modifying each
 variable are detailed in the subsections of **Configuration**.
 
 For example, to increase the number of computes nodes by one. Open
-`main.tf`, add 1 to `nb_nodes`, save the document and call
+`main.tf`, add 1 to `node`'s `count` , save the document and call
 ```
 $ terraform apply
 ```
@@ -462,10 +462,8 @@ shared storage will be erased.
 ### 8.1 Instance Destruction
 
 It is possible to destroy only the instances and keep the rest of the infrastructure
-like the floating ip, the volumes, the generated SSH hostkey, etc.
-* To destroy the management node, set `nb_mgmt = 0`;
-* To destroy the login node, set `nb_login = 0`;
-* To destroy the compute nodes, set `nb_nodes = 0`.
+like the floating ip, the volumes, the generated SSH hostkey, etc. To do so, set
+the count value of the instance type you wish to destroy to 0.
 
 ## 9. Online Cluster Configuration
 
