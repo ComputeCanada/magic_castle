@@ -149,10 +149,6 @@ the `.tf` files that defines the resources that constitutes your future
 cluster. We are pointing this variable at the cloud provider folder in the
 release folder (i.e.: `./openstack`).
 
-**Warning**: not all cloud provider modules use the same variables.
-You should refer to the documentation specific to the cloud provider
-you want to use.
-
 ### 4.2 cluster_name
 
 Defines the `ClusterName` variable in `slurm.conf` and the name of
