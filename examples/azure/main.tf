@@ -3,7 +3,7 @@ terraform {
 }
 
 module "azure" {
-  source = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//azure"
+  source = "git::https://github.com/ComputeCanada/magic_castle.git//azure"
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
@@ -54,7 +54,7 @@ output "public_ip" {
 
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
-#   source           = "git::ssh://gitlab@git.computecanada.ca/magic_castle/slurm_cloud.git//dns/cloudflare"
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
 #   name             = module.azure.cluster_name
 #   domain           = module.azure.domain
 #   public_ip        = module.azure.ip
