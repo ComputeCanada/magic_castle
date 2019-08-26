@@ -3,7 +3,7 @@
 ## Setup
 
 - Install [Terraform >= 0.12](https://www.terraform.io/downloads.html)
-- Download the [latest release of Magic Castle](https://git.computecanada.ca/magic_castle/slurm_cloud/-/releases) for the cloud provider you wish to use.
+- Download the [latest release of Magic Castle](https://github.com/ComputeCanada/magic_castle/releases) for the cloud provider you wish to use.
 - Uncompress the release
 - Follow the instructions 
   - [OpenStack Cloud (Compute Canada)](openstack/README.md)
