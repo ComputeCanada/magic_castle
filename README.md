@@ -371,6 +371,30 @@ Otherwise, Terraform can find it automatically.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
+### 5.2 Google Cloud
+
+#### 5.2.1 project_name
+
+#### 5.2.2 region
+
+#### 5.2.3 zone
+
+#### 5.2.4 gpu_per_node
+
+### 5.3 Amazon Web Services
+
+#### 5.3.1 region
+
+#### 5.3.2 availability_zone
+
+### 5.4 Microsoft Azure
+
+#### 5.4.1 location
+
+### 5.5 OVH
+
+#### 5.5.1 
+
 ## 6. Planification
 
 Once your initial cluster configuration is done, you can initiate
