@@ -1,5 +1,4 @@
 # Magic Castle Documentation
-Version: 5.0
 
 ## Table of Content
 
