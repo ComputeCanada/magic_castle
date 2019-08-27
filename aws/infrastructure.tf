@@ -99,6 +99,11 @@ resource "aws_key_pair" "key" {
   public_key = var.public_keys[0]
 }
 
+resource "aws_network_interface" "mgmt" {
+  count       = var.instances["mgmt"]["count"]
+  subnet_id   = "${aws_subnet.private_subnet.id}"
+}
+
 # Instances
 resource "aws_instance" "mgmt" {
   count         = var.instances["mgmt"]["count"]
@@ -106,9 +111,13 @@ resource "aws_instance" "mgmt" {
   ami           = var.image
   user_data     = data.template_cloudinit_config.mgmt_config[count.index].rendered
 
-  subnet_id                   = aws_subnet.private_subnet.id
   key_name                    = aws_key_pair.key.key_name
   associate_public_ip_address = "true"
+
+  network_interface {
+    network_interface_id = "${aws_network_interface.mgmt[count.index]}"
+    device_index         = 0
+  }
 
   vpc_security_group_ids = [
     aws_security_group.allow_any_inside_vpc.id,
@@ -217,7 +226,7 @@ resource "aws_instance" "node" {
 }
 
 locals {
-  mgmt01_ip   = aws_instance.mgmt[0].private_ip
+  mgmt01_ip   = aws_network_interface.mgmt[0].private_ip
   public_ip   = aws_instance.login[0].public_ip
   cidr        = aws_subnet.private_subnet.cidr_block
   home_dev    = "/dev/sdb"
