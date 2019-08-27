@@ -23,11 +23,17 @@ before_install:
     fi
 
 script:
-  - ( cd aws; terraform init; terraform validate )
-  - ( cd azure; terraform init; terraform validate )
-  - ( cd gcp; terraform init; terraform validate )
-  - ( cd openstack; terraform init; terraform validate )
-  - ( cd ovh; terraform init; terraform validate )
+  - terraform init aws;       terraform validate aws
+  - terraform init azure;     terraform validate azure
+  - terraform init gcp;       terraform validate gcp
+  - terraform init openstack; terraform validate openstack
+  - terraform init ovh;       terraform validate ovh
+  - terraform init examples/aws;       terraform validate examples/aws
+  - terraform init examples/azure;     terraform validate examples/azure
+  - terraform init examples/gcp;       terraform validate examples/gcp
+  - terraform init examples/openstack; terraform validate examples/openstack
+  - terraform init examples/ovh;       terraform validate examples/ovh
+  - terraform init dns/cloudflare; terraform validate dns/cloudflare -var email="email@example.com" -var token="1234"
 
 before_deploy:
   - ./release.sh $(git describe --tags --abbrev=0)
