@@ -22,8 +22,8 @@ for provider in "${CLOUD[@]}"; do
     cp -rf cloud-init/*.yaml $cur_folder/$provider/cloud-init/
     cp -rf dns $cur_folder
     cp examples/$provider/main.tf $cur_folder
-    sed -i '' 's;git::https://github.com/ComputeCanada/magic_castle.git//;./;g' $cur_folder/main.tf
-    sed -i '' "s;default = \"master\";default = \"$VERSION\";" $cur_folder/$provider/variables.tf
+    sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;./;g' $cur_folder/main.tf
+    sed -i "s;default = \"master\";default = \"$VERSION\";" $cur_folder/$provider/variables.tf
     cp LICENSE $cur_folder
     cp $provider/README.md $cur_folder
     cd $FOLDER
