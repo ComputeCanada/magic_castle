@@ -12,5 +12,6 @@ deploy:
   draft: true
   file_glob: true
   file: releases/*
+  skip_cleanup: true
   on:
     tags: true
