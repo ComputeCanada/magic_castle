@@ -155,21 +155,21 @@ resource "aws_ebs_volume" "scratch" {
 
 resource "aws_volume_attachment" "home" {
   count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  device_name = "/dev/sdb"
+  device_name = local.home_dev
   volume_id   = aws_ebs_volume.home[0].id
   instance_id = aws_instance.mgmt[0].id
 }
 
 resource "aws_volume_attachment" "project" {
   count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  device_name = "/dev/sdc"
+  device_name = local.project_dev
   volume_id   = aws_ebs_volume.project[0].id
   instance_id = aws_instance.mgmt[0].id
 }
 
 resource "aws_volume_attachment" "scratch" {
   count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  device_name = "/dev/sdd"
+  device_name = local.scratch_dev
   volume_id   = aws_ebs_volume.scratch[0].id
   instance_id = aws_instance.mgmt[0].id
 }
@@ -220,7 +220,7 @@ locals {
   mgmt01_ip   = aws_instance.mgmt[0].private_ip
   public_ip   = aws_instance.login[0].public_ip
   cidr        = aws_subnet.private_subnet.cidr_block
-  home_dev    = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? aws_volume_attachment.home[0].device_name : ""
-  project_dev = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? aws_volume_attachment.project[0].device_name : ""
-  scratch_dev = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? aws_volume_attachment.scratch[0].device_name : ""
+  home_dev    = "/dev/sdb"
+  project_dev = "/dev/sdc"
+  scratch_dev = "/dev/sdd"
 }
