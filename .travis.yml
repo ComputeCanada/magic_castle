@@ -21,19 +21,17 @@ before_install:
       popd ;
       terraform version ;
     fi
+  - ssh-keygen -b 2048 -t rsa -q -N "" -f ~/.ssh/id_rsa
 
 script:
-  - terraform init aws;       terraform validate aws
-  - terraform init azure;     terraform validate azure
-  - terraform init gcp;       terraform validate gcp
-  - terraform init openstack; terraform validate openstack
-  - terraform init ovh;       terraform validate ovh
-  - terraform init examples/aws;       terraform validate examples/aws
-  - terraform init examples/azure;     terraform validate examples/azure
-  - terraform init examples/gcp;       terraform validate examples/gcp
-  - terraform init examples/openstack; terraform validate examples/openstack
-  - terraform init examples/ovh;       terraform validate examples/ovh
-  - terraform init dns/cloudflare; terraform validate dns/cloudflare -var email="email@example.com" -var token="1234"
+  - for cloud in aws azure gcp openstack ovh; do
+      terraform init $cloud
+      terraform validate $cloud
+      terraform init examples/$cloud
+      terraform validate examples/$cloud
+    done
+  - terraform init dns/cloudflare
+  - terraform validate dns/cloudflare -var email="email@example.com" -var token="1234"
 
 before_deploy:
   - ./release.sh $(git describe --tags --abbrev=0)
