@@ -37,13 +37,13 @@ resource "openstack_compute_secgroup_v2" "secgroup" {
   }
 }
 
-resource "openstack_networking_network_v2" "network" {
+resource "openstack_networking_network_v2" "int_network" {
   name = "${var.cluster_name}_network"
 }
 
 resource "openstack_networking_subnet_v2" "subnet" {
   name        = "${var.cluster_name}_subnet"
-  network_id  = openstack_networking_network_v2.network.id
+  network_id  = openstack_networking_network_v2.int_network.id
   ip_version  = 4
   cidr        = "10.0.1.0/24"
   no_gateway  = true
@@ -76,6 +76,16 @@ resource "openstack_blockstorage_volume_v2" "scratch" {
   size        = var.storage["scratch_size"]
 }
 
+resource "openstack_networking_port_v2" "port_mgmt" {
+  count              = max(var.instances["mgmt"]["count"], 1)
+  name               = format("port-mgmt%02d", count.index + 1)
+  network_id         = openstack_networking_network_v2.int_network.id
+  security_group_ids = [openstack_compute_secgroup_v2.secgroup.id]
+  fixed_ip {
+    subnet_id = openstack_networking_subnet_v2.subnet.id
+  }
+}
+
 resource "openstack_compute_instance_v2" "mgmt" {
   count       = var.instances["mgmt"]["count"]
   flavor_name = var.instances["mgmt"]["type"]
@@ -88,7 +98,7 @@ resource "openstack_compute_instance_v2" "mgmt" {
 
   # Networks must be defined in this order
   network {
-    name = openstack_networking_network_v2.network.name
+    name = openstack_networking_network_v2.int_network.name
   }
   network {
     access_network = true
@@ -128,7 +138,7 @@ resource "openstack_compute_instance_v2" "login" {
 
   # Networks must be defined in this order
   network {
-    name = openstack_networking_network_v2.network.name
+    name = openstack_networking_network_v2.int_network.name
   }
   network {
     access_network = true
@@ -147,7 +157,7 @@ resource "openstack_compute_instance_v2" "node" {
   user_data       = data.template_cloudinit_config.node_config[count.index].rendered
 
   network {
-    name = openstack_networking_network_v2.network.name
+    name = openstack_networking_network_v2.int_network.name
   }
   network {
     access_network = true
@@ -156,7 +166,7 @@ resource "openstack_compute_instance_v2" "node" {
 }
 
 locals {
-  mgmt01_ip   = openstack_compute_instance_v2.mgmt[0].network[0].fixed_ip_v4
+  mgmt01_ip   = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
   public_ip   = openstack_compute_instance_v2.login[0].network[1].fixed_ip_v4
   cidr        = openstack_networking_subnet_v2.subnet.cidr
   home_dev    = "/dev/vdb"
