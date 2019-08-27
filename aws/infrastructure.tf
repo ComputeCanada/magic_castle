@@ -58,10 +58,10 @@ resource "aws_security_group" "allow_in_services" {
     for_each = var.firewall_rules
     iterator = rule
     content {
-      from_port = rule.value.from_port
-      to_port   = rule.value.to_port
-      protocol  = rule.value.protocol
-      cidr      = rule.value.cidr
+      from_port   = rule.value.from_port
+      to_port     = rule.value.to_port
+      protocol    = rule.value.protocol
+      cidr_blocks = rule.value.cidr
     }
   }
 
