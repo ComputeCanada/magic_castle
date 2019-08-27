@@ -1,0 +1,9 @@
+deploy:
+  provider: releases
+  api_key:
+    secure: G20OYipN3F1CKX5RNCn0lwDJETeMWPhCWIUSDTNo77uivCjmWjAu+OcQZ840rIJKHxzD0Xn9vbBd6n8+tQ9PjahQ41HEVO++iXXiVzCSw/3Lb6rE8Vf8+lK/MFD7K5AKpviihsq7385jCJ9JURMd9EOU9Yc5rybmPB3uniZOoaIDNCZkRD7QR6GZFD/B1UVePHRmIcTsUYk6DRfWpy9wKvng/0in95PXEfkF+VclDXhaDoBSzYdpwzQ/3edj7QYD7mLku1o+cwKkebtZYscwao3NcIwjlrUmcM24jCx8NM3Nvtn+LWHtxaPtOcWZbjA+fNUjzogY4WFpcMsG/+n5qbwyMQ4Xyqf/0Hnx7b1Xx/lX0dXTb3asdCeP4FvlMq9owFMBKtzEe+WHREDg86z2CipA/i/zyVcbiu1xVBGct/sX7e8le/IDDe2mjS7wDoMrg17gZUlz9xlh2nmXJnSmUquaEkEDiDiUkaccl6mssFqg9KeZ/WBkJqmMApNmuroWCx3MjSEW7Ga30h91nhzxsFrm4ZPcvaSX+8jcobhWwiKWIwQmR5F1GMPt0Mp8ygN0/YNs4N51VOF3VAv3c8g60LmE2goOWS+JwmQaeYygRdl7lQAwXF8azmlIfOc2stQ2oZ0QHn2l0YAW8AE2zfCRQXgSj34wZfgDvptF9+yec50=
+  draft: true
+  file_glob: true
+  file: releases/*
+  on:
+    tags: true
