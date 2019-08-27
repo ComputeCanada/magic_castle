@@ -1,3 +1,5 @@
+before_deploy:
+  - ./release.sh $(git describe --tags --abbrev=0)
 deploy:
   provider: releases
   api_key:
