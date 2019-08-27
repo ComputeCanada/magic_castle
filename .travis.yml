@@ -1,7 +1,29 @@
 language: bash
 
+cache:
+  directories:
+  - "${HOME}/bin"
+
+env:
+  global:
+  - PATH="${HOME}/bin
+  - TF_VERSION="0.12.7"
+
+before_install:
+  - if ! terraform version ; then
+      mkdir -p "${HOME}/bin"
+      pushd ;
+      curl -sSL
+        -o terraform.zip
+        "https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip" ;
+      unzip terraform.zip ;
+      mv -v terraform "${HOME}/bin/terraform" ;
+      popd ;
+      terraform version ;
+    fi
+
 script:
-  - true
+  - ( cd aws; terraform init; terraform validate )
 
 before_deploy:
   - ./release.sh $(git describe --tags --abbrev=0)
