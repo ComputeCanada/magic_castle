@@ -25,10 +25,10 @@ before_install:
 
 script:
   - for cloud in aws azure gcp openstack ovh; do
-      terraform init $cloud
-      terraform validate $cloud
-      terraform init examples/$cloud
-      terraform validate examples/$cloud
+      terraform init $cloud;
+      terraform validate $cloud;
+      terraform init examples/$cloud;
+      terraform validate examples/$cloud;
     done
   - terraform init dns/cloudflare
   - terraform validate dns/cloudflare -var email="email@example.com" -var token="1234"
