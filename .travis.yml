@@ -24,6 +24,10 @@ before_install:
 
 script:
   - ( cd aws; terraform init; terraform validate )
+  - ( cd azure; terraform init; terraform validate )
+  - ( cd gcp; terraform init; terraform validate )
+  - ( cd openstack; terraform init; terraform validate )
+  - ( cd ovh; terraform init; terraform validate )
 
 before_deploy:
   - ./release.sh $(git describe --tags --abbrev=0)
