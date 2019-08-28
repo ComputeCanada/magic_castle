@@ -23,35 +23,35 @@ as the one you provided in the Terraform main file.
 On `mgmt01`:
 1. Edit the file `/etc/puppetlabs/code/environments/production/data/common.yaml` with sudo rights
 and add the following lines:
-```
+  ```
 profile::globus::base::globus_user: your_globus_username
 profile::globus::base::globus_password: your_globus_password
 ```
 Replace `your_globus_username` and `your_globus_password` by their respective value.
 
 On `login01`:
-2. Restart puppet : `sudo systemctl restart puppet`.
-3. Give Puppet a few minutes to setup Globus. You can confirm that
+1. Restart puppet : `sudo systemctl restart puppet`.
+2. Give Puppet a few minutes to setup Globus. You can confirm that
 everything was setup correctly by looking at the tail of the puppet log:
 ```
 sudo journalctl -u puppet -f
 ```
-4. If everything is correct, `globus-gridftp-server` and `myproxy-server`
+3. If everything is correct, `globus-gridftp-server` and `myproxy-server`
 services should be active. To confirm:
 ```
 sudo systemctl status globus-gridftp-server
 sudo systemctl status myproxy-server
 ```
-5. If both services are active, in a browser, go to
+4. If both services are active, in a browser, go to
 https://app.globus.org/endpoints?scope=administered-by-me
-6. Click on your endpoint.
-7. Click on the `Server` tab.
-8. At the bottom of the page, there is text field named "Subject DN". Copy the content, it should look like this:
+5. Click on your endpoint.
+6. Click on the `Server` tab.
+7. At the bottom of the page, there is text field named "Subject DN". Copy the content, it should look like this:
 ```
 /C=US/O=Globus Consortium/OU=Globus Connect Service/CN=xxxx-x-xxx-xxx-xxxxxx
 ```
-9. The first section of the Server page is named "Identity Provider". Click on the `Edit Identity Provider` button.
-10. In the DN field of Edit Identity Provider, paste the content you copied from "Subject DN".
-11. Click on Save Changes.
+8. The first section of the Server page is named "Identity Provider". Click on the `Edit Identity Provider` button.
+9. In the DN field of Edit Identity Provider, paste the content you copied from "Subject DN".
+10. Click on Save Changes.
 
 You should now be able to log in your Globus Endpoint with your cluster guest account credentials.
