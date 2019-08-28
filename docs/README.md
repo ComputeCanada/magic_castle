@@ -174,7 +174,7 @@ by CloudFlare.
 **Requirement**: Must be a fully qualified DNS name and
 [RFC-1035-valid](https://tools.ietf.org/html/rfc1035).
 Valid format is a series of labels 1-63 characters long matching the
-regular expression [a-z]([-a-z0-9]*[a-z0-9]), concatenated with periods.
+regular expression `[a-z]([-a-z0-9]*[a-z0-9])`, concatenated with periods.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
