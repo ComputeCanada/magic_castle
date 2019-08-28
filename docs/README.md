@@ -621,4 +621,4 @@ pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
 ## 10. Customize Magic Castle Terraform Files
 
 You can modify the Terraform module files in the folder named after your cloud
-provied (e.g: `gcp`, `openstack`, `aws`, etc.)
+provider (e.g: `gcp`, `openstack`, `aws`, etc.)
