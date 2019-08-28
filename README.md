@@ -1,4 +1,6 @@
-# Terraform Magic Castle
+# Magic Castle
+
+![travis-status](https://travis-ci.com/ComputeCanada/magic_castle.svg?branch=master)
 
 ## Setup
 
