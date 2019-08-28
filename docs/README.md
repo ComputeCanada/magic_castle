@@ -95,7 +95,7 @@ $ terraform version
 
 ### 3.1 Main File
 
-1. Go to https://git.computecanada.ca/magic_castle/slurm_cloud/releases.
+1. Go to https://github.com/ComputeCanada/magic_castle/releases.
 2. Download the latest release of Magic Castle for your cloud provider.
 3. Open a Terminal.
 4. Uncompress the release: `tar xvf magic_castle*.tar.gz`
@@ -496,7 +496,7 @@ its software configuration as you please by connecting to it and
 abusing your administrator privileges. If after modifying the
 configuration, you think it would be good for Magic Castle to
 support your new features, make sure to submit an issue on the
-git repo or fork the slurm_cloud_puppet repo and make a pull request.
+git repo or fork the puppet-magic_castle repo and make a pull request.
 
 We will list here a few common customizations that are not currently
 supported directly by Magic Castle, but that are easy to do live.
