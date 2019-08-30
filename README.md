@@ -33,3 +33,7 @@ and all nodes should have an idle state.
 
 If you used the CloudFlare DNS Service
 - Verify the domain name: go to https://${domain_name}. It should be JupyterHub login page.
+
+## Contributing / Customizing
+
+Refer to [Magic Castle developper documentation](docs/developpers.md)
