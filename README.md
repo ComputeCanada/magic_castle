@@ -36,4 +36,4 @@ If you used the CloudFlare DNS Service
 
 ## Contributing / Customizing
 
-Refer to [Magic Castle developper documentation](docs/developpers.md)
+Refer to [Magic Castle developper documentation](docs/developers.md).
