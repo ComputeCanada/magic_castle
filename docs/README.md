@@ -321,7 +321,7 @@ randomly generated one.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.10 suoder_username (optional)
+### 4.10 sudoer_username (optional)
 
 **default value**: `centos`
 
