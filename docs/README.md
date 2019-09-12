@@ -168,7 +168,7 @@ Defines
 If you own a domain, you can register the login external IP address
 under `{cluster_name}.{domain}` manually with your registrar. An optional
 module following the current module in the example `main.tf` can
-register the domain name if your domain's nameservers are administered
+register the domain name if your domain's name servers are administered
 by CloudFlare.
 
 **Requirement**: Must be a fully qualified DNS name and
@@ -401,14 +401,14 @@ a planning phase where you will ask Terraform to communicate with
 your cloud provider and verify that your cluster can be built as it is
 described by the `main.tf` configuration file.
 
-Terraform should now be able to communicate with your cloud provier.
+Terraform should now be able to communicate with your cloud provider.
 To test your configuration file, enter the following command
 ```
 $ terraform plan
 ```
 
 This command will validate the syntax of your configuration file and
-communicate with the provier, but it will not create new resources. It
+communicate with the provider, but it will not create new resources. It
 is only a dry-run. If Terraform does not report any error, you can move
 to the next step. Otherwise, read the errors and fix your configuration
 file accordingly.
