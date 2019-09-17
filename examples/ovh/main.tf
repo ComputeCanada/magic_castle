@@ -28,8 +28,6 @@ module "ovh" {
   # Shared password, randomly chosen if blank
   guest_passwd = ""
 
-  # OVH specifics
-  os_external_network = "Ext-Net"
 }
 
 output "sudoer_username" {
