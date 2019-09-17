@@ -18,6 +18,7 @@ users:
 runcmd:
   - restorecon -R /${sudoer_username}
   - "(echo -e '\nHostKeyAlgorithms ssh-rsa\n' >> /etc/ssh/sshd_config && systemctl restart sshd)"
+  - yum remove -y firewalld
   - yum upgrade -y
 # Partition
   - parted -s ${home_dev} mklabel gpt
