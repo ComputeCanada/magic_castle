@@ -1,6 +1,6 @@
 # Magic Castle
 
-![travis-status](https://travis-ci.com/ComputeCanada/magic_castle.svg?branch=master)
+[![Build Status](https://travis-ci.com/ComputeCanada/magic_castle.svg?branch=master)](https://travis-ci.com/ComputeCanada/magic_castle)
 
 ## Setup
 
