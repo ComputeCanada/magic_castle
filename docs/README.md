@@ -56,7 +56,7 @@ To look and edit your GCP quota go to :
 
 ### 1.2 Authentication
 
-#### 1.2.1 OpenStack
+#### 1.2.1 OpenStack / OVH
 
 First, download your OpenStack Open RC file.
 It is project-specific and contains the credentials used
@@ -201,6 +201,24 @@ the region you chose.
 Azure requires multiple fields to define which image to choose. This field
 is therefore not only a string, but a map that needs to contain the following
 fields `publisher`, `offer` and `sku`.
+
+#### 4.4.3 OVH
+
+SELinux is not enabled in OVH provided CentOS 7 image. Since SELinux has to be
+enabled for Magic Castle to work properly, you will need to build a custom image
+of CentOS 7 with SELinux enabled.
+
+To build such image, we recommend the usage of packer. OVH provides a document
+explaining how to create a new image with packer:
+[Create a custom OpenStack image with Packer](https://docs.ovh.com/gb/en/public-cloud/packer-openstack-builder/)
+
+Before the end of the shell script ran to configure the image, add the
+following line to activate SELinux:
+```
+sed -i s/^SELINUX=.*$/SELINUX=enforcing/ /etc/selinux/config
+```
+
+Once the image is built, make sure to use to input its name in your main.tf file.
 
 ### 4.5 nb_users
 
