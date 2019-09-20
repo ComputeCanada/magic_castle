@@ -339,7 +339,16 @@ randomly generated one.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.10 sudoer_username (optional)
+### 4.10 root_disk_size (optional)
+
+**default value**: 10
+
+Defines the size in gibibyte (GiB) of each instance's root volume that contains
+the operating system and softwares required to operate the cluster services.
+
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+
+### 4.11 sudoer_username (optional)
 
 **default value**: `centos`
 
