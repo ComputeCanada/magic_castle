@@ -168,7 +168,7 @@ Defines
 If you own a domain, you can register the login external IP address
 under `{cluster_name}.{domain}` manually with your registrar. An optional
 module following the current module in the example `main.tf` can
-register the domain name if your domain's name servers are administered
+register the domain name if your domain's nameservers are administered
 by CloudFlare.
 
 **Requirement**: Must be a fully qualified DNS name and
