@@ -149,6 +149,7 @@ resource "azurerm_virtual_machine" "login" {
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = var.managed_disk_type
+    disk_size_gb      = var.root_disk_size
   }
 
   storage_image_reference {
@@ -182,6 +183,7 @@ resource "azurerm_virtual_machine" "mgmt" {
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = var.managed_disk_type
+    disk_size_gb      = var.root_disk_size
   }
 
   storage_image_reference {
@@ -269,6 +271,7 @@ resource "azurerm_virtual_machine" "nodevm" {
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = var.managed_disk_type
+    disk_size_gb      = var.root_disk_size
   }
 
   storage_image_reference {
