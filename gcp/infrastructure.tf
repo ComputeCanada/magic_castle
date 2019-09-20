@@ -76,6 +76,7 @@ resource "google_compute_instance" "mgmt" {
     initialize_params {
       image = var.image
       type  = "pd-ssd"
+      size  = var.root_disk_size
     }
   }
 
@@ -139,6 +140,7 @@ resource "google_compute_instance" "login" {
     initialize_params {
       image = var.image
       type  = "pd-ssd"
+      size  = var.root_disk_size
     }
   }
 
@@ -177,6 +179,7 @@ resource "google_compute_instance" "node" {
     initialize_params {
       image = var.image
       type  = "pd-ssd"
+      size  = var.root_disk_size
     }
   }
 
