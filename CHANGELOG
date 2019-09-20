@@ -1,0 +1,46 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+## [Unreleased]
+
+## [5.2] - 2019-09-19
+
+### Added
+- Travis CI automated testing for Terraform and Puppet files
+- Travis CI build status is now at the beginning of README.md
+- [docs] Added contribution section to README.md
+- [OVH] Added a Terraform file for network related ressources
+- [OpenStack] Added a Terraform file for network related ressources
+- [cloud-init] Added removal of firewalld package in mgmt.yaml
+- [docs] Added docs on building SELinux enabled image for OVH cloud
+- [OpenStack] Added the definition of a root disk block device with condition on flavor choice and root disk size
+- [GCP] Added the ability to set the boot disk size with `var.root_disk_size`
+- [Azure] Added the ability to set the os storage volume size with `var.root_disk_size`
+- [AWS] Added the ability to set the root disk size with `var.root_disk_size`
+- [docs] Added documentation on variable `root_disk_size`
+- [puppet] Added myproxy and gridftp as service in globus module
+
+### Changed
+- Release script now takes only one version number
+- Release script now fixes the Terraform providers' version
+- [docs] Updated globus documentation
+- [docs] Renamed developpers docs
+- [OVH] OVH infrastructure file is now a symlink to the OpenStack infrastructure file
+- [puppet] Globus is now installed only if globus_user/password is defined in the hieradata
+- [puppet] Globus endpoint name is now set based on the domain name instead of the instance hostname
+- [puppet] FreeIPA ip address parameter on mgmt is now fixed to eth0 interface
+- [puppet] Firewall chains and rules that were not set by puppet are now purged
+- [puppet] Configure network, netmask and ip to always map to eth0 interface
+- [puppet] Configure slurmctld ip address to eth0 to fix issue when there more than one NIC
+
+### Removed
+- Removed version number from documentation
+
+### Fixed
+- [AWS] Fixed dependency cycle with volumes
+- [AWS] Fixed firewall definition
+- [AWS] Fixed dependency cycle with mgmt ip addresses
+- [OVH] Fixed dependency cycle
+- [docs] Fixed typos and rfc links
