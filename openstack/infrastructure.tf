@@ -5,6 +5,18 @@ data "openstack_images_image_v2" "image" {
   name = var.image
 }
 
+data "openstack_compute_flavor_v2" "mgmt" {
+  name = var.instances["mgmt"]["type"]
+}
+
+data "openstack_compute_flavor_v2" "login" {
+  name = var.instances["login"]["type"]
+}
+
+data "openstack_compute_flavor_v2" "node" {
+  name = var.instances["node"]["type"]
+}
+
 resource "openstack_compute_secgroup_v2" "secgroup_1" {
   name        = "${var.cluster_name}_secgroup"
   description = "Slurm+JupyterHub security group"
@@ -96,6 +108,18 @@ resource "openstack_compute_instance_v2" "mgmt" {
       name           = network.value.name
     }
   }
+
+  dynamic "block_device" {
+    for_each = var.root_disk_size > data.openstack_compute_flavor_v2.mgmt.disk ? [{volume_size = var.root_disk_size}] : []
+    content {
+      uuid                  = data.openstack_images_image_v2.image.id
+      source_type           = "image"
+      destination_type      = "volume"
+      boot_index            = 0
+      delete_on_termination = true
+      volume_size           = block_device.value.volume_size
+    }
+  }
 }
 
 resource "openstack_compute_volume_attach_v2" "va_home" {
@@ -135,6 +159,7 @@ resource "openstack_compute_instance_v2" "login" {
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup_1.name]
   user_data       = data.template_cloudinit_config.login_config[count.index].rendered
+
   network {
     port = openstack_networking_port_v2.port_login[count.index].id
   }
@@ -143,6 +168,18 @@ resource "openstack_compute_instance_v2" "login" {
     content {
       access_network = network.value.access_network
       name           = network.value.name
+    }
+  }
+
+  dynamic "block_device" {
+    for_each = var.root_disk_size > data.openstack_compute_flavor_v2.login.disk ? [{volume_size = var.root_disk_size}] : []
+    content {
+      uuid                  = data.openstack_images_image_v2.image.id
+      source_type           = "image"
+      destination_type      = "volume"
+      boot_index            = 0
+      delete_on_termination = true
+      volume_size           = block_device.value.volume_size
     }
   }
 }
@@ -166,6 +203,7 @@ resource "openstack_compute_instance_v2" "node" {
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup_1.name]
   user_data       = data.template_cloudinit_config.node_config[count.index].rendered
+
   network {
     port = openstack_networking_port_v2.port_node[count.index].id
   }
@@ -174,6 +212,18 @@ resource "openstack_compute_instance_v2" "node" {
     content {
       access_network = network.value.access_network
       name           = network.value.name
+    }
+  }
+
+  dynamic "block_device" {
+    for_each = var.root_disk_size > data.openstack_compute_flavor_v2.node.disk ? [{volume_size = var.root_disk_size}] : []
+    content {
+      uuid                  = data.openstack_images_image_v2.image.id
+      source_type           = "image"
+      destination_type      = "volume"
+      boot_index            = 0
+      delete_on_termination = true
+      volume_size           = block_device.value.volume_size
     }
   }
 }

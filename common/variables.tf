@@ -16,6 +16,10 @@ variable "instances" {
 variable "image" {
 }
 
+variable "root_disk_size" {
+  default = 10
+}
+
 variable "storage" {
   type = object({
     type=string,
