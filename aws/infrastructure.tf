@@ -119,6 +119,11 @@ resource "aws_instance" "mgmt" {
     device_index         = 0
   }
 
+  root_block_device {
+    volume_type = "standard"
+    volume_size = var.root_disk_size
+  }
+
   vpc_security_group_ids = [
     aws_security_group.allow_any_inside_vpc.id,
     aws_security_group.allow_out_any.id,
@@ -193,6 +198,11 @@ resource "aws_instance" "login" {
   key_name                    = aws_key_pair.key.key_name
   associate_public_ip_address = "true"
 
+  root_block_device {
+    volume_type = "standard"
+    volume_size = var.root_disk_size
+  }
+
   vpc_security_group_ids = [
     aws_security_group.allow_in_services.id,
     aws_security_group.allow_any_inside_vpc.id,
@@ -214,6 +224,11 @@ resource "aws_instance" "node" {
   subnet_id                   = aws_subnet.private_subnet.id
   key_name                    = aws_key_pair.key.key_name
   associate_public_ip_address = "true"
+
+  root_block_device {
+    volume_type = "standard"
+    volume_size = var.root_disk_size
+  }
 
   vpc_security_group_ids = [
     aws_security_group.allow_any_inside_vpc.id,
