@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+- [OpenStack] Set the image_id to null when the root disk is a volume to avoid false detection of change by Terraform
+
 ## [5.2] - 2019-09-19
 
 ### Added

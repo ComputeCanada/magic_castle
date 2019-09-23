@@ -92,7 +92,7 @@ resource "openstack_networking_port_v2" "port_mgmt" {
 resource "openstack_compute_instance_v2" "mgmt" {
   count    = var.instances["mgmt"]["count"]
   name     = format("mgmt%02d", count.index + 1)
-  image_id = data.openstack_images_image_v2.image.id
+  image_id = var.root_disk_size > data.openstack_compute_flavor_v2.mgmt.disk ? null : data.openstack_images_image_v2.image.id
 
   flavor_name = var.instances["mgmt"]["type"]
   key_pair    = openstack_compute_keypair_v2.keypair.name
@@ -153,7 +153,7 @@ resource "openstack_networking_port_v2" "port_login" {
 resource "openstack_compute_instance_v2" "login" {
   count    = var.instances["login"]["count"]
   name     = format("login%02d", count.index + 1)
-  image_id = data.openstack_images_image_v2.image.id
+  image_id = var.root_disk_size > data.openstack_compute_flavor_v2.mgmt.disk ? null : data.openstack_images_image_v2.image.id
 
   flavor_name     = var.instances["login"]["type"]
   key_pair        = openstack_compute_keypair_v2.keypair.name
@@ -197,7 +197,7 @@ resource "openstack_networking_port_v2" "port_node" {
 resource "openstack_compute_instance_v2" "node" {
   count    = var.instances["node"]["count"]
   name     = "node${count.index + 1}"
-  image_id = data.openstack_images_image_v2.image.id
+  image_id = var.root_disk_size > data.openstack_compute_flavor_v2.mgmt.disk ? null : data.openstack_images_image_v2.image.id
 
   flavor_name     = var.instances["node"]["type"]
   key_pair        = openstack_compute_keypair_v2.keypair.name
