@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [5.3] - 2019-09-30
+
+### Added
+- [puppet] Added hbac rule to limit access to mgmt instances from IPA users (issue #13)
+- [puppet] Added token based ACL to consul to limit access to the key-value store (issue #11)
+
+### Changed
+- [puppet] Activate selinuxuser_tcp_server boolean to allow confined users to run MPI jobs (issue #12)
+- [puppet] FreeIPA OTP activation command is now subscribed to server install exec
+
 ### Fixed
 - [OpenStack] Set the image_id to null when the root disk is a volume to avoid false detection of change by Terraform
 
