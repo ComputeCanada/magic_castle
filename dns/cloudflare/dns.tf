@@ -1,4 +1,5 @@
 provider "cloudflare" {
+  version = "1.18.1"
 }
 
 variable "name" {
