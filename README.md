@@ -19,8 +19,8 @@
 
 1. Uncomment the `dns` module in your `main.tf`.
 2. Download and install the CloudFlare module: `terraform init`.
-2. Export the following environment variables `CLOUDFLARE_EMAIL`, `CLOUDFLARE_TOKEN` and `CLOUDFLARE_API_KEY`. TOKEN and API_KEY contain the same value, different providers expect different environment variables.
-3. Run `terraform apply`.
+3. Export the following environment variables `CLOUDFLARE_EMAIL` and `CLOUDFLARE_API_KEY`.
+4. Run `terraform apply`.
 
 ## Verifying the cluster state
 
