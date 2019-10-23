@@ -57,6 +57,7 @@ output "public_ip" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
 #   name             = module.azure.cluster_name
 #   domain           = module.azure.domain
+#   email            = you@example.com
 #   public_ip        = module.azure.ip
 #   rsa_public_key   = module.azure.rsa_public_key
 #   sudoer_username  = module.azure.sudoer_username

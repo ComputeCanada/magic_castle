@@ -51,6 +51,7 @@ output "public_ip" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
 #   name             = module.ovh.cluster_name
 #   domain           = module.ovh.domain
+#   email            = you@example.com
 #   public_ip        = module.ovh.ip
 #   rsa_public_key   = module.ovh.rsa_public_key
 #   sudoer_username  = module.ovh.sudoer_username
