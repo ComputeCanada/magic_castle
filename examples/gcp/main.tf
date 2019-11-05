@@ -59,7 +59,7 @@ output "public_ip" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
 #   name             = module.gcp.cluster_name
 #   domain           = module.gcp.domain
-#   email            = you@example.com
+#   email            = "you@example.com"
 #   public_ip        = module.gcp.ip
 #   rsa_public_key   = module.gcp.rsa_public_key
 #   sudoer_username  = module.gcp.sudoer_username

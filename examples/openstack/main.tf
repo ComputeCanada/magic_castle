@@ -53,7 +53,7 @@ output "public_ip" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
-#   email            = you@example.com
+#   email            = "you@example.com"
 #   public_ip        = module.openstack.ip
 #   rsa_public_key   = module.openstack.rsa_public_key
 #   sudoer_username  = module.openstack.sudoer_username
