@@ -55,6 +55,7 @@ output "public_ip" {
 #   name             = module.aws.cluster_name
 #   domain           = module.aws.domain
 #   public_ip        = module.aws.ip
+#   email            = "you@example.com"
 #   rsa_public_key   = module.aws.rsa_public_key
 #   sudoer_username  = module.aws.sudoer_username
 # }
