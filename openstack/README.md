@@ -1,6 +1,6 @@
 # OpenStack Cloud
 
-1. Download your project OpenStack RC file from the OpenStack Project _API Access_ page. If `v2` and `v3` are available, download `OpenStack RC File (Identity API v3)`.
+1. Download your project OpenStack RC file from the OpenStack Project _API Access_ page _i.e._: `OpenStack RC File (Identity API v3)`.
 2. Source your project openrc file : `source _project_-openrc.sh`.
 3. Download the latest release of Magic Castle for OpenStack.
 4. Unpack the release.
