@@ -24,7 +24,7 @@
 
 ### CloudFlare API Token
 
-If you prefer using an API token instead of the global API key, you will need to configure a token with the following four permissions:
+If you prefer using an API token instead of the global API key, you will need to configure a token with the following four permissions with [CloudFlare API Token interface](https://dash.cloudflare.com/profile/api-tokens).
 
 | Section | Subsection | Permission|
 | ------------- |-------------:| -----:|
@@ -33,7 +33,7 @@ If you prefer using an API token instead of the global API key, you will need to
 | Zone | Zone | Read|
 | Zone | DNS | Write|
 
-Then, on step 3, instead of `CLOUDFLARE_API_KEY`, you will need to export the following variables `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ZONE_API_TOKEN`, and `CLOUDFLARE_DNS_API_TOKEN`. Each variable will contain the same value corresponding to your API token.
+Instead of step 3, export only `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ZONE_API_TOKEN`, and `CLOUDFLARE_DNS_API_TOKEN` equal to the API token generated previously.
 
 ## Verifying the cluster state
 
