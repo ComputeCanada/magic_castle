@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [5.5] - 2019-11-15
+
+### Added
+- [docs] Added details on how to use CloudFlare API Token in README.md
+- [docs] Added details on which Open RC File to download when using OpenStack
+- [DNS] Added an email variable to the dns module.
+- [puppet] Added logic to set RSNT_ARCH variable based on the common CPU
+instruction extensions available amongst all CVMFS clients using consul.
+
 ## [5.4] - 2019-10-23
 
 ### Fixed
