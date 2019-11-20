@@ -2,32 +2,13 @@ provider "google" {
   version = "< 3.0.0"
 }
 
-variable "name" {
-}
-
-variable "project" {
-}
-
-variable "zone_name" {
-}
-
-variable "domain" {
-}
-
 data "google_dns_managed_zone" "domain" {
     name    = var.zone_name
     project = var.project
 }
 
-variable "public_ip" {
-  type = list(string)
-}
-
-variable "rsa_public_key" {
-}
-
 data "external" "key2fp" {
-  program = ["python", "${path.module}/key2fp.py"]
+  program = ["python", "${path.module}/../key2fp.py"]
   query = {
     ssh_key = var.rsa_public_key
   }

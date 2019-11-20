@@ -2,12 +2,6 @@ provider "cloudflare" {
   version = "~> 2.0"
 }
 
-variable "name" {
-}
-
-variable "domain" {
-}
-
 data "cloudflare_zones" "domain" {
   filter {
     name   = var.domain
@@ -16,15 +10,8 @@ data "cloudflare_zones" "domain" {
   }
 }
 
-variable "public_ip" {
-  type = list(string)
-}
-
-variable "rsa_public_key" {
-}
-
 data "external" "key2fp" {
-  program = ["python", "${path.module}/key2fp.py"]
+  program = ["python", "${path.module}/../key2fp.py"]
   query = {
     ssh_key = var.rsa_public_key
   }
