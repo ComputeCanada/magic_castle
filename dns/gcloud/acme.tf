@@ -1,7 +1,7 @@
 module "acme" {
   source              = "../acme"
   dns_provider        = "gcloud"
-  dns_provider_config = { "GCE_PROJECT" = var.project }
+  dns_provider_config = { GCE_PROJECT = var.project }
   name                = var.name
   domain              = var.domain
   email               = var.email
