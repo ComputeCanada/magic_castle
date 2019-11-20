@@ -38,18 +38,6 @@ resource "cloudflare_record" "loginX_A" {
   type    = "A"
 }
 
-resource "cloudflare_record" "loginX_sshfp_rsa_sha1" {
-  count   = length(var.public_ip)
-  zone_id = data.cloudflare_zones.domain.zones[0].id
-  name    = join("", [var.name, format("%d", count.index + 1)])
-  type    = "SSHFP"
-  data    = {
-    algorithm   = data.external.key2fp.result["algorithm"]
-    type        = 1
-    fingerprint = data.external.key2fp.result["sha1"]
-  }
-}
-
 resource "cloudflare_record" "loginX_sshfp_rsa_sha256" {
   count   = length(var.public_ip)
   zone_id = data.cloudflare_zones.domain.zones[0].id
@@ -75,17 +63,6 @@ resource "cloudflare_record" "jupyter_A" {
   name    = "jupyter.${var.name}"
   value   = var.public_ip[0]
   type    = "A"
-}
-
-resource "cloudflare_record" "login_sshfp_rsa_sha1" {
-  zone_id = data.cloudflare_zones.domain.zones[0].id
-  name    = var.name
-  type    = "SSHFP"
-  data    = {
-    algorithm   = data.external.key2fp.result["algorithm"]
-    type        = 1
-    fingerprint = data.external.key2fp.result["sha1"]
-  }
 }
 
 resource "cloudflare_record" "login_sshfp_rsa_sha256" {
