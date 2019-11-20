@@ -17,6 +17,10 @@ variable "sudoer_username" {
 variable "dns_provider" {
 }
 
+variable "dns_provider_config" {
+  default = {}
+}
+
 variable "login_ips" {
 }
 
@@ -36,6 +40,7 @@ resource "acme_certificate" "certificate" {
 
   dns_challenge {
     provider = var.dns_provider
+    config   = var.dns_provider_config
   }
 }
 
