@@ -58,6 +58,20 @@ output "public_ip" {
 #   rsa_public_key   = module.openstack.rsa_public_key
 #   sudoer_username  = module.openstack.sudoer_username
 # }
+
+## Uncomment to register your domain name with Google Cloud
+# module "dns" {
+#   source           = "../../dns/gcloud"
+#   name             = module.openstack.cluster_name
+#   zone_name        = "you-zone-name"
+#   project          = "your-project-name"
+#   domain           = module.openstack.domain
+#   email            = "you@example.com"
+#   public_ip        = module.openstack.ip
+#   rsa_public_key   = module.openstack.rsa_public_key
+#   sudoer_username  = module.openstack.sudoer_username
+# }
+
 # output "hostnames" {
-# 	value = module.dns.hostnames
+#   value = module.dns.hostnames
 # }
