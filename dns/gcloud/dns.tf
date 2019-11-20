@@ -3,8 +3,8 @@ provider "google" {
 }
 
 data "google_dns_managed_zone" "domain" {
-    name    = var.zone_name
-    project = var.project
+  name    = var.zone_name
+  project = var.project
 }
 
 data "external" "key2fp" {
@@ -18,7 +18,7 @@ resource "google_dns_record_set" "loginX_A" {
   count        = length(var.public_ip)
   managed_zone = data.google_dns_managed_zone.domain.name
   project      = var.project
-  name         = join("", [var.name, format("%d", count.index + 1), ".", var.name, ".", var.domain, "."])
+  name         = join(".", [format("login%d", count.index + 1), var.name, var.domain, ""])
   rrdatas      = [var.public_ip[count.index]]
   ttl          = 300
   type         = "A"
@@ -28,38 +28,38 @@ resource "google_dns_record_set" "loginX_sshfp_rsa" {
   count        = length(var.public_ip)
   managed_zone = data.google_dns_managed_zone.domain.name
   project      = var.project
-  name         = join("", [var.name, format("%d", count.index + 1), ".", var.name, ".", var.domain, "."])
+  name         = join(".", [format("login%d", count.index + 1), var.name, var.domain, ""])
   ttl          = 300
-  type    = "SSHFP"
-  rrdatas = [join("", [data.external.key2fp.result["algorithm"], " 2 ", data.external.key2fp.result["sha256"]])]
+  type         = "SSHFP"
+  rrdatas      = [join(" ", [data.external.key2fp.result["algorithm"], "2", data.external.key2fp.result["sha256"]])]
 }
 
 resource "google_dns_record_set" "login_A" {
   count        = max(length(var.public_ip), 1)
   managed_zone = data.google_dns_managed_zone.domain.name
   project      = var.project
-  name         = join("", [var.name, ".", var.domain, "."])
+  name         = join(".", [var.name, var.domain, ""])
   ttl          = 300
   type         = "A"
-  rrdatas      = ["${var.public_ip[count.index]}"]
+  rrdatas      = [var.public_ip[count.index]]
 }
 
 resource "google_dns_record_set" "jupyter_A" {
   managed_zone = data.google_dns_managed_zone.domain.name
   project      = var.project
-  name         = join("", ["jupyter.${var.name}", ".", var.domain, "."])
+  name         = join(".", ["jupyter", var.name, var.domain, ""])
   ttl          = 300
   type         = "A"
-  rrdatas      = ["${var.public_ip[0]}"]
+  rrdatas      = [var.public_ip[0]]
 }
 
 resource "google_dns_record_set" "login_sshfp_rsa" {
   managed_zone = data.google_dns_managed_zone.domain.name
   project      = var.project
-  name         = join("", [var.name, ".", var.domain, "."])
+  name         = join(".", [var.name, var.domain, ""])
   ttl          = 300
   type         = "SSHFP"
-  rrdatas      = [join("", [data.external.key2fp.result["algorithm"], " 2 ", data.external.key2fp.result["sha256"]])]
+  rrdatas      = [join(" ", [data.external.key2fp.result["algorithm"], "2", data.external.key2fp.result["sha256"]])]
 }
 
 output "hostnames" {

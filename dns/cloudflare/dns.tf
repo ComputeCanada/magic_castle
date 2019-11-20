@@ -20,7 +20,7 @@ data "external" "key2fp" {
 resource "cloudflare_record" "loginX_A" {
   count   = length(var.public_ip)
   zone_id = data.cloudflare_zones.domain.zones[0].id
-  name    = join("", [var.name, format("%d", count.index + 1)])
+  name    = join(".", [format("login%d", count.index + 1), var.name])
   value   = var.public_ip[count.index]
   type    = "A"
 }
@@ -28,7 +28,7 @@ resource "cloudflare_record" "loginX_A" {
 resource "cloudflare_record" "loginX_sshfp_rsa_sha256" {
   count   = length(var.public_ip)
   zone_id = data.cloudflare_zones.domain.zones[0].id
-  name    = join("", [var.name, format("%d", count.index + 1)])
+  name    = join(".", [format("login%d", count.index + 1), var.name])
   type    = "SSHFP"
   data    = {
     algorithm   = data.external.key2fp.result["algorithm"]
