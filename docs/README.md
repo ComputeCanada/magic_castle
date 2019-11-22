@@ -252,7 +252,7 @@ Each key's value is another map with 2 keys: `type` and `count`.
 Number of management instances to create.
 
 **Warning**: All other type of instances depend on the existence of at
-least one management node named `mgmt01`. While it is possible to have
+least one management node named `mgmt1`. While it is possible to have
 to 0 management vm and login or node count greater than 0, the cluster
 will not be functional.
 
@@ -307,7 +307,7 @@ the type of instances associated with the variable at next `terraform apply`.
 Define the type of network storage and the size of the volumes
 for respectively `/home`, `/project` and `/scratch`.
 
-If `type` is set to `nfs`, each volume is mounted on `mgmt01` and
+If `type` is set to `nfs`, each volume is mounted on `mgmt1` and
 exported with NFS to the login and the compute nodes.
 
 **Post Build Modification Effect**: destruction of the corresponding volumes and attachments, and creation
@@ -528,7 +528,7 @@ git repo or fork the puppet-magic_castle repo and make a pull request.
 We will list here a few common customizations that are not currently
 supported directly by Magic Castle, but that are easy to do live.
 
-Most customizations are done from the management node (`mgmt01`).
+Most customizations are done from the management node (`mgmt1`).
 To connect to the management node, follow these steps:
 
 1. Make sure your SSH key is loaded in your ssh-agent.
@@ -536,7 +536,7 @@ To connect to the management node, follow these steps:
 agent connection enabled: `ssh -A centos@cluster_ip`.
 Replace `centos` by the value of `sudoer_username` if it is
 different.
-3. SSH in the management node : `ssh mgmt01`
+3. SSH in the management node : `ssh mgmt1`
 
 ### 9.1 Disable Puppet
 
@@ -577,7 +577,7 @@ done
 
 ### 9.3 Add a User Account
 
-To add a user account after the cluster is built, log in `mgmt01` and call:
+To add a user account after the cluster is built, log in `mgmt1` and call:
 ```bash
 $ kinit admin
 $ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.py <username>
@@ -590,14 +590,14 @@ The number of guest accounts is originally set in the Terraform main file. If yo
 to increase the number of guest accounts after creating the cluster with Terraform, you
 can modify the hieradata file of the Puppet environment.
 
-1. On `mgmt01` and with `sudo`, open the file
+1. On `mgmt1` and with `sudo`, open the file
 ```
 /etc/puppetlabs/code/environments/production/data/terraform_data.yaml
 ```
 2. Increase the number associated with the field `profile::freeipa::guest_accounts::nb_accounts:`
 to the number of guest accounts you want.
 3. Save the file.
-4. Restart puppet on `mgmt01`: `sudo systemctl restart puppet`.
+4. Restart puppet on `mgmt1`: `sudo systemctl restart puppet`.
 5. The accounts will be created in the following minutes.
 
 

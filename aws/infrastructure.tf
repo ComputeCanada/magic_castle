@@ -130,7 +130,7 @@ resource "aws_instance" "mgmt" {
   ]
 
   tags = {
-    Name = format("mgmt%02d", count.index + 1)
+    Name = format("mgmt%d", count.index + 1)
   }
 }
 
@@ -210,7 +210,7 @@ resource "aws_instance" "login" {
   ]
 
   tags = {
-    Name = format("login%02d", count.index + 1)
+    Name = format("login%d", count.index + 1)
   }
 }
 
@@ -241,7 +241,7 @@ resource "aws_instance" "node" {
 }
 
 locals {
-  mgmt01_ip   = aws_network_interface.mgmt[0].private_ip
+  mgmt1_ip   = aws_network_interface.mgmt[0].private_ip
   public_ip   = aws_instance.login[0].public_ip
   cidr        = aws_subnet.private_subnet.cidr_block
   home_dev    = "/dev/sdb"

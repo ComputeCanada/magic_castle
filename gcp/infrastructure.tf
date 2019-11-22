@@ -58,7 +58,7 @@ resource "google_compute_disk" "scratch" {
 
 resource "google_compute_address" "mgmt" {
   count        = var.instances["mgmt"]["count"]
-  name         = format("%s-mgmt%02d-ipv4", var.cluster_name, count.index + 1)
+  name         = format("%s-mgmt%d-ipv4", var.cluster_name, count.index + 1)
   address_type = "INTERNAL"
   subnetwork   = google_compute_subnetwork.subnet.self_link
   region       = var.region
@@ -68,7 +68,7 @@ resource "google_compute_instance" "mgmt" {
   project      = var.project_name
   zone         = var.zone
   count        = var.instances["mgmt"]["count"]
-  name         = format("%s-mgmt%02d", var.cluster_name, count.index + 1)
+  name         = format("%s-mgmt%d", var.cluster_name, count.index + 1)
   machine_type = var.instances["mgmt"]["type"]
   tags         = ["mgmt"]
 
@@ -125,14 +125,14 @@ resource "google_compute_attached_disk" "scratch" {
 
 resource "google_compute_address" "static" {
   count = max(var.instances["login"]["count"], 1)
-  name  = format("login%02d-ipv4", count.index + 1)
+  name  = format("login%d-ipv4", count.index + 1)
 }
 
 resource "google_compute_instance" "login" {
   count        = var.instances["login"]["count"]
   project      = var.project_name
   zone         = var.zone
-  name         = format("%s-login%02d", var.cluster_name, count.index + 1)
+  name         = format("%s-login%d", var.cluster_name, count.index + 1)
   machine_type = var.instances["login"]["type"]
   tags         = ["login"]
 
@@ -234,7 +234,7 @@ resource "google_compute_firewall" "default" {
 }
 
 locals {
-  mgmt01_ip   = google_compute_address.mgmt[0].address
+  mgmt1_ip   = google_compute_address.mgmt[0].address
   public_ip   = google_compute_address.static[*].address
   home_dev    = "/dev/disk/by-id/google-home"
   project_dev = "/dev/disk/by-id/google-project"

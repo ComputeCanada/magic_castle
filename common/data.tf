@@ -38,7 +38,7 @@ data "template_file" "hieradata" {
     guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : random_pet.guest_passwd[0].id
     munge_key       = base64sha512(random_string.munge_key.result)
     nb_users        = var.nb_users
-    mgmt01_ip       = local.mgmt01_ip
+    mgmt1_ip       = local.mgmt1_ip
   }
 }
 
@@ -53,10 +53,10 @@ data "template_cloudinit_config" "mgmt_config" {
       {
         puppetenv_git         = replace(replace(var.puppetenv_git, ".git", ""), "//*$/", ".git"),
         puppetenv_rev         = var.puppetenv_rev,
-        puppetmaster          = local.mgmt01_ip,
+        puppetmaster          = local.mgmt1_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
         hieradata             = data.template_file.hieradata.rendered,
-        node_name             = format("mgmt%02d", count.index + 1),
+        node_name             = format("mgmt%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = var.public_keys,
         home_dev              = local.home_dev,
@@ -97,10 +97,10 @@ EOF
     content      = templatefile(
       "${path.module}/cloud-init/puppet.yaml",
       {
-        node_name             = format("login%02d", count.index + 1),
+        node_name             = format("login%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = var.public_keys,
-        puppetmaster          = local.mgmt01_ip,
+        puppetmaster          = local.mgmt1_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
       }
     )
@@ -119,7 +119,7 @@ data "template_cloudinit_config" "node_config" {
         node_name             = format("node%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = var.public_keys,
-        puppetmaster          = local.mgmt01_ip,
+        puppetmaster          = local.mgmt1_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
       }
     )

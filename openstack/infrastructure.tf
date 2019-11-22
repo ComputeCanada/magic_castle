@@ -81,7 +81,7 @@ resource "openstack_blockstorage_volume_v2" "scratch" {
 
 resource "openstack_networking_port_v2" "port_mgmt" {
   count              = max(var.instances["mgmt"]["count"], 1)
-  name               = format("port-mgmt%02d", count.index + 1)
+  name               = format("port-mgmt%d", count.index + 1)
   network_id         = local.network.id
   security_group_ids = [openstack_compute_secgroup_v2.secgroup_1.id]
   fixed_ip {
@@ -91,7 +91,7 @@ resource "openstack_networking_port_v2" "port_mgmt" {
 
 resource "openstack_compute_instance_v2" "mgmt" {
   count    = var.instances["mgmt"]["count"]
-  name     = format("mgmt%02d", count.index + 1)
+  name     = format("mgmt%d", count.index + 1)
   image_id = var.root_disk_size > data.openstack_compute_flavor_v2.mgmt.disk ? null : data.openstack_images_image_v2.image.id
 
   flavor_name = var.instances["mgmt"]["type"]
@@ -142,7 +142,7 @@ resource "openstack_compute_volume_attach_v2" "va_scratch" {
 
 resource "openstack_networking_port_v2" "port_login" {
   count              = var.instances["login"]["count"]
-  name               = format("port-login%02d", count.index + 1)
+  name               = format("port-login%d", count.index + 1)
   network_id         = local.network.id
   security_group_ids = [openstack_compute_secgroup_v2.secgroup_1.id]
   fixed_ip {
@@ -152,7 +152,7 @@ resource "openstack_networking_port_v2" "port_login" {
 
 resource "openstack_compute_instance_v2" "login" {
   count    = var.instances["login"]["count"]
-  name     = format("login%02d", count.index + 1)
+  name     = format("login%d", count.index + 1)
   image_id = var.root_disk_size > data.openstack_compute_flavor_v2.login.disk ? null : data.openstack_images_image_v2.image.id
 
   flavor_name     = var.instances["login"]["type"]
@@ -186,7 +186,7 @@ resource "openstack_compute_instance_v2" "login" {
 
 resource "openstack_networking_port_v2" "port_node" {
   count              = var.instances["node"]["count"]
-  name               = format("port-node%02d", count.index + 1)
+  name               = format("port-node%d", count.index + 1)
   network_id         = local.network.id
   security_group_ids = [openstack_compute_secgroup_v2.secgroup_1.id]
   fixed_ip {
@@ -229,7 +229,7 @@ resource "openstack_compute_instance_v2" "node" {
 }
 
 locals {
-  mgmt01_ip = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
+  mgmt1_ip    = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
   home_dev    = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v2.home[0].id, 0, 20)}"
   project_dev = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v2.project[0].id, 0, 20)}"
   scratch_dev = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v2.scratch[0].id, 0, 20)}"

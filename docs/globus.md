@@ -20,7 +20,7 @@ as the one you provided in the Terraform main file.
 
 ## Setup
 
-On `mgmt01`:
+On `mgmt1`:
 1. Edit the file `/etc/puppetlabs/code/environments/production/data/common.yaml` with sudo rights
 and add the following lines:
   ```
@@ -29,7 +29,7 @@ profile::globus::base::globus_password: your_globus_password
 ```
 Replace `your_globus_username` and `your_globus_password` by their respective value.
 
-On `login01`:
+On `login1`:
 1. Restart puppet : `sudo systemctl restart puppet`.
 2. Give Puppet a few minutes to setup Globus. You can confirm that
 everything was setup correctly by looking at the tail of the puppet log:

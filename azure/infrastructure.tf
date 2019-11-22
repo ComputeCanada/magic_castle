@@ -27,7 +27,7 @@ resource "azurerm_subnet" "subnet" {
 # Create public IPs
 resource "azurerm_public_ip" "loginIP" {
   count                        = var.instances["login"]["count"]
-  name                         = format("login-ip-%02d", count.index + 1)
+  name                         = format("login-ip-%d", count.index + 1)
   location                     = var.location
   resource_group_name          = azurerm_resource_group.group.name
   allocation_method            = "Static"
@@ -35,7 +35,7 @@ resource "azurerm_public_ip" "loginIP" {
 
 resource "azurerm_public_ip" "mgmtIP" {
   count                        = var.instances["mgmt"]["count"]
-  name                         = format("mgmt-ip-%02d", count.index + 1)
+  name                         = format("mgmt-ip-%d", count.index + 1)
   location                     = var.location
   resource_group_name          = azurerm_resource_group.group.name
   allocation_method            = "Dynamic"
@@ -43,7 +43,7 @@ resource "azurerm_public_ip" "mgmtIP" {
 
 resource "azurerm_public_ip" "nodeIP" {
   count                        = var.instances["node"]["count"]
-  name                         = format("node-ip-%02d", count.index + 1)
+  name                         = format("node-ip-%d", count.index + 1)
   location                     = var.location
   resource_group_name          = azurerm_resource_group.group.name
   allocation_method            = "Dynamic"
@@ -93,7 +93,7 @@ resource "azurerm_network_security_group" "security_mgmt" {
 # Create network interface
 resource "azurerm_network_interface" "loginNIC" {
   count                     = var.instances["login"]["count"]
-  name                      = format("login-nic-%02d", count.index + 1)
+  name                      = format("login%d-nic", count.index + 1)
   location                  = var.location
   resource_group_name       = azurerm_resource_group.group.name
   network_security_group_id = azurerm_network_security_group.security_login.id
@@ -108,7 +108,7 @@ resource "azurerm_network_interface" "loginNIC" {
 
 resource "azurerm_network_interface" "mgmtNIC" {
   count                     = var.instances["mgmt"]["count"]
-  name                      = format("mgmt-nic-%02d", count.index + 1)
+  name                      = format("mgmt%d-nic", count.index + 1)
   location                  = var.location
   resource_group_name       = azurerm_resource_group.group.name
   network_security_group_id = azurerm_network_security_group.security_mgmt.id
@@ -123,7 +123,7 @@ resource "azurerm_network_interface" "mgmtNIC" {
 
 resource "azurerm_network_interface" "nodeNIC" {
   count               = var.instances["node"]["count"]
-  name                = format("node-nic-%02d", count.index + 1)
+  name                = format("node%d-nic", count.index + 1)
   location            = var.location
   resource_group_name = azurerm_resource_group.group.name
 
@@ -139,7 +139,7 @@ resource "azurerm_network_interface" "nodeNIC" {
 resource "azurerm_virtual_machine" "login" {
   count                 = var.instances["login"]["count"]
   vm_size               = var.instances["login"]["type"]
-  name                  = format("login%02d", count.index + 1)
+  name                  = format("login%d", count.index + 1)
   location              = var.location
   resource_group_name   = azurerm_resource_group.group.name
   network_interface_ids = [azurerm_network_interface.loginNIC[count.index].id]
@@ -160,7 +160,7 @@ resource "azurerm_virtual_machine" "login" {
   }
 
   os_profile {
-    computer_name  = format("login%02d", count.index + 1)
+    computer_name  = format("login%d", count.index + 1)
     admin_username = "azure"
     custom_data = data.template_cloudinit_config.login_config[count.index].rendered
   }
@@ -173,7 +173,7 @@ resource "azurerm_virtual_machine" "login" {
 resource "azurerm_virtual_machine" "mgmt" {
   count                 = var.instances["mgmt"]["count"]
   vm_size               = var.instances["mgmt"]["type"]
-  name                  = format("mgmt%02d", count.index + 1)
+  name                  = format("mgmt%d", count.index + 1)
   location              = var.location
   resource_group_name   = azurerm_resource_group.group.name
   network_interface_ids = [azurerm_network_interface.mgmtNIC[count.index].id]
@@ -194,7 +194,7 @@ resource "azurerm_virtual_machine" "mgmt" {
   }
 
   os_profile {
-    computer_name  = format("mgmt%02d", count.index + 1)
+    computer_name  = format("mgmt%d", count.index + 1)
     admin_username = "azure"
     custom_data = data.template_cloudinit_config.mgmt_config[count.index].rendered
   }
@@ -293,7 +293,7 @@ resource "azurerm_virtual_machine" "nodevm" {
 }
 
 locals {
-  mgmt01_ip   = azurerm_network_interface.mgmtNIC[0].private_ip_address
+  mgmt1_ip   = azurerm_network_interface.mgmtNIC[0].private_ip_address
   public_ip   = azurerm_public_ip.loginIP[0].ip_address
   cidr        = "10.0.1.0/24"
   home_dev    = "/dev/disk/azure/scsi1/lun10"
