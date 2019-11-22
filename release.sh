@@ -28,19 +28,24 @@ for provider in "${CLOUD[@]}"; do
     cp $provider/README.md $cur_folder
 
     # Identify and fix provider versions
-    TF_PROVIDERS=$(terraform init $cur_folder | grep '* provider' | sed -E 's/\* provider\.([a-z]*): version = "~> ([0-9.]*)"/\1_\2/g')
+    TF_PROVIDERS=$(find $cur_folder -type d -exec terraform init {} \; |
+                grep '* provider' |
+                sed -E 's/\* provider\.([a-z]*): version = "~> ([0-9.]*)"/\1_\2/g' |
+                sort |
+                uniq)
     for prov_vers in $TF_PROVIDERS; do
         prov="${prov_vers%%_*}"
         vers="${prov_vers#*_}"
-        if grep -q -R "provider \"$prov\"" $cur_folder; then
-            sed -i "/provider \"$prov\"/a \ \ version = \"~> ${vers}\"" $cur_folder/$provider/infrastructure.tf
+        file=$(grep -l -R "provider \"$prov\"" $cur_folder)
+        if [ ! -z "$file" ]; then
+            sed -i "/provider \"$prov\"/a \ \ version = \"~> ${vers}\"" $file
         else
             echo "provider \"${prov}\" { version = \"~> ${vers}\" } " >> $cur_folder/$provider/providers.tf
         fi
     done
 
     cd $FOLDER
-    tar czvf magic_castle-$provider-$VERSION.tar.gz magic_castle-$provider-$VERSION 
+    tar czvf magic_castle-$provider-$VERSION.tar.gz magic_castle-$provider-$VERSION
     zip magic_castle-$provider-$VERSION.zip -r magic_castle-$provider-$VERSION
     cd -
     cp $FOLDER/magic_castle-$provider-$VERSION.tar.gz releases/
