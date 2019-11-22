@@ -17,16 +17,13 @@ mkdir -p releases
 for provider in "${CLOUD[@]}"; do
     cur_folder=$FOLDER/magic_castle-$provider-$VERSION
     mkdir -p $cur_folder
-    mkdir -p $cur_folder/$provider/cloud-init/
-    cp -RfL $provider/*.tf $cur_folder/$provider/
-    #cp -RfL $provider/*.sh $cur_folder/$provider/
-    cp -RfL cloud-init/*.yaml $cur_folder/$provider/cloud-init/
-    cp -RfL dns $cur_folder
+    cp -RfL $provider $cur_folder/
+    cp -RfL dns $cur_folder/
     cp -fL examples/$provider/main.tf $cur_folder
+    mv $cur_folder/$provider/README.md $cur_folder
     sed -i "" 's;git::https://github.com/ComputeCanada/magic_castle.git//;./;g' $cur_folder/main.tf
     sed -i "" "s;default = \"master\";default = \"$VERSION\";" $cur_folder/$provider/variables.tf
     cp LICENSE $cur_folder
-    cp $provider/README.md $cur_folder
 
     # Identify and fix provider versions
     TF_PROVIDERS=$(find $cur_folder -type d -exec terraform init {} \; |
