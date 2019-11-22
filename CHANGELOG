@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - [DNS] Added support for Google Cloud DNS (PR #24)
+- Added a release script compatible with BSD tools - `release.bsd.sh`
 
 ### Changed
 - [DNS] Changed the login record A pattern from `clustername#.domain` to `login#.clustername.domain` where `#` is the login node index.
