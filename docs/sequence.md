@@ -58,7 +58,7 @@ is the puppet certificate generation.
 
 ## 4. Provisioning with Consul and Consul Template Sequence
 
-![Provisioning with Puppet](./diagrams/cluster_provisioning_consul_sequence.svg)
+![Provisioning with Consul](./diagrams/cluster_provisioning_consul_sequence.svg)
 
 ### References
 
