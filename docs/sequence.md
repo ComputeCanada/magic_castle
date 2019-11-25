@@ -1,6 +1,6 @@
 # Magic Castle Sequence Diagrams
 
-The following sequence diagrams illustrate the inner working of Magic Castle 
+The following sequence diagrams illustrate the inner working of Magic Castle
 once `terraform apply` is called. Some details were left out of the diagrams,
 but every diagram is followed by references to the code files that were used
 to build it.
@@ -14,6 +14,11 @@ sequences, repeated for each type.
 
 ![Cluster Creation Sequence](./diagrams/cluster_creation_sequence.svg)
 
+### Notes
+
+1. `puppet-magic_castle.git` does not have to refer to `ComputeCanada/puppet-magic_castle.git` repo.
+Users can use their own fork. See the [developer documentation](/docs/developpers.md) for more details.
+
 ### References
 
 - [`magic_castle:/common/data.tf`](/common/data.tf)
@@ -25,6 +30,14 @@ sequences, repeated for each type.
 ## 2. Provisioning with Cloud-Init Sequence
 
 ![Provisioning with Cloud-Init Sequence](./diagrams/cluster_provisioning_cloud-init_sequence.svg)
+
+### Notes
+
+1. `puppet-magic_castle.git` does not have to refer to `ComputeCanada/puppet-magic_castle.git` repo.
+Users can use their own fork. See the [developer documentation](/docs/developpers.md) for more details.
+2. While the diagram represents each step as completed sequentially, each node provisioning
+is independent. The only step that requires synchronisation between nodes and the management node
+is the puppet certificate generation.
 
 ### References
 
