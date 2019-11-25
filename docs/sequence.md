@@ -48,3 +48,20 @@ is the puppet certificate generation.
 ## 3. Provisioning with Puppet Sequence
 
 ![Provisioning with Puppet](./diagrams/cluster_provisioning_puppet_sequence.svg)
+
+### References
+
+- [`puppet-magic_castle:/manifests/site.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/manifests/site.pp)
+- [`puppet-magic_castle:/profile/manifests/base.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/base.pp)
+- [`puppet-magic_castle:/profile/manifests/consul.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/consul.pp)
+- [`puppet-magic_castle:/profile/manifests/freeipa.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/freeipa.pp)
+
+## 4. Provisioning with Consul and Consul Template Sequence
+
+![Provisioning with Puppet](./diagrams/cluster_provisioning_consul_sequence.svg)
+
+### References
+
+- [`puppet-magic_castle:/profile/manifests/consul.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/consul.pp)
+- [`puppet-magic_castle:/profile/manifests/cvmfs.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/cvmfs.pp)
+- [`puppet-magic_castle:/profile/manifests/slurm.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/slurm.pp)
