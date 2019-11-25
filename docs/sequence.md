@@ -3,7 +3,12 @@
 The following sequence diagrams illustrate the inner working of Magic Castle 
 once `terraform apply` is called. Some details were left out of the diagrams,
 but every diagram is followed by references to the code files that were used
-to build the diagram.
+to build it.
+
+To limit the size of the diagram, the sequences represent a cluster composed
+of one management node (`mgmt1`), one login node (`login1`) and one compute
+node (`node1`). Clusters with multiple nodes each type would follow the same
+sequences, repeated for each type.
 
 ## 1. Cluster Creation Sequence
 
