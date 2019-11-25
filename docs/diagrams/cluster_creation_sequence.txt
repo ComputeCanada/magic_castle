@@ -1,0 +1,14 @@
+# https://sequencediagram.org/
+title Magic Castle Cluster Creation
+
+Terraform->puppet-magic_castle.git: http get data/terraform_data.yaml.tmpl
+Terraform->Cloud Provider: Create internal network
+Terraform->Cloud Provider: Allocate internal ip address for mgmt1
+Terraform->Terraform: Render terraform_data.yaml
+Terraform->Terraform: Render cloud-init.yaml for mgmt1, login1, and node [1-N]
+Terraform->Cloud Provider: Create instances mgmt1, login1, and node[1-N] (user-data: cloud-init.yaml)
+Terraform->Cloud Provider: Create volumes and firewall
+Terraform->Cloud Provider: Allocate public ip address for login1
+Terraform->DNS: Create A records for login1
+Terraform->Let's Encrypt: Generate wildcard certificate for domain name
+Terraform->login1: Upload wildcard certificate
