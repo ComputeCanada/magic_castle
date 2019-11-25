@@ -17,7 +17,7 @@ sequences, repeated for each type.
 ### Notes
 
 1. `puppet-magic_castle.git` does not have to refer to `ComputeCanada/puppet-magic_castle.git` repo.
-Users can use their own fork. See the [developer documentation](/docs/developpers.md) for more details.
+Users can use their own fork. See the [developer documentation](/docs/developers.md) for more details.
 
 ### References
 
@@ -34,7 +34,7 @@ Users can use their own fork. See the [developer documentation](/docs/developper
 ### Notes
 
 1. `puppet-magic_castle.git` does not have to refer to `ComputeCanada/puppet-magic_castle.git` repo.
-Users can use their own fork. See the [developer documentation](/docs/developpers.md) for more details.
+Users can use their own fork. See the [developer documentation](/docs/developers.md) for more details.
 2. While the diagram represents each step as completed sequentially, each node provisioning
 is independent. The only step that requires synchronisation between nodes and the management node
 is the puppet certificate generation.
