@@ -35,7 +35,7 @@ resource "google_dns_record_set" "loginX_sshfp_rsa" {
 }
 
 resource "google_dns_record_set" "login_A" {
-  count        = max(length(var.public_ip), 1)
+  count        = length(var.public_ip)
   managed_zone = data.google_dns_managed_zone.domain.name
   project      = var.project
   name         = join(".", [var.name, var.domain, ""])
@@ -45,12 +45,13 @@ resource "google_dns_record_set" "login_A" {
 }
 
 resource "google_dns_record_set" "jupyter_A" {
+  count        = length(var.public_ip)
   managed_zone = data.google_dns_managed_zone.domain.name
   project      = var.project
   name         = join(".", ["jupyter", var.name, var.domain, ""])
   ttl          = 300
   type         = "A"
-  rrdatas      = [var.public_ip[0]]
+  rrdatas      = [var.public_ip[count.index]]
 }
 
 resource "google_dns_record_set" "login_sshfp_rsa" {
@@ -64,7 +65,7 @@ resource "google_dns_record_set" "login_sshfp_rsa" {
 
 output "hostnames" {
   value = concat(
-    [google_dns_record_set.login_A[0].name],
+    distinct(google_dns_record_set.login_A[*].name),
     google_dns_record_set.loginX_A[*].name,
   )
 }
