@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - [DNS] Changed the login record A pattern from `clustername#.domain` to `login#.clustername.domain` where `#` is the login node index.
 - [DNS] Moved wildcard certificate creation from cloudflare to an acme module shared by all dns modules.
 - Changed the management and login node naming scheme to match node naming. `mgmt01` is now `mgmt1` and `login01` is now `login1`. 
+- [puppet] Fix puppet-jupyterhub version to v1.1 instead of master branch
 
 ### Removed
 - [DNS] Removed creation of SSHFP SHA1 records (issue #22)
