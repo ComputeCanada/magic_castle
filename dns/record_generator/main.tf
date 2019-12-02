@@ -40,6 +40,14 @@ locals {
             data  = null
         }
     ]
+    ipa_A = [
+        for ip in var.login_ips : {
+            type  = "A"
+            name  = join(".", ["ipa", var.name])
+            value = ip
+            data  = null
+        }
+    ]
     name_SSHFP = [
         {
             type  = "SSHFP"
@@ -71,6 +79,7 @@ output "records" {
         local.name_A,
         local.login_A,
         local.jupyter_A,
+        local.ipa_A,
         local.name_SSHFP,
         local.login_SSHFP
     )
