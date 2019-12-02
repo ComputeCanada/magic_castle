@@ -45,7 +45,7 @@ Instead of step 5, export only `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ZONE_API_TOKE
 
 1. Login to your Google account with gcloud CLI : `gcloud auth application-default login`
 2. Uncomment the `dns` module for Google Cloud in your `main.tf`.
-3. Uncomment the `output "dns"` block.
+3. Uncomment the `output "hostnames"` block.
 4. In `main.tf`'s `dns` module, configure the variable `email` with your email address. This will be used to generate the Let's Encrypt certificate.
 5. In `main.tf`'s `dns` module, configure the variables `project_name` and `zone_name`
 with their respective value as defined by your Google Cloud project.
