@@ -86,7 +86,7 @@ variable "firewall_rules" {
       "from_port"    = 7512,
       "to_port"      = 7512,
       "ip_protocol"  = "tcp",
-      "cidr"         = "54.237.254.192/29"
+      "cidr"         = "0.0.0.0/0"
     },
     {
       "name"        = "GridFTP"
