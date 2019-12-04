@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- [DNS] Added a `dtn` entry for the Globus endpoint.
+- [DNS] Added an `ipa` entry that provides access to FreeIPA webpage.
+- [puppet] Added a `profile::reverse_proxy` class that configure Apache vhost for JupyterHub, FreeIPA, Globus, etc.
+
+### Changed
+- [DNS] DNS records are now produced by the `record_generator` module instead of listing records in each DNS provider module.
+- [puppet] Changed Globus authentication method from MyProxy to OAuth.
+
+### Removed
+- [puppet] Removed include of jupyterhub::reverse_proxy in site.pp for login.
+
 ## [5.6] - 2019-11-27
 
 ### Added
