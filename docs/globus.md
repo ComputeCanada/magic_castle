@@ -23,7 +23,7 @@ as the one you provided in the Terraform main file.
 On `mgmt1`:
 1. Edit the file `/etc/puppetlabs/code/environments/production/data/terraform_data.yaml` with sudo rights
 and add the following lines:
-  ```
+```
 profile::globus::base::globus_user: your_globus_username
 profile::globus::base::globus_password: your_globus_password
 ```
