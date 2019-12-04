@@ -14,9 +14,10 @@ personal globus, we recommend you create a dummy one at:
 
 ### DNS
 
-If your cluster hostname is not registered in the domain records of your DNS,
-you will have to register it manually. Make sure you use the same domain name
-as the one you provided in the Terraform main file.
+The Globus Puppet module relies heavily on the dns submodule of Magic Castle
+since it registers subdomains and create SSL certificates that are required
+by Globus. If you plan to install Globus without first activating the dns
+submodule, you are on your own.
 
 ## Setup
 
