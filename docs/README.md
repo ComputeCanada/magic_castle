@@ -659,7 +659,7 @@ pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
 
 ### 9.7 Activate Globus Endpoint
 
-Refer to [Magic Castle Globus Endpoint documentation](globus.md)
+Refer to [Magic Castle Globus Endpoint documentation](globus.md).
 
 ## 10. Customize Magic Castle Terraform Files
 
