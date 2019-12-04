@@ -21,7 +21,7 @@ as the one you provided in the Terraform main file.
 ## Setup
 
 On `mgmt1`:
-1. Edit the file `/etc/puppetlabs/code/environments/production/data/common.yaml` with sudo rights
+1. Edit the file `/etc/puppetlabs/code/environments/production/data/terraform_data.yaml` with sudo rights
 and add the following lines:
   ```
 profile::globus::base::globus_user: your_globus_username
@@ -44,14 +44,6 @@ sudo systemctl status myproxy-server
 ```
 4. If both services are active, in a browser, go to
 https://app.globus.org/endpoints?scope=administered-by-me
-5. Click on your endpoint.
-6. Click on the `Server` tab.
-7. At the bottom of the page, there is text field named "Subject DN". Copy the content, it should look like this:
-```
-/C=US/O=Globus Consortium/OU=Globus Connect Service/CN=xxxx-x-xxx-xxx-xxxxxx
-```
-8. The first section of the Server page is named "Identity Provider". Click on the `Edit Identity Provider` button.
-9. In the DN field of Edit Identity Provider, paste the content you copied from "Subject DN".
-10. Click on Save Changes.
 
-You should now be able to log in your Globus Endpoint with your cluster guest account credentials.
+Your endpoint should appear in the list and you should now be able to log in
+by clicking on the activate button.
