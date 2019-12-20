@@ -22,7 +22,7 @@ submodule, you are on your own.
 ## Setup
 
 On `mgmt1`:
-1. Edit the file `/etc/puppetlabs/code/environments/production/data/terraform_data.yaml` with sudo rights
+1. Open the file `/etc/puppetlabs/code/environments/production/data/common.yaml` with sudo rights
 and add the following lines:
 ```
 profile::globus::base::globus_user: your_globus_username
