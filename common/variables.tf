@@ -47,6 +47,11 @@ variable "puppetenv_rev" {
   default = "master"
 }
 
+variable hieradata {
+  type = string
+  default = ""
+}
+
 variable "sudoer_username" {
   default = "centos"
 }
