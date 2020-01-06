@@ -358,6 +358,17 @@ ssh authorized keys are configured with the SSH public key with
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
+### 4.12 hieradata (optional)
+
+**default value**: empty string
+
+Defines custom Puppet variable values that are injected in the hieradata file.
+Useful to override common configuration of Puppet classes.
+
+**Requirement**: The string needs to respect a YAML syntax.
+
+**Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`.
+
 ## 5. Cloud Specific Configuration
 
 ### 5.1 OpenStack
@@ -419,7 +430,7 @@ Otherwise, Terraform can find it automatically.
 
 ### 5.5 OVH
 
-#### 5.5.1 
+#### 5.5.1
 
 ## 6. Planification
 
