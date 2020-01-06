@@ -240,7 +240,7 @@ section [9.3](#93-add-a-user-account) and [9.4](#94-increase-the-number-of-guest
 **Requirement**: Must be an integer, minimum value is 0.
 
 **Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`
-([see section 9.8](#9.8-recovering-from-mgmt1-rebuild)).
+([see section 9.8](#98-recovering-from-mgmt1-rebuild)).
 
 ### 4.6 instances
 
@@ -339,7 +339,7 @@ randomly generated one.
 **Requirement**: Minimum length **8 characters**.
 
 **Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`.
-([see section 9.8](#9.8-recovering-from-mgmt1-rebuild)).
+([see section 9.8](#98-recovering-from-mgmt1-rebuild)).
 
 ### 4.10 root_disk_size (optional)
 
@@ -370,7 +370,7 @@ Useful to override common configuration of Puppet classes.
 **Requirement**: The string needs to respect a YAML syntax.
 
 **Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`.
-([see section 9.8](#9.8-recovering-from-mgmt1-rebuild)).
+([see section 9.8](#98-recovering-from-mgmt1-rebuild)).
 
 ## 5. Cloud Specific Configuration
 
