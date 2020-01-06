@@ -239,7 +239,8 @@ section [9.3](#93-add-a-user-account) and [9.4](#94-increase-the-number-of-guest
 
 **Requirement**: Must be an integer, minimum value is 0.
 
-**Post Build Modification Effect**: rebuild of all management nodes at next `terraform apply`.
+**Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`
+([see section 9.8](#9.8-recovering-from-mgmt1-rebuild)).
 
 ### 4.6 instances
 
@@ -337,7 +338,8 @@ randomly generated one.
 
 **Requirement**: Minimum length **8 characters**.
 
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+**Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`.
+([see section 9.8](#9.8-recovering-from-mgmt1-rebuild)).
 
 ### 4.10 root_disk_size (optional)
 
@@ -368,6 +370,7 @@ Useful to override common configuration of Puppet classes.
 **Requirement**: The string needs to respect a YAML syntax.
 
 **Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`.
+([see section 9.8](#9.8-recovering-from-mgmt1-rebuild)).
 
 ## 5. Cloud Specific Configuration
 
@@ -671,6 +674,38 @@ pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
 ### 9.7 Activate Globus Endpoint
 
 Refer to [Magic Castle Globus Endpoint documentation](globus.md).
+
+### 9.8 Recovering from mgmt1 rebuild
+
+The modifications of some of the parameters in the `main.tf` file can trigger the
+rebuild of the `mgmt1` instance. This instance hosts the Puppet Server on which
+depends the Puppet agent of the other instances. When `mgmt1` is rebuild, the other
+Puppet agents cease to recognize Puppet Server identity since the Puppet Server
+identity and certificates have been regenerated.
+
+To fix the Puppet agents, you will need to apply the following commands on each 
+instance other than `mgmt1` once `mgmt1` is rebuilt:
+```
+sudo systemctl stop puppet
+sudo rm -rf /etc/puppetlabs/puppet/ssl/
+sudo systemctl start puppet
+```
+
+Than, on `mgmt1`, you will need to sign the new certificate requests made by the
+instances. First, you can list the requests:
+```
+sudo /opt/puppetlabs/bin/puppetserver ca list
+```
+
+Then, if every instance is listed, you can sign all requests:
+```
+sudo /opt/puppetlabs/bin/puppetserver ca sign --all
+```
+
+If you prefer, you can sign individual request by specifying their name:
+```
+sudo /opt/puppetlabs/bin/puppetserver ca sign --name NAME[,NAME]
+``` 
 
 ## 10. Customize Magic Castle Terraform Files
 
