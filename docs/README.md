@@ -683,7 +683,7 @@ depends the Puppet agent of the other instances. When `mgmt1` is rebuild, the ot
 Puppet agents cease to recognize Puppet Server identity since the Puppet Server
 identity and certificates have been regenerated.
 
-To fix the Puppet agents, you will need to apply the following commands on each 
+To fix the Puppet agents, you will need to apply the following commands on each
 instance other than `mgmt1` once `mgmt1` is rebuilt:
 ```
 sudo systemctl stop puppet
@@ -705,7 +705,7 @@ sudo /opt/puppetlabs/bin/puppetserver ca sign --all
 If you prefer, you can sign individual request by specifying their name:
 ```
 sudo /opt/puppetlabs/bin/puppetserver ca sign --name NAME[,NAME]
-``` 
+```
 
 ## 10. Customize Magic Castle Terraform Files
 
