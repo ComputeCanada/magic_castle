@@ -338,7 +338,7 @@ randomly generated one.
 
 **Requirement**: Minimum length **8 characters**.
 
-**Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`.
+**Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`
 ([see section 9.8](#98-recovering-from-mgmt1-rebuild)).
 
 ### 4.10 root_disk_size (optional)
@@ -369,7 +369,7 @@ Useful to override common configuration of Puppet classes.
 
 **Requirement**: The string needs to respect a YAML syntax.
 
-**Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`.
+**Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`
 ([see section 9.8](#98-recovering-from-mgmt1-rebuild)).
 
 ## 5. Cloud Specific Configuration
@@ -691,7 +691,7 @@ sudo rm -rf /etc/puppetlabs/puppet/ssl/
 sudo systemctl start puppet
 ```
 
-Than, on `mgmt1`, you will need to sign the new certificate requests made by the
+Then, on `mgmt1`, you will need to sign the new certificate requests made by the
 instances. First, you can list the requests:
 ```
 sudo /opt/puppetlabs/bin/puppetserver ca list
