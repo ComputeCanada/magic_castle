@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - [DNS] Added a `dtn` entry for the Globus endpoint.
 - [DNS] Added an `ipa` entry that provides access to FreeIPA webpage.
 - [puppet] Added a `profile::reverse_proxy` class that configure Apache vhost for JupyterHub, FreeIPA, Globus, etc.
+- [puppet] Added service nvidia-persistenced to module gpu.pp
 - [main.tf] Added `hieradata` variable that allow the injection of custom values in puppet hieradata from Terraform.
 
 ### Changed
