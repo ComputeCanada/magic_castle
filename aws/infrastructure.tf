@@ -101,7 +101,7 @@ resource "aws_key_pair" "key" {
 
 resource "aws_network_interface" "mgmt" {
   count       = var.instances["mgmt"]["count"]
-  subnet_id   = "${aws_subnet.private_subnet.id}"
+  subnet_id   = aws_subnet.private_subnet.id
 }
 
 # Instances
@@ -115,7 +115,7 @@ resource "aws_instance" "mgmt" {
   associate_public_ip_address = "true"
 
   network_interface {
-    network_interface_id = "${aws_network_interface.mgmt[count.index]}"
+    network_interface_id = aws_network_interface.mgmt[count.index].id
     device_index         = 0
   }
 
