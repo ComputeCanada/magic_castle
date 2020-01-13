@@ -704,7 +704,7 @@ sudo /opt/puppetlabs/bin/puppetserver ca sign --all
 
 If you prefer, you can sign individual request by specifying their name:
 ```
-sudo /opt/puppetlabs/bin/puppetserver ca sign --name NAME[,NAME]
+sudo /opt/puppetlabs/bin/puppetserver ca sign --certname NAME[,NAME]
 ```
 
 ## 10. Customize Magic Castle Terraform Files
