@@ -253,7 +253,7 @@ locals {
   mgmt1_ip    = aws_network_interface.mgmt[0].private_ip
   public_ip   = aws_instance.login[*].public_ip
   cidr        = aws_subnet.private_subnet.cidr_block
-  home_dev    = "/dev/sdb"
-  project_dev = "/dev/sdc"
-  scratch_dev = "/dev/sdd"
+  home_dev    = "/dev/xvdb"
+  project_dev = "/dev/xvdc"
+  scratch_dev = "/dev/xvdd"
 }
