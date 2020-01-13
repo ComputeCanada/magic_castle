@@ -60,8 +60,8 @@ resource "aws_security_group" "allow_in_services" {
     content {
       from_port   = rule.value.from_port
       to_port     = rule.value.to_port
-      protocol    = rule.value.protocol
-      cidr_blocks = rule.value.cidr
+      protocol    = rule.value.ip_protocol
+      cidr_blocks = [rule.value.cidr]
     }
   }
 
@@ -241,8 +241,8 @@ resource "aws_instance" "node" {
 }
 
 locals {
-  mgmt1_ip   = aws_network_interface.mgmt[0].private_ip
-  public_ip   = aws_instance.login[0].public_ip
+  mgmt1_ip    = aws_network_interface.mgmt[0].private_ip
+  public_ip   = aws_instance.login[*].public_ip
   cidr        = aws_subnet.private_subnet.cidr_block
   home_dev    = "/dev/sdb"
   project_dev = "/dev/sdc"
