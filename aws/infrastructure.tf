@@ -30,6 +30,8 @@ resource "aws_route" "internet_access" {
 resource "aws_subnet" "private_subnet" {
   vpc_id     = aws_vpc.vpc.id
   cidr_block = "10.0.0.0/24"
+  availability_zone = var.availability_zone
+  map_public_ip_on_launch = true
 
   tags = {
     Name = "vpc-subnet"
@@ -102,17 +104,21 @@ resource "aws_key_pair" "key" {
 resource "aws_network_interface" "mgmt" {
   count       = var.instances["mgmt"]["count"]
   subnet_id   = aws_subnet.private_subnet.id
+  security_groups = [
+    aws_security_group.allow_any_inside_vpc.id,
+    aws_security_group.allow_out_any.id,
+  ]
 }
 
 # Instances
 resource "aws_instance" "mgmt" {
-  count         = var.instances["mgmt"]["count"]
-  instance_type = var.instances["mgmt"]["type"]
-  ami           = var.image
-  user_data     = data.template_cloudinit_config.mgmt_config[count.index].rendered
+  count             = var.instances["mgmt"]["count"]
+  instance_type     = var.instances["mgmt"]["type"]
+  ami               = var.image
+  user_data         = data.template_cloudinit_config.mgmt_config[count.index].rendered
+  availability_zone = var.availability_zone
 
   key_name                    = aws_key_pair.key.key_name
-  associate_public_ip_address = "true"
 
   network_interface {
     network_interface_id = aws_network_interface.mgmt[count.index].id
@@ -124,14 +130,17 @@ resource "aws_instance" "mgmt" {
     volume_size = var.root_disk_size
   }
 
-  vpc_security_group_ids = [
-    aws_security_group.allow_any_inside_vpc.id,
-    aws_security_group.allow_out_any.id,
-  ]
-
   tags = {
     Name = format("mgmt%d", count.index + 1)
   }
+
+  depends_on = [aws_internet_gateway.gw]
+}
+
+resource "aws_eip" "mgmt" {
+  vpc = true
+  instance                  = aws_instance.mgmt[0].id
+  depends_on                = [aws_internet_gateway.gw]
 }
 
 resource "aws_ebs_volume" "home" {
