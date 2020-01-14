@@ -26,6 +26,7 @@ runcmd:
   - systemctl enable puppet
   - systemctl disable kdump
   - sed -i 's/crashkernel=auto/crashkernel=no/' /etc/default/grub
+  - sed -i 's/GRUB_CMDLINE_LINUX="[^"]*/& nouveau.modeset=0 rd.driver.blacklist=nouveau/' /etc/default/grub
   - grub2-mkconfig -o /boot/grub2/grub.cfg
   - reboot -n
 
