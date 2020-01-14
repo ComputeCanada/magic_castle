@@ -138,9 +138,10 @@ resource "aws_instance" "mgmt" {
 }
 
 resource "aws_eip" "mgmt" {
-  vpc = true
-  instance                  = aws_instance.mgmt[0].id
-  depends_on                = [aws_internet_gateway.gw]
+  count      = var.instances["mgmt"]["count"]
+  vpc        = true
+  instance   = aws_instance.mgmt[count.index].id
+  depends_on = [aws_internet_gateway.gw]
 }
 
 resource "aws_ebs_volume" "home" {
@@ -205,7 +206,6 @@ resource "aws_instance" "login" {
 
   subnet_id                   = aws_subnet.private_subnet.id
   key_name                    = aws_key_pair.key.key_name
-  associate_public_ip_address = "true"
 
   root_block_device {
     volume_type = "standard"
@@ -222,6 +222,14 @@ resource "aws_instance" "login" {
     Name = format("login%d", count.index + 1)
   }
 }
+
+resource "aws_eip" "login" {
+  count      = var.instances["login"]["count"]
+  vpc        = true
+  instance   = aws_instance.login[count.index].id
+  depends_on = [aws_internet_gateway.gw]
+}
+
 
 resource "aws_instance" "node" {
   count         = var.instances["node"]["count"]
@@ -251,7 +259,7 @@ resource "aws_instance" "node" {
 
 locals {
   mgmt1_ip    = aws_network_interface.mgmt[0].private_ip
-  public_ip   = aws_instance.login[*].public_ip
+  public_ip   = aws_eip.login[*].public_ip
   cidr        = aws_subnet.private_subnet.cidr_block
   home_dev    = "/dev/xvdb"
   project_dev = "/dev/xvdc"
