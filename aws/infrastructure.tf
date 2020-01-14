@@ -97,7 +97,7 @@ resource "aws_security_group" "allow_any_inside_vpc" {
 }
 
 resource "aws_key_pair" "key" {
-  key_name   = "slurm-cloud-key"
+  key_name   = "${var.cluster_name}-key"
   public_key = var.public_keys[0]
 }
 
