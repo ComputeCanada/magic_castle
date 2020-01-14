@@ -11,7 +11,7 @@ module "aws" {
   nb_users     = 10
 
   instances = {
-    mgmt  = { type = "t2.medium", count = 1 },
+    mgmt  = { type = "t2.large", count = 1 },
     login = { type = "t2.medium", count = 1 },
     node  = { type = "t2.small",  count = 1 }
   }
