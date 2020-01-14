@@ -18,8 +18,8 @@ resource "aws_internet_gateway" "gw" {
 }
 
 # Grant the VPC internet access by creating a very generic
-# destination CIDR ("catch all" - the least specific possible) 
-# such that we route traffic to outside as a last resource for 
+# destination CIDR ("catch all" - the least specific possible)
+# such that we route traffic to outside as a last resource for
 # any route that the table doesn't know about.
 resource "aws_route" "internet_access" {
   route_table_id         = aws_vpc.vpc.main_route_table_id
