@@ -178,24 +178,27 @@ resource "aws_ebs_volume" "scratch" {
 }
 
 resource "aws_volume_attachment" "home" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  device_name = local.home_dev
-  volume_id   = aws_ebs_volume.home[0].id
-  instance_id = aws_instance.mgmt[0].id
+  count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
+  device_name  = local.home_dev
+  volume_id    = aws_ebs_volume.home[0].id
+  instance_id  = aws_instance.mgmt[0].id
+  skip_destroy = true
 }
 
 resource "aws_volume_attachment" "project" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  device_name = local.project_dev
-  volume_id   = aws_ebs_volume.project[0].id
-  instance_id = aws_instance.mgmt[0].id
+  count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
+  device_name  = local.project_dev
+  volume_id    = aws_ebs_volume.project[0].id
+  instance_id  = aws_instance.mgmt[0].id
+  skip_destroy = true
 }
 
 resource "aws_volume_attachment" "scratch" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  device_name = local.scratch_dev
-  volume_id   = aws_ebs_volume.scratch[0].id
-  instance_id = aws_instance.mgmt[0].id
+  count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
+  device_name  = local.scratch_dev
+  volume_id    = aws_ebs_volume.scratch[0].id
+  instance_id  = aws_instance.mgmt[0].id
+  skip_destroy = true
 }
 
 resource "aws_instance" "login" {
