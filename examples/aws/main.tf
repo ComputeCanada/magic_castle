@@ -7,7 +7,7 @@ module "aws" {
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
-  image        = "ami-dcad28b8" # CentOS 7 -  ca-central-1
+  image        = "ami-033e6106180a626d0" # CentOS 7 -  ca-central-1
   nb_users     = 10
 
   instances = {
