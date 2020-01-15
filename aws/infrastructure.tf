@@ -7,13 +7,19 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
+resource "random_shuffle" "random_az" {
+  input = data.aws_availability_zones.available.names
+  result_count = 1
+}
+
+
 locals {
   availability_zone = (
     ( var.availability_zone != "" &&
       contains(data.aws_availability_zones.available.names,
                var.availability_zone)
       ?
-      var.availability_zone : data.aws_availability_zones.available.names[0]
+      var.availability_zone : random_shuffle.random_az.result[0]
     )
   )
 }
