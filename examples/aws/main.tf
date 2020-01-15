@@ -30,7 +30,6 @@ module "aws" {
 
   # AWS specifics
   region            = "ca-central-1"
-  availability_zone = "ca-central-1a"
 }
 
 output "sudoer_username" {

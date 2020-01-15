@@ -3,6 +3,21 @@ provider "aws" {
   region = var.region
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+locals {
+  availability_zone = (
+    ( var.availability_zone != "" &&
+      contains(data.aws_availability_zones.available.names,
+               var.availability_zone)
+      ?
+      var.availability_zone : data.aws_availability_zones.available.names[0]
+    )
+  )
+}
+
 # Network
 resource "aws_vpc" "vpc" {
   cidr_block = "10.0.0.0/16"
@@ -30,7 +45,7 @@ resource "aws_route" "internet_access" {
 resource "aws_subnet" "private_subnet" {
   vpc_id     = aws_vpc.vpc.id
   cidr_block = "10.0.0.0/24"
-  availability_zone = var.availability_zone
+  availability_zone = local.availability_zone
   map_public_ip_on_launch = true
 
   tags = {
@@ -116,7 +131,7 @@ resource "aws_instance" "mgmt" {
   instance_type     = var.instances["mgmt"]["type"]
   ami               = var.image
   user_data         = data.template_cloudinit_config.mgmt_config[count.index].rendered
-  availability_zone = var.availability_zone
+  availability_zone = local.availability_zone
 
   key_name                    = aws_key_pair.key.key_name
 
@@ -147,7 +162,7 @@ resource "aws_eip" "mgmt" {
 
 resource "aws_ebs_volume" "home" {
   count             = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  availability_zone = var.availability_zone
+  availability_zone = local.availability_zone
   size              = var.storage["home_size"]
   type              = "gp2"
 
@@ -158,7 +173,7 @@ resource "aws_ebs_volume" "home" {
 
 resource "aws_ebs_volume" "project" {
   count             = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  availability_zone = var.availability_zone
+  availability_zone = local.availability_zone
   size              = var.storage["project_size"]
   type              = "gp2"
 
@@ -169,7 +184,7 @@ resource "aws_ebs_volume" "project" {
 
 resource "aws_ebs_volume" "scratch" {
   count             = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  availability_zone = var.availability_zone
+  availability_zone = local.availability_zone
   size              = var.storage["scratch_size"]
   type              = "gp2"
 
