@@ -125,8 +125,9 @@ resource "aws_instance" "mgmt" {
     device_index         = 0
   }
 
+  ebs_optimized = true
   root_block_device {
-    volume_type = "standard"
+    volume_type = "gp2"
     volume_size = var.root_disk_size
   }
 
@@ -210,8 +211,9 @@ resource "aws_instance" "login" {
   subnet_id                   = aws_subnet.private_subnet.id
   key_name                    = aws_key_pair.key.key_name
 
+  ebs_optimized = true
   root_block_device {
-    volume_type = "standard"
+    volume_type = "gp2"
     volume_size = var.root_disk_size
   }
 
@@ -245,8 +247,9 @@ resource "aws_instance" "node" {
   key_name                    = aws_key_pair.key.key_name
   associate_public_ip_address = "true"
 
+  ebs_optimized = true
   root_block_device {
-    volume_type = "standard"
+    volume_type = "gp2"
     volume_size = var.root_disk_size
   }
 
