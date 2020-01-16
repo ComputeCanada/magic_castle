@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [5.7] - 2020-01-16
+
 ### Added
 - [AWS] Added `skip_destroy = True` to EBS attachment resources to avoid stalling destroy command.
 - [DNS] Added a `dtn` entry for the Globus endpoint.
