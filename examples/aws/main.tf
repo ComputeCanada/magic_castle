@@ -13,7 +13,7 @@ module "aws" {
   instances = {
     mgmt  = { type = "t3.large",  count = 1 },
     login = { type = "t3.medium", count = 1 },
-    node  = { type = "t3.small",  count = 1 }
+    node  = { type = "t3.medium",  count = 1 }
   }
 
   storage = {
