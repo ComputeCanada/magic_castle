@@ -35,7 +35,7 @@ runcmd:
   - mkdir -p /scratch
   - mount -a
   # puppet master configuration
-  - yum -y install https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
+  - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]+' /etc/os-release).noarch.rpm
   - yum -y install puppetserver
   - mkdir /var/autosign
   - chown puppet:puppet /var/autosign
