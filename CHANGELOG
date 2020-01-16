@@ -18,6 +18,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - [AWS] Updated example AMI and minimum instance type for mgmt.
 - [AWS] Fixed module's syntax for Terraform 0.12.
 - [AWS] Made `availability_zone` optional. If zone is not provided, it will be randomly selected amongst the zones available for the selected region.
+- [AWS] Changed root disk type from `standard` to `gp2`.
+- [AWS] Enabled ebs_optimized for all instances.
+- [AWS] Changed SSH keyname from `slurm-cloud-key` to `${cluster_name}-key`
+- [cloud-init] Made puppet yumrepo install function of the CentOS major version.
+- [cloud-init] Added blacklisting of nouveau driver in kernel cmdline option.
 - [DNS] DNS records are now produced by the `record_generator` module instead of listing records in each DNS provider module.
 - [puppet] Changed Globus authentication method from MyProxy to OAuth.
 - [puppet] Updated puppet-jupyterhub version from v1.1 to v1.4.
