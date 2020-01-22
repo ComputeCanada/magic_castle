@@ -65,7 +65,7 @@ On the login node :
 - Verify the home directories were created: `ls /home`. You should see one for each guest account, and the centos account.
 
 If you used the CloudFlare DNS Service
-- Verify the domain name: go to https://${domain_name}. It should be JupyterHub login page.
+- Verify the domain name: go to https://${domain_name}. It should be the JupyterHub login page.
 
 ## How Magic Castle Works
 
@@ -82,10 +82,9 @@ and adapting the Terraform `main.tf` file, the operator launches
 
 2. Terraform fetches the template hieradata yaml file from the 
 puppet-magic_castle repo indicated by `puppetenv_git`. The version 
-of that file corresponds to the value of `puppetenv_rev`.
-
-This template is read by terraform and variable placeholders are
-replaced by the values inferred from the values prescribed in `main.tf`.
+of that file corresponds to the value of `puppetenv_rev`. This template 
+is read by terraform and variable placeholders are replaced by the values 
+inferred from the values prescribed in `main.tf`.
 
 3. Terraform communicates with the cloud provider REST API and requests the creation of the virtual machines.
 
