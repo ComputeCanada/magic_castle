@@ -91,11 +91,11 @@ inferred from the values prescribed in `main.tf`.
 4. For each virtual machine creation request, Magic Castle
 provides a [cloud-init](https://cloudinit.readthedocs.io/en/latest/) file. This
 file is used to initialize the virtual machine base configuration and installs 
-puppet agent.
+puppet agent. The cloud-init file of the management node (`mgmt1`) also installs and configures
+a puppetmaster. 
 
-The cloud-init file of the management node (`mgmt1`) also installs and configures
-a puppetmaster. The puppet agents will communicate with the puppetmaster to retrieve
-their configuration based on their hostnames. 
+5. The puppet agents communicate with the puppetmaster to retrieve
+and apply their configuration based on their hostnames. 
 
 
 ## Contributing / Customizing
