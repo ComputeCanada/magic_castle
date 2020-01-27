@@ -411,6 +411,17 @@ Otherwise, Terraform can find it automatically.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
+#### 5.1.4 os_int_subnet (optional)
+
+**default value**: None
+
+Defines the name of the internal subnet on which the instances are
+connected. Define this only if you have more than one subnet defined in your
+OpenStack network. Otherwise, Terraform can find it automatically.
+Can be use to force a v4 subnet when both v4 and v6 exist.
+
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+
 ### 5.2 Google Cloud
 
 #### 5.2.1 project_name
