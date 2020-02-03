@@ -418,7 +418,7 @@ Otherwise, Terraform can find it automatically.
 Defines the name of the internal subnet on which the instances are
 connected. Define this only if you have more than one subnet defined in your
 OpenStack network. Otherwise, Terraform can find it automatically.
-Can be use to force a v4 subnet when both v4 and v6 exist.
+Can be used to force a v4 subnet when both v4 and v6 exist.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
