@@ -9,6 +9,7 @@ data "openstack_networking_network_v2" "int_network" {
 }
 
 data "openstack_networking_subnet_v2" "subnet" {
+  name       = var.os_int_subnet
   network_id = data.openstack_networking_network_v2.int_network.id
 }
 
