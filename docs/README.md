@@ -7,11 +7,12 @@
 3. [Initialization](#3-initialization)
 4. [Configuration](#4-configuration)
 5. [Cloud Specific Configuration](#5-cloud-specific-configuration)
-6. [Planification](#6-planification)
-7. [Deployment](#7-deployment)
-8. [Destruction](#8-destruction)
-9. [Online Cluster Configuration](#9-online-cluster-configuration)
-10. [Customize Magic Castle Terraform Files](#10-customize-magic-castle-terraform-files)
+6. [DNS Configuration and SSL Certificates](#6-dns-configuration-and-ssl-certificates)
+7. [Planification](#7-planification)
+8. [Deployment](#8-deployment)
+9. [Destruction](#9-destruction)
+10. [Online Cluster Configuration](#10-online-cluster-configuration)
+11. [Customize Magic Castle Terraform Files](#11-customize-magic-castle-terraform-files)
 
 ## 1. Setup
 
@@ -165,11 +166,11 @@ Defines
 * the internal domain name and the resolv.conf search domain as
 `int.{cluster_name}.{domain}`
 
-If you own a domain, you can register the login external IP address
-under `{cluster_name}.{domain}` manually with your registrar. An optional
-module following the current module in the example `main.tf` can
+Optional modules following the current module in the example `main.tf` can
 register the domain name if your domain's nameservers are administered
-by CloudFlare.
+by one of the supported providers.
+Refer to [section 6](#6-dns-configuration-and-ssl-certificates)
+for more details.
 
 **Requirement**: Must be a fully qualified DNS name and
 [RFC-1035-valid](https://tools.ietf.org/html/rfc1035).
@@ -318,8 +319,8 @@ of new empty volumes and attachments.
 
 List of SSH public keys that will have access to your cluster sudoer account.
 
-**Note 1**: You will need to add the private key associated with this public
-key to your local authentication agent (i.e: `ssh-add`) if you use the CloudFlare
+**Note 1**: You will need to add the private key associated with one of the public
+keys to your local authentication agent (i.e: `ssh-add`) if you use the
 DNS module. The DNS module uses the SSH key to copy files to the login node
 after the cluster instances are created.
 
@@ -355,7 +356,7 @@ the operating system and softwares required to operate the cluster services.
 **default value**: `centos`
 
 Defines the username of the account with sudo privileges. The account
-ssh authorized keys are configured with the SSH public key with
+ssh authorized keys are configured with the SSH public keys with
 `public_keys`.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
@@ -446,7 +447,85 @@ Can be used to force a v4 subnet when both v4 and v6 exist.
 
 #### 5.5.1
 
-## 6. Planification
+## 6. DNS Configuration and SSL Certificates
+
+Some functionalities in Magic Castle require the registration of DNS records under the
+[cluster name](#42-cluster_name) in the selected [domain](#43-domain). This includes
+web services like JupyterHub, Globus and FreeIPA web portal.
+
+If your domain DNS records are managed by one of the supported providers,
+follow the instructions in the corresponding sections to have the DNS records and SSL
+certificates managed by Magic Castle.
+
+If you DNS providers is not supported, you can manually create the DNS records and
+generate the SSL certificates. Refer to the last subsection for more details.
+
+**Requirements**: A private key associated with one of the
+[public keys](#48-public_keys) needs to be tracked (i.e: `ssh-add`) by the local
+[authentication agent](https://www.ssh.com/ssh/agent) (i.e: `ssh-agent`).
+This module uses the ssh-agent tracked SSH keys to authenticate and
+to copy SSL certificate files to the login nodes after their creation.
+
+### 6.1 CloudFlare
+
+1. Uncomment the `dns` module for CloudFlare in your `main.tf`.
+2. Uncomment the `output "dns"` block.
+3. In the `dns` module, configure the variable `email` with your email address. This will be used to generate the Let's Encrypt certificate.
+4. Download and install the CloudFlare Terraform module: `terraform init`.
+5. Export the environment variables `CLOUDFLARE_EMAIL` and `CLOUDFLARE_API_KEY`, where `CLOUDFLARE_EMAIL` is your Cloudflare account email adress and `CLOUDFLARE_API_KEY` is your account Global API Key available in your [CloudFlare profile](https://dash.cloudflare.com/profile/api-tokens).
+
+#### 6.1.2 CloudFlare API Token
+
+If you prefer using an API token instead of the global API key, you will need to configure a token with the following four permissions with the [CloudFlare API Token interface](https://dash.cloudflare.com/profile/api-tokens).
+
+| Section | Subsection | Permission|
+| ------------- |-------------:| -----:|
+| Account | Account Settings | Read|
+| Zone | Zone Settings | Read|
+| Zone | Zone | Read|
+| Zone | DNS | Write|
+
+Instead of step 5, export only `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ZONE_API_TOKEN`, and `CLOUDFLARE_DNS_API_TOKEN` equal to the API token generated previously.
+
+### 6.2 Google Cloud
+
+**requirement**: Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/downloads-interactive)
+
+1. Login to your Google account with gcloud CLI : `gcloud auth application-default login`
+2. Uncomment the `dns` module for Google Cloud in your `main.tf`.
+3. Uncomment the `output "hostnames"` block.
+4. In `main.tf`'s `dns` module, configure the variable `email` with your email address. This will be used to generate the Let's Encrypt certificate.
+5. In `main.tf`'s `dns` module, configure the variables `project_name` and `zone_name`
+with their respective values as defined by your Google Cloud project.
+6. Download and install the Google Cloud Terraform module: `terraform init`.
+
+### 6.3 Unsupported providers
+
+If your DNS provider is not currently supported by Magic Castle, you can create the DNS records
+and the SSL certificates manually.
+
+#### 6.3.1 DNS Records
+
+The DNS records registerd by Magic Castle are listed in
+[dns/record_generator/main.tf](https://github.com/ComputeCanada/magic_castle/blob/master/dns/record_generator/main.tf). All records point to the one of login nodes.
+
+These are the records that need to be created in your DNS provider.
+
+#### 6.3.2 SSL Certificates
+
+Magic Castle generates with Let's Encrypt a wildcard certificate for `*.cluster_name.domain`.
+You can use [certbot](https://certbot.eff.org/docs/using.html#dns-plugins) DNS challenge
+plugin to generate the wildcard certificate.
+
+You will then need to copy the certificate files in the proper location on each login node.
+Apache configuration expects the following files to exist:
+- `/etc/letsencrypt/live/${domain_name}/fullchain.pem`
+- `/etc/letsencrypt/live/${domain_name}/privkey.pem`
+- `/etc/letsencrypt/live/${domain_name}/chain.pem`
+
+Refer to the [reverse proxy configuration](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/reverse_proxy.pp) for more details.
+
+## 7. Planification
 
 Once your initial cluster configuration is done, you can initiate
 a planning phase where you will ask Terraform to communicate with
@@ -465,9 +544,9 @@ is only a dry-run. If Terraform does not report any error, you can move
 to the next step. Otherwise, read the errors and fix your configuration
 file accordingly.
 
-## 7. Deployment
+## 8. Deployment
 
-To create the resources defined by your module, enter the following command
+To create the resources defined by your main, enter the following command
 ```
 $ terraform apply
 ```
@@ -499,7 +578,7 @@ once the instances are booted.
 If unexpected problems occur during provisioning, you can provide these
 logs to the authors of Magic Castle to help you debug.
 
-### 7.1 Deployment Customization
+### 8.1 Deployment Customization
 
 You can modify the `main.tf` at any point of your cluster's life and
 apply the modifications while it is running.
@@ -521,7 +600,7 @@ and eventually automatically add to the Slurm cluster configuration.
 
 You could do the opposite and reduce the number of compute nodes to 0.
 
-## 8. Destruction
+## 9. Destruction
 
 Once you're done working with your cluster and you would like to recover
 the resources, in the same folder as `main.tf`, enter:
@@ -535,13 +614,13 @@ have to confirm by entering `yes`.
 **Warning**: once the cluster is destroyed, nothing will be left, even the
 shared storage will be erased.
 
-### 8.1 Instance Destruction
+### 9.1 Instance Destruction
 
 It is possible to destroy only the instances and keep the rest of the infrastructure
 like the floating ip, the volumes, the generated SSH hostkey, etc. To do so, set
 the count value of the instance type you wish to destroy to 0.
 
-### 8.2 Reset
+### 9.2 Reset
 
 On some occasions, it is desirable to rebuild some of the instances from scratch.
 Using `terraform taint`, you can designate ressources that will be rebuild at
@@ -553,7 +632,7 @@ terraform taint 'module.openstack.openstack_compute_instance_v2.login[0]'
 terraform apply
 ```
 
-## 9. Online Cluster Configuration
+## 10. Online Cluster Configuration
 
 Once the cluster is online and provisioned, you are free to modify
 its software configuration as you please by connecting to it and
@@ -575,7 +654,7 @@ Replace `centos` by the value of `sudoer_username` if it is
 different.
 3. SSH in the management node : `ssh mgmt1`
 
-### 9.1 Disable Puppet
+### 10.1 Disable Puppet
 
 If you plan to modify configuration files manually, you will need to disable
 Puppet. Otherwise, you might find out that your modifications have disappeared
@@ -587,7 +666,7 @@ service. To disable puppet:
 sudo puppet agent --disable "<MESSAGE>"
 ```
 
-### 9.2 Replace the User Account Password
+### 10.2 Replace the User Account Password
 
 A four words password might not be ideal for workshops with new users
 who barely know how to type. To replace the randomly generated
@@ -612,7 +691,7 @@ for username in $(ls /home/ | grep user); do
 done
 ```
 
-### 9.3 Add a User Account
+### 10.3 Add a User Account
 
 To add a user account after the cluster is built, log in `mgmt1` and call:
 ```bash
@@ -621,7 +700,7 @@ $ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa
 $ kdestroy
 ```
 
-### 9.4 Increase the Number of Guest Accounts
+### 10.4 Increase the Number of Guest Accounts
 
 The number of guest accounts is originally set in the Terraform main file. If you wish
 to increase the number of guest accounts after creating the cluster with Terraform, you
@@ -638,13 +717,13 @@ to the number of guest accounts you want.
 5. The accounts will be created in the following minutes.
 
 
-### 9.5 Restrict SSH Access
+### 10.5 Restrict SSH Access
 
 By default, port 22 of the login node is accessible from the world.
 If you know the range of ip addresses that will connect to your cluster,
 we strongly recommend you to limit the access to port 22 to this range.
 
-#### 9.5.1 OpenStack
+#### 10.5.1 OpenStack
 
 You can use OpenStack webpage.
 
@@ -664,7 +743,7 @@ Try to SSH in your cluster. If the connection times out, your ip address is out
 of the range of you entered or you made a mistake when defining the range.
 Repeat from step 3.
 
-### 9.6 Add Packages to Jupyter Default Python Kernel
+### 10.6 Add Packages to Jupyter Default Python Kernel
 
 The default Python kernel corresponds to the Python installed in `/opt/ipython-kernel`.
 Each compute node has its own copy of the environment. To install packages in
@@ -682,11 +761,11 @@ is the number of compute nodes in your cluster.
 pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
 ```
 
-### 9.7 Activate Globus Endpoint
+### 10.7 Activate Globus Endpoint
 
 Refer to [Magic Castle Globus Endpoint documentation](globus.md).
 
-### 9.8 Recovering from mgmt1 rebuild
+### 10.8 Recovering from mgmt1 rebuild
 
 The modifications of some of the parameters in the `main.tf` file can trigger the
 rebuild of the `mgmt1` instance. This instance hosts the Puppet Server on which
@@ -718,7 +797,7 @@ If you prefer, you can sign individual request by specifying their name:
 sudo /opt/puppetlabs/bin/puppetserver ca sign --certname NAME[,NAME]
 ```
 
-## 10. Customize Magic Castle Terraform Files
+## 11. Customize Magic Castle Terraform Files
 
 You can modify the Terraform module files in the folder named after your cloud
 provider (e.g: `gcp`, `openstack`, `aws`, etc.)
