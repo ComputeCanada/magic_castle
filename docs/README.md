@@ -460,7 +460,7 @@ certificates managed by Magic Castle.
 If you DNS providers is not supported, you can manually create the DNS records and
 generate the SSL certificates. Refer to the last subsection for more details.
 
-**Requirements**: A private key associated with one of the
+**Requirement**: A private key associated with one of the
 [public keys](#48-public_keys) needs to be tracked (i.e: `ssh-add`) by the local
 [authentication agent](https://www.ssh.com/ssh/agent) (i.e: `ssh-agent`).
 This module uses the ssh-agent tracked SSH keys to authenticate and
