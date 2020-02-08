@@ -19,17 +19,6 @@ From these new possibilities emerged an open-source software project named Magic
   - [OVH Public Cloud (OVH)](ovh/README.md)
 - For more details, refer to [Magic Castle Documentation](docs)
 
-## Verifying the cluster state
-
-On the login node :
-- Verify SLURM cluster state: `sinfo`. You should see the number of nodes defined in `main.tf` and all nodes should have an idle state.
-- Verify JupyterHub state: `systemctl status jupyterhub`. It should be active.
-- Verify you can run interactive jobs: `salloc`
-- Verify the home directories were created: `ls /home`. You should see one for each guest account, and the centos account.
-
-If you used the CloudFlare DNS Service
-- Verify the domain name: go to https://${domain_name}. It should be the JupyterHub login page.
-
 ## How Magic Castle Works
 
 This software project integrates multiple parts that come into play at 
