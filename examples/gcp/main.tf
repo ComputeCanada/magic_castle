@@ -64,6 +64,19 @@ output "public_ip" {
 #   rsa_public_key   = module.gcp.rsa_public_key
 #   sudoer_username  = module.gcp.sudoer_username
 # }
+
+# module "dns" {
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
+#   email            = "you@example.com"
+#   project          = "your-project-name"
+#   zone_name        = "you-zone-name"
+#   name             = module.gcp.cluster_name
+#   domain           = module.gcp.domain
+#   public_ip        = module.gcp.ip
+#   rsa_public_key   = module.gcp.rsa_public_key
+#   sudoer_username  = module.gcp.sudoer_username
+# }
+
 # output "hostnames" {
 # 	value = module.dns.hostnames
 # }
