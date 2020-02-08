@@ -49,6 +49,9 @@ a puppetmaster.
 5. The puppet agents communicate with the puppetmaster to retrieve
 and apply their configuration based on their hostnames. 
 
+## Talks, slides and videos
+
+- [FOSDEM 2020 - Magic Castle: Terraforming the Cloud for HPC](https://fosdem.org/2020/schedule/event/magic_castle/)
 
 ## Contributing / Customizing
 
