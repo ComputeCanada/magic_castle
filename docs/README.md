@@ -605,11 +605,20 @@ You could do the opposite and reduce the number of compute nodes to 0.
 Once you're done working with your cluster and you would like to recover
 the resources, in the same folder as `main.tf`, enter:
 ```
-$ terraform destroy
+$ terraform destroy -refresh=false
 ```
 
-As for `apply`, Terraform will output a plan that you will
-have to confirm by entering `yes`.
+The `-refresh=false` flag is to avoid an issue where one or many of the data
+sources return no results and stall the cluster destruction with a message like
+the following:
+```
+Error: Your query returned no results. Please change your search criteria and try again.
+```
+This type of error happens when for example the specified [image](#44-image)
+no longer exists (see [issue #40](https://github.com/ComputeCanada/magic_castle/issues/40)).
+
+As for `apply`, Terraform will output a plan that you will have to confirm
+by entering `yes`.
 
 **Warning**: once the cluster is destroyed, nothing will be left, even the
 shared storage will be erased.
