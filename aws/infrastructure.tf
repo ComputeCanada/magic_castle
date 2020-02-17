@@ -156,6 +156,12 @@ resource "aws_instance" "mgmt" {
     Name = format("mgmt%d", count.index + 1)
   }
 
+  lifecycle {
+    ignore_changes = [
+      ami
+    ]
+  }
+
   depends_on = [aws_internet_gateway.gw]
 }
 
@@ -244,6 +250,12 @@ resource "aws_instance" "login" {
     aws_security_group.allow_out_any.id,
   ]
 
+  lifecycle {
+    ignore_changes = [
+      ami
+    ]
+  }
+
   tags = {
     Name = format("login%d", count.index + 1)
   }
@@ -278,6 +290,12 @@ resource "aws_instance" "node" {
     aws_security_group.allow_any_inside_vpc.id,
     aws_security_group.allow_out_any.id,
   ]
+
+  lifecycle {
+    ignore_changes = [
+      ami
+    ]
+  }
 
   tags = {
     Name = "node${count.index + 1}"

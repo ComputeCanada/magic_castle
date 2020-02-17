@@ -189,7 +189,8 @@ should be mainly done through Puppet scripting. Image customization is mostly
 envisioned as a way to accelerate the provisioning process by applying the
 security patches and OS updates in advance.
 
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+**Post Build Modification Effect**: None - if this variable is modified, existing
+instances will ignore the change and future instances will use the new value.
 
 #### 4.4.1 AWS
 

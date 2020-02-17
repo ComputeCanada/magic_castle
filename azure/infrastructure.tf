@@ -168,6 +168,12 @@ resource "azurerm_virtual_machine" "login" {
   os_profile_linux_config {
     disable_password_authentication = true
   }
+
+  lifecycle {
+    ignore_changes = [
+      storage_image_reference
+    ]
+  }
 }
 
 resource "azurerm_virtual_machine" "mgmt" {
@@ -201,6 +207,12 @@ resource "azurerm_virtual_machine" "mgmt" {
 
   os_profile_linux_config {
     disable_password_authentication = true
+  }
+
+  lifecycle {
+    ignore_changes = [
+      storage_image_reference
+    ]
   }
 }
 
@@ -289,6 +301,12 @@ resource "azurerm_virtual_machine" "nodevm" {
 
   os_profile_linux_config {
     disable_password_authentication = true
+  }
+
+  lifecycle {
+    ignore_changes = [
+      storage_image_reference
+    ]
   }
 }
 

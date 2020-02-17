@@ -95,7 +95,10 @@ resource "google_compute_instance" "mgmt" {
   metadata_startup_script = file("${path.module}/install_cloudinit.sh")
 
   lifecycle {
-    ignore_changes = [attached_disk]
+    ignore_changes = [
+      attached_disk,
+      boot_disk.initialize_params.image
+    ]
   }
 }
 
@@ -157,6 +160,12 @@ resource "google_compute_instance" "login" {
   }
 
   metadata_startup_script = file("${path.module}/install_cloudinit.sh")
+
+  lifecycle {
+    ignore_changes = [
+      boot_disk.initialize_params.image
+    ]
+  }
 }
 
 resource "google_compute_instance" "node" {
@@ -193,6 +202,12 @@ resource "google_compute_instance" "node" {
   }
 
   metadata_startup_script = file("${path.module}/install_cloudinit.sh")
+
+  lifecycle {
+    ignore_changes = [
+      boot_disk.initialize_params.image
+    ]
+  }
 }
 
 resource "google_compute_firewall" "allow_all_internal" {

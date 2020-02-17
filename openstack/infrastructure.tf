@@ -120,6 +120,13 @@ resource "openstack_compute_instance_v2" "mgmt" {
       volume_size           = block_device.value.volume_size
     }
   }
+
+  lifecycle {
+    ignore_changes = [
+      image_id,
+      block_device[0].uuid
+    ]
+  }
 }
 
 resource "openstack_compute_volume_attach_v2" "va_home" {
@@ -182,6 +189,13 @@ resource "openstack_compute_instance_v2" "login" {
       volume_size           = block_device.value.volume_size
     }
   }
+
+  lifecycle {
+    ignore_changes = [
+      image_id,
+      block_device[0].uuid
+    ]
+  }
 }
 
 resource "openstack_networking_port_v2" "port_node" {
@@ -225,6 +239,13 @@ resource "openstack_compute_instance_v2" "node" {
       delete_on_termination = true
       volume_size           = block_device.value.volume_size
     }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      image_id,
+      block_device[0].uuid
+    ]
   }
 }
 
