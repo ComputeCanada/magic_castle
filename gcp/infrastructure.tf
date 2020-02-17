@@ -34,7 +34,7 @@ resource "google_compute_router_nat" "nat" {
 
 resource "google_compute_disk" "home" {
   count = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  name  = "home"
+  name  = "${var.cluster_name}-home"
   type  = "pd-standard"
   zone  = var.zone
   size  = var.storage["home_size"]
@@ -42,7 +42,7 @@ resource "google_compute_disk" "home" {
 
 resource "google_compute_disk" "project" {
   count = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  name  = "project"
+  name  = "${var.cluster_name}-project"
   type  = "pd-standard"
   zone  = var.zone
   size  = var.storage["project_size"]
@@ -50,7 +50,7 @@ resource "google_compute_disk" "project" {
 
 resource "google_compute_disk" "scratch" {
   count = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  name  = "scratch"
+  name  = "${var.cluster_name}-scratch"
   type  = "pd-standard"
   zone  = var.zone
   size  = var.storage["scratch_size"]
@@ -128,7 +128,7 @@ resource "google_compute_attached_disk" "scratch" {
 
 resource "google_compute_address" "static" {
   count = max(var.instances["login"]["count"], 1)
-  name  = format("login%d-ipv4", count.index + 1)
+  name  = format("%s-login%d-ipv4",  var.cluster_name, count.index + 1)
 }
 
 resource "google_compute_instance" "login" {
