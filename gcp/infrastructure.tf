@@ -97,7 +97,7 @@ resource "google_compute_instance" "mgmt" {
   lifecycle {
     ignore_changes = [
       attached_disk,
-      boot_disk.initialize_params.image
+      boot_disk[0].initialize_params[0].image
     ]
   }
 }
@@ -163,7 +163,7 @@ resource "google_compute_instance" "login" {
 
   lifecycle {
     ignore_changes = [
-      boot_disk.initialize_params.image
+      boot_disk[0].initialize_params[0].image
     ]
   }
 }
@@ -205,7 +205,7 @@ resource "google_compute_instance" "node" {
 
   lifecycle {
     ignore_changes = [
-      boot_disk.initialize_params.image
+      boot_disk[0].initialize_params[0].image
     ]
   }
 }
