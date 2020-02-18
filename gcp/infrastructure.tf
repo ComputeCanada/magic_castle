@@ -4,6 +4,26 @@ provider "google" {
   #  version = "~> 2.1.0"
 }
 
+data "google_compute_zones" "available" {
+  status = "UP"
+}
+
+resource "random_shuffle" "random_zone" {
+  input = data.google_compute_zones.available.names
+  result_count = 1
+}
+
+locals {
+  zone = (
+    ( var.zone != "" &&
+      contains(data.google_compute_zones.available.names,
+               var.zone)
+      ?
+      var.zone : random_shuffle.random_zone.result[0]
+    )
+  )
+}
+
 resource "google_compute_network" "network" {
   name = "${var.cluster_name}-network"
 }
@@ -36,7 +56,7 @@ resource "google_compute_disk" "home" {
   count = lower(var.storage["type"]) == "nfs" ? 1 : 0
   name  = "${var.cluster_name}-home"
   type  = "pd-standard"
-  zone  = var.zone
+  zone  = local.zone
   size  = var.storage["home_size"]
 }
 
@@ -44,7 +64,7 @@ resource "google_compute_disk" "project" {
   count = lower(var.storage["type"]) == "nfs" ? 1 : 0
   name  = "${var.cluster_name}-project"
   type  = "pd-standard"
-  zone  = var.zone
+  zone  = local.zone
   size  = var.storage["project_size"]
 }
 
@@ -52,7 +72,7 @@ resource "google_compute_disk" "scratch" {
   count = lower(var.storage["type"]) == "nfs" ? 1 : 0
   name  = "${var.cluster_name}-scratch"
   type  = "pd-standard"
-  zone  = var.zone
+  zone  = local.zone
   size  = var.storage["scratch_size"]
 }
 
@@ -66,7 +86,7 @@ resource "google_compute_address" "mgmt" {
 
 resource "google_compute_instance" "mgmt" {
   project      = var.project_name
-  zone         = var.zone
+  zone         = local.zone
   count        = var.instances["mgmt"]["count"]
   name         = format("%s-mgmt%d", var.cluster_name, count.index + 1)
   machine_type = var.instances["mgmt"]["type"]
@@ -134,7 +154,7 @@ resource "google_compute_address" "static" {
 resource "google_compute_instance" "login" {
   count        = var.instances["login"]["count"]
   project      = var.project_name
-  zone         = var.zone
+  zone         = local.zone
   name         = format("%s-login%d", var.cluster_name, count.index + 1)
   machine_type = var.instances["login"]["type"]
   tags         = ["login"]
@@ -171,7 +191,7 @@ resource "google_compute_instance" "login" {
 resource "google_compute_instance" "node" {
   count        = var.instances["node"]["count"]
   project      = var.project_name
-  zone         = var.zone
+  zone         = local.zone
   name         = format("%s-node%d", var.cluster_name, count.index + 1)
   machine_type = var.instances["node"]["type"]
   scheduling {

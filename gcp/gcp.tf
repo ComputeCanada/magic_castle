@@ -1,10 +1,11 @@
 variable "project_name" {
 }
 
-variable "zone" {
+variable "region" {
 }
 
-variable "region" {
+variable "zone" {
+  default = ""
 }
 
 variable "gpu_per_node" {
