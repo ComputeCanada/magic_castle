@@ -436,7 +436,7 @@ Can be used to force a v4 subnet when both v4 and v6 exist.
 
 #### 5.2.2 region
 
-#### 5.2.3 zone
+#### 5.2.3 zone (optional)
 
 #### 5.2.4 gpu_per_node
 
@@ -444,7 +444,7 @@ Can be used to force a v4 subnet when both v4 and v6 exist.
 
 #### 5.3.1 region
 
-#### 5.3.2 availability_zone
+#### 5.3.2 availability_zone (optional)
 
 ### 5.4 Microsoft Azure
 
