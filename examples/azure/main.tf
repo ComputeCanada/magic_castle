@@ -12,6 +12,10 @@ module "azure" {
     offer     = "CentOS-CI",
     sku       = "7-CI"
   }
+  # OpenLogic CentOS 7 images require at least 30GB of root disk.
+  # Magic Castle default root disk size is 10GB.
+  root_disk_size = 30
+
   nb_users     = 10
 
   instances = {
