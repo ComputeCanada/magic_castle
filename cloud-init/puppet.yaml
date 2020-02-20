@@ -50,6 +50,6 @@ write_files:
     permissions: "0640"
 
 disable_ec2_metadata: false
-timezone: "America/Montreal"
+timezone: "UTC"
 fqdn: "${node_name}"
 output: { all: "| tee -a /var/log/cloud-init-output.log" }
