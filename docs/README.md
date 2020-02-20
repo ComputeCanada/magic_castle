@@ -664,6 +664,13 @@ Replace `centos` by the value of `sudoer_username` if it is
 different.
 3. SSH in the management node : `ssh mgmt1`
 
+**note on Google Cloud**: In GCP, [OS Login](https://cloud.google.com/compute/docs/instances/managing-instance-access)
+lets you use Compute Engine IAM roles to manage SSH access to Linux instances.
+This feature is incompatible with Magic Castle. Therefore, it is turned off in
+the instances metadata (`os_login="FALSE`). The only account with admin rights
+that can log in the cluster is configured by the variable `sudoer_username`
+(default: `centos`).
+
 ### 10.1 Disable Puppet
 
 If you plan to modify configuration files manually, you will need to disable

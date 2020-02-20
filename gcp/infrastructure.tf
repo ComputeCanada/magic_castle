@@ -108,6 +108,7 @@ resource "google_compute_instance" "mgmt" {
   }
 
   metadata = {
+    enable-oslogin     = "FALSE"
     user-data          = data.template_cloudinit_config.mgmt_config[count.index].rendered
     user-data-encoding = "base64"
     VmDnsSetting       = "ZonalOnly"
@@ -176,6 +177,7 @@ resource "google_compute_instance" "login" {
   }
 
   metadata = {
+    enable-oslogin     = "FALSE"
     user-data          = data.template_cloudinit_config.login_config[count.index].rendered
     user-data-encoding = "base64"
     VmDnsSetting       = "ZonalOnly"
@@ -219,6 +221,7 @@ resource "google_compute_instance" "node" {
   }
 
   metadata = {
+    enable-oslogin     = "FALSE"
     user-data          = data.template_cloudinit_config.node_config[count.index].rendered
     user-data-encoding = "base64"
     VmDnsSetting       = "ZonalOnly"
