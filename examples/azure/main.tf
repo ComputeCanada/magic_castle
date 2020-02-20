@@ -9,7 +9,7 @@ module "azure" {
   domain       = "calculquebec.cloud"
   image        = {
     publisher = "OpenLogic",
-    offer     = "CentOS",
+    offer     = "CentOS-CI",
     sku       = "7-CI"
   }
   nb_users     = 10
