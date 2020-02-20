@@ -4,13 +4,13 @@ provider "azurerm" {
 
 # Create a resource group
 resource "azurerm_resource_group" "group" {
-  name     = "myResourceGroup"
+  name     = "${var.cluster_name}_resource_group"
   location = var.location
 }
 
 # Create virtual network
 resource "azurerm_virtual_network" "virtualNetwork" {
-  name                = "myVnet"
+  name                = "${var.cluster_name}_vnet"
   address_space       = ["10.0.0.0/16"]
   location            = var.location
   resource_group_name = azurerm_resource_group.group.name
@@ -18,7 +18,7 @@ resource "azurerm_virtual_network" "virtualNetwork" {
 
 # Create subnet
 resource "azurerm_subnet" "subnet" {
-  name                 = "mySubnet"
+  name                 = "${var.cluster_name}_subnet"
   resource_group_name  = azurerm_resource_group.group.name
   virtual_network_name = azurerm_virtual_network.virtualNetwork.name
   address_prefix       = local.cidr
@@ -27,7 +27,7 @@ resource "azurerm_subnet" "subnet" {
 # Create public IPs
 resource "azurerm_public_ip" "loginIP" {
   count                        = var.instances["login"]["count"]
-  name                         = format("login-ip-%d", count.index + 1)
+  name                         = format("%s-login-ip-%d", var.cluster_name, count.index + 1)
   location                     = var.location
   resource_group_name          = azurerm_resource_group.group.name
   allocation_method            = "Static"
@@ -35,7 +35,7 @@ resource "azurerm_public_ip" "loginIP" {
 
 resource "azurerm_public_ip" "mgmtIP" {
   count                        = var.instances["mgmt"]["count"]
-  name                         = format("mgmt-ip-%d", count.index + 1)
+  name                         = format("%s-mgmt-ip-%d", var.cluster_name, count.index + 1)
   location                     = var.location
   resource_group_name          = azurerm_resource_group.group.name
   allocation_method            = "Dynamic"
@@ -43,7 +43,7 @@ resource "azurerm_public_ip" "mgmtIP" {
 
 resource "azurerm_public_ip" "nodeIP" {
   count                        = var.instances["node"]["count"]
-  name                         = format("node-ip-%d", count.index + 1)
+  name                         = format("%s-node-ip-%d", var.cluster_name, count.index + 1)
   location                     = var.location
   resource_group_name          = azurerm_resource_group.group.name
   allocation_method            = "Dynamic"
@@ -51,7 +51,7 @@ resource "azurerm_public_ip" "nodeIP" {
 
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "security_login" {
-  name                = "myNetworkSecurityGroup"
+  name                = "${var.cluster_name}_login-firewall"
   location            = var.location
   resource_group_name = azurerm_resource_group.group.name
 
@@ -73,7 +73,7 @@ resource "azurerm_network_security_group" "security_login" {
 }
 
 resource "azurerm_network_security_group" "security_mgmt" {
-  name                = "myNetworkSecurityGroup"
+  name                = "${var.cluster_name}_mgmt-firewall"
   location            = var.location
   resource_group_name = azurerm_resource_group.group.name
 
@@ -93,13 +93,13 @@ resource "azurerm_network_security_group" "security_mgmt" {
 # Create network interface
 resource "azurerm_network_interface" "loginNIC" {
   count                     = var.instances["login"]["count"]
-  name                      = format("login%d-nic", count.index + 1)
+  name                      = format("%s-login%d-nic", var.cluster_name, count.index + 1)
   location                  = var.location
   resource_group_name       = azurerm_resource_group.group.name
   network_security_group_id = azurerm_network_security_group.security_login.id
 
   ip_configuration {
-    name                          = "loginNICConfig"
+    name                          = "${var.cluster_name}_login_nicconfig"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "dynamic"
     public_ip_address_id          = azurerm_public_ip.loginIP[count.index].id
@@ -108,13 +108,13 @@ resource "azurerm_network_interface" "loginNIC" {
 
 resource "azurerm_network_interface" "mgmtNIC" {
   count                     = var.instances["mgmt"]["count"]
-  name                      = format("mgmt%d-nic", count.index + 1)
+  name                      = format("%s-mgmt%d-nic", var.cluster_name, count.index + 1)
   location                  = var.location
   resource_group_name       = azurerm_resource_group.group.name
   network_security_group_id = azurerm_network_security_group.security_mgmt.id
 
   ip_configuration {
-    name                          = "mgmtNICConfig"
+    name                          = "${var.cluster_name}_mgmt_nicconfig"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "dynamic"
     public_ip_address_id          = azurerm_public_ip.mgmtIP[count.index].id
@@ -123,12 +123,12 @@ resource "azurerm_network_interface" "mgmtNIC" {
 
 resource "azurerm_network_interface" "nodeNIC" {
   count               = var.instances["node"]["count"]
-  name                = format("node%d-nic", count.index + 1)
+  name                = format("%s-node%d-nic", var.cluster_name, count.index + 1)
   location            = var.location
   resource_group_name = azurerm_resource_group.group.name
 
   ip_configuration {
-    name                          = "nodeNICConfig"
+    name                          = "${var.cluster_name}_node_nicconfig"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "dynamic"
     public_ip_address_id          = azurerm_public_ip.nodeIP[count.index].id
@@ -139,13 +139,13 @@ resource "azurerm_network_interface" "nodeNIC" {
 resource "azurerm_virtual_machine" "login" {
   count                 = var.instances["login"]["count"]
   vm_size               = var.instances["login"]["type"]
-  name                  = format("login%d", count.index + 1)
+  name                  = format("%s-login%d", var.cluster_name, count.index + 1)
   location              = var.location
   resource_group_name   = azurerm_resource_group.group.name
   network_interface_ids = [azurerm_network_interface.loginNIC[count.index].id]
 
   storage_os_disk {
-    name              = "loginDisk"
+    name              = "${var.cluster_name}_login${count.index + 1}_disk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = var.managed_disk_type
@@ -187,13 +187,13 @@ resource "azurerm_virtual_machine" "login" {
 resource "azurerm_virtual_machine" "mgmt" {
   count                 = var.instances["mgmt"]["count"]
   vm_size               = var.instances["mgmt"]["type"]
-  name                  = format("mgmt%d", count.index + 1)
+  name                  = format("%s-mgmt%d", var.cluster_name, count.index + 1)
   location              = var.location
   resource_group_name   = azurerm_resource_group.group.name
   network_interface_ids = [azurerm_network_interface.mgmtNIC[count.index].id]
 
   storage_os_disk {
-    name              = "mgmtDisk${count.index + 1}"
+    name              = "${var.cluster_name}_mgmt${count.index + 1}_disk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = var.managed_disk_type
@@ -234,7 +234,7 @@ resource "azurerm_virtual_machine" "mgmt" {
 
 resource "azurerm_managed_disk" "home" {
   count                = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  name                 = "home"
+  name                 = "${var.cluster_name}_home"
   location             = var.location
   resource_group_name  = azurerm_resource_group.group.name
   storage_account_type = var.managed_disk_type
@@ -244,7 +244,7 @@ resource "azurerm_managed_disk" "home" {
 
 resource "azurerm_managed_disk" "project" {
   count                = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  name                 = "project"
+  name                 = "${var.cluster_name}_project"
   location             = var.location
   resource_group_name  = azurerm_resource_group.group.name
   storage_account_type = var.managed_disk_type
@@ -254,7 +254,7 @@ resource "azurerm_managed_disk" "project" {
 
 resource "azurerm_managed_disk" "scratch" {
   count                = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  name                 = "scratch"
+  name                 = "${var.cluster_name}_scratch"
   location             = var.location
   resource_group_name  = azurerm_resource_group.group.name
   storage_account_type = var.managed_disk_type
@@ -287,7 +287,7 @@ resource "azurerm_virtual_machine_data_disk_attachment" "scratch" {
 }
 
 resource "azurerm_virtual_machine" "nodevm" {
-  name                  = "node${count.index + 1}"
+  name                  = format("%s-node%d", var.cluster_name, count.index + 1)
   count                 = var.instances["node"]["count"]
   vm_size               = var.instances["node"]["type"]
   location              = var.location
@@ -295,7 +295,7 @@ resource "azurerm_virtual_machine" "nodevm" {
   network_interface_ids = [azurerm_network_interface.nodeNIC[count.index].id]
 
   storage_os_disk {
-    name              = "nodeDisk${count.index + 1}"
+    name              = "${var.cluster_name}_node${count.index + 1}_disk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = var.managed_disk_type
