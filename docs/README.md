@@ -721,12 +721,12 @@ $ kdestroy
 
 To allow the user to submit jobs, create a Slurm account for the user:
 ```
-$ sudo sacctmgr add account <username_account> -i
+$ sudo /opt/software/slurm/bin/sacctmgr add account <username_account> -i
 ```
 
 then add the user to Slurm database
 ```bash
-$ sudo sacctmgr add user <username> Account=<username_account> -i
+$ sudo /opt/software/slurm/bin/sacctmgr add user <username> Account=<username_account> -i
 ```
 
 ### 10.4 Increase the Number of Guest Accounts
