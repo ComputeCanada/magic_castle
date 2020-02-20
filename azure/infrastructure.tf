@@ -167,6 +167,14 @@ resource "azurerm_virtual_machine" "login" {
 
   os_profile_linux_config {
     disable_password_authentication = true
+    dynamic "ssh_keys" {
+      for_each = var.public_keys
+      iterator = key
+      content {
+        key_data = key.value
+        path     = "/home/azure/.ssh/authorized_keys"
+      }
+    }
   }
 
   lifecycle {
@@ -207,6 +215,14 @@ resource "azurerm_virtual_machine" "mgmt" {
 
   os_profile_linux_config {
     disable_password_authentication = true
+    dynamic "ssh_keys" {
+      for_each = var.public_keys
+      iterator = key
+      content {
+        key_data = key.value
+        path     = "/home/azure/.ssh/authorized_keys"
+      }
+    }
   }
 
   lifecycle {
@@ -301,6 +317,14 @@ resource "azurerm_virtual_machine" "nodevm" {
 
   os_profile_linux_config {
     disable_password_authentication = true
+    dynamic "ssh_keys" {
+      for_each = var.public_keys
+      iterator = key
+      content {
+        key_data = key.value
+        path     = "/home/azure/.ssh/authorized_keys"
+      }
+    }
   }
 
   lifecycle {
