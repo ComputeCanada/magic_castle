@@ -31,7 +31,6 @@ module "gcp" {
   # GCP specifics
   project_name = "crested-return-137823"
   region       = "us-central1"
-  zone         = "us-central1-a"
   gpu_per_node = {
     type = "nvidia-tesla-k80"
     count = 0
