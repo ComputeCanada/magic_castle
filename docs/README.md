@@ -450,6 +450,9 @@ Can be used to force a v4 subnet when both v4 and v6 exist.
 
 #### 5.4.1 location
 
+#### 5.4.2 managed_disk_type (optional)
+
+
 ## 6. DNS Configuration and SSL Certificates
 
 Some functionalities in Magic Castle require the registration of DNS records under the
