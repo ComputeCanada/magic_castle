@@ -382,7 +382,7 @@ Useful to override common configuration of Puppet classes.
 
 ## 5. Cloud Specific Configuration
 
-### 5.1 OpenStack
+### 5.1 OpenStack and OVH
 
 #### 5.1.1 os_floating_ips (optional)
 
@@ -449,10 +449,6 @@ Can be used to force a v4 subnet when both v4 and v6 exist.
 ### 5.4 Microsoft Azure
 
 #### 5.4.1 location
-
-### 5.5 OVH
-
-#### 5.5.1
 
 ## 6. DNS Configuration and SSL Certificates
 
