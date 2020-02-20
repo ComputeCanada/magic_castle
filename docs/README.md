@@ -728,7 +728,7 @@ To allow the user to submit jobs, create a Slurm account for the user:
 $ sudo sacctmgr add account <username_account> -i
 ```
 
-then add the user to Slurm datbase
+then add the user to Slurm database
 ```bash
 $ sudo sacctmgr add user <username> Account=<username_account> -i
 ```
