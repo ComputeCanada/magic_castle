@@ -723,6 +723,16 @@ $ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa
 $ kdestroy
 ```
 
+To allow the user to submit jobs, create a Slurm account for the user:
+```
+$ sudo sacctmgr add account <username_account> -i
+```
+
+then add the user to Slurm datbase
+```bash
+$ sudo sacctmgr add user <username> Account=<username_account> -i
+```
+
 ### 10.4 Increase the Number of Guest Accounts
 
 The number of guest accounts is originally set in the Terraform main file. If you wish
