@@ -39,8 +39,8 @@ for provider in "${CLOUD[@]}"; do
 
     echo -e "terraform {\n  required_providers {"  >> $cur_folder/providers.tf
     for prov_vers in $TF_PROVIDERS; do
-        vers="${prov_vers%%_*}"
-        prov="${prov_vers#*_}"
+        prov="${prov_vers%%_*}"
+        vers="${prov_vers#*_}"
         file=$(grep -l -R "provider \"$prov\"" $cur_folder)
         if [ ! -z "$file" ]; then
             sed -i '/version = "[<>~]\{1,\} *[0-9.]*"/d' $file
