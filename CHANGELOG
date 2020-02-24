@@ -5,6 +5,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [5.8] - 2020-02-24
+
+### Added
+- [Azure] Added `root_disk_size=30` in the example (issue #43)
+- [Azure] Added ssh_keys to instances as it is mandatory (issue #44)
+- [cloud-init] Added volume attachment verification loops in mgmt cloud-init (issue #54)
+- [GCP] Added gcloud dns module to gcp example (issue #37)
+- [GCP] Added prefix to the name of volumes and ipv4 (issue #49)
+- [OpenStack] Added os_int_subnet variable. The variable is used to force to use a specific subnet with Openstack.
+
+### Changed
+- Changes to image variable are now ignored after cluster is built.
+- Fixed release scripts to solve bug where multiple `version` variable were present (issue #38)
+- [Azure] Updated the example to use the most recent OpenLogic CentOS 7 image (issue #42)
+- [Azure] Resources names are now prefixed with the cluster name 
+- [Azure] Azure public_ip now outputs a list of all login ip addresses
+- [cloud-init] Replaced timezone in cloud-init to UTC (issue #51)
+- [GCP] Zone variable is now optional. The zone is randomly selected in the zones available for the region if left blank.
+- [GCP] Instances internal DNS are now configured to use zonal DNS. The internal DNS hostname is not used, but the change reduced
+the DHCP time lease from 24 to 1 hour. This helps when debugging DHCP issue
+- [puppet] CC CVMFS repo is now configured from latest RPM repo (issue [puppet-magic_castle issue #19](https://github.com/ComputeCanada/puppet-magic_castle/pull/19))
+- [puppet] Increased the squid maximum_object_size ([puppet-magic_castle issue #20](https://github.com/ComputeCanada/puppet-magic_castle/issues/20))
+- [puppet] Updated globus rpm repo name
+- [puppet] Updated fail2ban config to make it work with 0.10.x ([puppet-magic_castle issue #25](https://github.com/ComputeCanada/puppet-magic_castle/issues/25))
+- [puppet] Replaced file by exec to create singularity symlink ([puppet-magic_castle issue #24](https://github.com/ComputeCanada/puppet-magic_castle/issues/24))
+- [puppet] Replaced timezone in cloud-init to UTC ([puppet-magic_castle issue #26](https://github.com/ComputeCanada/puppet-magic_castle/issues/26))
+- [puppet] Added service network and notify on NetworkManager purge (issue #50)
+
+### Removed
+- [GCP] Zone variable is no longer in the example as it is now optional.
+
+
 ## [5.7] - 2020-01-16
 
 ### Added
