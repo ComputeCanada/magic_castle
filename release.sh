@@ -13,6 +13,16 @@ if [ -z "$CLOUD" ]; then
     CLOUD=(aws azure gcp openstack ovh)
 fi
 
+if [ "$(uname)" == "Linux" ]; then
+    sed_i () {
+        sed -i "$@"
+    }
+elif [ "$(uname)" == "Darwin" ]; then
+    sed_i () {
+        sed -i "" "$@"
+    }
+fi
+
 TMPDIR=$(mktemp -d)
 FOLDER=$TMPDIR/magic_castle-$VERSION
 
@@ -24,14 +34,15 @@ for provider in "${CLOUD[@]}"; do
     cp -RfL dns $cur_folder/
     cp -fL examples/$provider/main.tf $cur_folder
     mv $cur_folder/$provider/README.md $cur_folder
-    sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;./;g' $cur_folder/main.tf
-    sed -i "s;default = \"master\";default = \"$VERSION\";" $cur_folder/$provider/variables.tf
+    sed_i 's;git::https://github.com/ComputeCanada/magic_castle.git//;./;g' $cur_folder/main.tf
+    sed_i "s;default = \"master\";default = \"$VERSION\";" $cur_folder/$provider/variables.tf
     cp LICENSE $cur_folder
 
     # Identify and fix provider versions
     # Keeping only the lowest version of a provider if it is present more than once
+    cd $cur_folder
     TF_PROVIDERS=$(
-        find $cur_folder -type d -exec terraform init {} \; |
+        find $cur_folder -type d -exec terraform init {}  \; |
         grep 'Downloading plugin' |
         sed -E 's/- Downloading plugin for provider "([a-z]*)".*([0-9]{1,}\.[0-9]{1,})\.[0-9]{1,}\.\.\./\2 \1/g' |
         sort -V |
@@ -40,6 +51,8 @@ for provider in "${CLOUD[@]}"; do
         tr " " "_" |
         sort
     )
+    rm -rf .terraform
+    cd -
 
     echo -e "terraform {\n  required_providers {"  >> $cur_folder/providers.tf
     for prov_vers in $TF_PROVIDERS; do
@@ -47,7 +60,7 @@ for provider in "${CLOUD[@]}"; do
         vers="${prov_vers#*_}"
         file=$(grep -l -R "provider \"$prov\"" $cur_folder)
         if [ ! -z "$file" ]; then
-            sed -i '/version = "[<>~]\{1,\} *[0-9.]*"/d' $file
+            sed_i '/version = "[<>~]\{1,\} *[0-9.]*"/d' $file
         fi
         echo "    ${prov} = \"~> ${vers}\" " >> $cur_folder/providers.tf
     done
