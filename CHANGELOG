@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Added the optional key `prefix` to the `instance["node"]` map.
+
+### Changed
+- Terraform >= 0.12.21 is now required. Usage of the function `subtract` requires at least 0.12.21.
+- `instance["node"]` is now a list. This allows the spawning of compute nodes with various instance types (issue #29)
+
 ## [5.8] - 2020-02-24
 
 ### Added

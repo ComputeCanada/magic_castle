@@ -268,13 +268,25 @@ resource "aws_eip" "login" {
   depends_on = [aws_internet_gateway.gw]
 }
 
+locals {
+  node_map = {
+    for key in keys(local.node):
+      key => merge(
+        {
+          image          = var.image,
+          user_data      = data.template_cloudinit_config.node_config[key].rendered,
+          root_disk_size = var.root_disk_size,
+        },
+        local.node[key]
+    )
+  }
+}
 
 resource "aws_instance" "node" {
-  count         = var.instances["node"]["count"]
-  instance_type = var.instances["node"]["type"]
-  ami           = var.image
-
-  user_data = data.template_cloudinit_config.node_config[count.index].rendered
+  for_each      = local.node_map
+  instance_type = each.value["type"]
+  ami           = each.value["image"]
+  user_data     = each.value["user_data"]
 
   subnet_id                   = aws_subnet.private_subnet.id
   key_name                    = aws_key_pair.key.key_name
@@ -283,7 +295,7 @@ resource "aws_instance" "node" {
   ebs_optimized = true
   root_block_device {
     volume_type = "gp2"
-    volume_size = var.root_disk_size
+    volume_size = each.value["root_disk_size"]
   }
 
   vpc_security_group_ids = [
@@ -298,7 +310,7 @@ resource "aws_instance" "node" {
   }
 
   tags = {
-    Name = "node${count.index + 1}"
+    Name = each.key
   }
 }
 

@@ -9,7 +9,7 @@ variable "instances" {
   type = object({
     mgmt=object({type=string, count=number}),
     login=object({type=string, count=number}),
-    node=object({type=string, count=number}),
+    node=list(map(any)),
   })
 }
 

@@ -13,7 +13,9 @@ module "openstack" {
   instances = {
     mgmt  = { type = "p4-6gb", count = 1 },
     login = { type = "p2-3gb", count = 1 },
-    node  = { type = "p2-3gb", count = 1 }
+    node  = [
+      { type = "p2-3gb", count = 1 },
+    ]
   }
 
   storage = {
