@@ -13,7 +13,9 @@ module "ovh" {
   instances = {
     mgmt  = { type = "s1-2", count = 1 },
     login = { type = "s1-2", count = 1 },
-    node  = { type = "s1-2", count = 1 }
+    node  = [
+       { type = "s1-2", count = 1 },
+    ]
   }
 
   storage = {

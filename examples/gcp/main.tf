@@ -13,7 +13,10 @@ module "gcp" {
   instances = {
     mgmt  = { type = "n1-standard-2", count = 1 },
     login = { type = "n1-standard-2", count = 1 },
-    node  = { type = "n1-standard-2", count = 1 }
+    node  = [
+      { type = "n1-standard-2", count = 1 },
+      # { type = "n1-standard-2", count = 1, prefix = "gpu", gpu_type = "nvidia-tesla-k80", gpu_count = 1 },
+    ]
   }
 
   storage = {
@@ -31,10 +34,6 @@ module "gcp" {
   # GCP specifics
   project = "calcul-quebec-249013"
   region  = "us-central1"
-  gpu_per_node = {
-    type = "nvidia-tesla-k80"
-    count = 0
-  }
 }
 
 output "sudoer_username" {

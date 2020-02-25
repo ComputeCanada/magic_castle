@@ -21,7 +21,9 @@ module "azure" {
   instances = {
     mgmt  = { type = "Standard_DS2_v2", count = 1 },
     login = { type = "Standard_DS1_v2", count = 1 },
-    node  = { type = "Standard_DS1_v2", count = 1 }
+    node  = [
+      { type = "Standard_DS1_v2", count = 1 },
+    ]
   }
 
   storage = {

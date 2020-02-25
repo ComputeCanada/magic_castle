@@ -191,27 +191,46 @@ resource "google_compute_instance" "login" {
   }
 }
 
+locals {
+  node_map = {
+    for key in keys(local.node):
+      key => merge(
+        {
+          name           = format("%s-%s", var.cluster_name, key),
+          project        = var.project,
+          zone           = local.zone,
+          image          = var.image,
+          root_disk_size = var.root_disk_size,
+          user_data      = data.template_cloudinit_config.node_config[key].rendered,
+          gpu_type       = "",
+          gpu_count      = 0
+        },
+        local.node[key]
+    )
+  }
+}
+
 resource "google_compute_instance" "node" {
-  count        = var.instances["node"]["count"]
-  project      = var.project
-  zone         = local.zone
-  name         = format("%s-node%d", var.cluster_name, count.index + 1)
-  machine_type = var.instances["node"]["type"]
+  for_each     = local.node_map
+  project      = each.value["project"]
+  zone         = each.value["zone"]
+  name         = each.value["name"]
+  machine_type = each.value["type"]
   scheduling {
     # Instances with guest accelerators do not support live migration.
-    on_host_maintenance = var.gpu_per_node["count"] > 0 ? "TERMINATE" : "MIGRATE"
+    on_host_maintenance = each.value["gpu_count"] > 0 ? "TERMINATE" : "MIGRATE"
   }
   guest_accelerator {
-    type  = var.gpu_per_node["type"]
-    count = var.gpu_per_node["count"]
+    type  = each.value["gpu_type"]
+    count = each.value["gpu_count"]
   }
   tags = ["node"]
 
   boot_disk {
     initialize_params {
-      image = var.image
+      image = each.value["image"]
       type  = "pd-ssd"
-      size  = var.root_disk_size
+      size  = each.value["root_disk_size"]
     }
   }
 
@@ -221,7 +240,7 @@ resource "google_compute_instance" "node" {
 
   metadata = {
     enable-oslogin     = "FALSE"
-    user-data          = data.template_cloudinit_config.node_config[count.index].rendered
+    user-data          = each.value["user_data"]
     user-data-encoding = "base64"
     VmDnsSetting       = "ZonalOnly"
   }

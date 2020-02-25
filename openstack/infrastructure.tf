@@ -14,7 +14,8 @@ data "openstack_compute_flavor_v2" "login" {
 }
 
 data "openstack_compute_flavor_v2" "node" {
-  name = var.instances["node"]["type"]
+  for_each = local.node
+  name = each.value.type
 }
 
 resource "openstack_compute_secgroup_v2" "secgroup_1" {
@@ -199,8 +200,8 @@ resource "openstack_compute_instance_v2" "login" {
 }
 
 resource "openstack_networking_port_v2" "port_node" {
-  count              = var.instances["node"]["count"]
-  name               = format("port-node%d", count.index + 1)
+  for_each           = local.node
+  name               = format("port-%s", each.key)
   network_id         = local.network.id
   security_group_ids = [openstack_compute_secgroup_v2.secgroup_1.id]
   fixed_ip {
@@ -208,21 +209,38 @@ resource "openstack_networking_port_v2" "port_node" {
   }
 }
 
-resource "openstack_compute_instance_v2" "node" {
-  count    = var.instances["node"]["count"]
-  name     = "node${count.index + 1}"
-  image_id = var.root_disk_size > data.openstack_compute_flavor_v2.node.disk ? null : data.openstack_images_image_v2.image.id
+locals {
+  node_map = {
+    for key in keys(local.node):
+      key => merge(
+        {
+          image_id  = data.openstack_images_image_v2.image.id,
+          port      = openstack_networking_port_v2.port_node[key].id,
+          networks  = local.ext_networks,
+          root_disk = var.root_disk_size > data.openstack_compute_flavor_v2.node[key].disk ? [{volume_size = var.root_disk_size}] : []
+          user_data = data.template_cloudinit_config.node_config[key].rendered
+        },
+        local.node[key]
+    )
+  }
+}
 
-  flavor_name     = var.instances["node"]["type"]
+resource "openstack_compute_instance_v2" "node" {
+  for_each = local.node_map
+  name     = each.key
+
+  image_id = each.value["root_disk"] == [] ? each.value["image_id"] : null
+
+  flavor_name     = each.value["type"]
   key_pair        = openstack_compute_keypair_v2.keypair.name
   security_groups = [openstack_compute_secgroup_v2.secgroup_1.name]
-  user_data       = data.template_cloudinit_config.node_config[count.index].rendered
+  user_data       = each.value["user_data"]
 
   network {
-    port = openstack_networking_port_v2.port_node[count.index].id
+    port = each.value["port"]
   }
   dynamic "network" {
-    for_each = local.ext_networks
+    for_each = each.value["networks"]
     content {
       access_network = network.value.access_network
       name           = network.value.name
@@ -230,9 +248,9 @@ resource "openstack_compute_instance_v2" "node" {
   }
 
   dynamic "block_device" {
-    for_each = var.root_disk_size > data.openstack_compute_flavor_v2.node.disk ? [{volume_size = var.root_disk_size}] : []
+    for_each = each.value["root_disk"]
     content {
-      uuid                  = data.openstack_images_image_v2.image.id
+      uuid                  = each.value["image_id"]
       source_type           = "image"
       destination_type      = "volume"
       boot_index            = 0

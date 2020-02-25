@@ -17,7 +17,7 @@
 ## 1. Setup
 
 To use Magic Castle you will need:
-* Terraform (>= 0.12).
+* Terraform (>= 0.12.21).
 * Access to a Cloud (e.g.: Compute Canada Arbutus)
 * Ability to communicate with the cloud provider API from your computer
 * A cloud project with enough room for the resource described in section [1.1](#11-quotas).
@@ -252,10 +252,13 @@ section [9.3](#93-add-a-user-account) and [9.4](#94-increase-the-number-of-guest
 
 ### 4.6 instances
 
-The instances variables is map with 3 keys: `mgmt`, `login` and `node`.
-Each key's value is another map with 2 keys: `type` and `count`.
+The `instances` variable is map with 3 keys: `mgmt`, `login` and `node`.
 
 #### 4.6.1 mgmt
+
+The value associated with the `mgmt` key is required to be a map
+with 2 keys: `type` and `count`.
+
 ##### count
 
 Number of management instances to create.
@@ -271,10 +274,14 @@ Cloud provider name for the combination of CPU, RAM and other features
 on which will run the management instances.
 
 Requirements:
-- CPUS: 2 cores
-- RAM: 4GB
+- CPUs: 2 cores
+- RAM: 6GB
 
 #### 4.6.2 login
+
+The value associated with the `login` key is required to be a map
+with 2 keys: `type` and `count`.
+
 ##### count
 
 Number of login instances to create.
@@ -285,10 +292,17 @@ Cloud provider name for the combination of CPU, RAM and other features
 on which will run the login instances.
 
 Requirements:
-- CPUS: 2 cores
+- CPUs: 2 cores
 - RAM: 2GB
 
 #### 4.6.3 node
+
+The value associated with the `login` key is required to be a list of
+map with at least two keys: `type` and `count`.
+
+If the list contains more than one map, at least one of the map will need
+to define a value for the key `prefix`.
+
 ##### count
 
 Number of compute node instances to create.
@@ -299,8 +313,38 @@ Cloud provider name for the combination of CPU, RAM and other features
 on which will run the compute node instances.
 
 Requirements:
-- CPUS: 1 core
-- RAM: 1GB
+- CPUs: 1 core
+- RAM: 2GB
+
+##### prefix (optional)
+
+Each compute node is identified by a unique hostname. The default hostname
+structure is `node` followed by the node 1-based index, i.e: `node1`. When
+more than one map is provided in the `instances["node"]` list, a prefix has
+to be defined for at least one of the map to avoid hostname conflicts.
+
+When a prefix is configured, the hostname structure is `prefix-node` followed
+by the node index in its map. For example, the following `instance["node"]`
+list
+```
+[
+  { type = "p2-4gb",     count = 4 },
+  { type = "c2-15gb-31", count = 2, prefix = "highmem" },
+  { type = "gpu2.large", count = 3, prefix = "gpu" },
+]
+```
+would spawn compute nodes with the following hostnames:
+```
+node1
+node2
+node3
+node4
+highmem-node1
+highmem-node2
+gpu-node1
+gpu-node2
+gpu-node3
+```
 
 #### 4.6.4 Post Build Modification Effect
 
@@ -309,7 +353,7 @@ Terraform will manage the creation or destruction of the virtual machines
 for you.
 
 Modifying any of these variables after the cluster is built will only affects
-the type of instances associated with the variable at next `terraform apply`.
+the type of instances associated with the variables at next `terraform apply`.
 
 ### 4.7 Storage: type, home_size, project_size, scratch_size
 

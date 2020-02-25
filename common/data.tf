@@ -1,5 +1,22 @@
 locals {
   domain_name = "${lower(var.cluster_name)}.${lower(var.domain)}"
+  node = {
+    for item in flatten([
+      for node in var.instances["node"]: [
+        for j in range(node.count): {
+          (
+            lookup(node, "prefix", "") != "" ?
+            format("%s-node%d", lookup(node, "prefix", ""), j+1) :
+            format("node%d", j+1)
+          ) = {
+            for key in setsubtract(keys(node), ["prefix", "count"]):
+              key => node[key]
+          }
+        }
+      ]
+    ]):
+    keys(item)[0] => values(item)[0]
+  }
 }
 
 resource "random_string" "munge_key" {
@@ -109,7 +126,7 @@ EOF
 }
 
 data "template_cloudinit_config" "node_config" {
-  count = var.instances["node"]["count"]
+  for_each = local.node
   part {
     filename     = "node.yaml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
@@ -117,7 +134,7 @@ data "template_cloudinit_config" "node_config" {
     content      = templatefile(
       "${path.module}/cloud-init/puppet.yaml",
       {
-        node_name             = format("node%d", count.index + 1),
+        node_name             = each.key,
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = var.public_keys,
         puppetmaster          = local.mgmt1_ip,

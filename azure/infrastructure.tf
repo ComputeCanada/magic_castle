@@ -1,5 +1,6 @@
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
+  version = "1.44.0"
 }
 
 # Create a resource group
@@ -42,11 +43,11 @@ resource "azurerm_public_ip" "mgmtIP" {
 }
 
 resource "azurerm_public_ip" "nodeIP" {
-  count                        = var.instances["node"]["count"]
-  name                         = format("%s-node-ip-%d", var.cluster_name, count.index + 1)
-  location                     = var.location
-  resource_group_name          = azurerm_resource_group.group.name
-  allocation_method            = "Dynamic"
+  for_each            = local.node
+  name                = format("%s-%s-ip", var.cluster_name, each.key)
+  location            = var.location
+  resource_group_name = azurerm_resource_group.group.name
+  allocation_method   = "Dynamic"
 }
 
 # Create Network Security Group and rule
@@ -122,16 +123,16 @@ resource "azurerm_network_interface" "mgmtNIC" {
 }
 
 resource "azurerm_network_interface" "nodeNIC" {
-  count               = var.instances["node"]["count"]
-  name                = format("%s-node%d-nic", var.cluster_name, count.index + 1)
+  for_each            = local.node
+  name                = format("%s-%s-nic", var.cluster_name, each.key)
   location            = var.location
   resource_group_name = azurerm_resource_group.group.name
 
   ip_configuration {
-    name                          = "${var.cluster_name}_node_nicconfig"
+    name                          = format("%s-%s-ipconfig", var.cluster_name, each.key)
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "dynamic"
-    public_ip_address_id          = azurerm_public_ip.nodeIP[count.index].id
+    public_ip_address_id          = azurerm_public_ip.nodeIP[each.key].id
   }
 }
 
@@ -286,39 +287,58 @@ resource "azurerm_virtual_machine_data_disk_attachment" "scratch" {
   caching            = "ReadWrite"
 }
 
-resource "azurerm_virtual_machine" "nodevm" {
-  name                  = format("%s-node%d", var.cluster_name, count.index + 1)
-  count                 = var.instances["node"]["count"]
-  vm_size               = var.instances["node"]["type"]
-  location              = var.location
-  resource_group_name   = azurerm_resource_group.group.name
-  network_interface_ids = [azurerm_network_interface.nodeNIC[count.index].id]
-
-  storage_os_disk {
-    name              = "${var.cluster_name}_node${count.index + 1}_disk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = var.managed_disk_type
-    disk_size_gb      = var.root_disk_size
+locals {
+  node_map = {
+    for key in keys(local.node):
+      key => merge(
+        {
+          name              = format("%s-%s", var.cluster_name, key),
+          location          = var.location,
+          image             = var.image,
+          os_disk_name      = format("%s-%s-%s", var.cluster_name, key, "disk")
+          managed_disk_type = var.managed_disk_type
+          root_disk_size    = var.root_disk_size,
+          user_data         = data.template_cloudinit_config.node_config[key].rendered,
+          public_keys       = var.public_keys,
+        },
+        local.node[key]
+    )
   }
+}
+
+resource "azurerm_virtual_machine" "nodevm" {
+  for_each              = local.node_map
+  name                  = each.value["name"]
+  vm_size               = each.value["type"]
+  location              = each.value["location"]
+  resource_group_name   = azurerm_resource_group.group.name
+  network_interface_ids = [azurerm_network_interface.nodeNIC[each.key].id]
 
   storage_image_reference {
-    publisher = var.image["publisher"]
-    offer     = var.image["offer"]
-    sku       = var.image["sku"]
+    publisher = each.value["image"]["publisher"]
+    offer     = each.value["image"]["offer"]
+    sku       = each.value["image"]["sku"]
     version   = "latest"
   }
 
+  storage_os_disk {
+    name              = each.value["os_disk_name"]
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = each.value["managed_disk_type"]
+    disk_size_gb      = each.value["root_disk_size"]
+  }
+
   os_profile {
-    computer_name  = "node${count.index + 1}"
+    computer_name  = each.key
     admin_username = "azure"
-    custom_data = data.template_cloudinit_config.node_config[count.index].rendered
+    custom_data = each.value["user_data"]
   }
 
   os_profile_linux_config {
     disable_password_authentication = true
     dynamic "ssh_keys" {
-      for_each = var.public_keys
+      for_each = each.value["public_keys"]
       iterator = key
       content {
         key_data = key.value
