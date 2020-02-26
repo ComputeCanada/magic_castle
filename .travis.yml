@@ -27,6 +27,7 @@ script:
   - for cloud in aws azure gcp openstack ovh; do
       terraform init $cloud;
       terraform validate $cloud;
+      sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' examples/$cloud/main.tf;
       terraform init examples/$cloud;
       terraform validate examples/$cloud;
     done
