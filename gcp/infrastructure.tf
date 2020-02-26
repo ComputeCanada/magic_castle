@@ -1,7 +1,6 @@
 provider "google" {
-  project = var.project_name
+  project = var.project
   region  = var.region
-  #  version = "~> 2.1.0"
 }
 
 data "google_compute_zones" "available" {
@@ -85,7 +84,7 @@ resource "google_compute_address" "mgmt" {
 }
 
 resource "google_compute_instance" "mgmt" {
-  project      = var.project_name
+  project      = var.project
   zone         = local.zone
   count        = var.instances["mgmt"]["count"]
   name         = format("%s-mgmt%d", var.cluster_name, count.index + 1)
@@ -155,7 +154,7 @@ resource "google_compute_address" "static" {
 
 resource "google_compute_instance" "login" {
   count        = var.instances["login"]["count"]
-  project      = var.project_name
+  project      = var.project
   zone         = local.zone
   name         = format("%s-login%d", var.cluster_name, count.index + 1)
   machine_type = var.instances["login"]["type"]
@@ -194,7 +193,7 @@ resource "google_compute_instance" "login" {
 
 resource "google_compute_instance" "node" {
   count        = var.instances["node"]["count"]
-  project      = var.project_name
+  project      = var.project
   zone         = local.zone
   name         = format("%s-node%d", var.cluster_name, count.index + 1)
   machine_type = var.instances["node"]["type"]
