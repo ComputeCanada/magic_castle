@@ -207,7 +207,7 @@ resource "aws_ebs_volume" "scratch" {
 
 resource "aws_volume_attachment" "home" {
   count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  device_name  = local.home_dev
+  device_name  = "/dev/sdb"
   volume_id    = aws_ebs_volume.home[0].id
   instance_id  = aws_instance.mgmt[0].id
   skip_destroy = true
@@ -215,7 +215,7 @@ resource "aws_volume_attachment" "home" {
 
 resource "aws_volume_attachment" "project" {
   count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  device_name  = local.project_dev
+  device_name  = "/dev/sdc"
   volume_id    = aws_ebs_volume.project[0].id
   instance_id  = aws_instance.mgmt[0].id
   skip_destroy = true
@@ -223,7 +223,7 @@ resource "aws_volume_attachment" "project" {
 
 resource "aws_volume_attachment" "scratch" {
   count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  device_name  = local.scratch_dev
+  device_name  = "/dev/sdd"
   volume_id    = aws_ebs_volume.scratch[0].id
   instance_id  = aws_instance.mgmt[0].id
   skip_destroy = true
@@ -318,7 +318,7 @@ locals {
   mgmt1_ip    = aws_network_interface.mgmt[0].private_ip
   public_ip   = aws_eip.login[*].public_ip
   cidr        = aws_subnet.private_subnet.cidr_block
-  home_dev    = "/dev/xvdb"
-  project_dev = "/dev/xvdc"
-  scratch_dev = "/dev/xvdd"
+  home_dev    = "/dev/disk/by-id/*${replace(aws_ebs_volume.home[0].id, "-", "")}"
+  project_dev = "/dev/disk/by-id/*${replace(aws_ebs_volume.project[0].id, "-", "")}"
+  scratch_dev = "/dev/disk/by-id/*${replace(aws_ebs_volume.scratch[0].id, "-", "")}"
 }
