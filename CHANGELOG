@@ -10,7 +10,7 @@ Terraform >= 0.12.21 is now required. Usage of the function `subtract` requires 
 ### Added
 - Added the optional key `prefix` to the `instance["node"]` map (issue #29)
 - [cloud-init] Added removal of ifcfg file with no corresponding nic (issue #61)
-- [puppet] Added optional prefix to node regex in site.pp ([puppet-magic_castle issue #27](https://github.com/ComputeCanada/puppet-magic_castle/issues/27))
+- [puppet] Added optional prefix to node regex in site.pp
 
 ### Changed
 - `instance["node"]` is now a list. This allows the spawning of compute nodes with various instance types (issue #29)
@@ -19,7 +19,7 @@ Terraform >= 0.12.21 is now required. Usage of the function `subtract` requires 
 - [AWS] Replaced aws volume device name by volume id (issue #60)
 - [gcp] Renamed gcp var.project_name to var.project (issue #53)
 - [puppet] Upgraded puppet-prometheus to 8.2.1
-- [puppet] Remove Name=gpu from gres.conf template (issue )
+- [puppet] Remove Name=gpu from gres.conf template ([puppet-magic_castle issue #27](https://github.com/ComputeCanada/puppet-magic_castle/issues/27))
 
 ## [5.8] - 2020-02-24
 
