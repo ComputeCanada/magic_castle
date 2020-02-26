@@ -306,7 +306,7 @@ locals {
   }
 }
 
-resource "azurerm_virtual_machine" "nodevm" {
+resource "azurerm_virtual_machine" "node" {
   for_each              = local.node_map
   name                  = each.value["name"]
   vm_size               = each.value["type"]
