@@ -67,6 +67,8 @@ runcmd:
   - systemctl disable kdump
   - sed -i 's/crashkernel=auto/crashkernel=no/' /etc/default/grub
   - grub2-mkconfig -o /boot/grub2/grub.cfg
+  # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
+  - for i in /etc/sysconfig/network-scripts/ifcfg-*; do if ! ip link show | grep -q "$${i##*-}:"; then rm -f $i; fi; done
   - reboot -n
 
 mounts:
