@@ -21,17 +21,17 @@ runcmd:
   - yum remove -y firewalld
   - yum upgrade -y
 # Partition
-  - while [ ! -e ${home_dev} ]; do sleep 30; done
+  - while [ ! -e ${home_dev} ]; do echo "home device not attached; sleep 30 sec..."  1>&2 ; sleep 30; done
   - parted -s ${home_dev} mklabel gpt
   - parted -s -a opt ${home_dev} mkpart primary ext4 0% 100%
   - while [ ! -e $(readlink -f ${home_dev})*1 ]; do sleep 5; done
   - mkfs.xfs -L home $(readlink -f ${home_dev})*1
-  - while [ ! -e ${project_dev} ]; do sleep 30; done
+  - while [ ! -e ${project_dev} ]; do echo "project device not attached; sleep 30 sec..."  1>&2 ; sleep 30; done
   - parted -s ${project_dev} mklabel gpt
   - parted -s -a opt ${project_dev} mkpart primary ext4 0% 100%
   - while [ ! -e $(readlink -f ${project_dev})*1 ]; do sleep 5; done
   - mkfs.xfs -L project $(readlink -f ${project_dev})*1
-  - while [ ! -e ${scratch_dev} ]; do sleep 30; done
+  - while [ ! -e ${scratch_dev} ]; do echo "scratch device not attached; sleep 30 sec..."  1>&2 ; sleep 30; done
   - parted -s ${scratch_dev} mklabel gpt
   - parted -s -a opt ${scratch_dev} mkpart primary ext4 0% 100%
   - while [ ! -e $(readlink -f ${scratch_dev})*1 ]; do sleep 5; done
