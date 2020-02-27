@@ -35,6 +35,7 @@ script:
   - terraform validate dns/cloudflare -var email="email@example.com" -var token="1234"
 
 before_deploy:
+  - git reset --hard
   - ./release.sh $(git describe --tags --abbrev=0)
 deploy:
   provider: releases
