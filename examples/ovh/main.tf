@@ -58,6 +58,20 @@ output "public_ip" {
 #   rsa_public_key   = module.ovh.rsa_public_key
 #   sudoer_username  = module.ovh.sudoer_username
 # }
+
+## Uncomment to register your domain name with Google Cloud
+# module "dns" {
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
+#   email            = "you@example.com"
+#   project          = "your-project-name"
+#   zone_name        = "you-zone-name"
+#   name             = module.ovh.cluster_name
+#   domain           = module.ovh.domain
+#   public_ip        = module.ovh.ip
+#   rsa_public_key   = module.ovh.rsa_public_key
+#   sudoer_username  = module.ovh.sudoer_username
+# }
+
 # output "hostnames" {
 # 	value = module.dns.hostnames
 # }

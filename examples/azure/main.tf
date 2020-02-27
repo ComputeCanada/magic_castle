@@ -68,6 +68,21 @@ output "public_ip" {
 #   rsa_public_key   = module.azure.rsa_public_key
 #   sudoer_username  = module.azure.sudoer_username
 # }
+
+## Uncomment to register your domain name with Google Cloud
+# module "dns" {
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
+#   email            = "you@example.com"
+#   project          = "your-project-name"
+#   zone_name        = "you-zone-name"
+#   name             = module.azure.cluster_name
+#   domain           = module.azure.domain
+#   public_ip        = module.azure.ip
+#   rsa_public_key   = module.azure.rsa_public_key
+#   sudoer_username  = module.azure.sudoer_username
+# }
+
+
 # output "hostnames" {
 # 	value = module.dns.hostnames
 # }
