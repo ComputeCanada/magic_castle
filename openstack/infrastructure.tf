@@ -19,7 +19,7 @@ data "openstack_compute_flavor_v2" "node" {
 }
 
 resource "openstack_compute_secgroup_v2" "secgroup_1" {
-  name        = "${var.cluster_name}_secgroup"
+  name        = "${var.cluster_name}-secgroup"
   description = "Slurm+JupyterHub security group"
 
   rule {
@@ -55,34 +55,34 @@ resource "openstack_compute_secgroup_v2" "secgroup_1" {
 }
 
 resource "openstack_compute_keypair_v2" "keypair" {
-  name       = "${var.cluster_name}_key"
+  name       = "${var.cluster_name}-key"
   public_key = var.public_keys[0]
 }
 
 resource "openstack_blockstorage_volume_v2" "home" {
   count       = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  name        = "${var.cluster_name}_home"
+  name        = "${var.cluster_name}-home"
   description = "${var.cluster_name} /home"
   size        = var.storage["home_size"]
 }
 
 resource "openstack_blockstorage_volume_v2" "project" {
   count       = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  name        = "${var.cluster_name}_project"
+  name        = "${var.cluster_name}-project"
   description = "${var.cluster_name} /project"
   size        = var.storage["project_size"]
 }
 
 resource "openstack_blockstorage_volume_v2" "scratch" {
   count       = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  name        = "${var.cluster_name}_scratch"
+  name        = "${var.cluster_name}-scratch"
   description = "${var.cluster_name} /scratch"
   size        = var.storage["scratch_size"]
 }
 
 resource "openstack_networking_port_v2" "port_mgmt" {
   count              = max(var.instances["mgmt"]["count"], 1)
-  name               = format("port-mgmt%d", count.index + 1)
+  name               = format("%s-port-mgmt%d", var.cluster_name, count.index + 1)
   network_id         = local.network.id
   security_group_ids = [openstack_compute_secgroup_v2.secgroup_1.id]
   fixed_ip {
@@ -92,7 +92,7 @@ resource "openstack_networking_port_v2" "port_mgmt" {
 
 resource "openstack_compute_instance_v2" "mgmt" {
   count    = var.instances["mgmt"]["count"]
-  name     = format("mgmt%d", count.index + 1)
+  name     = format("%s-mgmt%d", var.cluster_name, count.index + 1)
   image_id = var.root_disk_size > data.openstack_compute_flavor_v2.mgmt.disk ? null : data.openstack_images_image_v2.image.id
 
   flavor_name = var.instances["mgmt"]["type"]
@@ -150,7 +150,7 @@ resource "openstack_compute_volume_attach_v2" "va_scratch" {
 
 resource "openstack_networking_port_v2" "port_login" {
   count              = var.instances["login"]["count"]
-  name               = format("port-login%d", count.index + 1)
+  name               = format("%s-port-login%d", var.cluster_name, count.index + 1)
   network_id         = local.network.id
   security_group_ids = [openstack_compute_secgroup_v2.secgroup_1.id]
   fixed_ip {
@@ -160,7 +160,7 @@ resource "openstack_networking_port_v2" "port_login" {
 
 resource "openstack_compute_instance_v2" "login" {
   count    = var.instances["login"]["count"]
-  name     = format("login%d", count.index + 1)
+  name     = format("%s-login%d", var.cluster_name, count.index + 1)
   image_id = var.root_disk_size > data.openstack_compute_flavor_v2.login.disk ? null : data.openstack_images_image_v2.image.id
 
   flavor_name     = var.instances["login"]["type"]
@@ -201,7 +201,7 @@ resource "openstack_compute_instance_v2" "login" {
 
 resource "openstack_networking_port_v2" "port_node" {
   for_each           = local.node
-  name               = format("port-%s", each.key)
+  name               = format("%s-port-node%s", var.cluster_name, each.key)
   network_id         = local.network.id
   security_group_ids = [openstack_compute_secgroup_v2.secgroup_1.id]
   fixed_ip {
@@ -214,6 +214,7 @@ locals {
     for key in keys(local.node):
       key => merge(
         {
+          name      = format("%s-%s", var.cluster_name, key)
           image_id  = data.openstack_images_image_v2.image.id,
           port      = openstack_networking_port_v2.port_node[key].id,
           networks  = local.ext_networks,
@@ -227,7 +228,7 @@ locals {
 
 resource "openstack_compute_instance_v2" "node" {
   for_each = local.node_map
-  name     = each.key
+  name     = each.value["name"]
 
   image_id = each.value["root_disk"] == [] ? each.value["image_id"] : null
 
