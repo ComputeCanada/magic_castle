@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Added
+- Added an error message in cloud-init dev avail while loops
+- [puppet] Added a slurmd restart when node hostname is missing from sinfo output.
+
+### Changed
+- [OpenStack] All resources, including instances, have now a name that starts with the cluster name.
+This does not affect the instances' hostname
+
 ## [6.1] - 2020-02-27
 
 Fix travis release procedure. 6.0 release bundles contained the wrong module source in main.tf.
