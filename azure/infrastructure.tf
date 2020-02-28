@@ -1,6 +1,7 @@
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
-  version = "1.44.0"
+  version = "~>2.0.0"
+  features {}
 }
 
 # Create a resource group
@@ -97,7 +98,6 @@ resource "azurerm_network_interface" "loginNIC" {
   name                      = format("%s-login%d-nic", var.cluster_name, count.index + 1)
   location                  = var.location
   resource_group_name       = azurerm_resource_group.group.name
-  network_security_group_id = azurerm_network_security_group.security_login.id
 
   ip_configuration {
     name                          = "${var.cluster_name}_login_nicconfig"
@@ -107,12 +107,17 @@ resource "azurerm_network_interface" "loginNIC" {
   }
 }
 
+resource "azurerm_network_interface_security_group_association" "loginSec" {
+  count                     = var.instances["login"]["count"]
+  network_interface_id      = azurerm_network_interface.loginNIC[count.index].id
+  network_security_group_id = azurerm_network_security_group.security_login.id
+}
+
 resource "azurerm_network_interface" "mgmtNIC" {
   count                     = var.instances["mgmt"]["count"]
   name                      = format("%s-mgmt%d-nic", var.cluster_name, count.index + 1)
   location                  = var.location
   resource_group_name       = azurerm_resource_group.group.name
-  network_security_group_id = azurerm_network_security_group.security_mgmt.id
 
   ip_configuration {
     name                          = "${var.cluster_name}_mgmt_nicconfig"
@@ -120,6 +125,12 @@ resource "azurerm_network_interface" "mgmtNIC" {
     private_ip_address_allocation = "dynamic"
     public_ip_address_id          = azurerm_public_ip.mgmtIP[count.index].id
   }
+}
+
+resource "azurerm_network_interface_security_group_association" "mgmtSec" {
+  count                     = var.instances["mgmt"]["count"]
+  network_interface_id      = azurerm_network_interface.mgmtNIC[count.index].id
+  network_security_group_id = azurerm_network_security_group.security_mgmt.id
 }
 
 resource "azurerm_network_interface" "nodeNIC" {
@@ -137,98 +148,90 @@ resource "azurerm_network_interface" "nodeNIC" {
 }
 
 # Create virtual machine
-resource "azurerm_virtual_machine" "login" {
+resource "azurerm_linux_virtual_machine" "login" {
   count                 = var.instances["login"]["count"]
-  vm_size               = var.instances["login"]["type"]
+  size                  = var.instances["login"]["type"]
   name                  = format("%s-login%d", var.cluster_name, count.index + 1)
   location              = var.location
   resource_group_name   = azurerm_resource_group.group.name
   network_interface_ids = [azurerm_network_interface.loginNIC[count.index].id]
 
-  storage_os_disk {
+  os_disk {
     name              = "${var.cluster_name}_login${count.index + 1}_disk"
     caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = var.managed_disk_type
+    storage_account_type = var.managed_disk_type
     disk_size_gb      = var.root_disk_size
   }
 
-  storage_image_reference {
+  source_image_reference {
     publisher = var.image["publisher"]
     offer     = var.image["offer"]
     sku       = var.image["sku"]
     version   = "latest"
   }
 
-  os_profile {
-    computer_name  = format("login%d", count.index + 1)
-    admin_username = "azure"
-    custom_data = data.template_cloudinit_config.login_config[count.index].rendered
-  }
+  computer_name  = format("login%d", count.index + 1)
+  admin_username = "azure"
+  custom_data = data.template_cloudinit_config.login_config[count.index].rendered
 
-  os_profile_linux_config {
-    disable_password_authentication = true
-    dynamic "ssh_keys" {
-      for_each = var.public_keys
-      iterator = key
-      content {
-        key_data = key.value
-        path     = "/home/azure/.ssh/authorized_keys"
-      }
+
+  disable_password_authentication = true
+  dynamic "admin_ssh_key" {
+    for_each = var.public_keys
+    iterator = key
+    content {
+      username = "azure"
+      public_key = key.value
     }
+
   }
 
   lifecycle {
     ignore_changes = [
-      storage_image_reference
+      source_image_reference
     ]
   }
 }
 
-resource "azurerm_virtual_machine" "mgmt" {
+resource "azurerm_linux_virtual_machine" "mgmt" {
   count                 = var.instances["mgmt"]["count"]
-  vm_size               = var.instances["mgmt"]["type"]
+  size               = var.instances["mgmt"]["type"]
   name                  = format("%s-mgmt%d", var.cluster_name, count.index + 1)
   location              = var.location
   resource_group_name   = azurerm_resource_group.group.name
   network_interface_ids = [azurerm_network_interface.mgmtNIC[count.index].id]
 
-  storage_os_disk {
+  os_disk {
     name              = "${var.cluster_name}_mgmt${count.index + 1}_disk"
     caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = var.managed_disk_type
+    storage_account_type = var.managed_disk_type
     disk_size_gb      = var.root_disk_size
   }
 
-  storage_image_reference {
+  source_image_reference {
     publisher = var.image["publisher"]
     offer     = var.image["offer"]
     sku       = var.image["sku"]
     version   = "latest"
   }
 
-  os_profile {
-    computer_name  = format("mgmt%d", count.index + 1)
-    admin_username = "azure"
-    custom_data = data.template_cloudinit_config.mgmt_config[count.index].rendered
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = true
-    dynamic "ssh_keys" {
-      for_each = var.public_keys
-      iterator = key
-      content {
-        key_data = key.value
-        path     = "/home/azure/.ssh/authorized_keys"
-      }
+  computer_name  = format("mgmt%d", count.index + 1)
+  admin_username = "azure"
+  custom_data = data.template_cloudinit_config.mgmt_config[count.index].rendered
+  
+  disable_password_authentication = true
+  dynamic "admin_ssh_key" {
+    for_each = var.public_keys
+    iterator = key
+    content {
+      username = "azure"
+      public_key = key.value
     }
   }
 
   lifecycle {
     ignore_changes = [
-      storage_image_reference
+      source_image_reference
     ]
   }
 }
@@ -266,7 +269,7 @@ resource "azurerm_managed_disk" "scratch" {
 resource "azurerm_virtual_machine_data_disk_attachment" "home" {
   count              = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   managed_disk_id    = azurerm_managed_disk.home[0].id
-  virtual_machine_id = azurerm_virtual_machine.mgmt[0].id
+  virtual_machine_id = azurerm_linux_virtual_machine.mgmt[0].id
   lun                = "10"
   caching            = "ReadWrite"
 }
@@ -274,7 +277,7 @@ resource "azurerm_virtual_machine_data_disk_attachment" "home" {
 resource "azurerm_virtual_machine_data_disk_attachment" "project" {
   count              = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   managed_disk_id    = azurerm_managed_disk.project[0].id
-  virtual_machine_id = azurerm_virtual_machine.mgmt[0].id
+  virtual_machine_id = azurerm_linux_virtual_machine.mgmt[0].id
   lun                = "11"
   caching            = "ReadWrite"
 }
@@ -282,7 +285,7 @@ resource "azurerm_virtual_machine_data_disk_attachment" "project" {
 resource "azurerm_virtual_machine_data_disk_attachment" "scratch" {
   count              = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   managed_disk_id    = azurerm_managed_disk.scratch[0].id
-  virtual_machine_id = azurerm_virtual_machine.mgmt[0].id
+  virtual_machine_id = azurerm_linux_virtual_machine.mgmt[0].id
   lun                = "12"
   caching            = "ReadWrite"
 }
@@ -306,50 +309,45 @@ locals {
   }
 }
 
-resource "azurerm_virtual_machine" "node" {
+resource "azurerm_linux_virtual_machine" "node" {
   for_each              = local.node_map
   name                  = each.value["name"]
-  vm_size               = each.value["type"]
+  size                  = each.value["type"]
   location              = each.value["location"]
   resource_group_name   = azurerm_resource_group.group.name
   network_interface_ids = [azurerm_network_interface.nodeNIC[each.key].id]
 
-  storage_image_reference {
+  source_image_reference {
     publisher = each.value["image"]["publisher"]
     offer     = each.value["image"]["offer"]
     sku       = each.value["image"]["sku"]
     version   = "latest"
   }
 
-  storage_os_disk {
+  os_disk {
     name              = each.value["os_disk_name"]
     caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = each.value["managed_disk_type"]
+    storage_account_type = each.value["managed_disk_type"]
     disk_size_gb      = each.value["root_disk_size"]
   }
 
-  os_profile {
-    computer_name  = each.key
-    admin_username = "azure"
-    custom_data = each.value["user_data"]
-  }
+  computer_name  = each.key
+  admin_username = "azure"
+  custom_data = each.value["user_data"]
 
-  os_profile_linux_config {
-    disable_password_authentication = true
-    dynamic "ssh_keys" {
-      for_each = each.value["public_keys"]
-      iterator = key
-      content {
-        key_data = key.value
-        path     = "/home/azure/.ssh/authorized_keys"
-      }
+  disable_password_authentication = true
+  dynamic "admin_ssh_key" {
+    for_each = each.value["public_keys"]
+    iterator = key
+    content {
+      username = "azure"
+      public_key = key.value
     }
   }
 
   lifecycle {
     ignore_changes = [
-      storage_image_reference
+      source_image_reference
     ]
   }
 }
