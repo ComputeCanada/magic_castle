@@ -5,13 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [6.2] - 2020-03-01
+
 ### Added
 - Added an error message in cloud-init dev avail while loops
+- Added gcloud dns module to AWS, Azure and OVH examples.
 - [puppet] Added a slurmd restart when node hostname is missing from sinfo output.
+- [puppet] Added class profile::workshop::mgmt to deploy files to guest user homes
+- [puppet] Added class profile::workshop::mgmt to mgmt1 in site.pp
 
 ### Changed
 - [OpenStack] All resources, including instances, have now a name that starts with the cluster name.
 This does not affect the instances' hostname
+- [puppet] Update puppet-jupyterhub version to v1.7
 
 ## [6.1] - 2020-02-27
 
