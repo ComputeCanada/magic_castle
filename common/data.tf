@@ -55,7 +55,7 @@ data "template_file" "hieradata" {
     cluster_name    = var.cluster_name
     domain_name     = local.domain_name
     guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : random_pet.guest_passwd[0].id
-    consul_token    = random_uuid.consul_token
+    consul_token    = random_uuid.consul_token.result
     munge_key       = base64sha512(random_string.munge_key.result)
     nb_users        = var.nb_users
     mgmt1_ip       = local.mgmt1_ip
