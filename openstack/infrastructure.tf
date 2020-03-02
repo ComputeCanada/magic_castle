@@ -201,7 +201,7 @@ resource "openstack_compute_instance_v2" "login" {
 
 resource "openstack_networking_port_v2" "port_node" {
   for_each           = local.node
-  name               = format("%s-port-node%s", var.cluster_name, each.key)
+  name               = format("%s-port-%s", var.cluster_name, each.key)
   network_id         = local.network.id
   security_group_ids = [openstack_compute_secgroup_v2.secgroup_1.id]
   fixed_ip {
