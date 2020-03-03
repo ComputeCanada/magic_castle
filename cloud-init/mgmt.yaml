@@ -52,6 +52,7 @@ runcmd:
   - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section master
   - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section master
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
+  - /opt/puppetlabs/bin/puppet config set report false
   - chown puppet:puppet /etc/autosign.conf
   - sed -i 's/^\(After=.*\)$/\1 puppetserver.service/' /usr/lib/systemd/system/puppet.service
   - systemctl daemon-reload

@@ -23,6 +23,7 @@ runcmd:
   - yum -y install puppet-agent
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - /opt/puppetlabs/bin/puppet config set waitforcert 15s
+  - /opt/puppetlabs/bin/puppet config set report false
   - systemctl enable puppet
   - systemctl disable kdump
   - sed -i 's/crashkernel=auto/crashkernel=no/' /etc/default/grub
