@@ -67,10 +67,13 @@ runcmd:
   - mv /etc/puppetlabs/code/data/user_data.yaml /etc/puppetlabs/code/environments/production/data/
   - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
   - "(cd /etc/puppetlabs/code/environments/production/ && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
+# Bootstrap services that are essential to puppet agents
+  - /opt/puppetlabs/bin/puppet apply -e 'include profile::consul::server'
+# Kernel configuration
   - systemctl disable kdump
   - sed -i 's/crashkernel=auto/crashkernel=no/' /etc/default/grub
   - grub2-mkconfig -o /boot/grub2/grub.cfg
-  # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
+# Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
   - for i in /etc/sysconfig/network-scripts/ifcfg-*; do if ! ip link show | grep -q "$${i##*-}:"; then rm -f $i; fi; done
   - reboot -n
 
