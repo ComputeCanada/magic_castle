@@ -25,7 +25,10 @@ variable "storage" {
     type=string,
     home_size=number,
     project_size=number,
-    scratch_size=number
+    scratch_size=number,
+    home_vol_type=string,
+    project_vol_type=string,
+    scratch_vol_type=string,
   })
 }
 
