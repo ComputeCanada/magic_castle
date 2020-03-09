@@ -59,6 +59,9 @@ data "template_file" "hieradata" {
     munge_key       = base64sha512(random_string.munge_key.result)
     nb_users        = var.nb_users
     mgmt1_ip       = local.mgmt1_ip
+    home_size       = "${var.storage["home_size"]}G"
+    project_size    = "${var.storage["project_size"]}G"
+    scratch_size    = "${var.storage["scratch_size"]}G"
   }
 }
 
