@@ -80,9 +80,6 @@ data "template_cloudinit_config" "mgmt_config" {
         node_name             = format("mgmt%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = var.public_keys,
-        home_dev              = local.home_dev,
-        project_dev           = local.project_dev,
-        scratch_dev           = local.scratch_dev,
       }
     )
   }

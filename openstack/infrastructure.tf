@@ -270,7 +270,4 @@ resource "openstack_compute_instance_v2" "node" {
 
 locals {
   mgmt1_ip    = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
-  home_dev    = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v2.home[0].id, 0, 20)}"
-  project_dev = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v2.project[0].id, 0, 20)}"
-  scratch_dev = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v2.scratch[0].id, 0, 20)}"
 }

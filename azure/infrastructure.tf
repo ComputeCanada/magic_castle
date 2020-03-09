@@ -356,7 +356,4 @@ locals {
   mgmt1_ip    = azurerm_network_interface.mgmtNIC[0].private_ip_address
   public_ip   = azurerm_public_ip.loginIP[*].ip_address
   cidr        = "10.0.1.0/24"
-  home_dev    = "/dev/disk/azure/scsi1/lun10"
-  project_dev = "/dev/disk/azure/scsi1/lun11"
-  scratch_dev = "/dev/disk/azure/scsi1/lun12"
 }
