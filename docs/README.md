@@ -243,12 +243,12 @@ you will have to login using the sudoer account and the SSH keys lists
 in `public_keys`.
 
 If you would like to add a user account after the cluster is built, refer to
-section [9.3](#93-add-a-user-account) and [9.4](#94-increase-the-number-of-guest-accounts).
+section [10.3](#103-add-a-user-account) and [10.4](#104-increase-the-number-of-guest-accounts).
 
 **Requirement**: Must be an integer, minimum value is 0.
 
 **Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`
-([see section 9.8](#98-recovering-from-mgmt1-rebuild)).
+([see section 10.8](#108-recovering-from-mgmt1-rebuild)).
 
 ### 4.6 instances
 

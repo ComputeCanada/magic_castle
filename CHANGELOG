@@ -3,7 +3,31 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## [6.3] - 2020-03-09
+
+### Added
+- Added random_uuid to generate a random consul token
+- [travis] Added init and validation of dns/gcloud module
+- [cloud-init] Added bootstrap installation of consul-server in cloud-init
+- [puppet] Added slurmd restart when node is missing from sinfo
+- [puppet] Introduced class `profile::workshop::mgmt`. The class allow to unzip an archive in all guest accounts
+- [puppet] Added profile::workshop::mgmt to mgmt in site.pp
+- [puppet] Defined consul::service for slurmd, slurmctld slurmdbd, rsyslog, cvmfs client, and squid. This in conjunction
+with consul-template, allow these services to be removed from the config files when the instance that was running the
+service is halted. For example, if a compute node is shutdown or remove, it will no longer appear in `sinfo` output.
+
+### Changed
+- [cloud-init] Turned off puppet agent reporting in cloud-init
+- [cloud-init] [puppet] Renamed user_hieradata as user_data
+- [cloud-init] Volume formating and mounting is now conditional on the hostname being `mgmt1`
+- [OpenStack] Fixed port_node resource name template
+- [puppet] Updated puppet-jupyterhub version to v1.8.1
+- [puppet] Consul and consul-template version are now defined in hieradata
+- [puppet] Changed node_exported consul service name to node-exported to remove warning
+
+### Removed
+- [puppet] Removed unused key from terraform_data
+- [puppet] Removed stage in mgmt site.pp
 
 ## [6.2] - 2020-03-01
 
