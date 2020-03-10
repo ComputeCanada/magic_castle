@@ -177,7 +177,7 @@ resource "azurerm_linux_virtual_machine" "login" {
 
   disable_password_authentication = true
   dynamic "admin_ssh_key" {
-    for_each = var.public_keys
+    for_each = var.sudo_users[0]["public_keys"]
     iterator = key
     content {
       username = "azure"
@@ -221,7 +221,7 @@ resource "azurerm_linux_virtual_machine" "mgmt" {
   
   disable_password_authentication = true
   dynamic "admin_ssh_key" {
-    for_each = var.public_keys
+    for_each = var.sudo_users[0]["public_keys"]
     iterator = key
     content {
       username = "azure"
@@ -302,7 +302,7 @@ locals {
           managed_disk_type = var.managed_disk_type
           root_disk_size    = var.root_disk_size,
           user_data         = data.template_cloudinit_config.node_config[key].rendered,
-          public_keys       = var.public_keys,
+          public_keys       = var.sudo_users[0]["public_keys"],
         },
         local.node[key]
     )
