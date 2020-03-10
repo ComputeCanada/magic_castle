@@ -5,18 +5,22 @@ packages:
   - unzip
 
 users:
-  - name: ${sudoer_username}
+%{ for user in sudo_users ~}
+  - name: ${user.username}
     groups: adm, wheel, systemd-journal
-    homedir: /${sudoer_username}
+    homedir: /${user.username}
     selinux_user: unconfined_u
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
-%{ for key in ssh_authorized_keys ~}
+%{ for key in user.public_keys ~}
       - ${key}
+%{ endfor ~}
 %{ endfor ~}
 
 runcmd:
-  - restorecon -R /${sudoer_username}
+%{ for user in sudo_users ~}
+  - restorecon -R /${user.username}
+%{ endfor ~}
   - "(echo -e '\nHostKeyAlgorithms ssh-rsa\n' >> /etc/ssh/sshd_config && systemctl restart sshd)"
   - yum remove -y firewalld
   - yum upgrade -y

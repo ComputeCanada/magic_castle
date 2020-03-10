@@ -56,7 +56,7 @@ resource "openstack_compute_secgroup_v2" "secgroup_1" {
 
 resource "openstack_compute_keypair_v2" "keypair" {
   name       = "${var.cluster_name}-key"
-  public_key = var.public_keys[0]
+  public_key = var.sudo_users[0]["public_keys"][0]
 }
 
 resource "openstack_blockstorage_volume_v2" "home" {

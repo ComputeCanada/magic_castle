@@ -50,7 +50,7 @@ data "template_file" "hieradata" {
   template = data.http.hieradata_template.body
 
   vars = {
-    sudoer_username = var.sudoer_username
+    sudoer_username = var.sudo_users[0]["username"]
     freeipa_passwd  = random_string.freeipa_passwd.result
     cluster_name    = var.cluster_name
     domain_name     = local.domain_name
@@ -78,8 +78,7 @@ data "template_cloudinit_config" "mgmt_config" {
         hieradata             = data.template_file.hieradata.rendered,
         user_hieradata        = var.hieradata,
         node_name             = format("mgmt%d", count.index + 1),
-        sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = var.public_keys,
+        sudo_users            = var.sudo_users,
         home_dev              = local.home_dev,
         project_dev           = local.project_dev,
         scratch_dev           = local.scratch_dev,
@@ -119,8 +118,7 @@ EOF
       "${path.module}/cloud-init/puppet.yaml",
       {
         node_name             = format("login%d", count.index + 1),
-        sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = var.public_keys,
+        sudo_users            = var.sudo_users,
         puppetmaster          = local.mgmt1_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
       }
@@ -138,8 +136,7 @@ data "template_cloudinit_config" "node_config" {
       "${path.module}/cloud-init/puppet.yaml",
       {
         node_name             = each.key,
-        sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = var.public_keys,
+        sudo_users            = var.sudo_users,
         puppetmaster          = local.mgmt1_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
       }

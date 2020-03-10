@@ -10,8 +10,8 @@ output "domain" {
   value = "${lower(var.domain)}"
 }
 
-output "sudoer_username" {
-  value = var.sudoer_username
+output "sudo_users" {
+  value = var.sudo_users
 }
 
 output "freeipa_passwd" {

@@ -3,7 +3,7 @@ terraform {
 }
 
 module "openstack" {
-  source = "git::https://github.com/ComputeCanada/magic_castle.git//openstack"
+  source = "./openstack"
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
@@ -25,7 +25,9 @@ module "openstack" {
     scratch_size = 50
   }
 
-  public_keys = [file("~/.ssh/id_rsa.pub")]
+  sudo_users=[
+    {username="centos",public_keys=[""]},
+    ]
 
   # Shared password, randomly chosen if blank
   guest_passwd = ""
@@ -34,8 +36,8 @@ module "openstack" {
   os_floating_ips = []
 }
 
-output "sudoer_username" {
-  value = module.openstack.sudoer_username
+output "sudoer_usernames" {
+  value = [for user in module.openstack.sudo_users : user["username"]]
 }
 
 output "guest_usernames" {

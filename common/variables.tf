@@ -32,7 +32,15 @@ variable "storage" {
 variable "domain" {
 }
 
-variable "public_keys" {
+variable "sudo_users" {
+  type = list( object({
+    username=string,
+    public_keys=list(string)
+  }))
+  default=[{
+    username="centos"
+    public_keys=[""]
+  }]
 }
 
 variable "guest_passwd" {
@@ -50,10 +58,6 @@ variable "puppetenv_rev" {
 variable hieradata {
   type = string
   default = ""
-}
-
-variable "sudoer_username" {
-  default = "centos"
 }
 
 variable "firewall_rules" {
