@@ -44,7 +44,7 @@ runcmd:
 %{ endif }
 # puppet master configuration
   - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]+' /etc/os-release).noarch.rpm
-  - yum -y install puppetserver
+  - yum -y install puppetserver-6.9.1 puppet-agent-6.13.0
   - mkdir /var/autosign
   - chown puppet:puppet /var/autosign
   - chmod 750 /var/autosign
