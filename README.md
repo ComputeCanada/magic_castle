@@ -53,6 +53,13 @@ and apply their configuration based on their hostnames.
 
 - [FOSDEM 2020 - Magic Castle: Terraforming the Cloud for HPC](https://fosdem.org/2020/schedule/event/magic_castle/)
 
+## List of other cloud HPC cluster open-source projects
+
+- [ACRC Cluster in the cloud](https://github.com/ACRC/cluster-in-the-cloud) [GCP, Oracle]
+- [AWS ParallelCluster](https://github.com/aws/aws-parallelcluster) [AWS]
+- [Elasticluster](https://github.com/elasticluster/elasticluster) [AWS, GCP, OpenStack]
+- [Slurm on Google Platform](https://github.com/SchedMD/slurm-gcp) [GCP]
+
 ## Contributing / Customizing
 
 Refer to [Magic Castle developper documentation](docs/developers.md).
