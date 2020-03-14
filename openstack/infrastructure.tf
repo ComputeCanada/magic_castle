@@ -230,7 +230,7 @@ resource "openstack_compute_instance_v2" "node" {
   for_each = local.node_map
   name     = each.value["name"]
 
-  image_id = each.value["root_disk"] == [] ? each.value["image_id"] : null
+  image_id = length(each.value["root_disk"]) == 0 ? each.value["image_id"] : null
 
   flavor_name     = each.value["type"]
   key_pair        = openstack_compute_keypair_v2.keypair.name
