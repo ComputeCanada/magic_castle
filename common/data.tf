@@ -72,7 +72,7 @@ data "template_cloudinit_config" "mgmt_config" {
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = templatefile(
-      "${path.module}/cloud-init/mgmt.yaml",
+      format("${path.module}/cloud-init/%s.yaml", count.index == 0 ? "puppetserver": "puppetagent"),
       {
         puppetenv_git         = replace(replace(var.puppetenv_git, ".git", ""), "//*$/", ".git"),
         puppetenv_rev         = var.puppetenv_rev,
@@ -116,7 +116,7 @@ EOF
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = templatefile(
-      "${path.module}/cloud-init/puppet.yaml",
+      "${path.module}/cloud-init/puppetagent.yaml",
       {
         node_name             = format("login%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
@@ -135,7 +135,7 @@ data "template_cloudinit_config" "node_config" {
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = templatefile(
-      "${path.module}/cloud-init/puppet.yaml",
+      "${path.module}/cloud-init/puppetagent.yaml",
       {
         node_name             = each.key,
         sudoer_username       = var.sudoer_username,
