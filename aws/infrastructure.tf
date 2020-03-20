@@ -315,7 +315,8 @@ resource "aws_instance" "node" {
 }
 
 locals {
-  mgmt1_ip    = aws_network_interface.mgmt[0].private_ip
-  public_ip   = aws_eip.login[*].public_ip
-  cidr        = aws_subnet.private_subnet.cidr_block
+  mgmt1_ip        = aws_network_interface.mgmt[0].private_ip
+  puppetmaster_ip = aws_network_interface.mgmt[0].private_ip
+  public_ip       = aws_eip.login[*].public_ip
+  cidr            = aws_subnet.private_subnet.cidr_block
 }

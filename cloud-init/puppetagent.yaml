@@ -36,7 +36,7 @@ runcmd:
 write_files:
   - content: |
       127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-      ${puppetmaster} puppet
+      ${puppetmaster_ip} puppet
     path: /etc/hosts
     permissions: "0644"
   - content: |

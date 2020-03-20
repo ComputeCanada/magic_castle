@@ -293,6 +293,7 @@ resource "google_compute_firewall" "default" {
 }
 
 locals {
-  mgmt1_ip   = google_compute_address.mgmt[0].address
-  public_ip   = google_compute_address.static[*].address
+  mgmt1_ip        = google_compute_address.mgmt[0].address
+  puppetmaster_ip = google_compute_address.mgmt[0].address
+  public_ip       = google_compute_address.static[*].address
 }

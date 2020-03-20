@@ -269,5 +269,6 @@ resource "openstack_compute_instance_v2" "node" {
 }
 
 locals {
-  mgmt1_ip    = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
+  mgmt1_ip        = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
+  puppetmaster_ip = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
 }

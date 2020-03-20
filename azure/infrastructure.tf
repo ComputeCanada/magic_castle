@@ -353,7 +353,8 @@ resource "azurerm_linux_virtual_machine" "node" {
 }
 
 locals {
-  mgmt1_ip    = azurerm_network_interface.mgmtNIC[0].private_ip_address
-  public_ip   = azurerm_public_ip.loginIP[*].ip_address
-  cidr        = "10.0.1.0/24"
+  mgmt1_ip        = azurerm_network_interface.mgmtNIC[0].private_ip_address
+  puppetmaster_ip = azurerm_network_interface.mgmtNIC[0].private_ip_address
+  public_ip       = azurerm_public_ip.loginIP[*].ip_address
+  cidr            = "10.0.1.0/24"
 }
