@@ -496,6 +496,19 @@ Can be used to force a v4 subnet when both v4 and v6 exist.
 
 #### 5.4.2 managed_disk_type (optional)
 
+#### 5.4.3 azure_resource_group (optional)
+
+**default value**: None
+
+Defines the name of an already created resource group to use. Terraform
+will no longer attempt to manage a resource group for Magic Castle if
+this variable is defined and will instead create all resources within
+the provided resource group. Define this if you wish to use an already
+created resource group or you do not have subscription level access to
+create and destroy resource groups.
+
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+
 
 ## 6. DNS Configuration and SSL Certificates
 
