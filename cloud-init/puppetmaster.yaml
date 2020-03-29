@@ -20,31 +20,9 @@ runcmd:
   - "(echo -e '\nHostKeyAlgorithms ssh-rsa\n' >> /etc/ssh/sshd_config && systemctl restart sshd)"
   - yum remove -y firewalld
   - yum upgrade -y
-# Partition
-%{ if node_name == "mgmt1" }
-  - while [ ! -e ${home_dev} ]; do echo "home device not attached; sleep 30 sec..."  1>&2 ; sleep 30; done
-  - parted -s ${home_dev} mklabel gpt
-  - parted -s -a opt ${home_dev} mkpart primary ext4 0% 100%
-  - while [ ! -e $(readlink -f ${home_dev})*1 ]; do sleep 5; done
-  - mkfs.xfs -L home $(readlink -f ${home_dev})*1
-  - while [ ! -e ${project_dev} ]; do echo "project device not attached; sleep 30 sec..."  1>&2 ; sleep 30; done
-  - parted -s ${project_dev} mklabel gpt
-  - parted -s -a opt ${project_dev} mkpart primary ext4 0% 100%
-  - while [ ! -e $(readlink -f ${project_dev})*1 ]; do sleep 5; done
-  - mkfs.xfs -L project $(readlink -f ${project_dev})*1
-  - while [ ! -e ${scratch_dev} ]; do echo "scratch device not attached; sleep 30 sec..."  1>&2 ; sleep 30; done
-  - parted -s ${scratch_dev} mklabel gpt
-  - parted -s -a opt ${scratch_dev} mkpart primary ext4 0% 100%
-  - while [ ! -e $(readlink -f ${scratch_dev})*1 ]; do sleep 5; done
-  - mkfs.xfs -L scratch $(readlink -f ${scratch_dev})*1
-  - mkdir -p /mnt/home
-  - mkdir -p /project
-  - mkdir -p /scratch
-  - mount -a
-%{ endif }
 # puppet master configuration
   - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]+' /etc/os-release).noarch.rpm
-  - yum -y install puppetserver
+  - yum -y install puppetserver-6.9.1 puppet-agent-6.13.0
   - mkdir /var/autosign
   - chown puppet:puppet /var/autosign
   - chmod 750 /var/autosign
@@ -76,13 +54,6 @@ runcmd:
 # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
   - for i in /etc/sysconfig/network-scripts/ifcfg-*; do if ! ip link show | grep -q "$${i##*-}:"; then rm -f $i; fi; done
   - reboot -n
-
-%{ if node_name == "mgmt1" }
-mounts:
-  - [ LABEL=home, /mnt/home, xfs ]
-  - [ LABEL=project, /project, xfs ]
-  - [ LABEL=scratch, /scratch, xfs ]
-%{ endif }
 
 write_files:
   - content: |

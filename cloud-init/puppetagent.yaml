@@ -20,7 +20,7 @@ runcmd:
   - "(echo -e '\nHostKeyAlgorithms ssh-rsa\n' >> /etc/ssh/sshd_config && systemctl restart sshd)"
   - yum upgrade -y
   - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]+' /etc/os-release).noarch.rpm
-  - yum -y install puppet-agent
+  - yum -y install puppet-agent-6.13.0
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - /opt/puppetlabs/bin/puppet config set waitforcert 15s
   - /opt/puppetlabs/bin/puppet config set report false
@@ -36,7 +36,7 @@ runcmd:
 write_files:
   - content: |
       127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-      ${puppetmaster} puppet
+      ${puppetmaster_ip} puppet
     path: /etc/hosts
     permissions: "0644"
   - content: |

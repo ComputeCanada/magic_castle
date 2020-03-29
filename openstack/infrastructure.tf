@@ -230,7 +230,7 @@ resource "openstack_compute_instance_v2" "node" {
   for_each = local.node_map
   name     = each.value["name"]
 
-  image_id = each.value["root_disk"] == [] ? each.value["image_id"] : null
+  image_id = length(each.value["root_disk"]) == 0 ? each.value["image_id"] : null
 
   flavor_name     = each.value["type"]
   key_pair        = openstack_compute_keypair_v2.keypair.name
@@ -269,8 +269,6 @@ resource "openstack_compute_instance_v2" "node" {
 }
 
 locals {
-  mgmt1_ip    = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
-  home_dev    = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v2.home[0].id, 0, 20)}"
-  project_dev = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v2.project[0].id, 0, 20)}"
-  scratch_dev = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v2.scratch[0].id, 0, 20)}"
+  mgmt1_ip        = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
+  puppetmaster_ip = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
 }

@@ -293,9 +293,7 @@ resource "google_compute_firewall" "default" {
 }
 
 locals {
-  mgmt1_ip   = google_compute_address.mgmt[0].address
-  public_ip   = google_compute_address.static[*].address
-  home_dev    = lower(var.storage["type"]) == "nfs" ? "/dev/disk/by-id/google-${google_compute_disk.home[0].name}" : ""
-  project_dev = lower(var.storage["type"]) == "nfs" ? "/dev/disk/by-id/google-${google_compute_disk.project[0].name}" : ""
-  scratch_dev = lower(var.storage["type"]) == "nfs" ? "/dev/disk/by-id/google-${google_compute_disk.scratch[0].name}" : ""
+  mgmt1_ip        = google_compute_address.mgmt[0].address
+  puppetmaster_ip = google_compute_address.mgmt[0].address
+  public_ip       = google_compute_address.static[*].address
 }

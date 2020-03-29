@@ -4,7 +4,7 @@
 
 [Compute Canada](https://www.computecanada.ca/) provides HPC infrastructure and support to every academic research institution in Canada. Compute Canada [uses CVMFS](https://docs.computecanada.ca/wiki/Accessing_CVMFS), a software distribution system [developed at CERN](https://cernvm.cern.ch/portal/filesystem), to make the Compute Canada research software stack available on its HPC clusters, and anywhere else with internet access. This enables replication of the Compute Canada experience outside of its physical infrastructure.
 
-From these new possibilities emerged an open-source software project named Magic Castle, which aims to recreate the Compute Canada user experience in public clouds. Magic Castle uses the open-source software [Terraform](https://www.terraform.io) and HashiCorp Language (HCL) to define the virtual machines, volumes, and networks that are required to replicate a virtual HPC infrastructure. The infrastructure definition is packaged as a Terraform module that users can customize as they require. After deployment, the user is provided with a complete HPC cluster software environment including a Slurm scheduler, a Globus Endpoint, JupyterHub, LDAP, DNS, and over 3000 research software applications compiled by experts with EasyBuild. Magic Castle is compatible with AWS, Microsoft Azure, Google Cloud, OpenStack, and OVH.
+From these new possibilities emerged an open-source software project named Magic Castle, which aims to recreate the Compute Canada user experience in public clouds. Magic Castle uses the open-source software [Terraform](https://www.terraform.io) and HashiCorp Language (HCL) to define the virtual machines, volumes, and networks that are required to replicate a virtual HPC infrastructure. The infrastructure definition is packaged as a Terraform module that users can customize as they require. After deployment, the user is provided with a complete HPC cluster software environment including a Slurm scheduler, a Globus Endpoint, JupyterHub, LDAP, DNS, and over 3000 research software applications compiled by experts with [EasyBuild](https://github.com/easybuilders/easybuild). Magic Castle is compatible with AWS, Microsoft Azure, Google Cloud, OpenStack, and OVH.
 
 ## Setup
 
@@ -52,6 +52,13 @@ and apply their configuration based on their hostnames.
 ## Talks, slides and videos
 
 - [FOSDEM 2020 - Magic Castle: Terraforming the Cloud for HPC](https://fosdem.org/2020/schedule/event/magic_castle/)
+
+## List of other cloud HPC cluster open-source projects
+
+- [ACRC Cluster in the cloud](https://github.com/ACRC/cluster-in-the-cloud) [GCP, Oracle]
+- [AWS ParallelCluster](https://github.com/aws/aws-parallelcluster) [AWS]
+- [Elasticluster](https://github.com/elasticluster/elasticluster) [AWS, GCP, OpenStack]
+- [Slurm on Google Platform](https://github.com/SchedMD/slurm-gcp) [GCP]
 
 ## Contributing / Customizing
 

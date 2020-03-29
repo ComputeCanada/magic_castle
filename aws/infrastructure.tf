@@ -315,10 +315,8 @@ resource "aws_instance" "node" {
 }
 
 locals {
-  mgmt1_ip    = aws_network_interface.mgmt[0].private_ip
-  public_ip   = aws_eip.login[*].public_ip
-  cidr        = aws_subnet.private_subnet.cidr_block
-  home_dev    = "/dev/disk/by-id/*${replace(aws_ebs_volume.home[0].id, "-", "")}"
-  project_dev = "/dev/disk/by-id/*${replace(aws_ebs_volume.project[0].id, "-", "")}"
-  scratch_dev = "/dev/disk/by-id/*${replace(aws_ebs_volume.scratch[0].id, "-", "")}"
+  mgmt1_ip        = aws_network_interface.mgmt[0].private_ip
+  puppetmaster_ip = aws_network_interface.mgmt[0].private_ip
+  public_ip       = aws_eip.login[*].public_ip
+  cidr            = aws_subnet.private_subnet.cidr_block
 }

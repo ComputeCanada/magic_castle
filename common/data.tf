@@ -58,7 +58,10 @@ data "template_file" "hieradata" {
     consul_token    = random_uuid.consul_token.result
     munge_key       = base64sha512(random_string.munge_key.result)
     nb_users        = var.nb_users
-    mgmt1_ip       = local.mgmt1_ip
+    mgmt1_ip        = local.mgmt1_ip
+    home_size       = "${var.storage["home_size"]}G"
+    project_size    = "${var.storage["project_size"]}G"
+    scratch_size    = "${var.storage["scratch_size"]}G"
   }
 }
 
@@ -69,20 +72,17 @@ data "template_cloudinit_config" "mgmt_config" {
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = templatefile(
-      "${path.module}/cloud-init/mgmt.yaml",
+      format("${path.module}/cloud-init/%s.yaml", count.index == 0 ? "puppetmaster": "puppetagent"),
       {
         puppetenv_git         = replace(replace(var.puppetenv_git, ".git", ""), "//*$/", ".git"),
         puppetenv_rev         = var.puppetenv_rev,
-        puppetmaster          = local.mgmt1_ip,
+        puppetmaster_ip       = local.puppetmaster_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
         hieradata             = data.template_file.hieradata.rendered,
         user_hieradata        = var.hieradata,
         node_name             = format("mgmt%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = var.public_keys,
-        home_dev              = local.home_dev,
-        project_dev           = local.project_dev,
-        scratch_dev           = local.scratch_dev,
       }
     )
   }
@@ -116,12 +116,12 @@ EOF
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = templatefile(
-      "${path.module}/cloud-init/puppet.yaml",
+      "${path.module}/cloud-init/puppetagent.yaml",
       {
         node_name             = format("login%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = var.public_keys,
-        puppetmaster          = local.mgmt1_ip,
+        puppetmaster_ip       = local.puppetmaster_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
       }
     )
@@ -135,12 +135,12 @@ data "template_cloudinit_config" "node_config" {
     merge_type   = "list(append)+dict(recurse_array)+str()"
     content_type = "text/cloud-config"
     content      = templatefile(
-      "${path.module}/cloud-init/puppet.yaml",
+      "${path.module}/cloud-init/puppetagent.yaml",
       {
         node_name             = each.key,
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = var.public_keys,
-        puppetmaster          = local.mgmt1_ip,
+        puppetmaster_ip       = local.puppetmaster_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
       }
     )
