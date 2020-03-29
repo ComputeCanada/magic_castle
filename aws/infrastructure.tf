@@ -177,6 +177,7 @@ resource "aws_ebs_volume" "home" {
   availability_zone = local.availability_zone
   size              = var.storage["home_size"]
   type              = var.storage["home_vol_type"]
+  iops              = var.storage["home_vol_iops"]
 
   tags = {
     Name = "home"
@@ -188,6 +189,7 @@ resource "aws_ebs_volume" "project" {
   availability_zone = local.availability_zone
   size              = var.storage["project_size"]
   type              = var.storage["project_vol_type"]
+  iops              = var.storage["project_vol_iops"]
 
   tags = {
     Name = "project"
@@ -199,6 +201,7 @@ resource "aws_ebs_volume" "scratch" {
   availability_zone = local.availability_zone
   size              = var.storage["scratch_size"]
   type              = var.storage["scratch_vol_type"]
+  iops              = var.storage["scratch_vol_iops"]
 
   tags = {
     Name = "scratch"

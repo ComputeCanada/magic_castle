@@ -29,6 +29,9 @@ variable "storage" {
     home_vol_type=string,
     project_vol_type=string,
     scratch_vol_type=string,
+    home_vol_iops=number,
+    project_vol_iops=number,
+    scratch_vol_iops=number,
   })
 }
 
