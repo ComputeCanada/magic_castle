@@ -24,6 +24,8 @@ runcmd:
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - /opt/puppetlabs/bin/puppet config set waitforcert 15s
   - /opt/puppetlabs/bin/puppet config set report false
+  - /opt/puppetlabs/bin/puppet config set postrun_command /opt/puppetlabs/bin/postrun
+  - ln -sf /usr/bin/true /opt/puppetlabs/bin/postrun
   - systemctl enable puppet
   - systemctl disable kdump
   - sed -i 's/crashkernel=auto/crashkernel=no/' /etc/default/grub
