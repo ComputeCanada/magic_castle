@@ -34,7 +34,7 @@ runcmd:
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - /opt/puppetlabs/bin/puppet config set report false
   - /opt/puppetlabs/bin/puppet config set postrun_command /opt/puppetlabs/bin/postrun
-  - ln -sf /usr/bin/true /opt/puppetlabs/bin/postrun
+  - install -m 700 /dev/null /opt/puppetlabs/bin/postrun
   - chown puppet:puppet /etc/autosign.conf
   - sed -i 's/^\(After=.*\)$/\1 puppetserver.service/' /usr/lib/systemd/system/puppet.service
   - systemctl daemon-reload
