@@ -46,7 +46,7 @@ variable "guest_passwd" {
 }
 
 variable "puppetenv_git" {
-  default = "https://github.com/ComputeCanada/puppet-magic_castle"
+  default = "https://github.com/verdurin/puppet-magic_castle.git"
 }
 
 variable "puppetenv_rev" {
