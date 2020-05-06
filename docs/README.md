@@ -520,7 +520,7 @@ If your domain DNS records are managed by one of the supported providers,
 follow the instructions in the corresponding sections to have the DNS records and SSL
 certificates managed by Magic Castle.
 
-If your DNS providers is not supported, you can manually create the DNS records and
+If your DNS provider is not supported, you can manually create the DNS records and
 generate the SSL certificates. Refer to the last subsection for more details.
 
 **Requirement**: A private key associated with one of the
