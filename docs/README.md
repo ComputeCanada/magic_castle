@@ -297,7 +297,7 @@ Requirements:
 
 #### 4.6.3 node
 
-The value associated with the `login` key is required to be a list of
+The value associated with the `node` key is required to be a list of
 map with at least two keys: `type` and `count`.
 
 If the list contains more than one map, at least one of the map will need
@@ -352,7 +352,7 @@ count and type variables can be modified at any point of your cluster lifetime.
 Terraform will manage the creation or destruction of the virtual machines
 for you.
 
-Modifying any of these variables after the cluster is built will only affects
+Modifying any of these variables after the cluster is built will only affect
 the type of instances associated with the variables at next `terraform apply`.
 
 ### 4.7 Storage: type, home_size, project_size, scratch_size
@@ -520,7 +520,7 @@ If your domain DNS records are managed by one of the supported providers,
 follow the instructions in the corresponding sections to have the DNS records and SSL
 certificates managed by Magic Castle.
 
-If you DNS providers is not supported, you can manually create the DNS records and
+If your DNS providers is not supported, you can manually create the DNS records and
 generate the SSL certificates. Refer to the last subsection for more details.
 
 **Requirement**: A private key associated with one of the
@@ -569,8 +569,8 @@ and the SSL certificates manually.
 
 #### 6.3.1 DNS Records
 
-The DNS records registerd by Magic Castle are listed in
-[dns/record_generator/main.tf](https://github.com/ComputeCanada/magic_castle/blob/master/dns/record_generator/main.tf). All records point to the one of login nodes.
+The DNS records registered by Magic Castle are listed in
+[dns/record_generator/main.tf](https://github.com/ComputeCanada/magic_castle/blob/master/dns/record_generator/main.tf). All records point to one of the login nodes.
 
 These are the records that need to be created in your DNS provider.
 
@@ -695,7 +695,7 @@ the count value of the instance type you wish to destroy to 0.
 ### 9.2 Reset
 
 On some occasions, it is desirable to rebuild some of the instances from scratch.
-Using `terraform taint`, you can designate ressources that will be rebuild at
+Using `terraform taint`, you can designate resources that will be rebuilt at
 next application of the plan.
 
 To rebuild the first login node :
@@ -726,10 +726,10 @@ Replace `centos` by the value of `sudoer_username` if it is
 different.
 3. SSH in the management node : `ssh mgmt1`
 
-**note on Google Cloud**: In GCP, [OS Login](https://cloud.google.com/compute/docs/instances/managing-instance-access)
+**Note on Google Cloud**: In GCP, [OS Login](https://cloud.google.com/compute/docs/instances/managing-instance-access)
 lets you use Compute Engine IAM roles to manage SSH access to Linux instances.
 This feature is incompatible with Magic Castle. Therefore, it is turned off in
-the instances metadata (`os_login="FALSE`). The only account with admin rights
+the instances metadata (`enable-oslogin="FALSE"`). The only account with admin rights
 that can log in the cluster is configured by the variable `sudoer_username`
 (default: `centos`).
 
@@ -858,7 +858,7 @@ Refer to [Magic Castle Globus Endpoint documentation](globus.md).
 
 The modifications of some of the parameters in the `main.tf` file can trigger the
 rebuild of the `mgmt1` instance. This instance hosts the Puppet Server on which
-depends the Puppet agent of the other instances. When `mgmt1` is rebuild, the other
+depends the Puppet agent of the other instances. When `mgmt1` is rebuilt, the other
 Puppet agents cease to recognize Puppet Server identity since the Puppet Server
 identity and certificates have been regenerated.
 
