@@ -24,25 +24,25 @@ submodule, you are on your own.
 On `mgmt1`:
 1. Open the file `/etc/puppetlabs/code/environments/production/data/common.yaml` with sudo rights
 and add the following lines:
-```
-profile::globus::base::globus_user: your_globus_username
-profile::globus::base::globus_password: your_globus_password
-```
+    ```
+    profile::globus::base::globus_user: your_globus_username
+    profile::globus::base::globus_password: your_globus_password
+    ```
 Replace `your_globus_username` and `your_globus_password` by their respective value.
 
 On `login1`:
 1. Restart puppet : `sudo systemctl restart puppet`.
 2. Give Puppet a few minutes to setup Globus. You can confirm that
 everything was setup correctly by looking at the tail of the puppet log:
-```
-sudo journalctl -u puppet -f
-```
+    ```
+    sudo journalctl -u puppet -f
+    ```
 3. If everything is correct, `globus-gridftp-server` and `myproxy-server`
 services should be active. To confirm:
-```
-sudo systemctl status globus-gridftp-server
-sudo systemctl status myproxy-server
-```
+    ```
+    sudo systemctl status globus-gridftp-server
+    sudo systemctl status myproxy-server
+    ```
 4. If both services are active, in a browser, go to
 https://app.globus.org/endpoints?scope=administered-by-me
 

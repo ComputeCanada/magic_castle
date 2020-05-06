@@ -84,9 +84,9 @@ This command will ask for a password, enter your OpenStack password.
 
 1. Open a terminal
 2. Verify Terraform was properly installed by looking at the version
-```
-$ terraform version
-```
+    ```
+    $ terraform version
+    ```
 
 ## 2. Cloud Cluster Architecture Overview
 
@@ -179,9 +179,9 @@ Valid format is a series of labels 1-63 characters long matching the
 regular expression `[a-z]([-a-z0-9]*[a-z0-9])`, concatenated with periods.
 - No wildcard record A of the form `*.domain. IN A x.x.x.x` exists for that
 domain. You can verify no such record exist with `dig`:
-```
-dig +short '*.${domain}'
-```
+    ```
+    dig +short '*.${domain}'
+    ```
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
@@ -755,20 +755,20 @@ password of the user accounts, follow these steps:
 2. Create a variable containing the randomly generated password: `OLD_PASSWD=<random_passwd>`
 3. Create a variable containing the new human defined password: `NEW_PASSWD=<human_passwd>`.
 This password must respect the FreeIPA password policy. To display the policy enter
-```
-# Enter FreeIPA admin password available in /etc/puppetlabs/code/environments/production/data/terraform_data.yaml
-$ kinit admin
-$ ipa pwpolicy-show
-$ kdestroy
-```
+    ```
+    # Enter FreeIPA admin password available in /etc/puppetlabs/code/environments/production/data/terraform_data.yaml
+    $ kinit admin
+    $ ipa pwpolicy-show
+    $ kdestroy
+    ```
 4. Loop on all user accounts to replace the old password by the new one:
-```
-for username in $(ls /home/ | grep user); do
-  echo -e "$OLD_PASSWD" | kinit $username
-  echo -e "$NEW_PASSWD\n$NEW_PASSWD" | ipa user-mod $username --password
-  kdestroy
-done
-```
+    ```
+    for username in $(ls /home/ | grep user); do
+      echo -e "$OLD_PASSWD" | kinit $username
+      echo -e "$NEW_PASSWD\n$NEW_PASSWD" | ipa user-mod $username --password
+      kdestroy
+    done
+    ```
 
 ### 10.3 Add a User Account
 
@@ -796,9 +796,9 @@ to increase the number of guest accounts after creating the cluster with Terrafo
 can modify the hieradata file of the Puppet environment.
 
 1. On `mgmt1` and with `sudo`, open the file
-```
-/etc/puppetlabs/code/environments/production/data/terraform_data.yaml
-```
+    ```
+    /etc/puppetlabs/code/environments/production/data/terraform_data.yaml
+    ```
 2. Increase the number associated with the field `profile::freeipa::guest_accounts::nb_accounts:`
 to the number of guest accounts you want.
 3. Save the file.
