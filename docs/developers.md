@@ -58,16 +58,16 @@ release files will be built for all providers currently supported by Magic Castl
 Examples:
 
 - Building a release for OpenStack with the puppet repo master branch:
-```
-$ ./release.sh master openstack
-```
+    ```
+    $ ./release.sh master openstack
+    ```
 - Building a release for GCP with the latest Terraform and cloud-init, and version 5.8 of puppet
 Magic Castle:
-``` 
-$ ./release.sh 5.8 gcp
-```
+    ``` 
+    $ ./release.sh 5.8 gcp
+    ```
 - Building a release for Azure and OVH with the latest Terraform and cloud-init, and version 5.7 of puppet
 Magic Castle:
-```
-$ ./release.sh 5.7 azure ovh
-```
+    ```
+    $ ./release.sh 5.7 azure ovh
+    ```
