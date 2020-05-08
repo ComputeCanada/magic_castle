@@ -125,24 +125,24 @@ resource "google_compute_instance" "mgmt" {
 
 resource "google_compute_attached_disk" "home" {
   count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  disk        = google_compute_disk.home[0].self_link
-  device_name = google_compute_disk.home[0].name
+  disk        = google_compute_disk.home[count.index].self_link
+  device_name = google_compute_disk.home[count.index].name
   mode        = "READ_WRITE"
   instance    = google_compute_instance.mgmt[0].self_link
 }
 
 resource "google_compute_attached_disk" "project" {
   count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  disk        = google_compute_disk.project[0].self_link
-  device_name = google_compute_disk.project[0].name
+  disk        = google_compute_disk.project[count.index].self_link
+  device_name = google_compute_disk.project[count.index].name
   mode        = "READ_WRITE"
   instance    = google_compute_instance.mgmt[0].self_link
 }
 
 resource "google_compute_attached_disk" "scratch" {
   count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  disk        = google_compute_disk.scratch[0].self_link
-  device_name = google_compute_disk.scratch[0].name
+  disk        = google_compute_disk.scratch[count.index].self_link
+  device_name = google_compute_disk.scratch[count.index].name
   mode        = "READ_WRITE"
   instance    = google_compute_instance.mgmt[0].self_link
 }
@@ -296,4 +296,7 @@ locals {
   mgmt1_ip        = google_compute_address.mgmt[0].address
   puppetmaster_ip = google_compute_address.mgmt[0].address
   public_ip       = google_compute_address.static[*].address
+  home_dev        = [for vol in google_compute_disk.home:    "/dev/disk/by-id/google-${vol.name}"]
+  project_dev     = [for vol in google_compute_disk.project: "/dev/disk/by-id/google-${vol.name}}"]
+  scratch_dev     = [for vol in google_compute_disk.scratch: "/dev/disk/by-id/google-${vol.name}}"]
 }

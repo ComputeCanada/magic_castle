@@ -275,25 +275,25 @@ resource "azurerm_managed_disk" "scratch" {
 
 resource "azurerm_virtual_machine_data_disk_attachment" "home" {
   count              = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  managed_disk_id    = azurerm_managed_disk.home[0].id
+  managed_disk_id    = azurerm_managed_disk.home[count.index].id
   virtual_machine_id = azurerm_linux_virtual_machine.mgmt[0].id
-  lun                = "10"
+  lun                = count.index
   caching            = "ReadWrite"
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "project" {
   count              = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  managed_disk_id    = azurerm_managed_disk.project[0].id
+  managed_disk_id    = azurerm_managed_disk.project[count.index].id
   virtual_machine_id = azurerm_linux_virtual_machine.mgmt[0].id
-  lun                = "11"
+  lun                = count.index + 10
   caching            = "ReadWrite"
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "scratch" {
   count              = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  managed_disk_id    = azurerm_managed_disk.scratch[0].id
+  managed_disk_id    = azurerm_managed_disk.scratch[count.index].id
   virtual_machine_id = azurerm_linux_virtual_machine.mgmt[0].id
-  lun                = "12"
+  lun                = count.index + 20
   caching            = "ReadWrite"
 }
 
@@ -365,4 +365,7 @@ locals {
   puppetmaster_ip = azurerm_network_interface.mgmtNIC[0].private_ip_address
   public_ip       = azurerm_public_ip.loginIP[*].ip_address
   cidr            = "10.0.1.0/24"
+  home_dev        = [for vol in range(length(azurerm_managed_disk.home)):    "/dev/disk/azure/scsi1/lun${vol +  0}"]
+  project_dev     = [for vol in range(length(azurerm_managed_disk.project)): "/dev/disk/azure/scsi1/lun${vol + 10}"]
+  scratch_dev     = [for vol in range(length(azurerm_managed_disk.scratch)): "/dev/disk/azure/scsi1/lun${vol + 20}"]
 }

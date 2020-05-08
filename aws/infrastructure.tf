@@ -208,7 +208,7 @@ resource "aws_ebs_volume" "scratch" {
 resource "aws_volume_attachment" "home" {
   count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   device_name  = "/dev/sdb"
-  volume_id    = aws_ebs_volume.home[0].id
+  volume_id    = aws_ebs_volume.home[count.index].id
   instance_id  = aws_instance.mgmt[0].id
   skip_destroy = true
 }
@@ -216,7 +216,7 @@ resource "aws_volume_attachment" "home" {
 resource "aws_volume_attachment" "project" {
   count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   device_name  = "/dev/sdc"
-  volume_id    = aws_ebs_volume.project[0].id
+  volume_id    = aws_ebs_volume.project[count.index].id
   instance_id  = aws_instance.mgmt[0].id
   skip_destroy = true
 }
@@ -224,7 +224,7 @@ resource "aws_volume_attachment" "project" {
 resource "aws_volume_attachment" "scratch" {
   count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   device_name  = "/dev/sdd"
-  volume_id    = aws_ebs_volume.scratch[0].id
+  volume_id    = aws_ebs_volume.scratch[count.index].id
   instance_id  = aws_instance.mgmt[0].id
   skip_destroy = true
 }
@@ -319,4 +319,7 @@ locals {
   puppetmaster_ip = aws_network_interface.mgmt[0].private_ip
   public_ip       = aws_eip.login[*].public_ip
   cidr            = aws_subnet.private_subnet.cidr_block
+  home_dev        = [for vol in aws_ebs_volume.home:    "/dev/disk/by-id/*${replace(vol.id, "-", "")}"]
+  project_dev     = [for vol in aws_ebs_volume.project: "/dev/disk/by-id/*${replace(vol.id, "-", "")}"]
+  scratch_dev     = [for vol in aws_ebs_volume.scratch: "/dev/disk/by-id/*${replace(vol.id, "-", "")}"]
 }
