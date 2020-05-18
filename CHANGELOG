@@ -3,6 +3,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.0] UNRELEASED
+
+### Changed
+- [Azure] Updated Azure infrastructure.tf to use Azure provider 2.0.0 (issue #62)
+- [cloud-init] Set puppet-agent and puppet-server version to 6.13 and 6.9
+- [cloud-init] Renamed cloud-init YAML files to `puppetagent.yaml` and `puppetmaster.yaml`
+- [OpenStack] Fixed volume size computation regression introduced in commit c09ea17d
+- Established a distinction in variables between puppetmaster and mgmt1 - allowing puppetmaster role to be assigned to another instance.
+- Bumped minimum requirement of terraform to 0.12.24 (issue #77)
+- Numerous doc fixes
+- Added a section on related projects in README.md
+
+### Added
+- [Azure] Added variable to allow usage of an existing resource group based on its name (issue #72)
+- [cloud-init] Enabled puppet agent postrun command in cloud-init
+- [puppet] mgmt1 volumes formating is now handled by `profile::nfs::server` class
+
+### Removed
+- [cloud-init] Removed volumes formating, partitioning and mounting from mgmt cloud-init
+
 ## [6.4] - 2020-03-11
 
 ### Changed
