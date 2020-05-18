@@ -6,22 +6,49 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [7.0] UNRELEASED
 
 ### Changed
-- [Azure] Updated Azure infrastructure.tf to use Azure provider 2.0.0 (issue #62)
-- [cloud-init] Set puppet-agent and puppet-server version to 6.13 and 6.9
-- [cloud-init] Renamed cloud-init YAML files to `puppetagent.yaml` and `puppetmaster.yaml`
-- [OpenStack] Fixed volume size computation regression introduced in commit c09ea17d
 - Established a distinction in variables between puppetmaster and mgmt1 - allowing puppetmaster role to be assigned to another instance.
 - Bumped minimum requirement of terraform to 0.12.24 (issue #77)
 - Numerous doc fixes
 - Added a section on related projects in README.md
+- [Azure] Updated Azure infrastructure.tf to use Azure provider 2.0.0 (issue #62)
+- [cloud-init] Set puppet-agent and puppet-server version to 6.13 and 6.9
+- [cloud-init] Renamed cloud-init YAML files to `puppetagent.yaml` and `puppetmaster.yaml`
+- [OpenStack] Fixed volume size computation regression introduced in commit c09ea17d
+- [puppet] Defined selinux context for /scratch as home_root_dir
+- [puppet] Defined selinux context for /project as home_root_dir
+- [puppet] Improved cuda facts to avoid issue when html index is incomplete
+- [puppet] Updated package names in gpu module and facts
+- [puppet] Generalized gpu module cuda repo link composition
+- [puppet] Replaced package by ensure_packages for kernel-devel in gpu
+- [puppet] Updated version of puppet-jupyterhub to v3.3.0
+- [puppet] Improved FreeIPA client installation waiting conditions to limit failure
+- [puppet] Disabled root jobs in slurm.conf]
+- [puppet] Added nosuid to client nfs mount options
+- [puppet] Activated root_squash for all nfs exports
+- [puppet] Changed URL for the source of `cc-tmpfs_mount.so`
+- [puppet] Updated derdanne/nfs version in Puppetfile
+- [puppet] Made profile::base a requirement of profile::nfs::server
+- [puppet] Defined servername param for apache in reverse_proxy
 
 ### Added
 - [Azure] Added variable to allow usage of an existing resource group based on its name (issue #72)
 - [cloud-init] Enabled puppet agent postrun command in cloud-init
 - [puppet] mgmt1 volumes formating is now handled by `profile::nfs::server` class
+- [puppet] Added logic to define, mount and format nfs shared volumes with lvm
+- [puppet] Added README.md
+- [puppet] Fixed regression introduced in 630a04
+- [puppet] Added possibility to manage jail activation and ignore_ip with hierada
+- [puppet] Added profile classes for JupyterHub: `profile::jupyterhub::node` and `profile::jupyterhub::hub`
+- [puppet] Added variable to allow definition of lmod default modules with hieradata
+- [puppet] Configured lmod default modules to start with gcc and openmpi
+- [puppet] Added ability to receive last puppet run output by email through puppet postrun script
+- [puppet] Added support for NVIDIA GRID vGPU
+- [puppet] Added class `profile::base::azure` for logic specific to Azure
 
 ### Removed
 - [cloud-init] Removed volumes formating, partitioning and mounting from mgmt cloud-init
+- [puppet] Removed condition on gpu count in nvidia_driver_vers
+- [puppet] Removed mkhomedir from FreeIPA client installation parameters
 
 ## [6.4] - 2020-03-11
 
