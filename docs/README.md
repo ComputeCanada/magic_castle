@@ -449,6 +449,62 @@ Useful to override common configuration of Puppet classes.
 **Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`
 ([see section 10.8](#108-recovering-from-mgmt1-rebuild)).
 
+### 4.13 firewall_rules (optional)
+
+**default value**:
+```
+[
+    {
+      "name"         = "SSH",
+      "from_port"    = 22,
+      "to_port"      = 22,
+      "ip_protocol"  = "tcp",
+      "cidr"         = "0.0.0.0/0"
+    },
+    {
+      "name"         = "HTTP",
+      "from_port"    = 80,
+      "to_port"      = 80,
+      "ip_protocol"  = "tcp",
+      "cidr"         = "0.0.0.0/0"
+    },
+    {
+      "name"         = "HTTPS",
+      "from_port"    = 443,
+      "to_port"      = 443,
+      "ip_protocol"  = "tcp",
+      "cidr"         = "0.0.0.0/0"
+    },
+    {
+      "name"         = "Globus",
+      "from_port"    = 2811,
+      "to_port"      = 2811,
+      "ip_protocol"  = "tcp",
+      "cidr"         = "54.237.254.192/29"
+    },
+    {
+      "name"         = "MyProxy",
+      "from_port"    = 7512,
+      "to_port"      = 7512,
+      "ip_protocol"  = "tcp",
+      "cidr"         = "0.0.0.0/0"
+    },
+    {
+      "name"        = "GridFTP"
+      "from_port"   = 50000
+      "to_port"     = 51000
+      "ip_protocol" = "tcp"
+      "cidr"        = "0.0.0.0/0"
+    }
+]
+```
+
+Defines a list of firewall rules that control external traffic to the login nodes. Each rule is
+defined as a map of fives key-value pairs : `name`, `from_port`, `to_port`, `ip_protocol` and
+`cidr`. To add new rules, you will have to recopy the preceding list and add rules to it.
+
+**Post Build Modification Effect**: modify the cloud provider firewall rules at next `terraform apply`.
+
 ## 5. Cloud Specific Configuration
 
 ### 5.1 OpenStack and OVH
