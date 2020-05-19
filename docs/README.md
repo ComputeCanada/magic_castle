@@ -391,7 +391,7 @@ randomly generated one.
 **Requirement**: Minimum length **8 characters**.
 
 **Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`
-([see section 9.8](#98-recovering-from-mgmt1-rebuild)).
+([see section 10.8](#108-recovering-from-mgmt1-rebuild)).
 
 ### 4.10 root_disk_size (optional)
 
