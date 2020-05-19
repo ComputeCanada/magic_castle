@@ -359,7 +359,7 @@ resource can be used.
 
 ###### OpenStack: image_id (optional)
 
-UUID of the image to use as a boot disk instead of using the value of the variable `image`.
+UUID of the image to use as a boot disk instead of using the one set by the `image` variable.
 
 ###### Google Cloud: gpu_type (optional)
 
