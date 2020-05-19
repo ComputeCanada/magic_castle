@@ -357,8 +357,6 @@ resource can be used.
 - [Google Cloud instance attributes reference](https://www.terraform.io/docs/providers/google/d/datasource_compute_instance.html#attributes-reference)
 - [OpenStack and OVH instance attributes reference](https://www.terraform.io/docs/providers/openstack/r/compute_instance_v2.html#argument-reference)
 
-**Post Build Modification Effect**: Rebuild all instances of that type.
-
 ###### OpenStack: image_id (optional)
 
 UUID of the image to use as a boot disk instead of using the value of the variable `image`.
