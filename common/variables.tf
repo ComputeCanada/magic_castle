@@ -1,8 +1,11 @@
 variable "cluster_name" {
+  type        = string
+  description = "Name by which this cluster will be known as."
 }
 
 variable "nb_users" {
-  type = number
+  type        = number
+  description = "Number of user accounts with a common password that will be created"
 }
 
 variable "instances" {
@@ -11,13 +14,18 @@ variable "instances" {
     login=object({type=string, count=number}),
     node=list(map(any)),
   })
+  description = "Map that defines the parameters for each type of instance of the cluster"
 }
 
 variable "image" {
+  type        = string
+  description = "Name of the operating system image that will be used to create a boot disk for the instances"
 }
 
 variable "root_disk_size" {
-  default = 10
+  type        = number
+  default     = 10
+  description = "Size of the instances root disk in GB"
 }
 
 variable "storage" {
@@ -27,36 +35,59 @@ variable "storage" {
     project_size=number,
     scratch_size=number
   })
+  description = "Map that defines the storage parameters"
 }
 
 variable "domain" {
+  type        = string
+  description = "String which when combined with cluster_name will formed the cluster FQDN"
 }
 
 variable "public_keys" {
+  type        = list
+  description = "List of SSH public keys that will be log in as {sudoer_username}"
 }
 
 variable "guest_passwd" {
-  default = ""
+  type        = string
+  default     = ""
+  description = "Guest accounts common password. If left blank, the password is randomly generated."
 }
 
 variable "puppetenv_git" {
-  default = "https://github.com/ComputeCanada/puppet-magic_castle"
+  type        = string
+  default     = "https://github.com/ComputeCanada/puppet-magic_castle"
+  description = "URL to the Magic Castle puppet environment git repo"
 }
 
 variable "puppetenv_rev" {
-  default = "master"
+  type        = string
+  default     = "master"
+  description = "Define which commit of the puppet environment repo will be used. Can be any reference that would be accepted by the git checkout"
 }
 
 variable hieradata {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
+  description = "String formatted as YAML defining hiera key-value pairs to be included in the puppet environment"
 }
 
 variable "sudoer_username" {
-  default = "centos"
+  type        = string
+  default     = "centos"
+  description = "Username of the administrative account"
 }
 
 variable "firewall_rules" {
+  type    = list(
+    object({
+      name        = string
+      from_port   = number
+      to_port     = number
+      ip_protocol = string
+      cidr        = string
+    })
+  )
   default = [
     {
       "name"         = "SSH",
@@ -101,4 +132,5 @@ variable "firewall_rules" {
       "cidr"        = "0.0.0.0/0"
     }
   ]
+  description = "List of login external firewall rules defined as map of 5 values name, from_port, to_port, ip_protocol and cidr"
 }
