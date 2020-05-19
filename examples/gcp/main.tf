@@ -19,6 +19,10 @@ module "gcp" {
     ]
   }
 
+  # Magic Castle's default root disk size is 10GB.
+  # GCP requires at least 20GB of root disk.
+  root_disk_size = 20
+
   storage = {
     type         = "nfs"
     home_size    = 100
