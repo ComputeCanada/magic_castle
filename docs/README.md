@@ -346,6 +346,33 @@ gpu-node2
 gpu-node3
 ```
 
+##### Providing and overriding cloud specific parameters for node instances
+
+It is possible to define key-value that are specific to a cloud in the node associative map.
+We provide a few examples here, but any attribute of the cloud provider instance
+resource can be used.
+
+- [AWS instance attributes reference](https://www.terraform.io/docs/providers/aws/r/instance.html#argument-reference)
+- [Azure instance attributes reference](https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html#argument-reference)
+- [Google Cloud instance attributes reference](https://www.terraform.io/docs/providers/google/d/datasource_compute_instance.html#attributes-reference)
+- [OpenStack and OVH instance attributes reference](https://www.terraform.io/docs/providers/openstack/r/compute_instance_v2.html#argument-reference)
+
+**Post Build Modification Effect**: Rebuild all instances of that type.
+
+###### OpenStack: image_id (optional)
+
+UUID of the image to use as a boot disk instead of using the value of the variable `image`.
+
+###### Google Cloud: gpu_type (optional)
+
+Name of the GPU model to attach to the instance. Refer to
+[Google Cloud documentation](https://cloud.google.com/compute/docs/gpus) for the list of
+available models per region.
+
+###### Google Cloud: gpu_count (optional)
+
+Number GPUs of the module selected as `gpu_type` to attach to the instance.
+
 #### 4.6.4 Post Build Modification Effect
 
 count and type variables can be modified at any point of your cluster lifetime.
@@ -476,13 +503,31 @@ Can be used to force a v4 subnet when both v4 and v6 exist.
 
 ### 5.2 Google Cloud
 
-#### 5.2.1 project_name
+#### 5.2.1 project
+
+Defines the label of the unique identifier associated with the Google Cloud project in which the resources will be created.
+It needs to corresponds to GCP project ID, which is composed of the project name and a randomly
+assigned number.
+
+**Requirement**: Must be a valid Google Cloud project ID.
+
+**Post Build Modification Effect**: rebuild of all resources at next `terraform apply`.
 
 #### 5.2.2 region
 
+Defines the name of the specific geographical location where the cluster resources will be hosted.
+
+**Requirement**: Must be a valid Google Cloud region. Refer to [Google Cloud documentation](https://cloud.google.com/compute/docs/regions-zones#available)
+for the list of available regions and their characteristics.
+
 #### 5.2.3 zone (optional)
 
-#### 5.2.4 gpu_per_node
+**default value**: None
+
+Defines the name of the zone within the region where the cluster resources will be hosted.
+
+**Requirement**: Must be a valid Google Cloud zone. Refer to [Google Cloud documentation](https://cloud.google.com/compute/docs/regions-zones#available)
+for the list of available zones and their characteristics.
 
 ### 5.3 Amazon Web Services
 
@@ -492,7 +537,7 @@ Defines the label of the AWS EC2 region where the cluster will be created (i.e.:
 
 **Requirement**: Must be in the [list of available EC2 regions](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions).
 
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+**Post Build Modification Effect**: rebuild of all resources at next `terraform apply`.
 
 #### 5.3.2 availability_zone (optional)
 
@@ -514,15 +559,19 @@ Defines the label of the Azure location where the cluster will be created (i.e.:
 **Requirement**: Must be a valid Azure location. To get the list of available location, you can
 use Azure CLI : `az account list-locations -o table`.
 
+**Post Build Modification Effect**: rebuild of all resources at next `terraform apply`.
+
 #### 5.4.2 managed_disk_type (optional)
 
 **default value**: `Premium_LRS`
 
 Defines the type of the instances' root disk and the type of the disks for the NFS storage.
 
-**Requirement**: Must be a valid managed disk type label. Refer to 
+**Requirement**: Must be a valid managed disk type label. Refer to
 [managed_disk_type documentation](https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html#managed_disk_type)
 to get a list of available values.
+
+**Post Build Modification Effect**: rebuild of all instances and disks at next `terraform apply`.
 
 #### 5.4.3 azure_resource_group (optional)
 
