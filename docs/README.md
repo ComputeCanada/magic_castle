@@ -488,7 +488,22 @@ Can be used to force a v4 subnet when both v4 and v6 exist.
 
 #### 5.3.1 region
 
+Label of the AWS EC2 region where the cluster will be created (i.e.: `us-east-2`).
+
+**Requirement**: Must be in the [list of available EC2 regions](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions).
+
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+
 #### 5.3.2 availability_zone (optional)
+
+**default value**: None
+
+Label of the datacentre inside the AWS region where the cluster will be created (i.e.: `us-east-2a`).
+If left blank, it chosen at random amongst the availability zones of the selected region.
+
+**Requirement**: Must be in a valid availability zone for the selected region. Refer to
+[AWS documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#using-regions-availability-zones-describe)
+to find out how list the availability zones.
 
 ### 5.4 Microsoft Azure
 
