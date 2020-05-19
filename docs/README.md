@@ -422,7 +422,7 @@ Useful to override common configuration of Puppet classes.
 **Requirement**: The string needs to respect a YAML syntax.
 
 **Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`
-([see section 9.8](#98-recovering-from-mgmt1-rebuild)).
+([see section 10.8](#108-recovering-from-mgmt1-rebuild)).
 
 ## 5. Cloud Specific Configuration
 
