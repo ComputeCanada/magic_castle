@@ -369,7 +369,7 @@ available models per region.
 
 ###### Google Cloud: gpu_count (optional)
 
-Number GPUs of the module selected as `gpu_type` to attach to the instance.
+Number of GPUs of the `gpu_type` model to attach to the instance.
 
 #### 4.6.4 Post Build Modification Effect
 
