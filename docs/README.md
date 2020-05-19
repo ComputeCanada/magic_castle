@@ -488,7 +488,7 @@ Can be used to force a v4 subnet when both v4 and v6 exist.
 
 #### 5.3.1 region
 
-Label of the AWS EC2 region where the cluster will be created (i.e.: `us-east-2`).
+Defines the label of the AWS EC2 region where the cluster will be created (i.e.: `us-east-2`).
 
 **Requirement**: Must be in the [list of available EC2 regions](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions).
 
@@ -498,7 +498,7 @@ Label of the AWS EC2 region where the cluster will be created (i.e.: `us-east-2`
 
 **default value**: None
 
-Label of the datacentre inside the AWS region where the cluster will be created (i.e.: `us-east-2a`).
+Defines the label of the datacentre inside the AWS region where the cluster will be created (i.e.: `us-east-2a`).
 If left blank, it chosen at random amongst the availability zones of the selected region.
 
 **Requirement**: Must be in a valid availability zone for the selected region. Refer to
@@ -509,7 +509,20 @@ to find out how list the availability zones.
 
 #### 5.4.1 location
 
+Defines the label of the Azure location where the cluster will be created (i.e.: `eastus`).
+
+**Requirement**: Must be a valid Azure location. To get the list of available location, you can
+use Azure CLI : `az account list-locations -o table`.
+
 #### 5.4.2 managed_disk_type (optional)
+
+**default value**: `Premium_LRS`
+
+Defines the type of the instances' root disk and the type of the disks for the NFS storage.
+
+**Requirement**: Must be a valid managed disk type label. Refer to 
+[managed_disk_type documentation](https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html#managed_disk_type)
+to get a list of available values.
 
 #### 5.4.3 azure_resource_group (optional)
 
