@@ -3,6 +3,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.1] 2020-05-20
+
+### Changed
+- [GCP] Fixed a typo in disk paths that prevented creation of project and scratch volume
+- [GCP] Increased the root disk size in the example to 20GB. This is the new minimum for centos7 image.
+- Bumped minimum requirements to 0.12.21 in all versions.tf files.
+
+### Added
+- Documentation on variables specific to the commercial cloud providers
+- Documentation on hieradata
+- Documentation on firewall_rules
+- Description and types to all terraform variables
+
 ## [7.0] 2020-05-18
 
 ### Changed
