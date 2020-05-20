@@ -18,7 +18,7 @@ variable "instances" {
 }
 
 variable "image" {
-  type        = string
+  type        = any
   description = "Name of the operating system image that will be used to create a boot disk for the instances"
 }
 
