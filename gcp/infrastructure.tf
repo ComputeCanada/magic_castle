@@ -297,6 +297,6 @@ locals {
   puppetmaster_ip = google_compute_address.mgmt[0].address
   public_ip       = google_compute_address.static[*].address
   home_dev        = [for vol in google_compute_disk.home:    "/dev/disk/by-id/google-${vol.name}"]
-  project_dev     = [for vol in google_compute_disk.project: "/dev/disk/by-id/google-${vol.name}}"]
-  scratch_dev     = [for vol in google_compute_disk.scratch: "/dev/disk/by-id/google-${vol.name}}"]
+  project_dev     = [for vol in google_compute_disk.project: "/dev/disk/by-id/google-${vol.name}"]
+  scratch_dev     = [for vol in google_compute_disk.scratch: "/dev/disk/by-id/google-${vol.name}"]
 }
