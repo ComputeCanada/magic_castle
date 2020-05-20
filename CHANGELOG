@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - [GCP] Fixed a typo in disk paths that prevented creation of project and scratch volume
 - [GCP] Increased the root disk size in the example to 20GB. This is the new minimum for centos7 image.
 - Bumped minimum requirements to 0.12.21 in all versions.tf files.
+- [puppet] Bumped most module versions to latest in Puppetfile
+- [puppet] Bumped consul and consul-template version to latest available
 
 ### Added
 - Documentation on variables specific to the commercial cloud providers
