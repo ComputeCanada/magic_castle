@@ -467,7 +467,11 @@ Refer to the following Puppet modules' documentation to know more about the key-
 **Requirement**: The string needs to respect the [YAML syntax](https://en.wikipedia.org/wiki/YAML#Syntax).
 
 **Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`
-([see section 10.8](#108-recovering-from-mgmt1-rebuild)).
+([see section 10.8](#108-recovering-from-mgmt1-rebuild)). To modify the hieradata once the cluster is built,
+prefer modifying the file created from this string. The file can be found on `mgmt1` as
+```
+/etc/pupppetlabs/environment/production/hieradata/userdata.yaml
+```
 
 ### 4.13 firewall_rules (optional)
 
