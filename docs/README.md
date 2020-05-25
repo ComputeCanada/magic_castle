@@ -470,7 +470,7 @@ Refer to the following Puppet modules' documentation to know more about the key-
 ([see section 10.8](#108-recovering-from-mgmt1-rebuild)). To modify the hieradata once the cluster is built,
 prefer modifying the file created from this string. The file can be found on `mgmt1` as
 ```
-/etc/pupppetlabs/environment/production/hieradata/userdata.yaml
+/etc/puppetlabs/code/environments/production/data/user_data.yaml
 ```
 
 ### 4.13 firewall_rules (optional)
