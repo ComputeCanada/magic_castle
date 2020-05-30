@@ -29,7 +29,7 @@ resource "aws_vpc" "vpc" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-    Name = "vpc"
+    Name = "${var.cluster_name}-vpc"
   }
 }
 
@@ -55,7 +55,7 @@ resource "aws_subnet" "private_subnet" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "vpc-subnet"
+    Name = "${var.cluster_name}-subnet"
   }
 }
 
@@ -89,7 +89,7 @@ resource "aws_security_group" "allow_in_services" {
   }
 
   tags = {
-    Name = "allow_in_services"
+    Name = "${var.cluster_name}-allow_in_services"
   }
 }
 
@@ -113,7 +113,7 @@ resource "aws_security_group" "allow_any_inside_vpc" {
   }
 
   tags = {
-    Name = "allow_any_inside_vpc"
+    Name = "${var.cluster_name}-allow_any_inside_vpc"
   }
 }
 
@@ -129,6 +129,10 @@ resource "aws_network_interface" "mgmt" {
     aws_security_group.allow_any_inside_vpc.id,
     aws_security_group.allow_out_any.id,
   ]
+
+  tags = {
+    Name = "${var.cluster_name}-mgmt-if"
+  }
 }
 
 # Instances
@@ -153,7 +157,7 @@ resource "aws_instance" "mgmt" {
   }
 
   tags = {
-    Name = format("mgmt%d", count.index + 1)
+    Name = format("${var.cluster_name}-mgmt%d", count.index + 1)
   }
 
   lifecycle {
@@ -179,7 +183,7 @@ resource "aws_ebs_volume" "home" {
   type              = "gp2"
 
   tags = {
-    Name = "home"
+    Name = "${var.cluster_name}-home"
   }
 }
 
@@ -190,7 +194,7 @@ resource "aws_ebs_volume" "project" {
   type              = "gp2"
 
   tags = {
-    Name = "project"
+    Name = "${var.cluster_name}-project"
   }
 }
 
@@ -201,7 +205,7 @@ resource "aws_ebs_volume" "scratch" {
   type              = "gp2"
 
   tags = {
-    Name = "scratch"
+    Name = "${var.cluster_name}-scratch"
   }
 }
 
@@ -257,7 +261,7 @@ resource "aws_instance" "login" {
   }
 
   tags = {
-    Name = format("login%d", count.index + 1)
+    Name = format("${var.cluster_name}-login%d", count.index + 1)
   }
 }
 
@@ -266,6 +270,9 @@ resource "aws_eip" "login" {
   vpc        = true
   instance   = aws_instance.login[count.index].id
   depends_on = [aws_internet_gateway.gw]
+  tags = {
+    Name = format("${var.cluster_name}-login%d-eip", count.index + 1)
+  }
 }
 
 locals {
@@ -310,7 +317,7 @@ resource "aws_instance" "node" {
   }
 
   tags = {
-    Name = each.key
+    Name = "${var.cluster_name}-${each.key}"
   }
 }
 
