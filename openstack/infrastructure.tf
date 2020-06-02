@@ -131,19 +131,19 @@ resource "openstack_compute_instance_v2" "mgmt" {
 }
 
 resource "openstack_compute_volume_attach_v2" "va_home" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
+  count       = var.instances["mgmt"]["count"] > 0 ? length(openstack_blockstorage_volume_v2.home) : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
   volume_id   = openstack_blockstorage_volume_v2.home[count.index].id
 }
 
 resource "openstack_compute_volume_attach_v2" "va_project" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
+  count       = var.instances["mgmt"]["count"] > 0 ? length(openstack_blockstorage_volume_v2.project) : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
   volume_id   = openstack_blockstorage_volume_v2.project[count.index].id
 }
 
 resource "openstack_compute_volume_attach_v2" "va_scratch" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
+  count       = var.instances["mgmt"]["count"] > 0 ? length(openstack_blockstorage_volume_v2.scratch) : 0
   instance_id = openstack_compute_instance_v2.mgmt[0].id
   volume_id   = openstack_blockstorage_volume_v2.scratch[count.index].id
 }
