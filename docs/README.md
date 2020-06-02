@@ -49,7 +49,7 @@ To use Magic Castle you will need:
 **Region**
 * 1 In-use IP addresses
 * 8 CPUs
-* 30 Local SSD (GB)
+* 60 Local SSD (GB)
 * 50 Persistent Disk Standard (GB)
 
 To look and edit your GCP quota go to :
