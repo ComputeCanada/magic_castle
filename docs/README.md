@@ -57,9 +57,33 @@ To look and edit your GCP quota go to :
 
 ### 1.2 Authentication
 
-#### 1.2.1 OpenStack / OVH
+#### 1.2.1 Amazon Web Services (AWS)
 
-First, download your OpenStack Open RC file.
+1. Go to [AWS - My Security Credentials](https://console.aws.amazon.com/iam/home?#/security_credentials)
+2. Create a new access key.
+3. In a terminal, export `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, environment variables, representing your AWS Access Key and AWS Secret Key:
+    ```shell
+    export AWS_ACCESS_KEY_ID="an-access-key"
+    export AWS_SECRET_ACCESS_KEY="a-secret-key"
+    ```
+
+Reference: [AWS Provider - Environment Variables](https://www.terraform.io/docs/providers/aws/index.html#environment-variables)
+
+#### 1.2.2 Google Cloud
+
+1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/downloads-interactive)
+2. In a terminal, enter : `gcloud auth application-default login`
+
+#### 1.2.3 Microsoft Azure
+
+1. Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+2. In a terminal, enter : `az login`
+
+Reference : [Azure Provider: Authenticating using the Azure CLI](https://www.terraform.io/docs/providers/azurerm/guides/azure_cli.html)
+
+#### 1.2.4 OpenStack / OVH
+
+1. Download your OpenStack Open RC file.
 It is project-specific and contains the credentials used
 by Terraform to communicate with OpenStack API. It comes
 as a sourceable shell script. To download, using OpenStack webpage go to:
@@ -67,18 +91,13 @@ as a sourceable shell script. To download, using OpenStack webpage go to:
 then right-click on **OpenStack RC File (Identity API v3)**, **Save Link as...**, then
 select the same folder that contains `main.tf`.
 
-Second, in a terminal located in the same folder as your OpenStack RC file
-and your `main.tf` file, source the OpenStack RC file.
-```
-$ source *-openrc.sh
-```
-
+2. In a terminal located in the same folder as your OpenStack RC file,
+source the OpenStack RC file:
+    ```
+    $ source *-openrc.sh
+    ```
 This command will ask for a password, enter your OpenStack password.
 
-#### 1.2.2 Google Cloud
-
-1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/downloads-interactive)
-2. In a terminal, enter : `gcloud auth application-default login`
 
 ### 1.3 Setup check
 
