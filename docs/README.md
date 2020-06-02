@@ -150,7 +150,7 @@ folder. You do not need to look at its content for now.
 
 #### 3.2.1 Terraform Modules Upgrade
 
-Once Terraform folder has been initialized, it is possible to fetch the new version
+Once Terraform folder has been initialized, it is possible to fetch the newest version
 of the modules used by calling:
 ```
 terraform init -upgrade
