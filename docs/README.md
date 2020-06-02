@@ -31,7 +31,7 @@ To use Magic Castle you will need:
 * 3 volumes
 * 3 instances
 * 6 VCPUs
-* 7 neutron port
+* 7 neutron ports
 * 8 GB of RAM
 * 11 security rules
 * 50 Volume Storage (GB)
