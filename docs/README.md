@@ -206,13 +206,14 @@ domain. You can verify no such record exist with `dig`:
 
 ### 4.4 image
 
-Defines the name of the image that will be used as the
-base image for the cluster nodes. This image has to be based on CentOS 7.
+Defines the name of the image that will be used as the base image for the cluster nodes.
 
-You can use a custom CentOS 7 image if you wish, but provisioning customization
+You can use a custom image if you wish, but provisioning customization
 should be mainly done through Puppet scripting. Image customization is mostly
 envisioned as a way to accelerate the provisioning process by applying the
 security patches and OS updates in advance.
+
+**Requirements**: the operating system on the image must be CentOS 7.
 
 **Post Build Modification Effect**: None - if this variable is modified, existing
 instances will ignore the change and future instances will use the new value.
@@ -231,9 +232,9 @@ fields `publisher`, `offer` and `sku`.
 
 #### 4.4.3 OVH
 
-SELinux is not enabled in OVH provided CentOS 7 image. Since SELinux has to be
+SELinux is not enabled in OVH provided images. Since SELinux has to be
 enabled for Magic Castle to work properly, you will need to build a custom image
-of CentOS 7 with SELinux enabled.
+with SELinux enabled.
 
 To build such image, we recommend the usage of packer. OVH provides a document
 explaining how to create a new image with packer:
