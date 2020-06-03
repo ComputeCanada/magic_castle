@@ -3,6 +3,60 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.3] Unreleased
+
+This release introduces three main features:
+- new support for Slurm 20 in addition to support for Slurm 19
+- new support for CentOS 8 in addition to support for CentOS 7. Tested functional on OpenStack, inconclusive testing in other clouds:
+AWS misses CentOS 8 official AMI, Azure has not been tested, GCP CentOS 8 image has issue with cloud-init (issue #85)
+- new support for Compute Canada Arbutus Cloud NVIDIA VGPUs (flavor `vgpu-...`).
+
+### Changed
+- Improved main documentation.
+- [AWS] Most resources if not all now have the name of the cluster as a prefix in their name
+- [OpenStack] Simplified volume attachment count computation
+- [puppet] Slurm plugin spank-cc-tmpfs_mounts is now installed from copr yumrepo
+- [puppet] Fixed order of slurm packages install
+- [puppet] Exec resource in charge of creating the slurm cluster in slurmdbd now returns 0 if the cluster already exists
+- [puppet] `consul-template` class initialization is now entirely in hieradata file `common.yaml`.
+- [puppet] CentOS 8 support: replaced notification of `nfs-idmap.service` by notification of `nfs-server.service`.
+- [puppet] CentOS 8 support: replaced `pdsh` by `clustershell`
+- [puppet] CentOS 8 support: rpc_nfs_args is now only defined if os is CentOS 7.
+- [puppet] CentOS 8 support: `ipa_create_user.py` now use `/usr/libexec/platform-python` instead of `/usr/bin/env python`.
+- [puppet] CentOS 8 support: Replaced Python 2 `unicode` calls in `ipa_create_user.py` by six's `text_type`
+- [puppet] CentOS 8 support: Moved list of nvidia package names from class profile::gpu to hieradata. List now depends on CentOS version.
+- [puppet] CentOS 8 support: Moved FreeIPA `regen_cert_cmd` value to hieradata. Command now depends on CentOS version.
+- [puppet] Bumped puppet-jupyterhub version to 3.3.2
+- [puppet] Update nvidia driver fact to make sure at most one version is in the output
+- [puppet] Changed logic of `nvidia_grid_vgpu` fact to just check if the instance flavor includes `vgpu` in its name
+- [puppet] CentOS 8 support: Moved default loaded CVMFS modules to hieradata. Module list now depends on CentOS version
+- [puppet] CentOS 8 support: Fixed nfs clean rbind execstop warning
+- [puppet] Replaced tcp_con_validator to check if slurmdbd is running by a wait_for ressource on slurmdbd.log regex
+- [puppet] CentOS 8 support: Fixed package name in nvidia-driver-version fact.
+
+### Added
+- [puppet] Added support for CentOS 8 when selecting Slurm yumrepo
+- [puppet] Slurm 20 support: Added `slurm_version` variable to hieradata. It can be either 19 or 20.
+- [puppet] Slurm 20 support: Added PlugStackConfig parameter to slurm.conf
+- [puppet] Added slurm-perlapi package to `profile::base::slurm`
+- [puppet] Added exec to initialize cvmfs default.local with consul-template.
+- [puppet] Added a default node1 in slurm.conf when no slurmd has been registered yet in consul
+- [puppet] Added a require on Epel yumrepo for package fail2ban-server
+- [puppet] Added class profile::fail2ban::install
+- [puppet] CentOS 8 support: Added dependency on puppet-epel to install epel yumrepo
+- [puppet] CentOS 8 support: Enabled powertools repo
+- [puppet] CentOS 8 support: Enabled idm:DL1 stream
+- [puppet] CentOS 8 support: Added network-scripts package when os is CentOS 8
+- [puppet] CentOS 8 support: Added munge_socket selinux policy to allow confined user to submit jobs
+- [puppet] Added class `profile::gpu::install`
+- [puppet] Added a requirement on epel yumrepo for singularity package.
+- [puppet] Added a requirement for slurm exec `create_account` on slurm exec `add_cluster`
+- [puppet] CentOS 8 support: added class `profile::mail::server`
+- [puppet] Added a requirement on yumrepo epel to class `jupyterhub` in `profile::jupyterhub::hub`
+- [puppet] Added support for Compute Canada Arbutus Cloud VGPUs
+
+### Removed
+- [puppet] Removed notify to `slurmctld` from slurm::accounting exec `add_cluster`.
 
 ## [7.2] 2020-05-20
 
@@ -152,7 +206,7 @@ Terraform >= 0.12.21 is now required. Usage of the function `subtract` requires 
 - Changes to image variable are now ignored after cluster is built.
 - Fixed release scripts to solve bug where multiple `version` variable were present (issue #38)
 - [Azure] Updated the example to use the most recent OpenLogic CentOS 7 image (issue #42)
-- [Azure] Resources names are now prefixed with the cluster name 
+- [Azure] Resources names are now prefixed with the cluster name
 - [Azure] Azure public_ip now outputs a list of all login ip addresses
 - [cloud-init] Replaced timezone in cloud-init to UTC (issue #51)
 - [GCP] Zone variable is now optional. The zone is randomly selected in the zones available for the region if left blank.
@@ -212,7 +266,7 @@ the DHCP time lease from 24 to 1 hour. This helps when debugging DHCP issue
 - [DNS] Moved wildcard certificate creation from cloudflare to an acme module shared by all dns modules.
 - [DNS] Replaced usage of 0-index on array by call to `distinct` (issue #26).
 - [DNS] A `jupyter.${cluster_name}.${domain_name}` record is now added for each login instead of just login1.
-- Changed the management and login node naming scheme to match node naming. `mgmt01` is now `mgmt1` and `login01` is now `login1`. 
+- Changed the management and login node naming scheme to match node naming. `mgmt01` is now `mgmt1` and `login01` is now `login1`.
 - [puppet] Fix puppet-jupyterhub version to v1.1 instead of master branch.
 
 ### Removed
