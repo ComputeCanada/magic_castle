@@ -986,7 +986,7 @@ compute node, call the following command from the sudoer account and where `N`
 is the number of compute nodes in your cluster.
 
 ```
-pdsh -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
+clush -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
 ```
 
 ### 10.7 Activate Globus Endpoint
