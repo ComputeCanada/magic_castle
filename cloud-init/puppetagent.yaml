@@ -33,7 +33,6 @@ runcmd:
   - grub2-mkconfig -o /boot/grub2/grub.cfg
   # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
   - for i in /etc/sysconfig/network-scripts/ifcfg-*; do if ! ip link show | grep -q "$${i##*-}:"; then rm -f $i; fi; done
-  - reboot -n
 
 write_files:
   - content: |
@@ -58,3 +57,6 @@ disable_ec2_metadata: false
 timezone: "UTC"
 fqdn: "${node_name}"
 output: { all: "| tee -a /var/log/cloud-init-output.log" }
+power_state:
+  delay: now
+  mode: reboot
