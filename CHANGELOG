@@ -6,10 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [7.3] Unreleased
 
 This release introduces three main features:
-- new support for Slurm 20 in addition to support for Slurm 19
-- new support for CentOS 8 in addition to support for CentOS 7. Tested functional on OpenStack, inconclusive testing in other clouds:
-AWS misses CentOS 8 official AMI, Azure has not been tested, GCP CentOS 8 image has issue with cloud-init (issue #85)
-- new support for Compute Canada Arbutus Cloud NVIDIA VGPUs (flavor `vgpu-...`).
+- Add support for Slurm 20
+- Add support for CentOS 8. Tested functional on GCP and OpenStack, inconclusive testing in other clouds:
+AWS misses CentOS 8 official AMI, Azure has not been tested.
+- Add support for Compute Canada Arbutus Cloud NVIDIA VGPUs (flavor `vgpu-...`).
 
 ### Changed
 - Improved main documentation.
@@ -33,6 +33,8 @@ AWS misses CentOS 8 official AMI, Azure has not been tested, GCP CentOS 8 image 
 - [puppet] CentOS 8 support: Fixed nfs clean rbind execstop warning
 - [puppet] Replaced tcp_con_validator to check if slurmdbd is running by a wait_for ressource on slurmdbd.log regex
 - [puppet] CentOS 8 support: Fixed package name in nvidia-driver-version fact.
+- [cloud-init] Replaced `reboot -n` in `runcmd` by `power_state` with reboot now. This makes sure final stage of cloud-init is applied before reboot.
+- [gcp] CentOS 8 support: rewrote `install_cloudinit.sh` to avoid network issue at boot and install cloud-init only for the time needed. (issue #85)
 
 ### Added
 - [puppet] Added support for CentOS 8 when selecting Slurm yumrepo
