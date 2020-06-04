@@ -7,8 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 This release introduces three main features:
 - Add support for Slurm 20
-- Add support for CentOS 8. Tested functional on GCP and OpenStack, inconclusive testing in other clouds:
-AWS misses CentOS 8 official AMI, Azure has not been tested.
+- Add support for CentOS 8. Tested functional on GCP and OpenStack. AWS and Azure do not provide
+an official CentOS 8 image with cloud-init support at the moment of this release.
 - Add support for Compute Canada Arbutus Cloud NVIDIA VGPUs (flavor `vgpu-...`).
 
 ### Changed
