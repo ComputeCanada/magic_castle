@@ -62,4 +62,4 @@ and apply their configuration based on their hostnames.
 
 ## Contributing / Customizing
 
-Refer to [Magic Castle developper documentation](docs/developers.md).
+Refer to [Magic Castle developer documentation](docs/developers.md).
