@@ -65,6 +65,7 @@ output "public_ip" {
 #   domain           = module.azure.domain
 #   email            = "you@example.com"
 #   public_ip        = module.azure.ip
+#   login_ids        = module.azure.login_ids
 #   rsa_public_key   = module.azure.rsa_public_key
 #   sudoer_username  = module.azure.sudoer_username
 # }
@@ -78,6 +79,7 @@ output "public_ip" {
 #   name             = module.azure.cluster_name
 #   domain           = module.azure.domain
 #   public_ip        = module.azure.ip
+#   login_ids        = module.azure.login_ids
 #   rsa_public_key   = module.azure.rsa_public_key
 #   sudoer_username  = module.azure.sudoer_username
 # }

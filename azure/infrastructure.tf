@@ -364,6 +364,7 @@ locals {
   mgmt1_ip        = azurerm_network_interface.mgmtNIC[0].private_ip_address
   puppetmaster_ip = azurerm_network_interface.mgmtNIC[0].private_ip_address
   public_ip       = azurerm_public_ip.loginIP[*].ip_address
+  login_ids       = azurerm_linux_virtual_machine.login[*].id
   cidr            = "10.0.1.0/24"
   home_dev        = [for vol in range(length(azurerm_managed_disk.home)):    "/dev/disk/azure/scsi1/lun${vol +  0}"]
   project_dev     = [for vol in range(length(azurerm_managed_disk.project)): "/dev/disk/azure/scsi1/lun${vol + 10}"]
