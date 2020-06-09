@@ -63,6 +63,7 @@ output "public_ip" {
 #   domain           = module.gcp.domain
 #   email            = "you@example.com"
 #   public_ip        = module.gcp.ip
+#   login_ids        = module.gcp.login_ids
 #   rsa_public_key   = module.gcp.rsa_public_key
 #   sudoer_username  = module.gcp.sudoer_username
 # }
@@ -75,6 +76,7 @@ output "public_ip" {
 #   name             = module.gcp.cluster_name
 #   domain           = module.gcp.domain
 #   public_ip        = module.gcp.ip
+#   login_ids        = module.gcp.login_ids
 #   rsa_public_key   = module.gcp.rsa_public_key
 #   sudoer_username  = module.gcp.sudoer_username
 # }

@@ -325,6 +325,7 @@ locals {
   mgmt1_ip        = aws_network_interface.mgmt[0].private_ip
   puppetmaster_ip = aws_network_interface.mgmt[0].private_ip
   public_ip       = aws_eip.login[*].public_ip
+  login_ids       = aws_instance.login[*].id
   cidr            = aws_subnet.private_subnet.cidr_block
   home_dev        = [for vol in aws_ebs_volume.home:    "/dev/disk/by-id/*${replace(vol.id, "-", "")}"]
   project_dev     = [for vol in aws_ebs_volume.project: "/dev/disk/by-id/*${replace(vol.id, "-", "")}"]

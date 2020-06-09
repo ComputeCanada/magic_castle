@@ -22,3 +22,7 @@ variable "email" {
 
 variable "sudoer_username" {
 }
+
+variable "login_ids" {
+  type = list(string)
+}

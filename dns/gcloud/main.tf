@@ -38,6 +38,7 @@ module "acme" {
   email               = var.email
   sudoer_username     = var.sudoer_username
   login_ips           = var.public_ip
+  login_ids           = var.login_ids
 }
 
 output "hostnames" {

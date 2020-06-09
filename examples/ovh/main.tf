@@ -55,6 +55,7 @@ output "public_ip" {
 #   domain           = module.ovh.domain
 #   email            = "you@example.com"
 #   public_ip        = module.ovh.ip
+#   login_ids        = module.ovh.login_ids
 #   rsa_public_key   = module.ovh.rsa_public_key
 #   sudoer_username  = module.ovh.sudoer_username
 # }
@@ -68,6 +69,7 @@ output "public_ip" {
 #   name             = module.ovh.cluster_name
 #   domain           = module.ovh.domain
 #   public_ip        = module.ovh.ip
+#   login_ids        = module.ovh.login_ids
 #   rsa_public_key   = module.ovh.rsa_public_key
 #   sudoer_username  = module.ovh.sudoer_username
 # }

@@ -57,6 +57,7 @@ output "public_ip" {
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
 #   public_ip        = module.openstack.ip
+#   login_ids        = module.openstack.login_ids
 #   rsa_public_key   = module.openstack.rsa_public_key
 #   sudoer_username  = module.openstack.sudoer_username
 # }
@@ -70,6 +71,7 @@ output "public_ip" {
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
 #   public_ip        = module.openstack.ip
+#   login_ids        = module.openstack.login_ids
 #   rsa_public_key   = module.openstack.rsa_public_key
 #   sudoer_username  = module.openstack.sudoer_username
 # }
