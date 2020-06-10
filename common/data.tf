@@ -78,8 +78,6 @@ data "template_cloudinit_config" "mgmt_config" {
         puppetenv_rev         = var.puppetenv_rev,
         puppetmaster_ip       = local.puppetmaster_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
-        hieradata             = data.template_file.hieradata.rendered,
-        user_hieradata        = var.hieradata,
         node_name             = format("mgmt%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = var.public_keys,
