@@ -295,6 +295,7 @@ resource "google_compute_firewall" "default" {
 locals {
   mgmt1_ip        = google_compute_address.mgmt[0].address
   puppetmaster_ip = google_compute_address.mgmt[0].address
+  puppetmaster_id = google_compute_instance.mgmt[0].id
   public_ip       = google_compute_address.static[*].address
   login_ids       = google_compute_instance.login[*].id
   home_dev        = [for vol in google_compute_disk.home:    "/dev/disk/by-id/google-${vol.name}"]
