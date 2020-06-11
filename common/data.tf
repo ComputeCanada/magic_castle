@@ -52,7 +52,7 @@ data "template_file" "hieradata" {
   vars = {
     sudoer_username = var.sudoer_username
     freeipa_passwd  = random_string.freeipa_passwd.result
-    cluster_name    = var.cluster_name
+    cluster_name    = lower(var.cluster_name)
     domain_name     = local.domain_name
     guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : random_pet.guest_passwd[0].id
     consul_token    = random_uuid.consul_token.result

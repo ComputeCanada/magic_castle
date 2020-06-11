@@ -12,7 +12,7 @@ data "cloudflare_zones" "domain" {
 
 module "record_generator" {
   source         = "../record_generator"
-  name           = var.name
+  name           = lower(var.name)
   login_ips      = var.public_ip
   rsa_public_key = var.rsa_public_key
 }
@@ -29,7 +29,7 @@ resource "cloudflare_record" "records" {
 module "acme" {
   source           = "../acme"
   dns_provider     = "cloudflare"
-  name             = var.name
+  name             = lower(var.name)
   domain           = var.domain
   email            = var.email
   sudoer_username  = var.sudoer_username

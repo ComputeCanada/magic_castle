@@ -3,11 +3,11 @@ output "ip" {
 }
 
 output "cluster_name" {
-  value = var.cluster_name
+  value = lower(var.cluster_name)
 }
 
 output "domain" {
-  value = "${lower(var.domain)}"
+  value = lower(var.domain)
 }
 
 output "sudoer_username" {
