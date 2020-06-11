@@ -267,8 +267,10 @@ section [10.3](#103-add-a-user-account) and [10.4](#104-increase-the-number-of-g
 
 **Requirement**: Must be an integer, minimum value is 0.
 
-**Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`
-([see section 10.8](#108-recovering-from-mgmt1-rebuild)).
+**Post Build Modification Effect**: trigger scp of hieradata files at next `terraform apply`.
+If `nb_users` is increased, new guest accounts will be created during the following
+puppet run on `mgmt1`. If `nb_users` is decreased, it will have no effect: the guest accounts
+already created will be left intact.
 
 ### 4.6 instances
 
@@ -283,17 +285,14 @@ with 2 keys: `type` and `count`.
 
 Number of management instances to create.
 
-**Warning**: All other type of instances depend on the existence of at
-least one management node named `mgmt1`. While it is possible to have
-to 0 management vm and login or node count greater than 0, the cluster
-will not be functional.
+**Minimum**: 1
 
 ##### type
 
 Cloud provider name for the combination of CPU, RAM and other features
 on which will run the management instances.
 
-Requirements:
+**Requirements:**
 - CPUs: 2 cores
 - RAM: 6GB
 
@@ -306,12 +305,14 @@ with 2 keys: `type` and `count`.
 
 Number of login instances to create.
 
+**Minimum**: 1
+
 ##### type
 
 Cloud provider name for the combination of CPU, RAM and other features
 on which will run the login instances.
 
-Requirements:
+**Requirements:**
 - CPUs: 2 cores
 - RAM: 2GB
 
@@ -327,12 +328,14 @@ to define a value for the key `prefix`.
 
 Number of compute node instances to create.
 
+**Minimum**: 0
+
 ##### type
 
 Cloud provider name for the combination of CPU, RAM and other features
 on which will run the compute node instances.
 
-Requirements:
+**Requirements:**
 - CPUs: 1 core
 - RAM: 2GB
 
@@ -435,8 +438,12 @@ randomly generated one.
 
 **Requirement**: Minimum length **8 characters**.
 
-**Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`
-([see section 10.8](#108-recovering-from-mgmt1-rebuild)).
+**Post Build Modification Effect**: trigger scp of hieradata files at next `terraform apply`.
+Password of already created guest accounts will not be changed. Guest accounts created after
+the password change will have this password.
+
+To modify the password of previously created guest accounts, refer to section
+([see section 10.2](#102-replace-the-user-account-password)).
 
 ### 4.10 root_disk_size (optional)
 
@@ -484,14 +491,14 @@ Refer to the following Puppet modules' documentation to know more about the key-
 - [puppet-jupyterhub](https://github.com/ComputeCanada/puppet-jupyterhub/blob/master/README.md#hieradata-configuration)
 
 
+The file created from this string can be found on `mgmt1` as
+```
+/etc/puppetlabs/data/user_data.yaml
+```
+
 **Requirement**: The string needs to respect the [YAML syntax](https://en.wikipedia.org/wiki/YAML#Syntax).
 
-**Post Build Modification Effect**: rebuild `mgmt1` instance at next `terraform apply`
-([see section 10.8](#108-recovering-from-mgmt1-rebuild)). To modify the hieradata once the cluster is built,
-prefer modifying the file created from this string. The file can be found on `mgmt1` as
-```
-/etc/puppetlabs/code/environments/production/data/user_data.yaml
-```
+**Post Build Modification Effect**: trigger scp of hieradata files at next `terraform apply`.
 
 ### 4.13 firewall_rules (optional)
 

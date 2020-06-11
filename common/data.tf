@@ -78,8 +78,6 @@ data "template_cloudinit_config" "mgmt_config" {
         puppetenv_rev         = var.puppetenv_rev,
         puppetmaster_ip       = local.puppetmaster_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
-        hieradata             = data.template_file.hieradata.rendered,
-        user_hieradata        = var.hieradata,
         node_name             = format("mgmt%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = var.public_keys,
@@ -144,5 +142,41 @@ data "template_cloudinit_config" "node_config" {
         puppetmaster_password = random_string.puppetmaster_password.result,
       }
     )
+  }
+}
+
+resource "null_resource" "deploy_hieradata" {
+
+  connection {
+    type         = "ssh"
+    bastion_host = local.public_ip[0]
+    bastion_user = var.sudoer_username
+    user         = var.sudoer_username
+    host         = local.puppetmaster_ip
+  }
+
+  triggers = {
+    user_data    = md5(var.hieradata)
+    hieradata    = md5(data.template_file.hieradata.rendered)
+    puppetmaster = local.puppetmaster_id
+  }
+
+  provisioner "file" {
+    content     = data.template_file.hieradata.rendered
+    destination = "terraform_data.yaml"
+  }
+
+  provisioner "file" {
+    content     = var.hieradata
+    destination = "user_data.yaml"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mkdir -p /etc/puppetlabs/data",
+      "sudo install -m 650 terraform_data.yaml user_data.yaml /etc/puppetlabs/data/",
+      "sudo chgrp puppet /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/data/user_data.yaml &> /dev/null || true",
+      "rm -f terraform_data.yaml user_data.yaml"
+    ]
   }
 }

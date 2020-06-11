@@ -68,7 +68,7 @@ variable "puppetenv_rev" {
 
 variable hieradata {
   type        = string
-  default     = ""
+  default     = "---"
   description = "String formatted as YAML defining hiera key-value pairs to be included in the puppet environment"
 }
 

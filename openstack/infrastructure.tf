@@ -271,6 +271,7 @@ resource "openstack_compute_instance_v2" "node" {
 locals {
   mgmt1_ip        = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
   puppetmaster_ip = openstack_networking_port_v2.port_mgmt[0].all_fixed_ips[0]
+  puppetmaster_id = openstack_compute_instance_v2.mgmt[0].id
   login_ids       = openstack_compute_instance_v2.login[*].id
   home_dev        = [for vol in openstack_blockstorage_volume_v2.home:    "/dev/disk/by-id/*${substr(vol.id, 0, 20)}"]
   project_dev     = [for vol in openstack_blockstorage_volume_v2.project: "/dev/disk/by-id/*${substr(vol.id, 0, 20)}"]
