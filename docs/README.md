@@ -213,7 +213,7 @@ should be mainly done through Puppet scripting. Image customization is mostly
 envisioned as a way to accelerate the provisioning process by applying the
 security patches and OS updates in advance.
 
-**Requirements**: the operating system on the image must be CentOS 7.
+**Requirements**: the operating system on the image must be CentOS 7 or 8.
 
 **Post Build Modification Effect**: None - if this variable is modified, existing
 instances will ignore the change and future instances will use the new value.
