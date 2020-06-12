@@ -88,8 +88,8 @@ It is project-specific and contains the credentials used
 by Terraform to communicate with OpenStack API. It comes
 as a sourceable shell script. To download, using OpenStack webpage go to:
 **Project** → **API Access**, then click on **Download OpenStack RC File**
-then right-click on **OpenStack RC File (Identity API v3)**, **Save Link as...**, then
-select the same folder that contains `main.tf`.
+then right-click on **OpenStack RC File (Identity API v3)**, **Save Link as...**,
+and save the file.
 
 2. In a terminal located in the same folder as your OpenStack RC file,
 source the OpenStack RC file:
