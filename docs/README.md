@@ -909,7 +909,7 @@ This password must respect the FreeIPA password policy. To display the policy en
     ```
 4. Loop on all user accounts to replace the old password by the new one:
     ```
-    for username in $(ls /home/ | grep user); do
+    for username in $(ls /mnt/home/ | grep user); do
       echo -e "$OLD_PASSWD" | kinit $username
       echo -e "$NEW_PASSWD\n$NEW_PASSWD" | ipa user-mod $username --password
       kdestroy
