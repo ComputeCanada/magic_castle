@@ -292,7 +292,7 @@ Number of management instances to create.
 Cloud provider name for the combination of CPU, RAM and other features
 on which will run the management instances.
 
-**Requirements:**
+**Minimum requirements:**
 - CPUs: 2 cores
 - RAM: 6GB
 
@@ -312,7 +312,7 @@ Number of login instances to create.
 Cloud provider name for the combination of CPU, RAM and other features
 on which will run the login instances.
 
-**Requirements:**
+**Minimum requirements:**
 - CPUs: 2 cores
 - RAM: 2GB
 
@@ -335,7 +335,7 @@ Number of compute node instances to create.
 Cloud provider name for the combination of CPU, RAM and other features
 on which will run the compute node instances.
 
-**Requirements:**
+**Minimum requirements:**
 - CPUs: 1 core
 - RAM: 2GB
 
