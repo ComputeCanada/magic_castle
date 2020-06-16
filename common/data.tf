@@ -146,6 +146,7 @@ data "template_cloudinit_config" "node_config" {
 }
 
 resource "null_resource" "deploy_hieradata" {
+  count = var.instances["mgmt"]["count"] > 0 && var.instances["login"]["count"] > 0 ? 1 : 0
 
   connection {
     type         = "ssh"
