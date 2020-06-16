@@ -3,6 +3,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [8.0] UNRELEASED
+
+Following release of CentOS 8 2004, AWS now provides an official CentOS 8 image that
+has been tested and is functional with Magic Castle 8.0.
+
+### Added
+- Added the login node ids as output of the main Magic Castle Terraform module.
+- Added a trigger to DNS module deploy_certs based on login node ids. If there is a modification to one of the login node state,
+the certificates will be uploaded to the corresponding login node, without having to taint the `deploy_certs` resource manually
+(PR #88).
+- [puppet] Added a resource in `profile::base` to remove terraform `local-exec` leftover empty scripts in /tmp.
+
+### Changed
+- [puppet] Id of the accounts created in FreeIPA now start at UID_MAX defined `/etc/login.defs`. (commonly 60000 instead of 50000)
+- [cloud-init] Bumped puppetserver to 6.12.0 and puppetagent to 6.16.0.
+- Puppet hieradata yaml files are now uploaded with Terraform file provisioner instead of being embedded in mgmt1 userdata.
+This means a change to the number of users, the guest password, or the hieradata variable no longer trigger a rebuild of mgmt1
+but only a reupload of YAML files (PR #89)
+- [docs] Various fixes (Issues #87, #92, #93)
+
+### Removed
+- Hieradata has been removed from puppetmaster.yaml template.
+
 ## [7.3] 2020-06-04
 
 This release introduces three main features:
