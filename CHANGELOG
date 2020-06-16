@@ -84,7 +84,7 @@ an official CentOS 8 image with cloud-init support at the moment of this release
 
 ### Changed
 - Established a distinction in variables between puppetmaster and mgmt1 - allowing puppetmaster role to be assigned to another instance.
-- Bumped minimum requirement of terraform to 0.12.24 (issue #77)
+- Bumped minimum requirement of terraform to 0.12.21 (issue #77)
 - Numerous doc fixes
 - Added a section on related projects in README.md
 - [Azure] Updated Azure infrastructure.tf to use Azure provider 2.0.0 (issue #62)
