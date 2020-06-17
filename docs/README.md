@@ -1036,10 +1036,11 @@ sudo /opt/puppetlabs/bin/puppetserver ca sign --certname NAME[,NAME]
 
 Login nodes run [fail2ban](https://www.fail2ban.org/wiki/index.php/Main_Page), an intrusion
 prevention software that protects login nodes from brute-force attacks. fail2ban is configured
-to ban ip addresses that attempted to login 3 times and failed.
+to ban ip addresses that attempted to login 5 times and failed in a window of 10 minutes. The
+ban time is 60 minutes.
 
 
-In the context of a workshop with SSH novices, the 3-attempts rule is often triggered,
+In the context of a workshop with SSH novices, the 5-attempts rule is often triggered,
 resulting in participants banned and puzzled, which is a bad start for a workshop. There are
 solutions to mitigate this problem.
 
