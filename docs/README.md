@@ -1032,6 +1032,62 @@ If you prefer, you can sign individual request by specifying their name:
 sudo /opt/puppetlabs/bin/puppetserver ca sign --certname NAME[,NAME]
 ```
 
+### 10.9 Dealing with banned ip addresses (fail2ban)
+
+Login nodes run [fail2ban](https://www.fail2ban.org/wiki/index.php/Main_Page), an intrusion
+prevention software that protects login nodes from brute-force attacks. fail2ban is configured
+to ban ip addresses that attempted to login 3 times and failed.
+
+
+In the context of a workshop with SSH novices, the 3-attempts rule is often triggered,
+resulting in participants banned and puzzled, which is a bad start for a workshop. There are
+solutions to mitigate this problem.
+
+#### 10.9.1 Define a list of ip addresses that can never be banned
+
+fail2ban keeps a list of ip addresses that are allowed to fail to login without risking jail
+time. To define add an ip address to that list, on `mgmt1` add to
+```
+/etc/puppetlabs/data/user_data.yaml
+```
+the following line:
+```
+profile::fail2ban::enable_sshd_jail: false
+```
+
+#### 10.9.2 Disable fail2ban sshd jail
+
+fail2ban rule that banned ip addresses that failed to connect
+with SSH can be disabled. To do so, on `mgmt1` add to
+```
+/etc/puppetlabs/data/user_data.yaml
+```
+the following line:
+```
+profile::fail2ban::enable_sshd_jail: false
+```
+
+Once the line is added, restart puppet on the login node(s):
+```
+sudo systemctl restart puppet
+```
+
+#### 10.9.3 Unban ip addresses
+
+fail2ban ban ip addresses by adding rules to iptables. To remove these rules, you need to
+tell fail2ban to unban the ips.
+
+To list the ip addresses that are banned, execute the following command:
+```
+sudo fail2ban-client status sshd
+```
+
+To unban ip addresses, enter the following command followed by the ip addresses you want to unban:
+```
+sudo fail2ban-client set sshd unbanip
+```
+
+
 ## 11. Customize Magic Castle Terraform Files
 
 You can modify the Terraform module files in the folder named after your cloud
