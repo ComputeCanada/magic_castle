@@ -23,7 +23,7 @@ output "guest_usernames" {
 }
 
 output "guest_passwd" {
-  value = var.guest_passwd != "" ? var.guest_passwd : random_pet.guest_passwd[0].id
+  value = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
 }
 
 output "rsa_public_key" {

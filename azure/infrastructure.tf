@@ -361,9 +361,9 @@ resource "azurerm_linux_virtual_machine" "node" {
 
 locals {
   resource_group_name = var.azure_resource_group == "" ? azurerm_resource_group.group[0].name : var.azure_resource_group
-  mgmt1_ip        = azurerm_network_interface.mgmtNIC[0].private_ip_address
-  puppetmaster_ip = azurerm_network_interface.mgmtNIC[0].private_ip_address
-  puppetmaster_id = azurerm_linux_virtual_machine.mgmt[0].id
+  mgmt1_ip        = try(azurerm_network_interface.mgmtNIC[0].private_ip_address, "")
+  puppetmaster_ip = try(azurerm_network_interface.mgmtNIC[0].private_ip_address, "")
+  puppetmaster_id = try(azurerm_linux_virtual_machine.mgmt[0].id, "")
   public_ip       = azurerm_public_ip.loginIP[*].ip_address
   login_ids       = azurerm_linux_virtual_machine.login[*].id
   cidr            = "10.0.1.0/24"
