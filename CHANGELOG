@@ -13,6 +13,7 @@ has been tested and is functional with Magic Castle 8.0.
 - Added a trigger to DNS module deploy_certs based on login node ids. If there is a modification to one of the login node state,
 the certificates will be uploaded to the corresponding login node, without having to taint the `deploy_certs` resource manually
 (PR #88).
+- Added try function around access to index 0 of resource array to limit errors when destroying resources.
 - [puppet] Added a resource in `profile::base` to remove terraform `local-exec` leftover empty scripts in /tmp.
 
 ### Changed
