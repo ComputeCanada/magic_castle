@@ -5,6 +5,7 @@
 1. [Setup](#1-setup)
 2. [Configuration](#2-configuration)
 3. [Release](#3-release)
+4. [Troubleshooting](#4-troubleshooting)
 
 ## 1. Setup
 
@@ -71,3 +72,25 @@ Magic Castle:
     ```
     $ ./release.sh 5.7 azure ovh
     ```
+
+## 4. Troubleshooting
+
+
+### 4.1 cloud-init
+
+To test new additions to `cloud-init/puppetagent.yaml` or `cloud-init/puppetmaster.yaml`, it is possible to
+execute cloud-init phases manually. There are four steps that can be executed sequentially: init local, init
+modules config and modules final. Here are the corresponding commands to execute each step:
+```
+cloud-init init --local
+cloud-init init
+cloud-init modules --mode=config
+cloud-init modules --mode=final
+```
+
+It is also possible to clean a cloud-init execution and have it execute again at next reboot. To do so, enter
+the following command:
+```
+cloud-init clean
+```
+Add `-r` to the previous command to reboot the instance once cloud-init has finishing cleaning.
