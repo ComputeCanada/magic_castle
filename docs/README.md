@@ -1114,7 +1114,7 @@ fail2ban::service_ensure: 'stopped'
 Once the line is added, restart puppet on the login node(s):
 ```
 sudo systemctl restart puppet
-
+```
 
 ## 11. Customize Magic Castle Terraform Files
 
