@@ -1036,11 +1036,11 @@ sudo /opt/puppetlabs/bin/puppetserver ca sign --certname NAME[,NAME]
 
 Login nodes run [fail2ban](https://www.fail2ban.org/wiki/index.php/Main_Page), an intrusion
 prevention software that protects login nodes from brute-force attacks. fail2ban is configured
-to ban ip addresses that attempted to login 5 times and failed in a window of 10 minutes. The
-ban time is 60 minutes.
+to ban ip addresses that attempted to login 20 times and failed in a window of 60 minutes. The
+ban time is 24 hours.
 
 
-In the context of a workshop with SSH novices, the 5-attempts rule is often triggered,
+In the context of a workshop with SSH novices, the 20-attempts rule might be triggered,
 resulting in participants banned and puzzled, which is a bad start for a workshop. There are
 solutions to mitigate this problem.
 
@@ -1053,10 +1053,20 @@ time. To define add an ip address to that list, on `mgmt1` add to
 ```
 the following line:
 ```
-profile::fail2ban::enable_sshd_jail: false
+fail2ban::ignoreip:
+  - x.x.x.x
+  - y.y.y.y
+```
+where `x.x.x.x` and `y.y.y.y` are ip addresses you want to add to the ignore list.
+The ip addresses can be written using CIDR notations.
+The ignore ip list on Magic Castle already include `127.0.0.1/8` and the cluster subnet CIDR.
+
+Once the line is added, restart puppet on the login node(s):
+```
+sudo systemctl restart puppet
 ```
 
-#### 10.9.2 Disable fail2ban sshd jail
+#### 10.9.2 Remove fail2ban ssh-route jail
 
 fail2ban rule that banned ip addresses that failed to connect
 with SSH can be disabled. To do so, on `mgmt1` add to
@@ -1065,8 +1075,10 @@ with SSH can be disabled. To do so, on `mgmt1` add to
 ```
 the following line:
 ```
-profile::fail2ban::enable_sshd_jail: false
+fail2ban::jails: ['ssh-ban-root']
 ```
+This will keep the jail that automatically ban any ip that tries to
+login as root, and remove the ssh failed password jail.
 
 Once the line is added, restart puppet on the login node(s):
 ```
@@ -1080,13 +1092,28 @@ tell fail2ban to unban the ips.
 
 To list the ip addresses that are banned, execute the following command:
 ```
-sudo fail2ban-client status sshd
+sudo fail2ban-client status ssh-route
 ```
 
 To unban ip addresses, enter the following command followed by the ip addresses you want to unban:
 ```
-sudo fail2ban-client set sshd unbanip
+sudo fail2ban-client set ssh-route unbanip
 ```
+
+#### 10.9.4 Disable fail2ban
+
+fail2ban, while note recommended, can be completely disabled. To do so, on `mgmt1` add to
+```
+/etc/puppetlabs/data/user_data.yaml
+```
+the following line:
+```
+fail2ban::service_ensure: 'stopped'
+```
+
+Once the line is added, restart puppet on the login node(s):
+```
+sudo systemctl restart puppet
 
 
 ## 11. Customize Magic Castle Terraform Files
