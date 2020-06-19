@@ -45,7 +45,7 @@ variable "domain" {
 
 variable "public_keys" {
   type        = list
-  description = "List of SSH public keys that will be log in as {sudoer_username}"
+  description = "List of SSH public keys that can log in as {sudoer_username}"
 }
 
 variable "guest_passwd" {
