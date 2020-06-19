@@ -59,6 +59,7 @@ and apply their configuration based on their hostnames.
 - [AWS ParallelCluster](https://github.com/aws/aws-parallelcluster) [AWS]
 - [Elasticluster](https://github.com/elasticluster/elasticluster) [AWS, GCP, OpenStack]
 - [Slurm on Google Platform](https://github.com/SchedMD/slurm-gcp) [GCP]
+- [NVIDIA DeepOps](https://github.com/NVIDIA/deepops) [Ansible playbooks only]
 
 ## Contributing / Customizing
 
