@@ -18,6 +18,7 @@ the certificates will be uploaded to the corresponding login node, without havin
 
 ### Changed
 - [puppet] Id of the accounts created in FreeIPA now start at UID_MAX defined `/etc/login.defs`. (commonly 60000 instead of 50000)
+- [puppet] fail2ban configuration is now done with puppet-fail2ban module. The `sshd` jail is now named `ssh-route`.
 - [cloud-init] Bumped puppetserver to 6.12.0 and puppetagent to 6.16.0.
 - Puppet hieradata yaml files are now uploaded with Terraform file provisioner instead of being embedded in mgmt1 userdata.
 This means a change to the number of users, the guest password, or the hieradata variable no longer trigger a rebuild of mgmt1
