@@ -678,7 +678,7 @@ to copy SSL certificate files to the login nodes after their creation.
 ### 6.1 CloudFlare
 
 1. Uncomment the `dns` module for CloudFlare in your `main.tf`.
-2. Uncomment the `output "dns"` block.
+2. Uncomment the `output "hostnames"` block.
 3. In the `dns` module, configure the variable `email` with your email address. This will be used to generate the Let's Encrypt certificate.
 4. Download and install the CloudFlare Terraform module: `terraform init`.
 5. Export the environment variables `CLOUDFLARE_EMAIL` and `CLOUDFLARE_API_KEY`, where `CLOUDFLARE_EMAIL` is your Cloudflare account email adress and `CLOUDFLARE_API_KEY` is your account Global API Key available in your [CloudFlare profile](https://dash.cloudflare.com/profile/api-tokens).
