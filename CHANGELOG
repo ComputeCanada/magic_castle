@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [8.1] UNRELEASED
+
+### Added
+- Added ability to generate an ssh keypair to upload files with Terraform file provisioner.
+
 ## [8.0] 2020-06-19
 
 Following release of CentOS 8 2004, AWS now provides an official CentOS 8 image that

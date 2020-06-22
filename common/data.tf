@@ -42,6 +42,12 @@ resource "random_pet" "guest_passwd" {
 
 resource "random_uuid" "consul_token" { }
 
+resource "tls_private_key" "ssh" {
+  count     = var.generate_ssh_key ? 1 : 0
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 data "http" "hieradata_template" {
   url = "${replace(var.puppetenv_git, ".git", "")}/raw/${var.puppetenv_rev}/data/terraform_data.yaml.tmpl"
 }
@@ -80,7 +86,7 @@ data "template_cloudinit_config" "mgmt_config" {
         puppetmaster_password = random_string.puppetmaster_password.result,
         node_name             = format("mgmt%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = var.public_keys,
+        ssh_authorized_keys   = concat(var.public_keys, tls_private_key.ssh[*].public_key_openssh),
       }
     )
   }
@@ -118,7 +124,7 @@ EOF
       {
         node_name             = format("login%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = var.public_keys,
+        ssh_authorized_keys   = concat(var.public_keys, tls_private_key.ssh[*].public_key_openssh),
         puppetmaster_ip       = local.puppetmaster_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
       }
@@ -137,7 +143,7 @@ data "template_cloudinit_config" "node_config" {
       {
         node_name             = each.key,
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = var.public_keys,
+        ssh_authorized_keys   = concat(var.public_keys, tls_private_key.ssh[*].public_key_openssh),
         puppetmaster_ip       = local.puppetmaster_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
       }
@@ -149,11 +155,13 @@ resource "null_resource" "deploy_hieradata" {
   count = var.instances["mgmt"]["count"] > 0 && var.instances["login"]["count"] > 0 ? 1 : 0
 
   connection {
-    type         = "ssh"
-    bastion_host = local.public_ip[0]
-    bastion_user = var.sudoer_username
-    user         = var.sudoer_username
-    host         = local.puppetmaster_ip
+    type                 = "ssh"
+    bastion_host         = local.public_ip[0]
+    bastion_user         = var.sudoer_username
+    bastion_private_key  = try(tls_private_key.ssh[0].private_key_pem, null)
+    user                 = var.sudoer_username
+    host                 = local.puppetmaster_ip
+    private_key          = try(tls_private_key.ssh[0].private_key_pem, null)
   }
 
   triggers = {

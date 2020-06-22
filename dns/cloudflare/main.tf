@@ -35,6 +35,7 @@ module "acme" {
   sudoer_username  = var.sudoer_username
   login_ips        = var.public_ip
   login_ids        = var.login_ids
+  ssh_private_key  = var.ssh_private_key
 }
 
 output "hostnames" {

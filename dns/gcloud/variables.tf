@@ -26,3 +26,7 @@ variable "sudoer_username" {
 variable "login_ids" {
   type = list(string)
 }
+
+variable "ssh_private_key" {
+  type = string
+}
