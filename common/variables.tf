@@ -56,7 +56,7 @@ variable "guest_passwd" {
 
 variable "puppetenv_git" {
   type        = string
-  default     = "https://github.com/ComputeCanada/puppet-magic_castle"
+  default     = "https://github.com/arshul/puppet-genpipes"
   description = "URL to the Magic Castle puppet environment git repo"
 }
 
