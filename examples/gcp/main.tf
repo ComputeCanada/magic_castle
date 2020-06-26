@@ -72,7 +72,7 @@ output "public_ip" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
 #   email            = "you@example.com"
 #   project          = "your-project-name"
-#   zone_name        = "you-zone-name"
+#   zone_name        = "your-zone-name"
 #   name             = module.gcp.cluster_name
 #   domain           = module.gcp.domain
 #   public_ip        = module.gcp.ip
