@@ -67,6 +67,7 @@ output "public_ip" {
 #   public_ip        = module.azure.ip
 #   login_ids        = module.azure.login_ids
 #   rsa_public_key   = module.azure.rsa_public_key
+#   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.azure.sudoer_username
 # }
 
@@ -81,6 +82,7 @@ output "public_ip" {
 #   public_ip        = module.azure.ip
 #   login_ids        = module.azure.login_ids
 #   rsa_public_key   = module.azure.rsa_public_key
+#   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.azure.sudoer_username
 # }
 

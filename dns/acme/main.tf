@@ -28,6 +28,10 @@ variable "login_ids" {
   type = list(string)
 }
 
+variable "ssh_private_key" {
+  type = string
+}
+
 resource "tls_private_key" "private_key" {
   algorithm = "RSA"
 }
@@ -56,9 +60,10 @@ resource "null_resource" "deploy_certs" {
   }
 
   connection {
-    type = "ssh"
-    user = var.sudoer_username
-    host = element(var.login_ips, count.index)
+    type        = "ssh"
+    user        = var.sudoer_username
+    host        = element(var.login_ips, count.index)
+    private_key = var.ssh_private_key
   }
 
   provisioner "file" {

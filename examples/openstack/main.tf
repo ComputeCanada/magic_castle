@@ -59,6 +59,7 @@ output "public_ip" {
 #   public_ip        = module.openstack.ip
 #   login_ids        = module.openstack.login_ids
 #   rsa_public_key   = module.openstack.rsa_public_key
+#   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.openstack.sudoer_username
 # }
 
@@ -73,6 +74,7 @@ output "public_ip" {
 #   public_ip        = module.openstack.ip
 #   login_ids        = module.openstack.login_ids
 #   rsa_public_key   = module.openstack.rsa_public_key
+#   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.openstack.sudoer_username
 # }
 

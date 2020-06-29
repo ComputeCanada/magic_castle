@@ -520,6 +520,18 @@ defined as a map of fives key-value pairs : `name`, `from_port`, `to_port`, `ip_
 
 **Post Build Modification Effect**: modify the cloud provider firewall rules at next `terraform apply`.
 
+### 4.14 generate_ssh_key (optional)
+
+**default_value**: `false`
+
+If true, Terraform will generate an ssh keypair that would then be used when copying file with Terraform
+file-provisioner. The public key will be added to the sudoer account authorized keys.
+
+This parameter is useful when Terraform does not have access to one of the private key associated with the
+public keys provided in `public_keys`.
+
+**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+
 ## 5. Cloud Specific Configuration
 
 ### 5.1 OpenStack and OVH

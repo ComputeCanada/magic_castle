@@ -57,6 +57,7 @@ output "public_ip" {
 #   login_ids        = module.aws.login_ids
 #   email            = "you@example.com"
 #   rsa_public_key   = module.aws.rsa_public_key
+#   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.aws.sudoer_username
 # }
 
@@ -71,6 +72,7 @@ output "public_ip" {
 #   public_ip        = module.aws.ip
 #   login_ids        = module.aws.login_ids
 #   rsa_public_key   = module.aws.rsa_public_key
+#   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.aws.sudoer_username
 # }
 

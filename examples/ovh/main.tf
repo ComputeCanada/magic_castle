@@ -57,6 +57,7 @@ output "public_ip" {
 #   public_ip        = module.ovh.ip
 #   login_ids        = module.ovh.login_ids
 #   rsa_public_key   = module.ovh.rsa_public_key
+#   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.ovh.sudoer_username
 # }
 
@@ -71,6 +72,7 @@ output "public_ip" {
 #   public_ip        = module.ovh.ip
 #   login_ids        = module.ovh.login_ids
 #   rsa_public_key   = module.ovh.rsa_public_key
+#   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.ovh.sudoer_username
 # }
 
