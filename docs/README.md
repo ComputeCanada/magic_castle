@@ -1059,7 +1059,7 @@ solutions to mitigate this problem.
 #### 10.9.1 Define a list of ip addresses that can never be banned
 
 fail2ban keeps a list of ip addresses that are allowed to fail to login without risking jail
-time. To define add an ip address to that list, on `mgmt1` add to
+time. To add an ip address to that list, on `mgmt1` add to
 ```
 /etc/puppetlabs/data/user_data.yaml
 ```
@@ -1071,7 +1071,7 @@ fail2ban::ignoreip:
 ```
 where `x.x.x.x` and `y.y.y.y` are ip addresses you want to add to the ignore list.
 The ip addresses can be written using CIDR notations.
-The ignore ip list on Magic Castle already include `127.0.0.1/8` and the cluster subnet CIDR.
+The ignore ip list on Magic Castle already includes `127.0.0.1/8` and the cluster subnet CIDR.
 
 Once the line is added, restart puppet on the login node(s):
 ```
@@ -1114,7 +1114,7 @@ sudo fail2ban-client set ssh-route unbanip
 
 #### 10.9.4 Disable fail2ban
 
-fail2ban, while note recommended, can be completely disabled. To do so, on `mgmt1` add to
+While this is not recommended, fail2ban can be completely disabled. To do so, on `mgmt1` add to
 ```
 /etc/puppetlabs/data/user_data.yaml
 ```
