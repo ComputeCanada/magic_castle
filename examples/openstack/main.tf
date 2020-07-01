@@ -10,7 +10,7 @@ module "openstack" {
   image        = "CentOS-7-x64-2019-07"
   nb_users     = 10
   puppetenv_git= "https://github.com/arshul/puppet-genpipes"
-
+  puppetenv_rev = "cvmfs"
   instances = {
     mgmt  = { type = "p4-4gb", count = 1 },
     login = { type = "p1-0.75gb", count = 1 },
