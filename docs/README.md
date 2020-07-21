@@ -477,6 +477,10 @@ following line to the string:
     ```
     profile::base::email: "me@example.org"
     ```
+- Add extra CVMFS repositories to the system:
+    ```
+    profile::cvmfs::client::extra_repos: [ref.mugqic, soft.mugqic]
+    ```
 - Define ip addresses that can never be banned by fail2ban:
     ```
     profile::fail2ban::ignore_ip: ['132.203.0.0/16', '8.8.8.8']
@@ -487,7 +491,7 @@ following line to the string:
     ```
 
 Refer to the following Puppet modules' documentation to know more about the key-values that can be defined:
-- [puppet-magic_castle](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/README.md)
+- [puppet-magic_castle](https://github.com/c3g/puppet-magic_castle/blob/master/README.md)
 - [puppet-jupyterhub](https://github.com/ComputeCanada/puppet-jupyterhub/blob/master/README.md#hieradata-configuration)
 
 

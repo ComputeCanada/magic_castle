@@ -1,4 +1,0 @@
----
-profile::cvmfs::client::extra_repos:
-  - ref.mugqic
-  - soft.mugqic
