@@ -3,10 +3,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [8.1] UNRELEASED
+## [8.2] UNRELEASED
+
+## [8.1] 2020-07-29
 
 ### Added
 - Added ability to generate an ssh keypair to upload files with Terraform file provisioner.
+- [puppet] Added options in hieradata to configure CVMFS repos
+
+### Changed
+- Activated VPC DNS support in AWS (issue #108)
+- Fixed documentation in multiple sections (PR #92, #93, #97, #98, #101, #106)
+- Fixed DNS section of AWS example (PR #108)
+- [puppet] Replaced homemade template of squid.conf by usage of puppet-squid module
 
 ## [8.0] 2020-06-19
 
