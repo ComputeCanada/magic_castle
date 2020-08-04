@@ -19,6 +19,10 @@ runcmd:
   - restorecon -R /${sudoer_username}
   - "(echo -e '\nHostKeyAlgorithms ssh-rsa\n' >> /etc/ssh/sshd_config && systemctl restart sshd)"
   - yum upgrade -y
+  - groupadd -r -g 8000131 cvmfs
+  - useradd -r -d /var/lib/cvmfs -s /sbin/nologin -c "CernVM-FS service account" -u 13000004 -g cvmfs cvmfs
+  - mkdir -p /scratch/cvmfs_alien_cache/ref.mugqic
+  - chown 13000004:8000131 /scratch/cvmfs_alien_cache/ref.mugqic
   - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]+' /etc/os-release).noarch.rpm
   - yum -y install puppet-agent-6.16.0
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
