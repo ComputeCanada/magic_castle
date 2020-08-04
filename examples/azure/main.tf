@@ -75,7 +75,7 @@ output "public_ip" {
 # module "dns" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
 #   email            = "you@example.com"
-#   project          = "your-project-name"
+#   project          = "your-project-id"
 #   zone_name        = "you-zone-name"
 #   name             = module.azure.cluster_name
 #   domain           = module.azure.domain
