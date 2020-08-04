@@ -716,7 +716,7 @@ Instead of step 5, export only `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ZONE_API_TOKE
 2. Uncomment the `dns` module for Google Cloud in your `main.tf`.
 3. Uncomment the `output "hostnames"` block.
 4. In `main.tf`'s `dns` module, configure the variable `email` with your email address. This will be used to generate the Let's Encrypt certificate.
-5. In `main.tf`'s `dns` module, configure the variables `project_name` and `zone_name`
+5. In `main.tf`'s `dns` module, configure the variables `project` and `zone_name`
 with their respective values as defined by your Google Cloud project.
 6. Download and install the Google Cloud Terraform module: `terraform init`.
 
