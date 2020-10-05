@@ -134,3 +134,9 @@ variable "firewall_rules" {
   ]
   description = "List of login external firewall rules defined as map of 5 values name, from_port, to_port, ip_protocol and cidr"
 }
+
+variable "generate_ssh_key" {
+  type        = bool
+  default     = false
+  description = "If set to true, Terraform will generate an ssh keypair to connect to the cluster. Default: false"
+}
