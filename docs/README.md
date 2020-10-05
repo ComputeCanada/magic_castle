@@ -491,7 +491,7 @@ following line to the string:
     ```
 
 Refer to the following Puppet modules' documentation to know more about the key-values that can be defined:
-- [puppet-magic_castle](https://github.com/c3g/puppet-magic_castle/blob/master/README.md)
+- [puppet-magic_castle](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/README.md)
 - [puppet-jupyterhub](https://github.com/ComputeCanada/puppet-jupyterhub/blob/master/README.md#hieradata-configuration)
 
 
