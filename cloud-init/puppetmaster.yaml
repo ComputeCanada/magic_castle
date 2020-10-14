@@ -22,7 +22,7 @@ runcmd:
   - yum upgrade -y
 # puppet master configuration
   - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]+' /etc/os-release).noarch.rpm
-  - yum -y install puppetserver-6.12.0 puppet-agent-6.16.0
+  - yum -y install puppetserver-6.13.0 puppet-agent-6.18.0
   - mkdir /var/autosign
   - chown puppet:puppet /var/autosign
   - chmod 750 /var/autosign
