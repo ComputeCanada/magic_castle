@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [8.2] UNRELEASED
 
+### Added
+- [puppet] Added Cloudflare load balancer cvmfs_acl_regex (issue #64)
+- [puppet] Added SELinux policy to allow fail2ban to ban using route (issue #65)
+
+### Changed
+- Fixed AWS, Azure, GCP and OVH examples that were incorrectly refering to openstack module
+- [cloud-init] Bumped puppetserver to 6.13.0 and puppetagent to 6.18.0
+- [puppet] Replaced homemade template of squid.conf by usage of puppet-squid module
+- [puppet] Bumped puppet-jupyterhub to v3.4.1
+- [puppet] Fixed slurmctld dependency to cluster registeration in slurmdbd
+- [puppet] Fixed ipa_create_user password configuration
+
 ## [8.1] 2020-07-29
 
 ### Added
