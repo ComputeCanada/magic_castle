@@ -35,7 +35,7 @@ for provider in "${CLOUD[@]}"; do
     cp -fL examples/$provider/main.tf $cur_folder
     mv $cur_folder/$provider/README.md $cur_folder
     sed_i 's;git::https://github.com/ComputeCanada/magic_castle.git//;./;g' $cur_folder/main.tf
-    sed_i "s;default = \"master\";default = \"$VERSION\";" $cur_folder/$provider/variables.tf
+    sed_i "s;\"master\";\"$VERSION\";" $cur_folder/$provider/variables.tf
     cp LICENSE $cur_folder
 
     # Identify and fix provider versions
