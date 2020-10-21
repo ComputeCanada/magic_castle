@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+
+## [8.3] 2020-10-21
+
+### Changed
+- Fixed puppetenv_rev default value when creating Magic Castle release (Commit bf30e13036)
+- [puppet] Bump puppet-jupyterhub version to v3.4.2
+- [puppet] Fixed freeipa issue when an ip was already recorded in the DNS and a new instance was joining the realm with the same ip ([puppet-magic_castle issue #69](https://github.com/ComputeCanada/puppet-magic_castle/issues/69))
+
 ## [8.2] 2020-10-14
 
 ### Added
