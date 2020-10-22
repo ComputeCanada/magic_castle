@@ -60,6 +60,7 @@ and apply their configuration based on their hostnames.
 - [Elasticluster](https://github.com/elasticluster/elasticluster) [AWS, GCP, OpenStack]
 - [Slurm on Google Platform](https://github.com/SchedMD/slurm-gcp) [GCP]
 - [NVIDIA DeepOps](https://github.com/NVIDIA/deepops) [Ansible playbooks only]
+- [StackHPC Ansible Role OpenHPC](https://github.com/stackhpc/ansible-role-openhpc) [Ansible Role for OpenStack]
 
 ## Contributing / Customizing
 
