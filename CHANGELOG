@@ -5,10 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [8.5] 2020-11-16
 
-## Added
+### Added
 - [puppet] Added Duo MFA classes and on/off switches for management, login and compute nodes.
 
-## Changed
+### Changed
 - [puppet] Refactored logic identifying the presence of an NVIDIA GPU to consider memory instead of instance name.
 - [puppet] Updated the version of most modules installed with Puppetfile
 - [puppet] Fixed permissions of nvidia-modprobe when installing Arbutus' `nvidia-vgpu-tools` rpm.
