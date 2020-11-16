@@ -10,7 +10,7 @@ env:
   - TF_VERSION="0.13.5"
 
 before_install:
-  - if ! terraform version ; then
+  - if [[ "$(terraform version | head -n1 | cut -d' ' -f 2)" != "v${TF_VERSION}" ]] ; then
       mkdir -p "${HOME}/bin"
       pushd ;
       curl -sSL
