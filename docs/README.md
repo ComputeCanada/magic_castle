@@ -930,22 +930,38 @@ This password must respect the FreeIPA password policy. To display the policy en
 
 ### 10.3 Add a User Account
 
+#### 10.3.1 With the Command-Line
+
 To add a user account after the cluster is built, log in `mgmt1` and call:
 ```bash
 $ kinit admin
-$ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.py <username>
+$ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.py <username> --sponsor <piname>
 $ kdestroy
 ```
 
-To allow the user to submit jobs, create a Slurm account for the user:
+The home folder will be created automatically in the moments following the account creation.
+
+The `<piname>` value will used to create a project folder in `/project` and a Slurm project.
+The project will be named `def-piname`. This step is also done automatically.
+
+#### 10.3.2 With Mokey
+
+If user signup with Mokey is enabled, users can create their own account at
 ```
-$ sudo /opt/software/slurm/bin/sacctmgr add account <username_account> -i
+https://mokey.yourcluster.domain.tld/auth/signup
 ```
 
-then add the user to Slurm database
-```bash
-$ sudo /opt/software/slurm/bin/sacctmgr add user <username> Account=<username_account> -i
+It is possible that an administrator is required to enable the account with Mokey. You can
+access the administrative panel of FreeIPA at :
 ```
+https://ipa.yourcluster.domain.tld/
+```
+
+The FreeIPA administrator credentials are available in the cluster Terraform output.
+
+User created with Mokey do not have a project nor a Slurm account. To add a user to a project and a Slurm account,
+add the user to a group with one of these prefixes : `ctb-`, `def-`, `rpp-` or `rrg-`. You can create new groups
+with FreeIPA web interface or using the command-line.
 
 ### 10.4 Increase the Number of Guest Accounts
 
@@ -957,7 +973,7 @@ can modify the hieradata file of the Puppet environment.
     ```
     /etc/puppetlabs/code/environments/production/data/terraform_data.yaml
     ```
-2. Increase the number associated with the field `profile::freeipa::guest_accounts::nb_accounts:`
+2. Increase the number associated with the field `profile::accounts::guests::nb_accounts:`
 to the number of guest accounts you want.
 3. Save the file.
 4. Restart puppet on `mgmt1`: `sudo systemctl restart puppet`.
