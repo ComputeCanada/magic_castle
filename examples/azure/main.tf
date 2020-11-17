@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.12.21"
+  required_version = ">= 0.13.4"
 }
 
 module "azure" {

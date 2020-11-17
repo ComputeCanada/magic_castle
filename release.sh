@@ -41,28 +41,31 @@ for provider in "${CLOUD[@]}"; do
     # Identify and fix provider versions
     # Keeping only the lowest version of a provider if it is present more than once
     cd $cur_folder
-    TF_PROVIDERS=$(
+    export TF_PROVIDERS=$(
         find $cur_folder -type d -exec terraform init {}  \; |
-        grep 'Downloading plugin' |
-        sed -E 's/- Downloading plugin for provider "([a-z]*)".*([0-9]{1,}\.[0-9]{1,})\.[0-9]{1,}\.\.\./\2 \1/g' |
+        grep '\- Installed [a-z/-]* v[0-9.]*' |
+        sed -E 's/- Installed ([a-z/-]*) v([0-9\.]*).*/\1 \2/g' |
         sort -V |
-        uniq -f 1 |
-        awk '{print $2,$1}' |
+        uniq -f 0 |
         tr " " "_" |
         sort
     )
     rm -rf .terraform
     cd -
-
     echo -e "terraform {\n  required_providers {"  >> $cur_folder/providers.tf
     for prov_vers in $TF_PROVIDERS; do
-        prov="${prov_vers%%_*}"
+        source="${prov_vers%%_*}"
         vers="${prov_vers#*_}"
-        file=$(grep -l -R "provider \"$prov\"" $cur_folder)
+        prov="${source#*/}"
+        file=$(grep -l -R "provider \"${prov}\"" $cur_folder)
         if [ ! -z "$file" ]; then
             sed_i '/version = "[<>~]\{1,\} *[0-9.]*"/d' $file
         fi
-        echo "    ${prov} = \"~> ${vers}\" " >> $cur_folder/providers.tf
+        echo "
+    ${prov} = {
+        source = \"${source}\"
+        version = \"~> ${vers}\"
+    }" >> $cur_folder/providers.tf
     done
     echo -e "  }\n}"  >> $cur_folder/providers.tf
 

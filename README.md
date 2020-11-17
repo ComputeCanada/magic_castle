@@ -8,7 +8,7 @@ From these new possibilities emerged an open-source software project named Magic
 
 ## Setup
 
-- Install [Terraform](https://releases.hashicorp.com/terraform/) (>= 0.12.21, < 0.13)
+- Install [Terraform](https://releases.hashicorp.com/terraform/) (>= 0.13.4)
 - Download the [latest release of Magic Castle](https://github.com/ComputeCanada/magic_castle/releases) for the cloud provider you wish to use.
 - Uncompress the release
 - Follow the instructions 
