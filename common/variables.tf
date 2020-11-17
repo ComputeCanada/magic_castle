@@ -52,6 +52,10 @@ variable "guest_passwd" {
   type        = string
   default     = ""
   description = "Guest accounts common password. If left blank, the password is randomly generated."
+  validation {
+    condition     = length(var.guest_passwd) == 0 || length(var.guest_passwd) >= 8
+    error_message = "The guest_passwd value must at least 8 characters long or an empty string."
+  }
 }
 
 variable "puppetenv_git" {
