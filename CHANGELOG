@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [9.0] 2020-11-17
+
+### Changed
+- Upgrade to Terraform 0.13, with a new minimum requirement of 0.13.4
+
 ## [8.5] 2020-11-16
 
 ### Added
