@@ -903,7 +903,7 @@ service. To disable puppet:
 sudo puppet agent --disable "<MESSAGE>"
 ```
 
-### 10.2 Replace the User Account Password
+### 10.2 Replace the Guest Account Password
 
 A four words password might not be ideal for workshops with new users
 who barely know how to type. To replace the randomly generated
