@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added Terraform variable verification for `cluster_name` and `guest_passwd`
 - Added `mokey` subdomain to the DNS record generator list
 - Added documentation on creating account with Mokey
-- [puppet] Integrated UBCCR's project [Mokey](https://github.com/ubccr/mokey) to allow users to create their own account on the cluster
+- [puppet] Integrated UBCCR's project [Mokey](https://github.com/ubccr/mokey)  to allow users to create and manage their account on the cluster using a web portal
 - [puppet] Added two daemons `mkhome` and `mkproject` that watch slapd log output for new users and groups and create 
 home, scratch and project directory plus Slurm account automatically
 - [puppet] Added Magic Castle custom login template to JupyterHub, which include a new `Create account` link when user signup is allowed
