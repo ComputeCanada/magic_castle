@@ -3,6 +3,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [9.1] UNRELEASED
+
+### Added
+- Added Terraform variable verification for `cluster_name` and `guest_passwd`
+- Added `mokey` subdomain to the DNS record generator list
+- Added documentation on creating account with Mokey
+- [puppet] Integrated UBCCR's project [Mokey](https://github.com/ubccr/mokey) to allow users to create their own account on the cluster
+- [puppet] Added two daemons `mkhome` and `mkproject` that watch slapd log output for new users and groups and create 
+home, scratch and project directory plus Slurm account automatically
+- [puppet] Added Magic Castle custom login template to JupyterHub, which include a new `Create account` link when user signup is allowed
+- [puppet] Added classes `profile::accounts` and `profile::accounts::guests` to handle account creation
+
+### Changed
+- [puppet] Updated puppet-jupyterhub version to 3.7.1
+- [puppet] Updated `kinit_wrapper` logic to avoid issue with multiple process using the same Kerberos cached credentials
+
+### Removed
+- [puppet] Remove class `profile::freeipa::guest_accounts` replaced by `profile::accounts::guests`
+
 ## [9.0] 2020-11-17
 
 ### Changed
