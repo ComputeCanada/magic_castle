@@ -7,7 +7,7 @@ module "openstack" {
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
-  image        = "CentOS-7-x64-2019-07"
+  image        = "CentOS-7-x64-2020-03"
   nb_users     = 10
 
   instances = {
