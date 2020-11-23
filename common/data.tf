@@ -205,7 +205,7 @@ resource "null_resource" "deploy_hieradata" {
       "sudo chgrp puppet /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/data/user_data.yaml &> /dev/null || true",
       "rm -f terraform_data.yaml user_data.yaml",
       "sudo mkdir -p /etc/puppetlabs/facts",
-      "sudo install -m 650 terraform_facts.yaml /etc/puppetlabs/facts/",
+      "sudo install -m 655 terraform_facts.yaml /etc/puppetlabs/facts/",
       "sudo chgrp puppet /etc/puppetlabs/facts/terraform_facts.yaml &> /dev/null || true",
       "rm -f terraform_facts.yaml",
     ]
