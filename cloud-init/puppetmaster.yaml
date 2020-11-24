@@ -44,7 +44,9 @@ runcmd:
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/production
   - "(cd /etc/puppetlabs/code/environments/production; git checkout ${puppetenv_rev})"
   - mkdir -p /etc/puppetlabs/data
+  - mkdir -p /etc/puppetlabs/facts
   - chgrp -R puppet /etc/puppetlabs/data
+  - chgrp -R puppet /etc/puppetlabs/facts
   - ln -sf /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/data/user_data.yaml /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/facts/terraform_facts.yaml /etc/puppetlabs/code/environments/production/site/profile/facts.d
