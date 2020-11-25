@@ -532,6 +532,17 @@ public keys provided in `public_keys`.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
+### 4.15 software_stack (optional)
+
+**default_value**: `computecanada`
+
+Defines the research computing software stack to be provided. The default value `computecanada`
+provides the Compute Canada software stack, but Magic Castle also
+supports the [EESSI](https://eessi.github.io/docs/) software stack (as an alternative) by setting this
+value to `eessi`.
+
+**Post Build Modification Effect**: trigger scp of hieradata files at next `terraform apply`.
+
 ## 5. Cloud Specific Configuration
 
 ### 5.1 OpenStack and OVH
