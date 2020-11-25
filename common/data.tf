@@ -71,6 +71,18 @@ data "template_file" "hieradata" {
   }
 }
 
+data "http" "facts_template" {
+  url = "${replace(var.puppetenv_git, ".git", "")}/raw/${var.puppetenv_rev}/site/profile/facts.d/terraform_facts.yaml.tmpl"
+}
+
+data "template_file" "facts" {
+  template = data.http.facts_template.body
+
+  vars = {
+    software_stack = var.software_stack
+  }
+}
+
 data "template_cloudinit_config" "mgmt_config" {
   count = var.instances["mgmt"]["count"]
   part {
@@ -167,12 +179,18 @@ resource "null_resource" "deploy_hieradata" {
   triggers = {
     user_data    = md5(var.hieradata)
     hieradata    = md5(data.template_file.hieradata.rendered)
+    facts        = md5(data.template_file.facts.rendered)
     puppetmaster = local.puppetmaster_id
   }
 
   provisioner "file" {
     content     = data.template_file.hieradata.rendered
     destination = "terraform_data.yaml"
+  }
+
+  provisioner "file" {
+    content     = data.template_file.facts.rendered
+    destination = "terraform_facts.yaml"
   }
 
   provisioner "file" {
@@ -183,9 +201,14 @@ resource "null_resource" "deploy_hieradata" {
   provisioner "remote-exec" {
     inline = [
       "sudo mkdir -p /etc/puppetlabs/data",
+      "sudo mkdir -p /etc/puppetlabs/facts",
       "sudo install -m 650 terraform_data.yaml user_data.yaml /etc/puppetlabs/data/",
+      "sudo install -m 650 terraform_facts.yaml /etc/puppetlabs/facts/",
+      # These chgrp commands do nothing if the puppet group does not yet exist
+      # so these are also handled by puppetmaster.yaml
       "sudo chgrp puppet /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/data/user_data.yaml &> /dev/null || true",
-      "rm -f terraform_data.yaml user_data.yaml"
+      "sudo chgrp puppet /etc/puppetlabs/facts/terraform_facts.yaml &> /dev/null || true",
+      "rm -f terraform_data.yaml user_data.yaml terraform_facts.yaml",
     ]
   }
 }
