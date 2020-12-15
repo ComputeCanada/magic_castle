@@ -55,8 +55,8 @@ and apply their configuration based on their hostnames.
 
 ## List of other cloud HPC cluster open-source projects
 
-- [ACRC Cluster in the cloud](https://github.com/ACRC/cluster-in-the-cloud) [GCP, Oracle]
 - [AWS ParallelCluster](https://github.com/aws/aws-parallelcluster) [AWS]
+- [Cluster in the cloud](https://github.com/clusterinthecloud) [AWS, GCP, Oracle]
 - [Elasticluster](https://github.com/elasticluster/elasticluster) [AWS, GCP, OpenStack]
 - [Slurm on Google Platform](https://github.com/SchedMD/slurm-gcp) [GCP]
 - [NVIDIA DeepOps](https://github.com/NVIDIA/deepops) [Ansible playbooks only]
