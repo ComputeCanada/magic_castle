@@ -62,6 +62,11 @@ and apply their configuration based on their hostnames.
 - [NVIDIA DeepOps](https://github.com/NVIDIA/deepops) [Ansible playbooks only]
 - [StackHPC Ansible Role OpenHPC](https://github.com/stackhpc/ansible-role-openhpc) [Ansible Role for OpenStack]
 
+
+> When I think about the DevOps landscape, we have so many people just like chefs in a restaurant that are experimenting with different ways of doing things. Once they get it, then they create those recipes. Those recipes in our world is source code. [...] That's why we will always have duplicates and similar projects, because there's going to be one ingredient that's going to be slightly different to make you preferred over something else
+
+[Kelsey Hightower, Sourcegraph Podcast, Episode 16, 2020](https://about.sourcegraph.com/podcast/kelsey-hightower/)
+
 ## Contributing / Customizing
 
 Refer to [Magic Castle developer documentation](docs/developers.md).
