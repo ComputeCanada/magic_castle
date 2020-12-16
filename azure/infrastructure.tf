@@ -199,7 +199,8 @@ resource "azurerm_linux_virtual_machine" "login" {
 
   lifecycle {
     ignore_changes = [
-      source_image_reference
+      source_image_reference,
+      source_image_id
     ]
   }
 }
@@ -247,7 +248,8 @@ resource "azurerm_linux_virtual_machine" "mgmt" {
 
   lifecycle {
     ignore_changes = [
-      source_image_reference
+      source_image_reference,
+      source_image_id
     ]
   }
 }
@@ -368,7 +370,8 @@ resource "azurerm_linux_virtual_machine" "node" {
 
   lifecycle {
     ignore_changes = [
-      source_image_reference
+      source_image_reference,
+      source_image_id
     ]
   }
 }
