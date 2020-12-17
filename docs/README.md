@@ -226,9 +226,25 @@ the region you chose.
 
 #### 4.4.2 Microsoft Azure
 
-Azure requires multiple fields to define which image to choose. This field
-is therefore not only a string, but a map that needs to contain the following
-fields `publisher`, `offer` and `sku`.
+The image field for Azure can either be a string or a map.
+
+A string image specification will correspond to the image id. Image ids
+can be retrieved using the following command-line:
+```
+az image builder list
+```
+
+A map image specification needs to contain the following
+fields `publisher`, `offer` `sku`, and optionally `version`.
+The map is used to specify image found in [Azure Marketplace](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage).
+Here is an example:
+```
+{
+    publisher = "OpenLogic",
+    offer     = "CentOS-CI",
+    sku       = "7-CI"
+}
+```
 
 #### 4.4.3 OVH
 

@@ -1,6 +1,5 @@
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
-  version = "~>2.0.0"
   features {}
 }
 
@@ -170,12 +169,17 @@ resource "azurerm_linux_virtual_machine" "login" {
     disk_size_gb      = var.root_disk_size
   }
 
-  source_image_reference {
-    publisher = var.image["publisher"]
-    offer     = var.image["offer"]
-    sku       = var.image["sku"]
-    version   = "latest"
+  dynamic "source_image_reference" {
+    for_each = can(tomap(var.image)) ? [var.image] : []
+    iterator = key
+    content {
+      publisher = key.value["publisher"]
+      offer     = key.value["offer"]
+      sku       = key.value["sku"]
+      version   = "latest"
+    }
   }
+  source_image_id = can(tomap(var.image)) ? null : tostring(var.image)
 
   computer_name  = format("login%d", count.index + 1)
   admin_username = "azure"
@@ -195,7 +199,8 @@ resource "azurerm_linux_virtual_machine" "login" {
 
   lifecycle {
     ignore_changes = [
-      source_image_reference
+      source_image_reference,
+      source_image_id
     ]
   }
 }
@@ -215,12 +220,17 @@ resource "azurerm_linux_virtual_machine" "mgmt" {
     disk_size_gb      = var.root_disk_size
   }
 
-  source_image_reference {
-    publisher = var.image["publisher"]
-    offer     = var.image["offer"]
-    sku       = var.image["sku"]
-    version   = "latest"
+  dynamic "source_image_reference" {
+    for_each = can(tomap(var.image)) ? [var.image] : []
+    iterator = key
+    content {
+      publisher = key.value["publisher"]
+      offer     = key.value["offer"]
+      sku       = key.value["sku"]
+      version   = "latest"
+    }
   }
+  source_image_id = can(tomap(var.image)) ? null : tostring(var.image)
 
   computer_name  = format("mgmt%d", count.index + 1)
   admin_username = "azure"
@@ -238,7 +248,8 @@ resource "azurerm_linux_virtual_machine" "mgmt" {
 
   lifecycle {
     ignore_changes = [
-      source_image_reference
+      source_image_reference,
+      source_image_id
     ]
   }
 }
@@ -324,12 +335,17 @@ resource "azurerm_linux_virtual_machine" "node" {
   resource_group_name   = local.resource_group_name
   network_interface_ids = [azurerm_network_interface.nodeNIC[each.key].id]
 
-  source_image_reference {
-    publisher = each.value["image"]["publisher"]
-    offer     = each.value["image"]["offer"]
-    sku       = each.value["image"]["sku"]
-    version   = "latest"
+  dynamic "source_image_reference" {
+    for_each = can(tomap(each.value["image"])) ? [each.value["image"]] : []
+    iterator = key
+    content {
+      publisher = key.value["publisher"]
+      offer     = key.value["offer"]
+      sku       = key.value["sku"]
+      version   = "latest"
+    }
   }
+  source_image_id = can(tomap(each.value["image"])) ? null : tostring(each.value["image"])
 
   os_disk {
     name              = each.value["os_disk_name"]
@@ -354,7 +370,8 @@ resource "azurerm_linux_virtual_machine" "node" {
 
   lifecycle {
     ignore_changes = [
-      source_image_reference
+      source_image_reference,
+      source_image_id
     ]
   }
 }
