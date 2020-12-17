@@ -38,36 +38,20 @@ for provider in "${CLOUD[@]}"; do
     sed_i "s;\"master\";\"$VERSION\";" $cur_folder/$provider/variables.tf
     cp LICENSE $cur_folder
 
-    # Identify and fix provider versions
-    # Keeping only the lowest version of a provider if it is present more than once
+    ## Initialize to create .terraform.lock.hcl file
     cd $cur_folder
-    export TF_PROVIDERS=$(
-        find $cur_folder -type d -exec terraform init {}  \; |
-        grep '\- Installed [a-z/-]* v[0-9.]*' |
-        sed -E 's/- Installed ([a-z/-]*) v([0-9\.]*).*/\1 \2/g' |
-        sort -V |
-        uniq -f 0 |
-        tr " " "_" |
-        sort
-    )
+    ## Make sure only one module is named "dns"
+    sed_i '1,/dns/s/dns/cloudflare/' main.tf
+    ## Uncomment DNS modules
+    sed_i 's/^#\ //g' main.tf
+    # TODO: skip plugins download once Terraform issue #25813 is fixed
+    terraform init
     rm -rf .terraform
     cd -
-    echo -e "terraform {\n  required_providers {"  >> $cur_folder/providers.tf
-    for prov_vers in $TF_PROVIDERS; do
-        source="${prov_vers%%_*}"
-        vers="${prov_vers#*_}"
-        prov="${source#*/}"
-        file=$(grep -l -R "provider \"${prov}\"" $cur_folder)
-        if [ ! -z "$file" ]; then
-            sed_i '/version = "[<>~]\{1,\} *[0-9.]*"/d' $file
-        fi
-        echo "
-    ${prov} = {
-        source = \"${source}\"
-        version = \"~> ${vers}\"
-    }" >> $cur_folder/providers.tf
-    done
-    echo -e "  }\n}"  >> $cur_folder/providers.tf
+
+    ## Recreate a new unmodified main.tf
+    cp -fL examples/$provider/main.tf $cur_folder
+    sed_i 's;git::https://github.com/ComputeCanada/magic_castle.git//;./;g' $cur_folder/main.tf
 
     cd $FOLDER
     tar czvf magic_castle-$provider-$VERSION.tar.gz magic_castle-$provider-$VERSION
