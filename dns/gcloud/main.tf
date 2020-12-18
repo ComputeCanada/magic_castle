@@ -1,5 +1,4 @@
 provider "google" {
-  version = "< 3.0.0"
 }
 
 data "google_dns_managed_zone" "domain" {

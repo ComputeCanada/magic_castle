@@ -1,5 +1,4 @@
 provider "cloudflare" {
-  version = "~> 2.0"
 }
 
 data "cloudflare_zones" "domain" {
