@@ -44,7 +44,7 @@ Minimum project requirements:
 * [Create and manage network - CLI, OpenStack Documentation](https://docs.openstack.org/ocata/user-guide/cli-create-and-manage-networks.html)
 
 
-### 1.1.2 Google Cloud
+### 1.2 Google Cloud
 
 **Global**
 * 1 Network
