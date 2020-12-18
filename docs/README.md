@@ -18,25 +18,33 @@
 
 To use Magic Castle you will need:
 * Terraform (>= 0.13.4).
-* Access to a Cloud (e.g.: Compute Canada Arbutus)
-* Ability to communicate with the cloud provider API from your computer
-* A cloud project with enough room for the resource described in section [1.1](#11-quotas).
+* Access to a Cloud (e.g.: Compute Canada Arbutus).
+* Ability to communicate with the cloud provider API from your computer.
+* A project with operational limits meeting the requirements described in the following subsections.
 
-### 1.1 Quotas
+### 1.1 OpenStack
 
-#### 1.1.1 OpenStack
-
+Minimum project requirements:
 * 1 floating IP
 * 1 security group
+* 1 network (see note 1)
+* 1 subnet (see note 1)
+* 1 router (see note 1)
 * 3 volumes
 * 3 instances
-* 6 VCPUs
+* 8 VCPUs
 * 7 neutron ports
-* 8 GB of RAM
+* 12 GB of RAM
 * 11 security rules
-* 50 Volume Storage (GB)
+* 80 GB of volume storage
 
-#### 1.1.2 Google Cloud
+**Note 1**: Magic Castle supposes the OpenStack project comes with a network, a subnet and a router already initialized. If any of these components is missing, you will need to create them manually before launching terraform.
+* [Create and manager networks, JUSUF user documentation](https://apps.fz-juelich.de/jsc/hps/jusuf/cloud/first_steps_cloud.html?highlight=dns#create-and-manage-networks)
+* [Create and manage network - UI, OpenStack Documentation](https://docs.openstack.org/horizon/latest/user/create-networks.html)
+* [Create and manage network - CLI, OpenStack Documentation](https://docs.openstack.org/ocata/user-guide/cli-create-and-manage-networks.html)
+
+
+### 1.1.2 Google Cloud
 
 **Global**
 * 1 Network
