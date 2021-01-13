@@ -3,14 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [9.2] UNRELEASED
+## [9.2] 2021-01-13
 
 ### Added
 - Added support for multiple software stacks including Compute Canada and EESSI (PR #124)
 - [azure] Added support for configuration of image using image_id
 - [puppet] Added automatic Slurm node weight computation through consul2slurm
-- [puppet] Added a wrapper for ipa-client-install to make nsupdate failure fatal (issue #79)
-- [puppet] Added definition of bind_addr parameter in consul config (issue #83)
+- [puppet] Added a wrapper for ipa-client-install to make nsupdate failure fatal ([puppet-magic_castle issue #79](https://github.com/ComputeCanada/puppet-magic_castle/issues/79))
+- [puppet] Added definition of bind_addr parameter in consul config ([puppet-magic_castle issue #83](https://github.com/ComputeCanada/puppet-magic_castle/issues/83))
 
 ### Changed
 - Fixed `cluster_name` validation and documentation
@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - [puppet] Changed z-00-rsnt_arch consul-template to produce a single value
 - [puppet] Stopped installation of CUDA when there is no nvidia device
 - [puppet] Fixed PowerTools repo filename for CentOS Linux 8
+- [puppet] Bumped puppet-jupyterhub version to 3.7.2
 
 ### Removed
 - Removed version from the provider config block
