@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [9.3] 2021-01-26
+
+### Added
+- Added configuration of NFS server running versions with nfs.conf
+
+### Changed
+- Excluded slurm from EPEL yum repo
+
 ## [9.2] 2021-01-13
 
 ### Added
