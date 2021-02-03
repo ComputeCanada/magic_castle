@@ -17,7 +17,7 @@
 ## 1. Setup
 
 To use Magic Castle you will need:
-* Terraform (>= 0.13.4).
+* Terraform (>= 0.14.2).
 * Access to a Cloud (e.g.: Compute Canada Arbutus).
 * Ability to communicate with the cloud provider API from your computer.
 * A project with operational limits meeting the requirements described in the following subsections.
