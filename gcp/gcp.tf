@@ -13,3 +13,8 @@ variable "zone" {
   default     = ""
   description = ""
 }
+
+locals {
+  cloud_provider = "gcp"
+  cloud_region   = var.region
+}
