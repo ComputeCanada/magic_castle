@@ -1,6 +1,6 @@
 variable "location" {
   type        = string
-  description = "Label of the Azure locaiton where the cluster will be created"
+  description = "Label of the Azure location where the cluster will be created"
 }
 
 variable "azure_resource_group" {
@@ -12,4 +12,9 @@ variable "azure_resource_group" {
 variable "managed_disk_type" {
   default     = "Premium_LRS"
   description = "Typename of the instances' root disk and NFS storage disks."
+}
+
+locals {
+  cloud_provider = "azure"
+  cloud_region   = var.location
 }

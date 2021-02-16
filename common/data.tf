@@ -80,6 +80,8 @@ data "template_file" "facts" {
 
   vars = {
     software_stack = var.software_stack
+    cloud_provider = local.cloud_provider
+    cloud_region   = local.cloud_region
   }
 }
 
