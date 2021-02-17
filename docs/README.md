@@ -305,30 +305,6 @@ sed -i s/^SELINUX=.*$/SELINUX=enforcing/ /etc/selinux/config
 
 Once the image is built, make sure to use to input its name in your main.tf file.
 
-### 4.7 nb_users
-
-Defines how many user accounts will be created in
-FreeIPA. Each user account shares the same randomly generated password.
-The usernames are defined as `userX` where `X` is a number between 1 and
-the value of `nb_users` (zero-padded, i.e.: `user01 if X < 100`, `user1 if X < 10`).
-
-Each user has a home folder on a shared NFS storage hosted by the management
-node.
-
-User accounts do not have sudoer privileges. If you wish to use `sudo`,
-you will have to login using the sudoer account and the SSH keys lists
-in `public_keys`.
-
-If you would like to add a user account after the cluster is built, refer to
-section [10.3](#103-add-a-user-account) and [10.4](#104-increase-the-number-of-guest-accounts).
-
-**Requirement**: Must be an integer, minimum value is 0.
-
-**Post Build Modification Effect**: trigger scp of hieradata files at next `terraform apply`.
-If `nb_users` is increased, new guest accounts will be created during the following
-puppet run on `mgmt1`. If `nb_users` is decreased, it will have no effect: the guest accounts
-already created will be left intact.
-
 ### 4.8 instances
 
 The `instances` variable is map with 3 keys: `mgmt`, `login` and `node`.
@@ -486,7 +462,31 @@ is deprecated.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.11 guest_passwd (optional)
+### 4.11 nb_users
+
+Defines how many guest user accounts will be created in
+FreeIPA. Each user account shares the same randomly generated password.
+The usernames are defined as `userX` where `X` is a number between 1 and
+the value of `nb_users` (zero-padded, i.e.: `user01 if X < 100`, `user1 if X < 10`).
+
+Each user has a home folder on a shared NFS storage hosted by the management
+node.
+
+User accounts do not have sudoer privileges. If you wish to use `sudo`,
+you will have to login using the sudoer account and the SSH keys lists
+in `public_keys`.
+
+If you would like to add a user account after the cluster is built, refer to
+section [10.3](#103-add-a-user-account) and [10.4](#104-increase-the-number-of-guest-accounts).
+
+**Requirement**: Must be an integer, minimum value is 0.
+
+**Post Build Modification Effect**: trigger scp of hieradata files at next `terraform apply`.
+If `nb_users` is increased, new guest accounts will be created during the following
+puppet run on `mgmt1`. If `nb_users` is decreased, it will have no effect: the guest accounts
+already created will be left intact.
+
+### 4.12 guest_passwd (optional)
 
 **default value**: 4 random words separated by a dot
 
@@ -502,7 +502,7 @@ the password change will have this password.
 To modify the password of previously created guest accounts, refer to section
 ([see section 10.2](#102-replace-the-user-account-password)).
 
-### 4.12 root_disk_size (optional)
+### 4.13 root_disk_size (optional)
 
 **default value**: 10
 
@@ -511,7 +511,7 @@ the operating system and softwares required to operate the cluster services.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.13 sudoer_username (optional)
+### 4.14 sudoer_username (optional)
 
 **default value**: `centos`
 
@@ -521,7 +521,7 @@ ssh authorized keys are configured with the SSH public keys with
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.14 hieradata (optional)
+### 4.15 hieradata (optional)
 
 **default value**: empty string
 
@@ -557,7 +557,7 @@ The file created from this string can be found on `mgmt1` as
 
 **Post Build Modification Effect**: trigger scp of hieradata files at next `terraform apply`.
 
-### 4.15 firewall_rules (optional)
+### 4.16 firewall_rules (optional)
 
 **default value**:
 ```
@@ -577,7 +577,7 @@ defined as a map of fives key-value pairs : `name`, `from_port`, `to_port`, `ip_
 
 **Post Build Modification Effect**: modify the cloud provider firewall rules at next `terraform apply`.
 
-### 4.16 generate_ssh_key (optional)
+### 4.17 generate_ssh_key (optional)
 
 **default_value**: `false`
 
@@ -589,7 +589,7 @@ public keys provided in `public_keys`.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.17 software_stack (optional)
+### 4.18 software_stack (optional)
 
 **default_value**: `computecanada`
 

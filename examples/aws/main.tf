@@ -10,7 +10,6 @@ module "aws" {
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
   image        = "ami-033e6106180a626d0" # CentOS 7 -  ca-central-1
-  nb_users     = 10
 
   instances = {
     mgmt  = { type = "t3.large",  count = 1 },
@@ -27,6 +26,7 @@ module "aws" {
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
 
+  nb_users     = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
 

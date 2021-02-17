@@ -18,8 +18,6 @@ module "azure" {
   # Magic Castle default root disk size is 10GB.
   root_disk_size = 30
 
-  nb_users     = 10
-
   instances = {
     mgmt  = { type = "Standard_DS2_v2", count = 1 },
     login = { type = "Standard_DS1_v2", count = 1 },
@@ -37,6 +35,7 @@ module "azure" {
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
 
+  nb_users     = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
 
