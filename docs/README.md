@@ -176,7 +176,40 @@ the `.tf` files that defines the resources that constitutes your future
 cluster. We are pointing this variable at the cloud provider folder in the
 release folder (i.e.: `./openstack`).
 
-### 4.2 cluster_name
+### 4.2 config_git_url
+
+Magic Castle cluster configuration management is handled by
+[Puppet](https://en.wikipedia.org/wiki/Puppet_(software)). The Puppet 
+configuration files are stored in a git repository. This repository is
+typically [ComputeCanada/puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) repository on GitHub.
+
+Leave this variable to its current value to deploy a vanilla Magic Castle cluster.
+
+If you wish to customize the instances' role assignment, add services, or
+develop new features for Magic Castle, fork the [ComputeCanada/puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) and point this variable to
+your fork's URL. For more information on Magic Castle puppet configuration
+customization, refer to [MC developper documentation](developpers.md).
+
+#### 4.2.1 Post Build Modification Effect
+
+Modifying this variable after the cluster is built leads to a complete
+cluster rebuild at next `terraform apply`.
+
+### 4.3 config_version
+
+Since Magic Cluster configuration is managed with git, it is possible to specify
+which version of the configuration you wish to use. Typically, it will match the
+version number of the release you have downloaded (i.e: `9.3`).
+
+The variable can refer to any git revision, tag or branch available in the git
+repository pointed by `config_git_url`.
+
+#### 4.3.1 Post Build Modification Effect
+
+Modifying this variable after the cluster is built leads to a complete
+cluster rebuild at next `terraform apply`.
+
+### 4.4 cluster_name
 
 Defines the `ClusterName` variable in `slurm.conf` and the name of
 the cluster in the Slurm accounting database
@@ -186,7 +219,7 @@ the cluster in the Slurm accounting database
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.3 domain
+### 4.5 domain
 
 Defines
 * the Kerberos realm name when initializing FreeIPA.
@@ -212,7 +245,7 @@ domain. You can verify no such record exist with `dig`:
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.4 image
+### 4.6 image
 
 Defines the name of the image that will be used as the base image for the cluster nodes.
 
@@ -226,13 +259,13 @@ security patches and OS updates in advance.
 **Post Build Modification Effect**: None - if this variable is modified, existing
 instances will ignore the change and future instances will use the new value.
 
-#### 4.4.1 AWS
+#### 4.6.1 AWS
 
 The image field needs to correspond to the Amazon Machine Image id or AMI.
 The AMI is specific to each region, so make sure to use the right AMI for
 the region you chose.
 
-#### 4.4.2 Microsoft Azure
+#### 4.6.2 Microsoft Azure
 
 The image field for Azure can either be a string or a map.
 
@@ -254,7 +287,7 @@ Here is an example:
 }
 ```
 
-#### 4.4.3 OVH
+#### 4.6.3 OVH
 
 SELinux is not enabled in OVH provided images. Since SELinux has to be
 enabled for Magic Castle to work properly, you will need to build a custom image
@@ -272,7 +305,7 @@ sed -i s/^SELINUX=.*$/SELINUX=enforcing/ /etc/selinux/config
 
 Once the image is built, make sure to use to input its name in your main.tf file.
 
-### 4.5 nb_users
+### 4.7 nb_users
 
 Defines how many user accounts will be created in
 FreeIPA. Each user account shares the same randomly generated password.
@@ -296,11 +329,11 @@ If `nb_users` is increased, new guest accounts will be created during the follow
 puppet run on `mgmt1`. If `nb_users` is decreased, it will have no effect: the guest accounts
 already created will be left intact.
 
-### 4.6 instances
+### 4.8 instances
 
 The `instances` variable is map with 3 keys: `mgmt`, `login` and `node`.
 
-#### 4.6.1 mgmt
+#### 4.8.1 mgmt
 
 The value associated with the `mgmt` key is required to be a map
 with 2 keys: `type` and `count`.
@@ -320,7 +353,7 @@ on which will run the management instances.
 - CPUs: 2 cores
 - RAM: 6GB
 
-#### 4.6.2 login
+#### 4.8.2 login
 
 The value associated with the `login` key is required to be a map
 with 2 keys: `type` and `count`.
@@ -340,7 +373,7 @@ on which will run the login instances.
 - CPUs: 2 cores
 - RAM: 2GB
 
-#### 4.6.3 node
+#### 4.8.3 node
 
 The value associated with the `node` key is required to be a list of
 map with at least two keys: `type` and `count`.
@@ -418,7 +451,7 @@ available models per region.
 
 Number of GPUs of the `gpu_type` model to attach to the instance.
 
-#### 4.6.4 Post Build Modification Effect
+#### 4.8.4 Post Build Modification Effect
 
 count and type variables can be modified at any point of your cluster lifetime.
 Terraform will manage the creation or destruction of the virtual machines
@@ -427,7 +460,7 @@ for you.
 Modifying any of these variables after the cluster is built will only affect
 the type of instances associated with the variables at next `terraform apply`.
 
-### 4.7 Storage: type, home_size, project_size, scratch_size
+### 4.9 Storage: type, home_size, project_size, scratch_size
 
 Define the type of network storage and the size of the volumes
 for respectively `/home`, `/project` and `/scratch`.
@@ -438,7 +471,7 @@ exported with NFS to the login and the compute nodes.
 **Post Build Modification Effect**: destruction of the corresponding volumes and attachments, and creation
 of new empty volumes and attachments.
 
-### 4.8 public_keys
+### 4.10 public_keys
 
 List of SSH public keys that will have access to your cluster sudoer account.
 
@@ -453,7 +486,7 @@ is deprecated.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.9 guest_passwd (optional)
+### 4.11 guest_passwd (optional)
 
 **default value**: 4 random words separated by a dot
 
@@ -469,7 +502,7 @@ the password change will have this password.
 To modify the password of previously created guest accounts, refer to section
 ([see section 10.2](#102-replace-the-user-account-password)).
 
-### 4.10 root_disk_size (optional)
+### 4.12 root_disk_size (optional)
 
 **default value**: 10
 
@@ -478,7 +511,7 @@ the operating system and softwares required to operate the cluster services.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.11 sudoer_username (optional)
+### 4.13 sudoer_username (optional)
 
 **default value**: `centos`
 
@@ -488,7 +521,7 @@ ssh authorized keys are configured with the SSH public keys with
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.12 hieradata (optional)
+### 4.14 hieradata (optional)
 
 **default value**: empty string
 
@@ -524,7 +557,7 @@ The file created from this string can be found on `mgmt1` as
 
 **Post Build Modification Effect**: trigger scp of hieradata files at next `terraform apply`.
 
-### 4.13 firewall_rules (optional)
+### 4.15 firewall_rules (optional)
 
 **default value**:
 ```
@@ -544,7 +577,7 @@ defined as a map of fives key-value pairs : `name`, `from_port`, `to_port`, `ip_
 
 **Post Build Modification Effect**: modify the cloud provider firewall rules at next `terraform apply`.
 
-### 4.14 generate_ssh_key (optional)
+### 4.16 generate_ssh_key (optional)
 
 **default_value**: `false`
 
@@ -556,7 +589,7 @@ public keys provided in `public_keys`.
 
 **Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.15 software_stack (optional)
+### 4.17 software_stack (optional)
 
 **default_value**: `computecanada`
 

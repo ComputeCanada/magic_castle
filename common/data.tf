@@ -49,7 +49,7 @@ resource "tls_private_key" "ssh" {
 }
 
 data "http" "hieradata_template" {
-  url = "${replace(var.puppetenv_git, ".git", "")}/raw/${var.puppetenv_rev}/data/terraform_data.yaml.tmpl"
+  url = "${replace(var.config_git_url, ".git", "")}/raw/${var.config_version}/data/terraform_data.yaml.tmpl"
 }
 
 data "template_file" "hieradata" {
@@ -72,7 +72,7 @@ data "template_file" "hieradata" {
 }
 
 data "http" "facts_template" {
-  url = "${replace(var.puppetenv_git, ".git", "")}/raw/${var.puppetenv_rev}/site/profile/facts.d/terraform_facts.yaml.tmpl"
+  url = "${replace(var.config_git_url, ".git", "")}/raw/${var.config_version}/site/profile/facts.d/terraform_facts.yaml.tmpl"
 }
 
 data "template_file" "facts" {
@@ -94,8 +94,8 @@ data "template_cloudinit_config" "mgmt_config" {
     content      = templatefile(
       format("${path.module}/cloud-init/%s.yaml", count.index == 0 ? "puppetmaster": "puppetagent"),
       {
-        puppetenv_git         = replace(replace(var.puppetenv_git, ".git", ""), "//*$/", ".git"),
-        puppetenv_rev         = var.puppetenv_rev,
+        puppetenv_git         = replace(replace(var.config_git_url, ".git", ""), "//*$/", ".git"),
+        puppetenv_rev         = var.config_version,
         puppetmaster_ip       = local.puppetmaster_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
         node_name             = format("mgmt%d", count.index + 1),

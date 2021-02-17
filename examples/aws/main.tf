@@ -3,7 +3,9 @@ terraform {
 }
 
 module "aws" {
-  source = "git::https://github.com/ComputeCanada/magic_castle.git//aws"
+  source         = "git::https://github.com/ComputeCanada/magic_castle.git//aws"
+  config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
+  config_version = "master"
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
