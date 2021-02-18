@@ -3,7 +3,7 @@ terraform {
 }
 
 module "aws" {
-  source = "git::https://github.com/verdurin/magic_castle.git//aws"
+  source = "git::https://github.com/ComputeCanada/magic_castle.git//aws"
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
@@ -21,9 +21,6 @@ module "aws" {
     home_size    = 100
     project_size = 50
     scratch_size = 50
-    home_vol_type = "gp2"
-    project_vol_type = "gp2"
-    scratch_vol_type = "gp2"
   }
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
