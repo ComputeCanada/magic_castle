@@ -762,10 +762,24 @@ and the SSL certificates manually.
 
 #### 6.3.1 DNS Records
 
-The DNS records registered by Magic Castle are listed in
-[dns/record_generator/main.tf](https://github.com/ComputeCanada/magic_castle/blob/master/dns/record_generator/main.tf). All records point to one of the login nodes.
+Magic Castle provides a module that creates a text file with the DNS records that can
+then be imported manually in your DNS zone. To use this module, add the following
+snippet to your `main.tf`:
 
-These are the records that need to be created in your DNS provider.
+```
+module "dns" {
+    source           = "./dns/txt"
+    name             = module.openstack.cluster_name
+    domain           = module.openstack.domain
+    public_ip        = module.openstack.ip
+}
+```
+
+Find and replace `openstack` in the previous snippet by your cloud provider of choice
+if not OpenStack (i.e: `aws`, `gcp`, etc.).
+
+The file will be created after the `terraform apply` in the same folder as your `main.tf`
+and will be named as `${name}.${domain}.txt`.
 
 #### 6.3.2 SSL Certificates
 
