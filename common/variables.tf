@@ -37,13 +37,7 @@ variable "storage" {
     type=string,
     home_size=number,
     project_size=number,
-    scratch_size=number,
-    home_vol_type=string,
-    project_vol_type=string,
-    scratch_vol_type=string,
-    home_vol_iops=number,
-    project_vol_iops=number,
-    scratch_vol_iops=number,
+    scratch_size=number
   })
   description = "Map that defines the storage parameters"
 }

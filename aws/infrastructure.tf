@@ -183,8 +183,7 @@ resource "aws_ebs_volume" "home" {
   count             = lower(var.storage["type"]) == "nfs" ? 1 : 0
   availability_zone = local.availability_zone
   size              = var.storage["home_size"]
-  type              = var.storage["home_vol_type"]
-  iops              = var.storage["home_vol_iops"]
+  type              = "gp2"
 
   tags = {
     Name = "${var.cluster_name}-home"
@@ -195,8 +194,7 @@ resource "aws_ebs_volume" "project" {
   count             = lower(var.storage["type"]) == "nfs" ? 1 : 0
   availability_zone = local.availability_zone
   size              = var.storage["project_size"]
-  type              = var.storage["project_vol_type"]
-  iops              = var.storage["project_vol_iops"]
+  type              = "gp2"
 
   tags = {
     Name = "${var.cluster_name}-project"
@@ -207,8 +205,7 @@ resource "aws_ebs_volume" "scratch" {
   count             = lower(var.storage["type"]) == "nfs" ? 1 : 0
   availability_zone = local.availability_zone
   size              = var.storage["scratch_size"]
-  type              = var.storage["scratch_vol_type"]
-  iops              = var.storage["scratch_vol_iops"]
+  type              = "gp2"
 
   tags = {
     Name = "${var.cluster_name}-scratch"
