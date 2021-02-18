@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.13.4"
 }
 
 module "openstack" {
@@ -7,7 +7,7 @@ module "openstack" {
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
-  image        = "CentOS-7-x64-2019-07"
+  image        = "CentOS-7-x64-2020-03"
   nb_users     = 10
 
   instances = {
@@ -57,7 +57,9 @@ output "public_ip" {
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
 #   public_ip        = module.openstack.ip
+#   login_ids        = module.openstack.login_ids
 #   rsa_public_key   = module.openstack.rsa_public_key
+#   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.openstack.sudoer_username
 # }
 
@@ -65,12 +67,14 @@ output "public_ip" {
 # module "dns" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
 #   email            = "you@example.com"
-#   project          = "your-project-name"
+#   project          = "your-project-id"
 #   zone_name        = "you-zone-name"
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
 #   public_ip        = module.openstack.ip
+#   login_ids        = module.openstack.login_ids
 #   rsa_public_key   = module.openstack.rsa_public_key
+#   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.openstack.sudoer_username
 # }
 

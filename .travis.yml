@@ -7,10 +7,10 @@ cache:
 env:
   global:
   - PATH="${HOME}/bin
-  - TF_VERSION="0.12.21"
+  - TF_VERSION="0.14.5"
 
 before_install:
-  - if ! terraform version ; then
+  - if [[ "$(terraform version | head -n1 | cut -d' ' -f 2)" != "v${TF_VERSION}" ]] ; then
       mkdir -p "${HOME}/bin"
       pushd ;
       curl -sSL

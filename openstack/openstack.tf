@@ -17,3 +17,12 @@ variable "os_int_subnet" {
   type    = string
   default = null
 }
+
+data "external" "keystone" {
+  program = ["python", "${path.module}/keystone.py"]
+}
+
+locals {
+  cloud_provider = "openstack"
+  cloud_region   = data.external.keystone.result.name
+}

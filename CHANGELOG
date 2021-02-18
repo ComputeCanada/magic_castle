@@ -3,6 +3,257 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [9.3] 2021-01-26
+
+### Added
+- Added configuration of NFS server running versions with nfs.conf
+
+### Changed
+- Excluded slurm from EPEL yum repo
+
+## [9.2] 2021-01-13
+
+### Added
+- Added support for multiple software stacks including Compute Canada and EESSI (PR #124)
+- [azure] Added support for configuration of image using image_id
+- [puppet] Added automatic Slurm node weight computation through consul2slurm
+- [puppet] Added a wrapper for ipa-client-install to make nsupdate failure fatal ([puppet-magic_castle issue #79](https://github.com/ComputeCanada/puppet-magic_castle/issues/79))
+- [puppet] Added definition of bind_addr parameter in consul config ([puppet-magic_castle issue #83](https://github.com/ComputeCanada/puppet-magic_castle/issues/83))
+
+### Changed
+- Fixed `cluster_name` validation and documentation
+- Simplified version locking in release.sh
+- [puppet] Changed `'ensure'` of package globus-repo to `'latest'`
+- [puppet] Changed z-00-rsnt_arch consul-template to produce a single value
+- [puppet] Stopped installation of CUDA when there is no nvidia device
+- [puppet] Fixed PowerTools repo filename for CentOS Linux 8
+- [puppet] Bumped puppet-jupyterhub version to 3.7.2
+
+### Removed
+- Removed version from the provider config block
+- [azure] Remove version set from azure provider
+
+## [9.1] 2020-11-19
+
+### Added
+- Added Terraform variable verification for `cluster_name` and `guest_passwd`
+- Added `mokey` subdomain to the DNS record generator list
+- Added documentation on creating account with Mokey
+- [puppet] Integrated UBCCR's project [Mokey](https://github.com/ubccr/mokey)  to allow users to create and manage their account on the cluster using a web portal
+- [puppet] Added two daemons `mkhome` and `mkproject` that watch slapd log output for new users and groups and create 
+home, scratch and project directory plus Slurm account automatically
+- [puppet] Added Magic Castle custom login template to JupyterHub, which include a new `Create account` link when user signup is allowed
+- [puppet] Added classes `profile::accounts` and `profile::accounts::guests` to handle account creation
+
+### Changed
+- [puppet] Updated puppet-jupyterhub version to 3.7.1
+- [puppet] Updated `kinit_wrapper` logic to avoid issue with multiple process using the same Kerberos cached credentials
+
+### Removed
+- [puppet] Remove class `profile::freeipa::guest_accounts` replaced by `profile::accounts::guests`
+
+## [9.0] 2020-11-17
+
+### Changed
+- Upgrade to Terraform 0.13, with a new minimum requirement of 0.13.4
+
+## [8.5] 2020-11-16
+
+### Added
+- [puppet] Added Duo MFA classes and on/off switches for management, login and compute nodes.
+
+### Changed
+- [puppet] Refactored logic identifying the presence of an NVIDIA GPU to consider memory instead of instance name.
+- [puppet] Updated the version of most modules installed with Puppetfile
+- [puppet] Fixed permissions of nvidia-modprobe when installing Arbutus' `nvidia-vgpu-tools` rpm.
+
+## [8.4] 2020-11-10
+
+### Changed
+- [puppet] Updated puppet-jupyterhub version to v3.5.1
+
+## [8.3] 2020-10-21
+
+### Changed
+- Fixed puppetenv_rev default value when creating Magic Castle release (Commit bf30e13036)
+- [puppet] Bump puppet-jupyterhub version to v3.4.2
+- [puppet] Fixed freeipa issue when an ip was already recorded in the DNS and a new instance was joining the realm with the same ip ([puppet-magic_castle issue #69](https://github.com/ComputeCanada/puppet-magic_castle/issues/69))
+
+## [8.2] 2020-10-14
+
+### Added
+- [puppet] Added Cloudflare load balancer cvmfs_acl_regex (issue #64)
+- [puppet] Added SELinux policy to allow fail2ban to ban using route (issue #65)
+
+### Changed
+- Fixed AWS, Azure, GCP and OVH examples that were incorrectly refering to openstack module
+- [cloud-init] Bumped puppetserver to 6.13.0 and puppetagent to 6.18.0
+- [puppet] Replaced homemade template of squid.conf by usage of puppet-squid module
+- [puppet] Bumped puppet-jupyterhub to v3.4.1
+- [puppet] Fixed slurmctld dependency to cluster registeration in slurmdbd
+- [puppet] Fixed ipa_create_user password configuration
+
+## [8.1] 2020-07-29
+
+### Added
+- Added ability to generate an ssh keypair to upload files with Terraform file provisioner.
+- [puppet] Added options in hieradata to configure CVMFS repos
+
+### Changed
+- Activated VPC DNS support in AWS (issue #108)
+- Fixed documentation in multiple sections (PR #92, #93, #97, #98, #101, #106)
+- Fixed DNS section of AWS example (PR #108)
+- [puppet] Replaced homemade template of squid.conf by usage of puppet-squid module
+
+## [8.0] 2020-06-19
+
+Following release of CentOS 8 2004, AWS now provides an official CentOS 8 image that
+has been tested and is functional with Magic Castle 8.0.
+
+### Added
+- Added the login node ids as output of the main Magic Castle Terraform module.
+- Added a trigger to DNS module deploy_certs based on login node ids. If there is a modification to one of the login node state,
+the certificates will be uploaded to the corresponding login node, without having to taint the `deploy_certs` resource manually
+(PR #88).
+- Added try function around access to index 0 of resource array to limit errors when destroying resources.
+- [puppet] Added a resource in `profile::base` to remove terraform `local-exec` leftover empty scripts in /tmp.
+
+### Changed
+- [puppet] Id of the accounts created in FreeIPA now start at UID_MAX defined `/etc/login.defs`. (commonly 60000 instead of 50000)
+- [puppet] fail2ban configuration is now done with puppet-fail2ban module. The `sshd` jail is now named `ssh-route`.
+- [cloud-init] Bumped puppetserver to 6.12.0 and puppetagent to 6.16.0.
+- Puppet hieradata yaml files are now uploaded with Terraform file provisioner instead of being embedded in mgmt1 userdata.
+This means a change to the number of users, the guest password, or the hieradata variable no longer trigger a rebuild of mgmt1
+but only a reupload of YAML files (PR #89)
+- [docs] Various fixes (Issues #87, #92, #93)
+
+### Removed
+- Hieradata has been removed from puppetmaster.yaml template.
+
+## [7.3] 2020-06-04
+
+This release introduces three main features:
+- Add support for Slurm 20
+- Add support for CentOS 8. Tested functional on GCP and OpenStack. AWS and Azure do not provide
+an official CentOS 8 image with cloud-init support at the moment of this release.
+- Add support for Compute Canada Arbutus Cloud NVIDIA VGPUs (flavor `vgpu-...`).
+
+### Changed
+- Improved main documentation.
+- [AWS] Most resources if not all now have the name of the cluster as a prefix in their name
+- [OpenStack] Simplified volume attachment count computation
+- [puppet] Slurm plugin spank-cc-tmpfs_mounts is now installed from copr yumrepo
+- [puppet] Fixed order of slurm packages install
+- [puppet] Exec resource in charge of creating the slurm cluster in slurmdbd now returns 0 if the cluster already exists
+- [puppet] `consul-template` class initialization is now entirely in hieradata file `common.yaml`.
+- [puppet] CentOS 8 support: replaced notification of `nfs-idmap.service` by notification of `nfs-server.service`.
+- [puppet] CentOS 8 support: replaced `pdsh` by `clustershell`
+- [puppet] CentOS 8 support: rpc_nfs_args is now only defined if os is CentOS 7.
+- [puppet] CentOS 8 support: `ipa_create_user.py` now use `/usr/libexec/platform-python` instead of `/usr/bin/env python`.
+- [puppet] CentOS 8 support: Replaced Python 2 `unicode` calls in `ipa_create_user.py` by six's `text_type`
+- [puppet] CentOS 8 support: Moved list of nvidia package names from class profile::gpu to hieradata. List now depends on CentOS version.
+- [puppet] CentOS 8 support: Moved FreeIPA `regen_cert_cmd` value to hieradata. Command now depends on CentOS version.
+- [puppet] Bumped puppet-jupyterhub version to 3.3.2
+- [puppet] Update nvidia driver fact to make sure at most one version is in the output
+- [puppet] Changed logic of `nvidia_grid_vgpu` fact to just check if the instance flavor includes `vgpu` in its name
+- [puppet] CentOS 8 support: Moved default loaded CVMFS modules to hieradata. Module list now depends on CentOS version
+- [puppet] CentOS 8 support: Fixed nfs clean rbind execstop warning
+- [puppet] Replaced tcp_con_validator to check if slurmdbd is running by a wait_for ressource on slurmdbd.log regex
+- [puppet] CentOS 8 support: Fixed package name in nvidia-driver-version fact.
+- [cloud-init] Replaced `reboot -n` in `runcmd` by `power_state` with reboot now. This makes sure final stage of cloud-init is applied before reboot.
+- [gcp] CentOS 8 support: rewrote `install_cloudinit.sh` to avoid network issue at boot and install cloud-init only for the time needed. (issue #85)
+
+### Added
+- [puppet] Added support for CentOS 8 when selecting Slurm yumrepo
+- [puppet] Slurm 20 support: Added `slurm_version` variable to hieradata. It can be either 19 or 20.
+- [puppet] Slurm 20 support: Added PlugStackConfig parameter to slurm.conf
+- [puppet] Added slurm-perlapi package to `profile::base::slurm`
+- [puppet] Added exec to initialize cvmfs default.local with consul-template.
+- [puppet] Added a default node1 in slurm.conf when no slurmd has been registered yet in consul
+- [puppet] Added a require on Epel yumrepo for package fail2ban-server
+- [puppet] Added class profile::fail2ban::install
+- [puppet] CentOS 8 support: Added dependency on puppet-epel to install epel yumrepo
+- [puppet] CentOS 8 support: Enabled powertools repo
+- [puppet] CentOS 8 support: Enabled idm:DL1 stream
+- [puppet] CentOS 8 support: Added network-scripts package when os is CentOS 8
+- [puppet] CentOS 8 support: Added munge_socket selinux policy to allow confined user to submit jobs
+- [puppet] Added class `profile::gpu::install`
+- [puppet] Added a requirement on epel yumrepo for singularity package.
+- [puppet] Added a requirement for slurm exec `create_account` on slurm exec `add_cluster`
+- [puppet] CentOS 8 support: added class `profile::mail::server`
+- [puppet] Added a requirement on yumrepo epel to class `jupyterhub` in `profile::jupyterhub::hub`
+- [puppet] Added support for Compute Canada Arbutus Cloud VGPUs
+
+### Removed
+- [puppet] Removed notify to `slurmctld` from slurm::accounting exec `add_cluster`.
+
+## [7.2] 2020-05-20
+
+### Changed
+- Reverted type of image variable from string to any because Azure image input is a map.
+
+## [7.1] 2020-05-20
+
+### Changed
+- [GCP] Fixed a typo in disk paths that prevented creation of project and scratch volume
+- [GCP] Increased the root disk size in the example to 20GB. This is the new minimum for centos7 image.
+- Bumped minimum requirements to 0.12.21 in all versions.tf files.
+- [puppet] Bumped most module versions to latest in Puppetfile
+- [puppet] Bumped consul and consul-template version to latest available
+
+### Added
+- Documentation on variables specific to the commercial cloud providers
+- Documentation on hieradata
+- Documentation on firewall_rules
+- Description and types to all terraform variables
+
+## [7.0] 2020-05-18
+
+### Changed
+- Established a distinction in variables between puppetmaster and mgmt1 - allowing puppetmaster role to be assigned to another instance.
+- Bumped minimum requirement of terraform to 0.12.21 (issue #77)
+- Numerous doc fixes
+- Added a section on related projects in README.md
+- [Azure] Updated Azure infrastructure.tf to use Azure provider 2.0.0 (issue #62)
+- [cloud-init] Set puppet-agent and puppet-server version to 6.13 and 6.9
+- [cloud-init] Renamed cloud-init YAML files to `puppetagent.yaml` and `puppetmaster.yaml`
+- [OpenStack] Fixed volume size computation regression introduced in commit c09ea17d
+- [puppet] Defined selinux context for /scratch as home_root_dir
+- [puppet] Defined selinux context for /project as home_root_dir
+- [puppet] Improved cuda facts to avoid issue when html index is incomplete
+- [puppet] Updated package names in gpu module and facts
+- [puppet] Generalized gpu module cuda repo link composition
+- [puppet] Replaced package by ensure_packages for kernel-devel in gpu
+- [puppet] Updated version of puppet-jupyterhub to v3.3.0
+- [puppet] Improved FreeIPA client installation waiting conditions to limit failure
+- [puppet] Disabled root jobs in slurm.conf]
+- [puppet] Added nosuid to client nfs mount options
+- [puppet] Activated root_squash for all nfs exports
+- [puppet] Changed URL for the source of `cc-tmpfs_mount.so`
+- [puppet] Updated derdanne/nfs version in Puppetfile
+- [puppet] Made profile::base a requirement of profile::nfs::server
+- [puppet] Defined servername param for apache in reverse_proxy
+
+### Added
+- [Azure] Added variable to allow usage of an existing resource group based on its name (issue #72)
+- [cloud-init] Enabled puppet agent postrun command in cloud-init
+- [puppet] mgmt1 volumes formating is now handled by `profile::nfs::server` class
+- [puppet] Added logic to define, mount and format nfs shared volumes with lvm
+- [puppet] Added README.md
+- [puppet] Fixed regression introduced in 630a04
+- [puppet] Added possibility to manage jail activation and ignore_ip with hierada
+- [puppet] Added profile classes for JupyterHub: `profile::jupyterhub::node` and `profile::jupyterhub::hub`
+- [puppet] Added variable to allow definition of lmod default modules with hieradata
+- [puppet] Configured lmod default modules to start with gcc and openmpi
+- [puppet] Added ability to receive last puppet run output by email through puppet postrun script
+- [puppet] Added support for NVIDIA GRID vGPU
+- [puppet] Added class `profile::base::azure` for logic specific to Azure
+
+### Removed
+- [cloud-init] Removed volumes formating, partitioning and mounting from mgmt cloud-init
+- [puppet] Removed condition on gpu count in nvidia_driver_vers
+- [puppet] Removed mkhomedir from FreeIPA client installation parameters
+
 ## [6.4] - 2020-03-11
 
 ### Changed
@@ -84,7 +335,7 @@ Terraform >= 0.12.21 is now required. Usage of the function `subtract` requires 
 - Changes to image variable are now ignored after cluster is built.
 - Fixed release scripts to solve bug where multiple `version` variable were present (issue #38)
 - [Azure] Updated the example to use the most recent OpenLogic CentOS 7 image (issue #42)
-- [Azure] Resources names are now prefixed with the cluster name 
+- [Azure] Resources names are now prefixed with the cluster name
 - [Azure] Azure public_ip now outputs a list of all login ip addresses
 - [cloud-init] Replaced timezone in cloud-init to UTC (issue #51)
 - [GCP] Zone variable is now optional. The zone is randomly selected in the zones available for the region if left blank.
@@ -144,7 +395,7 @@ the DHCP time lease from 24 to 1 hour. This helps when debugging DHCP issue
 - [DNS] Moved wildcard certificate creation from cloudflare to an acme module shared by all dns modules.
 - [DNS] Replaced usage of 0-index on array by call to `distinct` (issue #26).
 - [DNS] A `jupyter.${cluster_name}.${domain_name}` record is now added for each login instead of just login1.
-- Changed the management and login node naming scheme to match node naming. `mgmt01` is now `mgmt1` and `login01` is now `login1`. 
+- Changed the management and login node naming scheme to match node naming. `mgmt01` is now `mgmt1` and `login01` is now `login1`.
 - [puppet] Fix puppet-jupyterhub version to v1.1 instead of master branch.
 
 ### Removed

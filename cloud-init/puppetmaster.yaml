@@ -22,7 +22,7 @@ runcmd:
   - yum upgrade -y
 # puppet master configuration
   - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]+' /etc/os-release).noarch.rpm
-  - yum -y install puppetserver-6.9.1 puppet-agent-6.13.0
+  - yum -y install puppetserver-6.13.0 puppet-agent-6.18.0
   - mkdir /var/autosign
   - chown puppet:puppet /var/autosign
   - chmod 750 /var/autosign
@@ -43,8 +43,13 @@ runcmd:
   - rm -rf /etc/puppetlabs/code/environments/production
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/production
   - "(cd /etc/puppetlabs/code/environments/production; git checkout ${puppetenv_rev})"
-  - mv /etc/puppetlabs/code/data/terraform_data.yaml /etc/puppetlabs/code/environments/production/data/
-  - mv /etc/puppetlabs/code/data/user_data.yaml /etc/puppetlabs/code/environments/production/data/
+  - mkdir -p /etc/puppetlabs/data
+  - mkdir -p /etc/puppetlabs/facts
+  - chgrp -R puppet /etc/puppetlabs/data
+  - chgrp -R puppet /etc/puppetlabs/facts
+  - ln -sf /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/code/environments/production/data/
+  - ln -sf /etc/puppetlabs/data/user_data.yaml /etc/puppetlabs/code/environments/production/data/
+  - ln -sf /etc/puppetlabs/facts/terraform_facts.yaml /etc/puppetlabs/code/environments/production/site/profile/facts.d
   - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
   - "(cd /etc/puppetlabs/code/environments/production/ && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
 # Bootstrap services that are essential to puppet agents
@@ -55,15 +60,8 @@ runcmd:
   - grub2-mkconfig -o /boot/grub2/grub.cfg
 # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
   - for i in /etc/sysconfig/network-scripts/ifcfg-*; do if ! ip link show | grep -q "$${i##*-}:"; then rm -f $i; fi; done
-  - reboot -n
 
 write_files:
-  - content: |
-      ${ indent(6, hieradata) }
-    path: /etc/puppetlabs/code/data/terraform_data.yaml
-  - content: |
-      ${ indent(6, user_hieradata) }
-    path: /etc/puppetlabs/code/data/user_data.yaml
   - content: |
       127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 puppet
     path: /etc/hosts
@@ -92,3 +90,6 @@ disable_ec2_metadata: false
 timezone: "UTC"
 fqdn: "${node_name}"
 output: { all: "| tee -a /var/log/cloud-init-output.log" }
+power_state:
+  delay: now
+  mode: reboot

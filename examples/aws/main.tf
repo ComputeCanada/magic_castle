@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.13.4"
 }
 
 module "aws" {
@@ -57,8 +57,10 @@ output "public_ip" {
 #   name             = module.aws.cluster_name
 #   domain           = module.aws.domain
 #   public_ip        = module.aws.ip
+#   login_ids        = module.aws.login_ids
 #   email            = "you@example.com"
 #   rsa_public_key   = module.aws.rsa_public_key
+#   ssh_private_key  = module.aws.ssh_private_key
 #   sudoer_username  = module.aws.sudoer_username
 # }
 
@@ -66,12 +68,14 @@ output "public_ip" {
 # module "dns" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
 #   email            = "you@example.com"
-#   project          = "your-project-name"
+#   project          = "your-project-id"
 #   zone_name        = "you-zone-name"
 #   name             = module.aws.cluster_name
 #   domain           = module.aws.domain
 #   public_ip        = module.aws.ip
+#   login_ids        = module.aws.login_ids
 #   rsa_public_key   = module.aws.rsa_public_key
+#   ssh_private_key  = module.aws.ssh_private_key
 #   sudoer_username  = module.aws.sudoer_username
 # }
 

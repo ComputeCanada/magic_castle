@@ -24,6 +24,14 @@ variable "dns_provider_config" {
 variable "login_ips" {
 }
 
+variable "login_ids" {
+  type = list(string)
+}
+
+variable "ssh_private_key" {
+  type = string
+}
+
 resource "tls_private_key" "private_key" {
   algorithm = "RSA"
 }
@@ -45,12 +53,17 @@ resource "acme_certificate" "certificate" {
 }
 
 resource "null_resource" "deploy_certs" {
-  count = length(var.login_ips)
+  count = length(var.login_ids)
+
+  triggers = {
+    login_id = var.login_ids[count.index]
+  }
 
   connection {
-    type = "ssh"
-    user = var.sudoer_username
-    host = element(var.login_ips, count.index)
+    type        = "ssh"
+    user        = var.sudoer_username
+    host        = element(var.login_ips, count.index)
+    private_key = var.ssh_private_key
   }
 
   provisioner "file" {

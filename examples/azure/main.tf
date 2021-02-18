@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.13.4"
 }
 
 module "azure" {
@@ -65,7 +65,9 @@ output "public_ip" {
 #   domain           = module.azure.domain
 #   email            = "you@example.com"
 #   public_ip        = module.azure.ip
+#   login_ids        = module.azure.login_ids
 #   rsa_public_key   = module.azure.rsa_public_key
+#   ssh_private_key  = module.azure.ssh_private_key
 #   sudoer_username  = module.azure.sudoer_username
 # }
 
@@ -73,12 +75,14 @@ output "public_ip" {
 # module "dns" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
 #   email            = "you@example.com"
-#   project          = "your-project-name"
+#   project          = "your-project-id"
 #   zone_name        = "you-zone-name"
 #   name             = module.azure.cluster_name
 #   domain           = module.azure.domain
 #   public_ip        = module.azure.ip
+#   login_ids        = module.azure.login_ids
 #   rsa_public_key   = module.azure.rsa_public_key
+#   ssh_private_key  = module.azure.ssh_private_key
 #   sudoer_username  = module.azure.sudoer_username
 # }
 

@@ -8,7 +8,7 @@ From these new possibilities emerged an open-source software project named Magic
 
 ## Setup
 
-- Install [Terraform >= 0.12.21](https://www.terraform.io/downloads.html)
+- Install [Terraform](https://releases.hashicorp.com/terraform/) (>= 0.14.2)
 - Download the [latest release of Magic Castle](https://github.com/ComputeCanada/magic_castle/releases) for the cloud provider you wish to use.
 - Uncompress the release
 - Follow the instructions 
@@ -55,11 +55,18 @@ and apply their configuration based on their hostnames.
 
 ## List of other cloud HPC cluster open-source projects
 
-- [ACRC Cluster in the cloud](https://github.com/ACRC/cluster-in-the-cloud) [GCP, Oracle]
 - [AWS ParallelCluster](https://github.com/aws/aws-parallelcluster) [AWS]
+- [Cluster in the cloud](https://github.com/clusterinthecloud) [AWS, GCP, Oracle]
 - [Elasticluster](https://github.com/elasticluster/elasticluster) [AWS, GCP, OpenStack]
 - [Slurm on Google Platform](https://github.com/SchedMD/slurm-gcp) [GCP]
+- [NVIDIA DeepOps](https://github.com/NVIDIA/deepops) [Ansible playbooks only]
+- [StackHPC Ansible Role OpenHPC](https://github.com/stackhpc/ansible-role-openhpc) [Ansible Role for OpenStack]
+
+
+> When I think about the DevOps landscape, we have so many people just like chefs in a restaurant that are experimenting with different ways of doing things. Once they get it, then they create those recipes. Those recipes in our world is source code. [...] That's why we will always have duplicates and similar projects, because there's going to be one ingredient that's going to be slightly different to make you preferred over something else
+
+[Kelsey Hightower, Sourcegraph Podcast, Episode 16, 2020](https://about.sourcegraph.com/podcast/kelsey-hightower/)
 
 ## Contributing / Customizing
 
-Refer to [Magic Castle developper documentation](docs/developers.md).
+Refer to [Magic Castle developer documentation](docs/developers.md).

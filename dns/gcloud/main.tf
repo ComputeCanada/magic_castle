@@ -1,5 +1,4 @@
 provider "google" {
-  version = "< 3.0.0"
 }
 
 data "google_dns_managed_zone" "domain" {
@@ -9,7 +8,7 @@ data "google_dns_managed_zone" "domain" {
 
 module "record_generator" {
   source         = "../record_generator"
-  name           = var.name
+  name           = lower(var.name)
   login_ips      = var.public_ip
   rsa_public_key = var.rsa_public_key
 }
@@ -33,11 +32,13 @@ module "acme" {
   source              = "../acme"
   dns_provider        = "gcloud"
   dns_provider_config = { GCE_PROJECT = var.project }
-  name                = var.name
+  name                = lower(var.name)
   domain              = var.domain
   email               = var.email
   sudoer_username     = var.sudoer_username
   login_ips           = var.public_ip
+  login_ids           = var.login_ids
+  ssh_private_key     = var.ssh_private_key
 }
 
 output "hostnames" {

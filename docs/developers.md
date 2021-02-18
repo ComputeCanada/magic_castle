@@ -5,11 +5,12 @@
 1. [Setup](#1-setup)
 2. [Configuration](#2-configuration)
 3. [Release](#3-release)
+4. [Troubleshooting](#4-troubleshooting)
 
 ## 1. Setup
 
 To develop for Magic Castle you will need:
-* Terraform (>= 0.12)
+* Terraform (>= 0.13.4)
 * git
 * Access to a Cloud (e.g.: Compute Canada Arbutus)
 * Ability to communicate with the cloud provider API from your computer
@@ -58,16 +59,38 @@ release files will be built for all providers currently supported by Magic Castl
 Examples:
 
 - Building a release for OpenStack with the puppet repo master branch:
-```
-$ ./release.sh master openstack
-```
+    ```
+    $ ./release.sh master openstack
+    ```
 - Building a release for GCP with the latest Terraform and cloud-init, and version 5.8 of puppet
 Magic Castle:
-``` 
-$ ./release.sh 5.8 gcp
-```
+    ``` 
+    $ ./release.sh 5.8 gcp
+    ```
 - Building a release for Azure and OVH with the latest Terraform and cloud-init, and version 5.7 of puppet
 Magic Castle:
+    ```
+    $ ./release.sh 5.7 azure ovh
+    ```
+
+## 4. Troubleshooting
+
+
+### 4.1 cloud-init
+
+To test new additions to `cloud-init/puppetagent.yaml` or `cloud-init/puppetmaster.yaml`, it is possible to
+execute cloud-init phases manually. There are four steps that can be executed sequentially: init local, init
+modules config and modules final. Here are the corresponding commands to execute each step:
 ```
-$ ./release.sh 5.7 azure ovh
+cloud-init init --local
+cloud-init init
+cloud-init modules --mode=config
+cloud-init modules --mode=final
 ```
+
+It is also possible to clean a cloud-init execution and have it execute again at next reboot. To do so, enter
+the following command:
+```
+cloud-init clean
+```
+Add `-r` to the previous command to reboot the instance once cloud-init has finishing cleaning.

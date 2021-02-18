@@ -1,8 +1,15 @@
 variable "cluster_name" {
+  type        = string
+  description = "Name by which this cluster will be known as."
+  validation {
+    condition     = can(regex("^[a-z][0-9a-z_-]*$", var.cluster_name))
+    error_message = "The cluster_name value must be lowercase alphanumeric characters and start with a letter. It can include dashes and underscores."
+  }
 }
 
 variable "nb_users" {
-  type = number
+  type        = number
+  description = "Number of user accounts with a common password that will be created"
 }
 
 variable "instances" {
@@ -11,13 +18,18 @@ variable "instances" {
     login=object({type=string, count=number}),
     node=list(map(any)),
   })
+  description = "Map that defines the parameters for each type of instance of the cluster"
 }
 
 variable "image" {
+  type        = any
+  description = "Name of the operating system image that will be used to create a boot disk for the instances"
 }
 
 variable "root_disk_size" {
-  default = 10
+  type        = number
+  default     = 10
+  description = "Size of the instances root disk in GB"
 }
 
 variable "storage" {
@@ -33,36 +45,63 @@ variable "storage" {
     project_vol_iops=number,
     scratch_vol_iops=number,
   })
+  description = "Map that defines the storage parameters"
 }
 
 variable "domain" {
+  type        = string
+  description = "String which when combined with cluster_name will formed the cluster FQDN"
 }
 
 variable "public_keys" {
+  type        = list
+  description = "List of SSH public keys that can log in as {sudoer_username}"
 }
 
 variable "guest_passwd" {
-  default = ""
+  type        = string
+  default     = ""
+  description = "Guest accounts common password. If left blank, the password is randomly generated."
+  validation {
+    condition     = length(var.guest_passwd) == 0 || length(var.guest_passwd) >= 8
+    error_message = "The guest_passwd value must at least 8 characters long or an empty string."
+  }
 }
 
 variable "puppetenv_git" {
-  default = "https://github.com/verdurin/puppet-magic_castle.git"
+  type        = string
+  default     = "https://github.com/ComputeCanada/puppet-magic_castle"
+  description = "URL to the Magic Castle puppet environment git repo"
 }
 
 variable "puppetenv_rev" {
-  default = "master"
+  type        = string
+  default     = "master"
+  description = "Define which commit of the puppet environment repo will be used. Can be any reference that would be accepted by the git checkout"
 }
 
 variable hieradata {
-  type = string
-  default = ""
+  type        = string
+  default     = "---"
+  description = "String formatted as YAML defining hiera key-value pairs to be included in the puppet environment"
 }
 
 variable "sudoer_username" {
-  default = "centos"
+  type        = string
+  default     = "centos"
+  description = "Username of the administrative account"
 }
 
 variable "firewall_rules" {
+  type    = list(
+    object({
+      name        = string
+      from_port   = number
+      to_port     = number
+      ip_protocol = string
+      cidr        = string
+    })
+  )
   default = [
     {
       "name"         = "SSH",
@@ -100,11 +139,24 @@ variable "firewall_rules" {
       "cidr"         = "0.0.0.0/0"
     },
     {
-      "name"        = "GridFTP"
-      "from_port"   = 50000
-      "to_port"     = 51000
-      "ip_protocol" = "tcp"
+      "name"        = "GridFTP",
+      "from_port"   = 50000,
+      "to_port"     = 51000,
+      "ip_protocol" = "tcp",
       "cidr"        = "0.0.0.0/0"
     }
   ]
+  description = "List of login external firewall rules defined as map of 5 values name, from_port, to_port, ip_protocol and cidr"
+}
+
+variable "generate_ssh_key" {
+  type        = bool
+  default     = false
+  description = "If set to true, Terraform will generate an ssh keypair to connect to the cluster. Default: false"
+}
+
+variable "software_stack" {
+  type        = string
+  default     = "computecanada"
+  description = "Provider of research computing software stack (can be 'computecanada' or 'eessi')"
 }

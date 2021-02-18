@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.12"
+  required_version = ">= 0.13.4"
 }
 
 module "gcp" {
@@ -18,6 +18,10 @@ module "gcp" {
       # { type = "n1-standard-2", count = 1, prefix = "gpu", gpu_type = "nvidia-tesla-k80", gpu_count = 1 },
     ]
   }
+
+  # Magic Castle's default root disk size is 10GB.
+  # GCP requires at least 20GB of root disk.
+  root_disk_size = 20
 
   storage = {
     type         = "nfs"
@@ -59,19 +63,23 @@ output "public_ip" {
 #   domain           = module.gcp.domain
 #   email            = "you@example.com"
 #   public_ip        = module.gcp.ip
+#   login_ids        = module.gcp.login_ids
 #   rsa_public_key   = module.gcp.rsa_public_key
+#   ssh_private_key  = module.gcp.ssh_private_key
 #   sudoer_username  = module.gcp.sudoer_username
 # }
 
 # module "dns" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
 #   email            = "you@example.com"
-#   project          = "your-project-name"
-#   zone_name        = "you-zone-name"
+#   project          = "your-project-id"
+#   zone_name        = "your-zone-name"
 #   name             = module.gcp.cluster_name
 #   domain           = module.gcp.domain
 #   public_ip        = module.gcp.ip
+#   login_ids        = module.gcp.login_ids
 #   rsa_public_key   = module.gcp.rsa_public_key
+#   ssh_private_key  = module.gcp.ssh_private_key
 #   sudoer_username  = module.gcp.sudoer_username
 # }
 

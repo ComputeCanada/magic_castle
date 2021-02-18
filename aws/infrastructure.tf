@@ -28,8 +28,11 @@ locals {
 resource "aws_vpc" "vpc" {
   cidr_block = "10.0.0.0/16"
 
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
   tags = {
-    Name = "vpc"
+    Name = "${var.cluster_name}-vpc"
   }
 }
 
@@ -55,7 +58,7 @@ resource "aws_subnet" "private_subnet" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "vpc-subnet"
+    Name = "${var.cluster_name}-subnet"
   }
 }
 
@@ -89,7 +92,7 @@ resource "aws_security_group" "allow_in_services" {
   }
 
   tags = {
-    Name = "allow_in_services"
+    Name = "${var.cluster_name}-allow_in_services"
   }
 }
 
@@ -113,7 +116,7 @@ resource "aws_security_group" "allow_any_inside_vpc" {
   }
 
   tags = {
-    Name = "allow_any_inside_vpc"
+    Name = "${var.cluster_name}-allow_any_inside_vpc"
   }
 }
 
@@ -129,6 +132,10 @@ resource "aws_network_interface" "mgmt" {
     aws_security_group.allow_any_inside_vpc.id,
     aws_security_group.allow_out_any.id,
   ]
+
+  tags = {
+    Name = "${var.cluster_name}-mgmt-if"
+  }
 }
 
 # Instances
@@ -153,7 +160,7 @@ resource "aws_instance" "mgmt" {
   }
 
   tags = {
-    Name = format("mgmt%d", count.index + 1)
+    Name = format("${var.cluster_name}-mgmt%d", count.index + 1)
   }
 
   lifecycle {
@@ -180,7 +187,7 @@ resource "aws_ebs_volume" "home" {
   iops              = var.storage["home_vol_iops"]
 
   tags = {
-    Name = "home"
+    Name = "${var.cluster_name}-home"
   }
 }
 
@@ -192,7 +199,7 @@ resource "aws_ebs_volume" "project" {
   iops              = var.storage["project_vol_iops"]
 
   tags = {
-    Name = "project"
+    Name = "${var.cluster_name}-project"
   }
 }
 
@@ -204,14 +211,14 @@ resource "aws_ebs_volume" "scratch" {
   iops              = var.storage["scratch_vol_iops"]
 
   tags = {
-    Name = "scratch"
+    Name = "${var.cluster_name}-scratch"
   }
 }
 
 resource "aws_volume_attachment" "home" {
   count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   device_name  = "/dev/sdb"
-  volume_id    = aws_ebs_volume.home[0].id
+  volume_id    = aws_ebs_volume.home[count.index].id
   instance_id  = aws_instance.mgmt[0].id
   skip_destroy = true
 }
@@ -219,7 +226,7 @@ resource "aws_volume_attachment" "home" {
 resource "aws_volume_attachment" "project" {
   count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   device_name  = "/dev/sdc"
-  volume_id    = aws_ebs_volume.project[0].id
+  volume_id    = aws_ebs_volume.project[count.index].id
   instance_id  = aws_instance.mgmt[0].id
   skip_destroy = true
 }
@@ -227,7 +234,7 @@ resource "aws_volume_attachment" "project" {
 resource "aws_volume_attachment" "scratch" {
   count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
   device_name  = "/dev/sdd"
-  volume_id    = aws_ebs_volume.scratch[0].id
+  volume_id    = aws_ebs_volume.scratch[count.index].id
   instance_id  = aws_instance.mgmt[0].id
   skip_destroy = true
 }
@@ -260,7 +267,7 @@ resource "aws_instance" "login" {
   }
 
   tags = {
-    Name = format("login%d", count.index + 1)
+    Name = format("${var.cluster_name}-login%d", count.index + 1)
   }
 }
 
@@ -269,6 +276,9 @@ resource "aws_eip" "login" {
   vpc        = true
   instance   = aws_instance.login[count.index].id
   depends_on = [aws_internet_gateway.gw]
+  tags = {
+    Name = format("${var.cluster_name}-login%d-eip", count.index + 1)
+  }
 }
 
 locals {
@@ -313,13 +323,18 @@ resource "aws_instance" "node" {
   }
 
   tags = {
-    Name = each.key
+    Name = "${var.cluster_name}-${each.key}"
   }
 }
 
 locals {
-  mgmt1_ip        = aws_network_interface.mgmt[0].private_ip
-  puppetmaster_ip = aws_network_interface.mgmt[0].private_ip
+  mgmt1_ip        = try(aws_network_interface.mgmt[0].private_ip, "")
+  puppetmaster_ip = try(aws_network_interface.mgmt[0].private_ip, "")
+  puppetmaster_id = try(aws_instance.mgmt[0].id, "")
   public_ip       = aws_eip.login[*].public_ip
+  login_ids       = aws_instance.login[*].id
   cidr            = aws_subnet.private_subnet.cidr_block
+  home_dev        = [for vol in aws_ebs_volume.home:    "/dev/disk/by-id/*${replace(vol.id, "-", "")}"]
+  project_dev     = [for vol in aws_ebs_volume.project: "/dev/disk/by-id/*${replace(vol.id, "-", "")}"]
+  scratch_dev     = [for vol in aws_ebs_volume.scratch: "/dev/disk/by-id/*${replace(vol.id, "-", "")}"]
 }

@@ -56,6 +56,14 @@ locals {
             data  = null
         }
     ]
+    mokey_A = [
+        for ip in var.login_ips : {
+            type  = "A"
+            name  = join(".", ["mokey", var.name])
+            value = ip
+            data  = null
+        }
+    ]
     name_SSHFP = [
         {
             type  = "SSHFP"
@@ -89,6 +97,7 @@ output "records" {
         local.jupyter_A,
         local.ipa_A,
         local.dtn_A,
+        local.mokey_A,
         local.name_SSHFP,
         local.login_SSHFP
     )

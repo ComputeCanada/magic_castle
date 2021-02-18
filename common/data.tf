@@ -42,6 +42,12 @@ resource "random_pet" "guest_passwd" {
 
 resource "random_uuid" "consul_token" { }
 
+resource "tls_private_key" "ssh" {
+  count     = var.generate_ssh_key ? 1 : 0
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 data "http" "hieradata_template" {
   url = "${replace(var.puppetenv_git, ".git", "")}/raw/${var.puppetenv_rev}/data/terraform_data.yaml.tmpl"
 }
@@ -52,16 +58,30 @@ data "template_file" "hieradata" {
   vars = {
     sudoer_username = var.sudoer_username
     freeipa_passwd  = random_string.freeipa_passwd.result
-    cluster_name    = var.cluster_name
+    cluster_name    = lower(var.cluster_name)
     domain_name     = local.domain_name
-    guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : random_pet.guest_passwd[0].id
+    guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
     consul_token    = random_uuid.consul_token.result
     munge_key       = base64sha512(random_string.munge_key.result)
     nb_users        = var.nb_users
     mgmt1_ip        = local.mgmt1_ip
-    home_size       = "${var.storage["home_size"]}G"
-    project_size    = "${var.storage["project_size"]}G"
-    scratch_size    = "${var.storage["scratch_size"]}G"
+    home_dev        = jsonencode(local.home_dev)
+    project_dev     = jsonencode(local.project_dev)
+    scratch_dev     = jsonencode(local.scratch_dev)
+  }
+}
+
+data "http" "facts_template" {
+  url = "${replace(var.puppetenv_git, ".git", "")}/raw/${var.puppetenv_rev}/site/profile/facts.d/terraform_facts.yaml.tmpl"
+}
+
+data "template_file" "facts" {
+  template = data.http.facts_template.body
+
+  vars = {
+    software_stack = var.software_stack
+    cloud_provider = local.cloud_provider
+    cloud_region   = local.cloud_region
   }
 }
 
@@ -78,11 +98,9 @@ data "template_cloudinit_config" "mgmt_config" {
         puppetenv_rev         = var.puppetenv_rev,
         puppetmaster_ip       = local.puppetmaster_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
-        hieradata             = data.template_file.hieradata.rendered,
-        user_hieradata        = var.hieradata,
         node_name             = format("mgmt%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = var.public_keys,
+        ssh_authorized_keys   = concat(var.public_keys, tls_private_key.ssh[*].public_key_openssh),
       }
     )
   }
@@ -120,7 +138,7 @@ EOF
       {
         node_name             = format("login%d", count.index + 1),
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = var.public_keys,
+        ssh_authorized_keys   = concat(var.public_keys, tls_private_key.ssh[*].public_key_openssh),
         puppetmaster_ip       = local.puppetmaster_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
       }
@@ -139,10 +157,60 @@ data "template_cloudinit_config" "node_config" {
       {
         node_name             = each.key,
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = var.public_keys,
+        ssh_authorized_keys   = concat(var.public_keys, tls_private_key.ssh[*].public_key_openssh),
         puppetmaster_ip       = local.puppetmaster_ip,
         puppetmaster_password = random_string.puppetmaster_password.result,
       }
     )
+  }
+}
+
+resource "null_resource" "deploy_hieradata" {
+  count = var.instances["mgmt"]["count"] > 0 && var.instances["login"]["count"] > 0 ? 1 : 0
+
+  connection {
+    type                 = "ssh"
+    bastion_host         = local.public_ip[0]
+    bastion_user         = var.sudoer_username
+    bastion_private_key  = try(tls_private_key.ssh[0].private_key_pem, null)
+    user                 = var.sudoer_username
+    host                 = local.puppetmaster_ip
+    private_key          = try(tls_private_key.ssh[0].private_key_pem, null)
+  }
+
+  triggers = {
+    user_data    = md5(var.hieradata)
+    hieradata    = md5(data.template_file.hieradata.rendered)
+    facts        = md5(data.template_file.facts.rendered)
+    puppetmaster = local.puppetmaster_id
+  }
+
+  provisioner "file" {
+    content     = data.template_file.hieradata.rendered
+    destination = "terraform_data.yaml"
+  }
+
+  provisioner "file" {
+    content     = data.template_file.facts.rendered
+    destination = "terraform_facts.yaml"
+  }
+
+  provisioner "file" {
+    content     = var.hieradata
+    destination = "user_data.yaml"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mkdir -p /etc/puppetlabs/data",
+      "sudo mkdir -p /etc/puppetlabs/facts",
+      "sudo install -m 650 terraform_data.yaml user_data.yaml /etc/puppetlabs/data/",
+      "sudo install -m 650 terraform_facts.yaml /etc/puppetlabs/facts/",
+      # These chgrp commands do nothing if the puppet group does not yet exist
+      # so these are also handled by puppetmaster.yaml
+      "sudo chgrp puppet /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/data/user_data.yaml &> /dev/null || true",
+      "sudo chgrp puppet /etc/puppetlabs/facts/terraform_facts.yaml &> /dev/null || true",
+      "rm -f terraform_data.yaml user_data.yaml terraform_facts.yaml",
+    ]
   }
 }
