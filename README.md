@@ -11,7 +11,7 @@ From these new possibilities emerged an open-source software project named Magic
 - Install [Terraform](https://releases.hashicorp.com/terraform/) (>= 0.14.2)
 - Download the [latest release of Magic Castle](https://github.com/ComputeCanada/magic_castle/releases) for the cloud provider you wish to use.
 - Uncompress the release
-- Follow the instructions 
+- Follow the instructions
   - [OpenStack Cloud (Compute Canada)](openstack/README.md)
   - [Amazon Web Services (AWS)](aws/README.md)
   - [Microsoft Azure](azure/README.md)
@@ -21,33 +21,32 @@ From these new possibilities emerged an open-source software project named Magic
 
 ## How Magic Castle Works
 
-This software project integrates multiple parts that come into play at 
-different steps of spawning the cluster. The following list 
+This software project integrates multiple parts that come into play at
+different steps of spawning the cluster. The following list
 enumerates the steps involved in order for users to better
 grasp what is happening when they create clusters.
 
 We will refer to the user of Magic Castle as the operator.
 
 1. After downloading the latest release of the cloud provider of choice
-and adapting the Terraform `main.tf` file, the operator launches 
-`terraform apply` and accepts the proposed plan.
+and adapting the main configuration file, the operator launches
+Terraform and accepts the proposed plan.
 
-2. Terraform fetches the template hieradata yaml file from the 
-puppet-magic_castle repo indicated by `puppetenv_git`. The version 
-of that file corresponds to the value of `puppetenv_rev`. This template 
-is read by terraform and variable placeholders are replaced by the values 
-inferred from the values prescribed in `main.tf`.
+2. Terraform fetches the template hieradata yaml file from the Puppet
+configuration management repository. This template is read by Terraform
+and variable placeholders are replaced by the values inferred from the
+values prescribed in main configuration file.
 
-3. Terraform communicates with the cloud provider REST API and requests the creation of the virtual machines.
+3. Terraform communicates with the cloud provider REST API and requests
+the creation of the virtual machines.
 
 4. For each virtual machine creation request, Magic Castle
 provides a [cloud-init](https://cloudinit.readthedocs.io/en/latest/) file. This
-file is used to initialize the virtual machine base configuration and installs 
-puppet agent. The cloud-init file of the management node (`mgmt1`) also installs and configures
-a puppetmaster. 
+file is used to initialize the virtual machine base configuration and installs
+puppet agent. The cloud-init file of the management node (`mgmt1`) also installs and configures a Puppet primary server.
 
-5. The puppet agents communicate with the puppetmaster to retrieve
-and apply their configuration based on their hostnames. 
+5. The Puppet agents communicate with the Puppet primary server to retrieve
+and apply their configuration based on their hostnames.
 
 ## Talks, slides and videos
 

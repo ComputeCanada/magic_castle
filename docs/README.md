@@ -166,21 +166,35 @@ terraform init -upgrade
 
 ## 4. Configuration
 
-The order of the input parameters we are about to present does not matter, but
-we recommend leaving it as it is presented in the examples.
+In the `main.tf` file, there is a module named after your cloud provider,
+i.e.: `module "openstack"`. This module corresdonds to the high-level infrastructure
+of your cluster.
+
+The following sections describes each variable that can be used to customize
+the deployed infrastructure and its configuration. Optional variables can be
+absent from the example module. The order of the variables does not matter,
+but the following sections are ordered as the variables appear in the examples.
 
 ### 4.1 source
 
 The first line of the module block indicates to Terraform where it can find
-the `.tf` files that defines the resources that constitutes your future
-cluster. We are pointing this variable at the cloud provider folder in the
-release folder (i.e.: `./openstack`).
+the HCL files that defines the resources that wil constitute your future
+cluster. In the releases, this variable is a relative path to the cloud
+provider folder (i.e.: `./openstack`).
+
+**Requirement**: Must be a path to a local folder containing the Magic Castle
+Terraform files for the cloud provider of your choice. It can also be a git
+repository. Refer to [Terraform documentation on module source](https://www.terraform.io/docs/language/modules/sources.html#generic-git-repository) for more information.
+
+**Post build modification effect**: `terraform init` will have to be
+called again and the next `terraform apply` might propose changes if the infrastructure
+describe by the new module is different.
 
 ### 4.2 config_git_url
 
-Magic Castle cluster configuration management is handled by
-[Puppet](https://en.wikipedia.org/wiki/Puppet_(software)). The Puppet 
-configuration files are stored in a git repository. This repository is
+Magic Castle configuration management is handled by
+[Puppet](https://en.wikipedia.org/wiki/Puppet_(software)). The Puppet
+configuration files are stored in a git repository. This is
 typically [ComputeCanada/puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) repository on GitHub.
 
 Leave this variable to its current value to deploy a vanilla Magic Castle cluster.
@@ -188,12 +202,12 @@ Leave this variable to its current value to deploy a vanilla Magic Castle cluste
 If you wish to customize the instances' role assignment, add services, or
 develop new features for Magic Castle, fork the [ComputeCanada/puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) and point this variable to
 your fork's URL. For more information on Magic Castle puppet configuration
-customization, refer to [MC developper documentation](developpers.md).
+customization, refer to [MC developer documentation](developers.md).
 
-#### 4.2.1 Post Build Modification Effect
+**Requirement**: Must be valid HTTPS URL to a git repository describing a
+Puppet environment compatible with [Magic Castle](developers.md).
 
-Modifying this variable after the cluster is built leads to a complete
-cluster rebuild at next `terraform apply`.
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
 ### 4.3 config_version
 
@@ -201,13 +215,10 @@ Since Magic Cluster configuration is managed with git, it is possible to specify
 which version of the configuration you wish to use. Typically, it will match the
 version number of the release you have downloaded (i.e: `9.3`).
 
-The variable can refer to any git revision, tag or branch available in the git
-repository pointed by `config_git_url`.
+**Requirement**: Must refer to a git commit, tag or branch existing
+in the git repository pointed by `config_git_url`.
 
-#### 4.3.1 Post Build Modification Effect
-
-Modifying this variable after the cluster is built leads to a complete
-cluster rebuild at next `terraform apply`.
+**Post build modification effect** rebuild of all instances at next `terraform apply`.
 
 ### 4.4 cluster_name
 
@@ -217,7 +228,7 @@ the cluster in the Slurm accounting database
 
 **Requirement**: Must be lowercase alphanumeric characters and start with a letter. It can include dashes and underscores.
 
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
 ### 4.5 domain
 
@@ -227,8 +238,8 @@ Defines
 `int.{cluster_name}.{domain}`
 
 Optional modules following the current module in the example `main.tf` can
-register the domain name if your domain's nameservers are administered
-by one of the supported providers.
+be used to register DNS records in relation to your cluster if the
+DNS zone of this domain is administered by one of the supported providers.
 Refer to [section 6](#6-dns-configuration-and-ssl-certificates)
 for more details.
 
@@ -243,20 +254,20 @@ domain. You can verify no such record exist with `dig`:
     dig +short '*.${domain}'
     ```
 
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
 ### 4.6 image
 
 Defines the name of the image that will be used as the base image for the cluster nodes.
 
-You can use a custom image if you wish, but provisioning customization
-should be mainly done through Puppet scripting. Image customization is mostly
+You can use a custom image if you wish, but configuration management
+should be mainly done through Puppet. Image customization is mostly
 envisioned as a way to accelerate the provisioning process by applying the
 security patches and OS updates in advance.
 
 **Requirements**: the operating system on the image must be CentOS 7 or 8.
 
-**Post Build Modification Effect**: None - if this variable is modified, existing
+**Post build modification effect**: none - if this variable is modified, existing
 instances will ignore the change and future instances will use the new value.
 
 #### 4.6.1 AWS
@@ -277,7 +288,7 @@ az image builder list
 
 A map image specification needs to contain the following
 fields `publisher`, `offer` `sku`, and optionally `version`.
-The map is used to specify image found in [Azure Marketplace](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage).
+The map is used to specify images found in [Azure Marketplace](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage).
 Here is an example:
 ```
 {
@@ -293,8 +304,8 @@ SELinux is not enabled in OVH provided images. Since SELinux has to be
 enabled for Magic Castle to work properly, you will need to build a custom image
 with SELinux enabled.
 
-To build such image, we recommend the usage of packer. OVH provides a document
-explaining how to create a new image with packer:
+To build such image, we recommend the usage of [Packer](https://www.packer.io/).
+OVH provides a document explaining how to create a new image with Packer:
 [Create a custom OpenStack image with Packer](https://docs.ovh.com/gb/en/public-cloud/packer-openstack-builder/)
 
 Before the end of the shell script ran to configure the image, add the
@@ -303,22 +314,16 @@ following line to activate SELinux:
 sed -i s/^SELINUX=.*$/SELINUX=enforcing/ /etc/selinux/config
 ```
 
-Once the image is built, make sure to use to input its name in your main.tf file.
+Once the image is built, make sure to use to input its name in your `main.tf` file.
 
-### 4.8 instances
+### 4.7 instances
 
-The `instances` variable is map with 3 keys: `mgmt`, `login` and `node`.
+The `instances` variable is a map with 3 keys: `mgmt`, `login` and `node`.
 
-#### 4.8.1 mgmt
+#### 4.7.1 mgmt
 
 The value associated with the `mgmt` key is required to be a map
 with 2 keys: `type` and `count`.
-
-##### count
-
-Number of management instances to create.
-
-**Minimum**: 1
 
 ##### type
 
@@ -329,16 +334,17 @@ on which will run the management instances.
 - CPUs: 2 cores
 - RAM: 6GB
 
-#### 4.8.2 login
+##### count
+
+Number of management instances to create.
+
+**Minimum**: 1
+
+
+#### 4.7.2 login
 
 The value associated with the `login` key is required to be a map
 with 2 keys: `type` and `count`.
-
-##### count
-
-Number of login instances to create.
-
-**Minimum**: 1
 
 ##### type
 
@@ -349,19 +355,19 @@ on which will run the login instances.
 - CPUs: 2 cores
 - RAM: 2GB
 
-#### 4.8.3 node
+##### count
+
+Number of login instances to create.
+
+**Minimum**: 1
+
+#### 4.7.3 node
 
 The value associated with the `node` key is required to be a list of
-map with at least two keys: `type` and `count`.
+maps with at least two keys: `type` and `count`.
 
 If the list contains more than one map, at least one of the map will need
 to define a value for the key `prefix`.
-
-##### count
-
-Number of compute node instances to create.
-
-**Minimum**: 0
 
 ##### type
 
@@ -372,12 +378,18 @@ on which will run the compute node instances.
 - CPUs: 1 core
 - RAM: 2GB
 
+##### count
+
+Number of compute node instances to create.
+
+**Minimum**: 0
+
 ##### prefix (optional)
 
 Each compute node is identified by a unique hostname. The default hostname
 structure is `node` followed by the node 1-based index, i.e: `node1`. When
 more than one map is provided in the `instances["node"]` list, a prefix has
-to be defined for at least one of the map to avoid hostname conflicts.
+to be defined for at least N-1 maps to avoid hostname conflicts.
 
 When a prefix is configured, the hostname structure is `prefix-node` followed
 by the node index in its map. For example, the following `instance["node"]`
@@ -404,9 +416,9 @@ gpu-node3
 
 ##### Providing and overriding cloud specific parameters for node instances
 
-It is possible to define key-value that are specific to a cloud in the node associative map.
-We provide a few examples here, but any attribute of the cloud provider instance
-resource can be used.
+It is possible to define key-value pair that are specific to a cloud in the
+node associative map. We provide a few examples here, but any attribute of
+the cloud provider instance resource can be used.
 
 - [AWS instance attributes reference](https://www.terraform.io/docs/providers/aws/r/instance.html#argument-reference)
 - [Azure instance attributes reference](https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html#argument-reference)
@@ -427,16 +439,16 @@ available models per region.
 
 Number of GPUs of the `gpu_type` model to attach to the instance.
 
-#### 4.8.4 Post Build Modification Effect
+#### 4.7.4 Post build modification effect
 
-count and type variables can be modified at any point of your cluster lifetime.
+type and count variables can be modified at any point of your cluster lifetime.
 Terraform will manage the creation or destruction of the virtual machines
 for you.
 
 Modifying any of these variables after the cluster is built will only affect
 the type of instances associated with the variables at next `terraform apply`.
 
-### 4.9 Storage: type, home_size, project_size, scratch_size
+### 4.8 Storage: type, home_size, project_size, scratch_size
 
 Define the type of network storage and the size of the volumes
 for respectively `/home`, `/project` and `/scratch`.
@@ -444,25 +456,26 @@ for respectively `/home`, `/project` and `/scratch`.
 If `type` is set to `nfs`, each volume is mounted on `mgmt1` and
 exported with NFS to the login and the compute nodes.
 
-**Post Build Modification Effect**: destruction of the corresponding volumes and attachments, and creation
+**Post build modification effect**: destruction of the corresponding volumes and attachments, and creation
 of new empty volumes and attachments.
 
-### 4.10 public_keys
+### 4.9 public_keys
 
 List of SSH public keys that will have access to your cluster sudoer account.
 
 **Note 1**: You will need to add the private key associated with one of the public
-keys to your local authentication agent (i.e: `ssh-add`) if you use the
-DNS module. The DNS module uses the SSH key to copy files to the login node
-after the cluster instances are created.
+keys to your local authentication agent (i.e: `ssh-add`) because Terraform will
+use this key to copy some configuration files with scp on the cluster. Otherwise,
+Magic Castle can create a keypair for unique to this cluster, see
+[section 4.16 - generate_ssh_key](#416-generate_ssh_key).
 
 **Note 2**: The SSH key type has to be ECDSA or RSA for some cloud providers
 including AWS and OpenStack because they do not support ed25519 and DSA
 is deprecated.
 
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.11 nb_users
+### 4.10 nb_users
 
 Defines how many guest user accounts will be created in
 FreeIPA. Each user account shares the same randomly generated password.
@@ -473,7 +486,7 @@ Each user has a home folder on a shared NFS storage hosted by the management
 node.
 
 User accounts do not have sudoer privileges. If you wish to use `sudo`,
-you will have to login using the sudoer account and the SSH keys lists
+you will have to login using the sudoer account and the SSH keys listed
 in `public_keys`.
 
 If you would like to add a user account after the cluster is built, refer to
@@ -481,37 +494,37 @@ section [10.3](#103-add-a-user-account) and [10.4](#104-increase-the-number-of-g
 
 **Requirement**: Must be an integer, minimum value is 0.
 
-**Post Build Modification Effect**: trigger scp of hieradata files at next `terraform apply`.
+**Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 If `nb_users` is increased, new guest accounts will be created during the following
-puppet run on `mgmt1`. If `nb_users` is decreased, it will have no effect: the guest accounts
+Puppet run on `mgmt1`. If `nb_users` is decreased, it will have no effect: the guest accounts
 already created will be left intact.
 
-### 4.12 guest_passwd (optional)
+### 4.11 guest_passwd (optional)
 
-**default value**: 4 random words separated by a dot
+**default value**: 4 random words separated by dots
 
 Defines the password for the guest user accounts instead of using a
 randomly generated one.
 
 **Requirement**: Minimum length **8 characters**.
 
-**Post Build Modification Effect**: trigger scp of hieradata files at next `terraform apply`.
+**Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 Password of already created guest accounts will not be changed. Guest accounts created after
 the password change will have this password.
 
 To modify the password of previously created guest accounts, refer to section
 ([see section 10.2](#102-replace-the-user-account-password)).
 
-### 4.13 root_disk_size (optional)
+### 4.12 root_disk_size (optional)
 
 **default value**: 10
 
 Defines the size in gibibyte (GiB) of each instance's root volume that contains
 the operating system and softwares required to operate the cluster services.
 
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.14 sudoer_username (optional)
+### 4.13 sudoer_username (optional)
 
 **default value**: `centos`
 
@@ -519,9 +532,9 @@ Defines the username of the account with sudo privileges. The account
 ssh authorized keys are configured with the SSH public keys with
 `public_keys`.
 
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.15 hieradata (optional)
+### 4.14 hieradata (optional)
 
 **default value**: empty string
 
@@ -555,9 +568,9 @@ The file created from this string can be found on `mgmt1` as
 
 **Requirement**: The string needs to respect the [YAML syntax](https://en.wikipedia.org/wiki/YAML#Syntax).
 
-**Post Build Modification Effect**: trigger scp of hieradata files at next `terraform apply`.
+**Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 
-### 4.16 firewall_rules (optional)
+### 4.15 firewall_rules (optional)
 
 **default value**:
 ```
@@ -575,9 +588,9 @@ Defines a list of firewall rules that control external traffic to the login node
 defined as a map of fives key-value pairs : `name`, `from_port`, `to_port`, `ip_protocol` and
 `cidr`. To add new rules, you will have to recopy the preceding list and add rules to it.
 
-**Post Build Modification Effect**: modify the cloud provider firewall rules at next `terraform apply`.
+**Post build modification effect**: modify the cloud provider firewall rules at next `terraform apply`.
 
-### 4.17 generate_ssh_key (optional)
+### 4.16 generate_ssh_key (optional)
 
 **default_value**: `false`
 
@@ -587,9 +600,9 @@ file-provisioner. The public key will be added to the sudoer account authorized 
 This parameter is useful when Terraform does not have access to one of the private key associated with the
 public keys provided in `public_keys`.
 
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.18 software_stack (optional)
+### 4.17 software_stack (optional)
 
 **default_value**: `computecanada`
 
@@ -598,7 +611,7 @@ provides the Compute Canada software stack, but Magic Castle also
 supports the [EESSI](https://eessi.github.io/docs/) software stack (as an alternative) by setting this
 value to `eessi`.
 
-**Post Build Modification Effect**: trigger scp of hieradata files at next `terraform apply`.
+**Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 
 ## 5. Cloud Specific Configuration
 
@@ -616,7 +629,7 @@ This variable can be useful if you administer your DNS manually and
 you would like the keep the same domain name for your cluster at each
 build.
 
-**Post Build Modification Effect**: change the floating ips assigned to the login nodes.
+**Post build modification effect**: change the floating ips assigned to the login nodes.
 
 #### 5.1.2 os_ext_network (optional)
 
@@ -626,7 +639,7 @@ Defines the name of the external network that provides the floating
 IPs. Define this only if your OpenStack cloud provides multiple
 external networks, otherwise, Terraform can find it automatically.
 
-**Post Build Modification Effect**: change the floating ips assigned to the login nodes.
+**Post build modification effect**: change the floating ips assigned to the login nodes.
 
 #### 5.1.3 os_int_network (optional)
 
@@ -637,7 +650,7 @@ on which the instances are connected. Define this only if you
 have more than one network defined in your OpenStack project.
 Otherwise, Terraform can find it automatically.
 
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
 #### 5.1.4 os_int_subnet (optional)
 
@@ -648,7 +661,7 @@ connected. Define this only if you have more than one subnet defined in your
 OpenStack network. Otherwise, Terraform can find it automatically.
 Can be used to force a v4 subnet when both v4 and v6 exist.
 
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
 ### 5.2 Google Cloud
 
@@ -660,7 +673,7 @@ assigned number.
 
 **Requirement**: Must be a valid Google Cloud project ID.
 
-**Post Build Modification Effect**: rebuild of all resources at next `terraform apply`.
+**Post build modification effect**: rebuild of all resources at next `terraform apply`.
 
 #### 5.2.2 region
 
@@ -686,7 +699,7 @@ Defines the label of the AWS EC2 region where the cluster will be created (i.e.:
 
 **Requirement**: Must be in the [list of available EC2 regions](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions).
 
-**Post Build Modification Effect**: rebuild of all resources at next `terraform apply`.
+**Post build modification effect**: rebuild of all resources at next `terraform apply`.
 
 #### 5.3.2 availability_zone (optional)
 
@@ -708,7 +721,7 @@ Defines the label of the Azure location where the cluster will be created (i.e.:
 **Requirement**: Must be a valid Azure location. To get the list of available location, you can
 use Azure CLI : `az account list-locations -o table`.
 
-**Post Build Modification Effect**: rebuild of all resources at next `terraform apply`.
+**Post build modification effect**: rebuild of all resources at next `terraform apply`.
 
 #### 5.4.2 managed_disk_type (optional)
 
@@ -720,7 +733,7 @@ Defines the type of the instances' root disk and the type of the disks for the N
 [managed_disk_type documentation](https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html#managed_disk_type)
 to get a list of available values.
 
-**Post Build Modification Effect**: rebuild of all instances and disks at next `terraform apply`.
+**Post build modification effect**: rebuild of all instances and disks at next `terraform apply`.
 
 #### 5.4.3 azure_resource_group (optional)
 
@@ -733,13 +746,13 @@ the provided resource group. Define this if you wish to use an already
 created resource group or you do not have subscription level access to
 create and destroy resource groups.
 
-**Post Build Modification Effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
 
 ## 6. DNS Configuration and SSL Certificates
 
 Some functionalities in Magic Castle require the registration of DNS records under the
-[cluster name](#42-cluster_name) in the selected [domain](#43-domain). This includes
+[cluster name](#44-cluster_name) in the selected [domain](#45-domain). This includes
 web services like JupyterHub, Globus and FreeIPA web portal.
 
 If your domain DNS records are managed by one of the supported providers,
@@ -750,7 +763,7 @@ If your DNS provider is not supported, you can manually create the DNS records a
 generate the SSL certificates. Refer to the last subsection for more details.
 
 **Requirement**: A private key associated with one of the
-[public keys](#48-public_keys) needs to be tracked (i.e: `ssh-add`) by the local
+[public keys](#49-public_keys) needs to be tracked (i.e: `ssh-add`) by the local
 [authentication agent](https://www.ssh.com/ssh/agent) (i.e: `ssh-agent`).
 This module uses the ssh-agent tracked SSH keys to authenticate and
 to copy SSL certificate files to the login nodes after their creation.
@@ -917,7 +930,7 @@ the following:
 ```
 Error: Your query returned no results. Please change your search criteria and try again.
 ```
-This type of error happens when for example the specified [image](#44-image)
+This type of error happens when for example the specified [image](#46-image)
 no longer exists (see [issue #40](https://github.com/ComputeCanada/magic_castle/issues/40)).
 
 As for `apply`, Terraform will output a plan that you will have to confirm
