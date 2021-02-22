@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added a DNS module that produce a text file that can be imported in DNS zone
 for providers that are currently not supported by MC.
 - [puppet] Added cloud provider and region to puppet facts
+- [puppet] Added failmode option to Duo
+- [puppet] Added fallback to nvidia-smi for GPU driver version
 
 ### Changed
 - Bumped Terraform minimum version to 0.14.5
@@ -18,8 +20,8 @@ for providers that are currently not supported by MC.
 - Renamed `puppetenv_rev` to `config_version`
 - Made `config_git_url` and `config_version` mandatory.
 - Improved documenation
-
-
+- [puppet] Reverted "Remove export of security labels in nfs"
+- [puppet] Fixed label issues with home, project and scratch root folder ([puppet-magic_castle issue #96](https://github.com/ComputeCanada/puppet-magic_castle/issues/96))
 
 ## [9.3] 2021-01-26
 
