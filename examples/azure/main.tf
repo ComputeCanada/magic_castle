@@ -3,7 +3,9 @@ terraform {
 }
 
 module "azure" {
-  source = "git::https://github.com/ComputeCanada/magic_castle.git//azure"
+  source         = "git::https://github.com/ComputeCanada/magic_castle.git//azure"
+  config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
+  config_version = "master"
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
@@ -15,8 +17,6 @@ module "azure" {
   # OpenLogic CentOS 7 images require at least 30GB of root disk.
   # Magic Castle default root disk size is 10GB.
   root_disk_size = 30
-
-  nb_users     = 10
 
   instances = {
     mgmt  = { type = "Standard_DS2_v2", count = 1 },
@@ -35,6 +35,7 @@ module "azure" {
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
 
+  nb_users     = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
 

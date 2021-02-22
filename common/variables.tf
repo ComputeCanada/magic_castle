@@ -62,16 +62,18 @@ variable "guest_passwd" {
   }
 }
 
-variable "puppetenv_git" {
+variable "config_git_url" {
   type        = string
-  default     = "https://github.com/ComputeCanada/puppet-magic_castle"
-  description = "URL to the Magic Castle puppet environment git repo"
+  description = "URL to the Magic Castle Puppet configuration git repo"
+  validation {
+    condition     = can(regex("^https://.*\\.git$", var.config_git_url))
+    error_message = "The config_git_url variable must be an https url to a git repo."
+  }
 }
 
-variable "puppetenv_rev" {
+variable "config_version" {
   type        = string
-  default     = "master"
-  description = "Define which commit of the puppet environment repo will be used. Can be any reference that would be accepted by the git checkout"
+  description = "Tag, branch, or commit that specifies which Puppet configuration revision is to be used"
 }
 
 variable hieradata {

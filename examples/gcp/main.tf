@@ -3,7 +3,9 @@ terraform {
 }
 
 module "gcp" {
-  source = "git::https://github.com/ComputeCanada/magic_castle.git//gcp"
+  source         = "git::https://github.com/ComputeCanada/magic_castle.git//gcp"
+  config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
+  config_version = "master"
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"

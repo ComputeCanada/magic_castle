@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [UNRELEASED]
+
+### Added
+- Added `config_git_url` and `config_version` to all examples
+
+### Changed
+- Renamed `puppetenv_git` to `config_git_url`
+- Renamed `puppetenv_rev` to `config_version`
+- Made `config_git_url` and `config_version` mandatory.
+
 ## [9.3] 2021-01-26
 
 ### Added
@@ -40,7 +50,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `mokey` subdomain to the DNS record generator list
 - Added documentation on creating account with Mokey
 - [puppet] Integrated UBCCR's project [Mokey](https://github.com/ubccr/mokey)  to allow users to create and manage their account on the cluster using a web portal
-- [puppet] Added two daemons `mkhome` and `mkproject` that watch slapd log output for new users and groups and create 
+- [puppet] Added two daemons `mkhome` and `mkproject` that watch slapd log output for new users and groups and create
 home, scratch and project directory plus Slurm account automatically
 - [puppet] Added Magic Castle custom login template to JupyterHub, which include a new `Create account` link when user signup is allowed
 - [puppet] Added classes `profile::accounts` and `profile::accounts::guests` to handle account creation

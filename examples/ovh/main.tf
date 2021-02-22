@@ -3,12 +3,13 @@ terraform {
 }
 
 module "ovh" {
-  source = "git::https://github.com/ComputeCanada/magic_castle.git//ovh"
+  source         = "git::https://github.com/ComputeCanada/magic_castle.git//ovh"
+  config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
+  config_version = "master"
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
   image        = "CentOS-7-x64-2019-07"
-  nb_users     = 10
 
   instances = {
     mgmt  = { type = "s1-2", count = 1 },
@@ -27,6 +28,7 @@ module "ovh" {
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
 
+  nb_users     = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
 

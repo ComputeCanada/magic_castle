@@ -3,12 +3,13 @@ terraform {
 }
 
 module "openstack" {
-  source = "git::https://github.com/ComputeCanada/magic_castle.git//openstack"
+  source         = "git::https://github.com/ComputeCanada/magic_castle.git//openstack?ref=config_vars"
+  config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
+  config_version = "master"
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
   image        = "CentOS-7-x64-2020-03"
-  nb_users     = 10
 
   instances = {
     mgmt  = { type = "p4-6gb", count = 1 },
@@ -27,6 +28,7 @@ module "openstack" {
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
 
+  nb_users     = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
 
