@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [UNRELEASED]
+## [10.0] 2021-02-24
 
 ### Added
 - Added `config_git_url` and `config_version` to all examples
@@ -22,6 +22,9 @@ for providers that are currently not supported by MC.
 - Improved documenation
 - [puppet] Reverted "Remove export of security labels in nfs"
 - [puppet] Fixed label issues with home, project and scratch root folder ([puppet-magic_castle issue #96](https://github.com/ComputeCanada/puppet-magic_castle/issues/96))
+- [puppet] Generalized VGPU driver installation to support other clouds
+- [puppet] Changed default Slurm version from 19.05 to 20.11
+- [puppet] Fix guest account username zero-padding when nb_accounts < 10
 
 ## [9.3] 2021-01-26
 
