@@ -20,9 +20,11 @@ To use Magic Castle you will need:
 * Terraform (>= 0.14.2).
 * Access to a Cloud (e.g.: Compute Canada Arbutus).
 * Ability to communicate with the cloud provider API from your computer.
-* A project with operational limits meeting the requirements described in the following subsections.
+* A project with operational limits meeting the requirements described in _Quotas_ subsection.
 
-### 1.1 OpenStack
+### 1.1 Quotas
+
+#### 1.1.1 OpenStack
 
 Minimum project requirements:
 * 1 floating IP
@@ -44,7 +46,7 @@ Minimum project requirements:
 * [Create and manage network - CLI, OpenStack Documentation](https://docs.openstack.org/ocata/user-guide/cli-create-and-manage-networks.html)
 
 
-### 1.2 Google Cloud
+#### 1.1.2 Google Cloud
 
 **Global**
 * 1 Network
