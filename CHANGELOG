@@ -3,6 +3,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [10.1] 2021-03-08
+
+### Added
+- [puppet] Added log rotation rules for Slurm daemons
+- [puppet] Added configuration of Prometheus retention time and storage
+
+### Changed
+- Updated documentation
+- [puppet] Changed /localscratch SELinux label from `default_t` to `tmp_t`
+- [puppet] Bumped puppet-jupyterhub version to 3.7.3
+- [puppet] Refactored mkproject daemon to allow removal of users from Slurm account when
+removing them from the associated POSIX group in FreeIPA.
+
+### Removed
+- Removed possibility of having underscores in `cluster_name`
+
 ## [10.0] 2021-02-24
 
 ### Added
