@@ -547,7 +547,7 @@ List of useful examples:
 - Receive logs of Puppet runs with changes to your email, add the
 following line to the string:
     ```
-    profile::base::email: "me@example.org"
+    profile::base::admin_email: "me@example.org"
     ```
 - Define ip addresses that can never be banned by fail2ban:
     ```
