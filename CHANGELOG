@@ -3,6 +3,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [10.2] 2021-03-10
+
+### Added
+- Added GitHub actions workflows for validation and release
+- [puppet] Added GitHub actions workflows for validation
+
+### Changed
+- [puppet] Fixed the logic in mkproject.sh to avoid empty GID
+
+### Removed
+- Removed Travis CI yaml
+- [puppet] Removed Travis CI yaml
+
 ## [10.1] 2021-03-08
 
 ### Added
