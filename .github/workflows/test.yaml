@@ -35,15 +35,7 @@ jobs:
           mv -v terraform "${HOME}/bin/terraform"
           ~/bin/terraform version
 
-      - name: Cache SSH keys
-        id: cache-ssh-keys
-        uses: actions/cache@v2
-        with:
-          path: ~/bin
-          key: ssh-keys
-
       - name: Create SSH keys
-        if: steps.cache-ssh-keys.outputs.cache-hit != 'true'
         run: |
           ssh-keygen -b 2048 -t rsa -q -N "" -f ~/.ssh/id_rsa
 
