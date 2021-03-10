@@ -1,4 +1,4 @@
-name: Create release
+name: Validate Terraform code
 
 on:
   push:
