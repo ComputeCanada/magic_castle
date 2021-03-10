@@ -1,6 +1,6 @@
 # Magic Castle
 
-[![Build Status](https://github.com/ComputeCanada/magic_castle/actions/workflows/test.yaml/badge.svg)
+[![Build Status](https://github.com/ComputeCanada/magic_castle/actions/workflows/test.yaml/badge.svg)](https://github.com/ComputeCanada/magic_castle/actions/workflows/test.yaml)
 
 [Compute Canada](https://www.computecanada.ca/) provides HPC infrastructure and support to every academic research institution in Canada. Compute Canada [uses CVMFS](https://docs.computecanada.ca/wiki/Accessing_CVMFS), a software distribution system [developed at CERN](https://cernvm.cern.ch/portal/filesystem), to make the Compute Canada research software stack available on its HPC clusters, and anywhere else with internet access. This enables replication of the Compute Canada experience outside of its physical infrastructure.
 
