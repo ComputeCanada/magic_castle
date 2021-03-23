@@ -20,9 +20,11 @@ runcmd:
   - "(echo -e '\nHostKeyAlgorithms ssh-rsa\n' >> /etc/ssh/sshd_config && systemctl restart sshd)"
   - yum remove -y firewalld
   - yum upgrade -y
-# puppet master configuration
   - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]+' /etc/os-release).noarch.rpm
-  - yum -y install puppetserver-6.13.0 puppet-agent-6.18.0
+  - chmod 644 /etc/ssh/ssh_host_*_key.pub
+  - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
+%{ if contains(tags, "puppet") }
+  - yum -y install puppetserver-6.13.0
   - mkdir /var/autosign
   - chown puppet:puppet /var/autosign
   - chmod 750 /var/autosign
@@ -31,15 +33,10 @@ runcmd:
   - /opt/puppetlabs/puppet/bin/gem install autosign
   - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section master
   - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section master
-  - /opt/puppetlabs/bin/puppet config set certname ${node_name}
-  - /opt/puppetlabs/bin/puppet config set report false
-  - /opt/puppetlabs/bin/puppet config set postrun_command /opt/puppetlabs/bin/postrun
-  - install -m 700 /dev/null /opt/puppetlabs/bin/postrun
   - chown puppet:puppet /etc/autosign.conf
   - sed -i 's/^\(After=.*\)$/\1 puppetserver.service/' /usr/lib/systemd/system/puppet.service
   - systemctl daemon-reload
   - systemctl enable puppetserver
-  - systemctl enable puppet
   - rm -rf /etc/puppetlabs/code/environments/production
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/production
   - "(cd /etc/puppetlabs/code/environments/production; git checkout ${puppetenv_rev})"
@@ -53,7 +50,16 @@ runcmd:
   - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
   - "(cd /etc/puppetlabs/code/environments/production/ && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
 # Bootstrap services that are essential to puppet agents
-  - /opt/puppetlabs/bin/puppet apply -e 'include profile::consul::server'
+# if the puppet module for consul is present
+  - test -d /etc/puppetlabs/code/environments/production/modules/consul && /opt/puppetlabs/bin/puppet apply -e 'include profile::consul::server'
+%{ endif }
+  - yum -y install puppet-agent-6.18.0
+  - /opt/puppetlabs/bin/puppet config set certname ${node_name}
+  - /opt/puppetlabs/bin/puppet config set waitforcert 15s
+  - /opt/puppetlabs/bin/puppet config set report false
+  - /opt/puppetlabs/bin/puppet config set postrun_command /opt/puppetlabs/bin/postrun
+  - install -m 700 /dev/null /opt/puppetlabs/bin/postrun
+  - systemctl enable puppet
 # Kernel configuration
   - systemctl disable kdump
   - sed -i 's/crashkernel=auto/crashkernel=no/' /etc/default/grub
@@ -63,7 +69,14 @@ runcmd:
 
 write_files:
   - content: |
+%{ if contains(tags, "puppet") }
       127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 puppet
+%{ else }
+      127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+%{ for ip in puppetmaster_ip ~}
+      ${ip} puppet
+%{ endfor ~}
+%{ endif }
     path: /etc/hosts
     permissions: "0644"
   - content: |
@@ -72,6 +85,7 @@ write_files:
       }
     path: /etc/puppetlabs/facter/facter.conf
     permissions: "0644"
+%{ if contains(tags, "puppet") }
   - content: |
       ---
       general:
@@ -85,6 +99,23 @@ write_files:
         password: "${puppetmaster_password}"
     path: /etc/autosign.conf
     permissions: "0640"
+%{ endif }
+%{ if ! contains(tags, "puppet") }
+  - content: |
+      ---
+      custom_attributes:
+        1.2.840.113549.1.9.7: "${puppetmaster_password}"
+    path: /etc/puppetlabs/puppet/csr_attributes.yaml
+    permissions: "0640"
+%{ endif }
+
+ssh_keys:
+%{ for key, values in hostkeys ~}
+  ${key}_public: |
+    ${indent(4, values["public"])}
+  ${key}_private: |
+    ${indent(4, values["private"])}
+%{ endfor ~}
 
 disable_ec2_metadata: false
 timezone: "UTC"
