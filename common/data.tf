@@ -1,22 +1,23 @@
 locals {
   domain_name = "${lower(var.cluster_name)}.${lower(var.domain)}"
-  node = {
-    for item in flatten([
-      for node in var.instances["node"]: [
-        for j in range(node.count): {
-          (
-            lookup(node, "prefix", "") != "" ?
-            format("%s-node%d", lookup(node, "prefix", ""), j+1) :
-            format("node%d", j+1)
-          ) = {
-            for key in setsubtract(keys(node), ["prefix", "count"]):
-              key => node[key]
-          }
+  instances = merge(
+    flatten([
+      for hostname, attrs in var.instances : [
+        for i in range(lookup(attrs, "count", 1)) : {
+          (format("%s%d", hostname, i + 1)) = { for attr, value in attrs : attr => value if attr != "count" }
         }
       ]
-    ]):
-    keys(item)[0] => values(item)[0]
-  }
+    ])...
+  )
+  host2prefix =  merge(
+    flatten([
+      for hostname, attrs in var.instances : [
+        for i in range(lookup(attrs, "count", 1)) : {
+          (format("%s%d", hostname, i + 1)) = hostname
+        }
+      ]
+    ])...
+  )
 }
 
 resource "random_string" "munge_key" {
@@ -48,150 +49,92 @@ resource "tls_private_key" "ssh" {
   rsa_bits  = 4096
 }
 
-data "http" "hieradata_template" {
-  url = "${replace(var.config_git_url, ".git", "")}/raw/${var.config_version}/data/terraform_data.yaml.tmpl"
+resource "tls_private_key" "rsa_hostkeys" {
+  for_each  = toset(keys(var.instances))
+  algorithm = "RSA"
+  rsa_bits  = 4096
 }
 
-data "template_file" "hieradata" {
-  template = data.http.hieradata_template.body
-
-  vars = {
-    sudoer_username = var.sudoer_username
-    freeipa_passwd  = random_string.freeipa_passwd.result
-    cluster_name    = lower(var.cluster_name)
-    domain_name     = local.domain_name
-    guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
-    consul_token    = random_uuid.consul_token.result
-    munge_key       = base64sha512(random_string.munge_key.result)
-    nb_users        = var.nb_users
-    mgmt1_ip        = local.mgmt1_ip
-    home_dev        = jsonencode(local.home_dev)
-    project_dev     = jsonencode(local.project_dev)
-    scratch_dev     = jsonencode(local.scratch_dev)
+locals {
+  public_instances = { for key, values in local.all_instances: key => values if contains(values["tags"], "public")}
+  all_tags = flatten([for key, values in local.instances : values["tags"]])
+  tag_ip = { for tag in local.all_tags:
+    tag => [for key, values in local.all_instances: values["local_ip"] if contains(values["tags"], tag)]
   }
-}
 
-data "http" "facts_template" {
-  url = "${replace(var.config_git_url, ".git", "")}/raw/${var.config_version}/site/profile/facts.d/terraform_facts.yaml.tmpl"
-}
-
-data "template_file" "facts" {
-  template = data.http.facts_template.body
-
-  vars = {
+  user_data = {
+    for key, values in local.instances: key =>
+    templatefile("${path.module}/cloud-init/puppet.yaml",
+      {
+        tags                  = values["tags"]
+        node_name             = key,
+        puppetenv_git         = var.config_git_url,
+        puppetenv_rev         = var.config_version,
+        puppetmaster_ip       = local.puppetmaster_ip,
+        puppetmaster_password = random_string.puppetmaster_password.result,
+        sudoer_username       = var.sudoer_username,
+        ssh_authorized_keys   = var.public_keys,
+        hostkeys = {
+          rsa = {
+            private = tls_private_key.rsa_hostkeys[local.host2prefix[key]].private_key_pem
+            public  = tls_private_key.rsa_hostkeys[local.host2prefix[key]].public_key_openssh
+          }
+        }
+      }
+    )
+  }
+  hieradata = templatefile("${path.module}/terraform_data.yaml",
+    {
+      instances = yamlencode(local.all_instances)
+      tag_ip    = yamlencode(local.tag_ip)
+      data = {
+        sudoer_username = var.sudoer_username
+        freeipa_passwd  = random_string.freeipa_passwd.result
+        cluster_name    = lower(var.cluster_name)
+        domain_name     = local.domain_name
+        guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
+        consul_token    = random_uuid.consul_token.result
+        munge_key       = base64sha512(random_string.munge_key.result)
+        nb_users        = var.nb_users
+        home_dev        = jsonencode(local.volume_devices["nfs"]["home"])
+        project_dev     = jsonencode(local.volume_devices["nfs"]["project"])
+        scratch_dev     = jsonencode(local.volume_devices["nfs"]["scratch"])
+      }
+    })
+  facts = {
     software_stack = var.software_stack
     cloud_provider = local.cloud_provider
     cloud_region   = local.cloud_region
   }
 }
 
-data "template_cloudinit_config" "mgmt_config" {
-  count = var.instances["mgmt"]["count"]
-  part {
-    filename     = "mgmt.yaml"
-    merge_type   = "list(append)+dict(recurse_array)+str()"
-    content_type = "text/cloud-config"
-    content      = templatefile(
-      format("${path.module}/cloud-init/%s.yaml", count.index == 0 ? "puppetmaster": "puppetagent"),
-      {
-        puppetenv_git         = replace(replace(var.config_git_url, ".git", ""), "//*$/", ".git"),
-        puppetenv_rev         = var.config_version,
-        puppetmaster_ip       = local.puppetmaster_ip,
-        puppetmaster_password = random_string.puppetmaster_password.result,
-        node_name             = format("mgmt%d", count.index + 1),
-        sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = concat(var.public_keys, tls_private_key.ssh[*].public_key_openssh),
-      }
-    )
-  }
-}
-
-resource "tls_private_key" "login_rsa" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-data "template_cloudinit_config" "login_config" {
-  count = var.instances["login"]["count"]
-
-  part {
-    filename     = "ssh_keys.yaml"
-    merge_type   = "list(append)+dict(recurse_array)+str()"
-    content_type = "text/cloud-config"
-    content      = <<EOF
-runcmd:
-  - chmod 644 /etc/ssh/ssh_host_rsa_key.pub
-  - chgrp ssh_keys /etc/ssh/ssh_host_rsa_key.pub
-ssh_keys:
-  rsa_private: |
-    ${indent(4, tls_private_key.login_rsa.private_key_pem)}
-  rsa_public: |
-    ${tls_private_key.login_rsa.public_key_openssh}
-EOF
-  }
-  part {
-    filename     = "login.yaml"
-    merge_type   = "list(append)+dict(recurse_array)+str()"
-    content_type = "text/cloud-config"
-    content      = templatefile(
-      "${path.module}/cloud-init/puppetagent.yaml",
-      {
-        node_name             = format("login%d", count.index + 1),
-        sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = concat(var.public_keys, tls_private_key.ssh[*].public_key_openssh),
-        puppetmaster_ip       = local.puppetmaster_ip,
-        puppetmaster_password = random_string.puppetmaster_password.result,
-      }
-    )
-  }
-}
-
-data "template_cloudinit_config" "node_config" {
-  for_each = local.node
-  part {
-    filename     = "node.yaml"
-    merge_type   = "list(append)+dict(recurse_array)+str()"
-    content_type = "text/cloud-config"
-    content      = templatefile(
-      "${path.module}/cloud-init/puppetagent.yaml",
-      {
-        node_name             = each.key,
-        sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = concat(var.public_keys, tls_private_key.ssh[*].public_key_openssh),
-        puppetmaster_ip       = local.puppetmaster_ip,
-        puppetmaster_password = random_string.puppetmaster_password.result,
-      }
-    )
-  }
-}
-
 resource "null_resource" "deploy_hieradata" {
-  count = var.instances["mgmt"]["count"] > 0 && var.instances["login"]["count"] > 0 ? 1 : 0
+  count = contains(local.all_tags, "puppet") && contains(local.all_tags, "public") ? 1 : 0
 
   connection {
-    type                 = "ssh"
-    bastion_host         = local.public_ip[0]
-    bastion_user         = var.sudoer_username
-    bastion_private_key  = try(tls_private_key.ssh[0].private_key_pem, null)
-    user                 = var.sudoer_username
-    host                 = local.puppetmaster_ip
-    private_key          = try(tls_private_key.ssh[0].private_key_pem, null)
+    type                = "ssh"
+    bastion_host        = local.public_ip[keys(local.public_ip)[0]]
+    bastion_user        = var.sudoer_username
+    bastion_private_key = try(tls_private_key.ssh[0].private_key_pem, null)
+    user                = var.sudoer_username
+    host                = "puppet"
+    private_key         = try(tls_private_key.ssh[0].private_key_pem, null)
   }
 
   triggers = {
     user_data    = md5(var.hieradata)
-    hieradata    = md5(data.template_file.hieradata.rendered)
-    facts        = md5(data.template_file.facts.rendered)
+    hieradata    = md5(local.hieradata)
+    facts        = md5(yamlencode(local.facts))
     puppetmaster = local.puppetmaster_id
   }
 
   provisioner "file" {
-    content     = data.template_file.hieradata.rendered
+    content     = local.hieradata
     destination = "terraform_data.yaml"
   }
 
   provisioner "file" {
-    content     = data.template_file.facts.rendered
+    content     = yamlencode(local.facts)
     destination = "terraform_facts.yaml"
   }
 
