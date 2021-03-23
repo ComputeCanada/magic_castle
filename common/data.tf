@@ -18,14 +18,14 @@ locals {
       ]
     ])...
   )
-  volumes = merge([
+  volumes = length(var.storage) > 0 ? merge([
     for ki, vi in var.storage : {
       for kj, vj in vi :
       "${ki}-${kj}" => merge({
         instance = try(element([for x, values in local.instances : x if contains(values.tags, ki)], 0), null)
       }, vj)
     }
-  ]...)
+  ]...) : {}
 }
 
 resource "random_string" "munge_key" {
