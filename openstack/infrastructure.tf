@@ -12,7 +12,7 @@ data "openstack_compute_flavor_v2" "flavors" {
 
 resource "openstack_compute_keypair_v2" "keypair" {
   name       = "${var.cluster_name}-key"
-  public_key = file("~/.ssh/id_rsa.pub")
+  public_key = var.public_keys[0]
 }
 
 resource "openstack_compute_secgroup_v2" "secgroup" {
