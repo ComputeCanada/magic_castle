@@ -129,7 +129,7 @@ locals {
     for ki, vi in var.storage :
     ki => {
       for kj, vj in vi :
-      kj => ["/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v2.volumes["${ki}-${kj}"].id, 0, 20)}"]
+      kj => ["/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v3.volumes["${ki}-${kj}"].id, 0, 20)}"]
     }
   }
 }
