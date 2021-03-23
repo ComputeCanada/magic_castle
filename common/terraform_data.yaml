@@ -1,0 +1,10 @@
+---
+terraform:
+  instances:
+    ${indent(4, instances)}
+  tag_ip:
+    ${indent(4, tag_ip)}
+  data:
+%{ for key, value in data ~}
+    ${key}: ${value}
+%{ endfor ~}
