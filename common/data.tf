@@ -95,6 +95,7 @@ locals {
     {
       instances = yamlencode(local.all_instances)
       tag_ip    = yamlencode(local.tag_ip)
+      storage   = yamlencode(local.volume_devices)
       data = {
         sudoer_username = var.sudoer_username
         freeipa_passwd  = random_string.freeipa_passwd.result
@@ -104,9 +105,6 @@ locals {
         consul_token    = random_uuid.consul_token.result
         munge_key       = base64sha512(random_string.munge_key.result)
         nb_users        = var.nb_users
-        home_dev        = jsonencode(local.volume_devices["nfs"]["home"])
-        project_dev     = jsonencode(local.volume_devices["nfs"]["project"])
-        scratch_dev     = jsonencode(local.volume_devices["nfs"]["scratch"])
       }
     })
   facts = {
