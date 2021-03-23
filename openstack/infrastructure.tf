@@ -145,7 +145,7 @@ locals {
   puppetmaster_id = try(element([for x, values in local.instances : openstack_compute_instance_v2.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in local.instances :
     x => {
-      public_ip   = contains(values["tags"], "public") ? openstack_compute_floatingip_associate_v2.fip[x].floating_ip : ""
+      public_ip   = contains(values["tags"], "public") ? local.public_ip[x] : ""
       local_ip    = openstack_networking_port_v2.ports[x].all_fixed_ips[0]
       tags        = values["tags"]
       id          = openstack_compute_instance_v2.instances[x].id
