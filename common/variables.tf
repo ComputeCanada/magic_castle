@@ -9,6 +9,7 @@ variable "cluster_name" {
 
 variable "nb_users" {
   type        = number
+  default     = 0
   description = "Number of user accounts with a common password that will be created"
 }
 
