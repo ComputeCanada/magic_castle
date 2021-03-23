@@ -20,9 +20,9 @@ module "openstack" {
 
   storage = {
     nfs = {
-      home     = 50
-      project  = 100
-      scratch  = 100
+      home     = { size = 10, type = "volumes-ssd" }
+      project  = { size = 50, type = "volumes-ssd" }
+      scratch  = { size = 50, type = "volumes-ssd" }
     }
   }
 

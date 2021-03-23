@@ -21,10 +21,9 @@ locals {
   volumes = merge([
     for ki, vi in var.storage : {
       for kj, vj in vi :
-      "${ki}-${kj}" => {
-        size     = vj
+      "${ki}-${kj}" => merge({
         instance = try(element([for x, values in local.instances : x if contains(values.tags, ki)], 0), null)
-      }
+      }, vj)
     }
   ]...)
 }

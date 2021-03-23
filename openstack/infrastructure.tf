@@ -110,17 +110,18 @@ locals {
 
 }
 
-resource "openstack_blockstorage_volume_v2" "volumes" {
+resource "openstack_blockstorage_volume_v3" "volumes" {
   for_each    = local.volumes
   name        = "${var.cluster_name}-${each.key}"
   description = "${var.cluster_name} ${each.key}"
   size        = each.value.size
+  volume_type = each.value.type
 }
 
 resource "openstack_compute_volume_attach_v2" "attachments" {
   for_each    = { for k, v in local.volumes : k => v if v.instance != null }
   instance_id = openstack_compute_instance_v2.instances[each.value.instance].id
-  volume_id   = openstack_blockstorage_volume_v2.volumes[each.key].id
+  volume_id   = openstack_blockstorage_volume_v3.volumes[each.key].id
 }
 
 locals {
