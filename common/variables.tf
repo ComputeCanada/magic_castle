@@ -13,11 +13,6 @@ variable "nb_users" {
 }
 
 variable "instances" {
-  type = object({
-    mgmt=object({type=string, count=number}),
-    login=object({type=string, count=number}),
-    node=list(map(any)),
-  })
   description = "Map that defines the parameters for each type of instance of the cluster"
 }
 
@@ -33,12 +28,6 @@ variable "root_disk_size" {
 }
 
 variable "storage" {
-  type = object({
-    type=string,
-    home_size=number,
-    project_size=number,
-    scratch_size=number
-  })
   description = "Map that defines the storage parameters"
 }
 
@@ -48,7 +37,7 @@ variable "domain" {
 }
 
 variable "public_keys" {
-  type        = list
+  type        = list(string)
   description = "List of SSH public keys that can log in as {sudoer_username}"
 }
 
@@ -76,7 +65,7 @@ variable "config_version" {
   description = "Tag, branch, or commit that specifies which Puppet configuration revision is to be used"
 }
 
-variable hieradata {
+variable "hieradata" {
   type        = string
   default     = "---"
   description = "String formatted as YAML defining hiera key-value pairs to be included in the puppet environment"
@@ -89,7 +78,7 @@ variable "sudoer_username" {
 }
 
 variable "firewall_rules" {
-  type    = list(
+  type = list(
     object({
       name        = string
       from_port   = number
@@ -100,39 +89,39 @@ variable "firewall_rules" {
   )
   default = [
     {
-      "name"         = "SSH",
-      "from_port"    = 22,
-      "to_port"      = 22,
-      "ip_protocol"  = "tcp",
-      "cidr"         = "0.0.0.0/0"
+      "name"        = "SSH",
+      "from_port"   = 22,
+      "to_port"     = 22,
+      "ip_protocol" = "tcp",
+      "cidr"        = "0.0.0.0/0"
     },
     {
-      "name"         = "HTTP",
-      "from_port"    = 80,
-      "to_port"      = 80,
-      "ip_protocol"  = "tcp",
-      "cidr"         = "0.0.0.0/0"
+      "name"        = "HTTP",
+      "from_port"   = 80,
+      "to_port"     = 80,
+      "ip_protocol" = "tcp",
+      "cidr"        = "0.0.0.0/0"
     },
     {
-      "name"         = "HTTPS",
-      "from_port"    = 443,
-      "to_port"      = 443,
-      "ip_protocol"  = "tcp",
-      "cidr"         = "0.0.0.0/0"
+      "name"        = "HTTPS",
+      "from_port"   = 443,
+      "to_port"     = 443,
+      "ip_protocol" = "tcp",
+      "cidr"        = "0.0.0.0/0"
     },
     {
-      "name"         = "Globus",
-      "from_port"    = 2811,
-      "to_port"      = 2811,
-      "ip_protocol"  = "tcp",
-      "cidr"         = "54.237.254.192/29"
+      "name"        = "Globus",
+      "from_port"   = 2811,
+      "to_port"     = 2811,
+      "ip_protocol" = "tcp",
+      "cidr"        = "54.237.254.192/29"
     },
     {
-      "name"         = "MyProxy",
-      "from_port"    = 7512,
-      "to_port"      = 7512,
-      "ip_protocol"  = "tcp",
-      "cidr"         = "0.0.0.0/0"
+      "name"        = "MyProxy",
+      "from_port"   = 7512,
+      "to_port"     = 7512,
+      "ip_protocol" = "tcp",
+      "cidr"        = "0.0.0.0/0"
     },
     {
       "name"        = "GridFTP",
