@@ -18,6 +18,15 @@ locals {
       ]
     ])...
   )
+  volumes = merge([
+    for ki, vi in var.storage : {
+      for kj, vj in vi :
+      "${ki}-${kj}" => {
+        size     = vj
+        instance = try(element([for x, values in local.instances : x if contains(values.tags, ki)], 0), null)
+      }
+    }
+  ]...)
 }
 
 resource "random_string" "munge_key" {
