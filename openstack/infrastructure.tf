@@ -107,15 +107,7 @@ resource "openstack_compute_instance_v2" "instances" {
 }
 
 locals {
-  volumes = merge([
-    for ki, vi in var.storage : {
-      for kj, vj in vi :
-      "${ki}-${kj}" => {
-        size     = vj
-        instance = try(element([for x, values in local.instances : x if contains(values.tags, ki)], 0), null)
-      }
-    }
-  ]...)
+
 }
 
 resource "openstack_blockstorage_volume_v2" "volumes" {
