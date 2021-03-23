@@ -9,8 +9,9 @@ data "google_dns_managed_zone" "domain" {
 module "record_generator" {
   source         = "../record_generator"
   name           = lower(var.name)
-  login_ips      = var.public_ip
-  rsa_public_key = var.rsa_public_key
+  public_instances = var.public_instances
+  domain_tag       = var.domain_tag
+  vhost_tag        = var.vhost_tag
 }
 
 resource "google_dns_record_set" "records" {
@@ -29,16 +30,15 @@ resource "google_dns_record_set" "records" {
 }
 
 module "acme" {
-  source              = "../acme"
-  dns_provider        = "gcloud"
-  dns_provider_config = { GCE_PROJECT = var.project }
-  name                = lower(var.name)
-  domain              = var.domain
-  email               = var.email
-  sudoer_username     = var.sudoer_username
-  login_ips           = var.public_ip
-  login_ids           = var.login_ids
-  ssh_private_key     = var.ssh_private_key
+  source           = "../acme"
+  dns_provider     = "cloudflare"
+  name             = lower(var.name)
+  domain           = var.domain
+  email            = var.email
+  sudoer_username  = var.sudoer_username
+  public_instances = var.public_instances
+  ssh_private_key  = var.ssh_private_key
+  ssl_tags         = var.ssl_tags
 }
 
 output "hostnames" {
