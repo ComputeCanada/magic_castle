@@ -19,27 +19,24 @@ locals {
 }
 
 resource "openstack_networking_floatingip_v2" "fip" {
-  count = max(
-    max(
-      var.instances["login"]["count"] - length(var.os_floating_ips),
-      1 - length(var.os_floating_ips),
-    ),
-    0,
-  )
+  for_each = {
+    for x, values in local.instances : x => true if contains(values.tags, "public") && !contains(keys(var.os_floating_ips), x)
+  }
   pool = data.openstack_networking_network_v2.ext_network.name
 }
 
-resource "openstack_compute_floatingip_associate_v2" "fip" {
-  count = var.instances["login"]["count"]
-  floating_ip = local.public_ip[count.index]
-  instance_id = openstack_compute_instance_v2.login[count.index].id
+locals {
+  public_ip = merge(
+    var.os_floating_ips,
+    { for x, values in local.instances : x => openstack_networking_floatingip_v2.fip[x].address
+    if contains(values.tags, "public") && !contains(keys(var.os_floating_ips), x) }
+  )
 }
 
-locals {
-  public_ip = concat(
-    var.os_floating_ips,
-    openstack_networking_floatingip_v2.fip[*].address,
-  )
+resource "openstack_compute_floatingip_associate_v2" "fip" {
+  for_each    = { for x, values in local.instances : x => true if contains(values.tags, "public") }
+  floating_ip = local.public_ip[each.key]
+  instance_id = openstack_compute_instance_v2.instances[each.key].id
 }
 
 locals {

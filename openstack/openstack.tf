@@ -1,6 +1,5 @@
 variable "os_floating_ips" {
-  type    = list(string)
-  default = []
+  default = { }
 }
 
 variable "os_ext_network" {
