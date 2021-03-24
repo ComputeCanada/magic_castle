@@ -206,7 +206,7 @@ resource "aws_ebs_volume" "volumes" {
 
 locals {
   device_names = [
-    "/dev/sbf", "/dev/sdg", "/dev/sdh", "/dev/sdi", "/dev/sdj",
+    "/dev/sdf", "/dev/sdg", "/dev/sdh", "/dev/sdi", "/dev/sdj",
     "/dev/sdk", "/dev/sdl", "/dev/sdm", "/dev/sdn", "/dev/sdp"
   ]
 }
