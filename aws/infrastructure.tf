@@ -12,7 +12,6 @@ resource "random_shuffle" "random_az" {
   result_count = 1
 }
 
-
 locals {
   availability_zone = (
     ( var.availability_zone != "" &&
@@ -125,31 +124,34 @@ resource "aws_key_pair" "key" {
   public_key = var.public_keys[0]
 }
 
-resource "aws_network_interface" "mgmt" {
-  count       = var.instances["mgmt"]["count"]
-  subnet_id   = aws_subnet.private_subnet.id
-  security_groups = [
-    aws_security_group.allow_any_inside_vpc.id,
-    aws_security_group.allow_out_any.id,
-  ]
+resource "aws_network_interface" "netifs" {
+  for_each        = local.instances
+  subnet_id       = aws_subnet.private_subnet.id
+  security_groups = concat(
+    [
+      aws_security_group.allow_any_inside_vpc.id,
+      aws_security_group.allow_out_any.id,
+    ], 
+    contains(each.value["tags"], "public") ? [aws_security_group.allow_in_services.id] : [] 
+  )
 
   tags = {
-    Name = "${var.cluster_name}-mgmt-if"
+    Name = "${var.cluster_name}-${each.key}-if"
   }
 }
 
 # Instances
-resource "aws_instance" "mgmt" {
-  count             = var.instances["mgmt"]["count"]
-  instance_type     = var.instances["mgmt"]["type"]
+resource "aws_instance" "instances" {
+  for_each          = local.instances
+  instance_type     = each.value.type
   ami               = var.image
-  user_data         = data.template_cloudinit_config.mgmt_config[count.index].rendered
+  user_data         = base64gzip(local.user_data[each.key])
   availability_zone = local.availability_zone
 
-  key_name                    = aws_key_pair.key.key_name
+  key_name          = aws_key_pair.key.key_name
 
   network_interface {
-    network_interface_id = aws_network_interface.mgmt[count.index].id
+    network_interface_id = aws_network_interface.netifs[each.key].id
     device_index         = 0
   }
 
@@ -160,7 +162,7 @@ resource "aws_instance" "mgmt" {
   }
 
   tags = {
-    Name = format("${var.cluster_name}-mgmt%d", count.index + 1)
+    Name = format("%s-%s", var.cluster_name, each.key)
   }
 
   lifecycle {
@@ -172,152 +174,30 @@ resource "aws_instance" "mgmt" {
   depends_on = [aws_internet_gateway.gw]
 }
 
-resource "aws_eip" "mgmt" {
-  count      = var.instances["mgmt"]["count"]
+resource "aws_eip" "eip" {
+  for_each = {
+    for x, values in local.instances : x => true if contains(values.tags, "public")
+  }
   vpc        = true
-  instance   = aws_instance.mgmt[count.index].id
-  depends_on = [aws_internet_gateway.gw]
-}
-
-resource "aws_ebs_volume" "home" {
-  count             = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  availability_zone = local.availability_zone
-  size              = var.storage["home_size"]
-  type              = "gp2"
-
-  tags = {
-    Name = "${var.cluster_name}-home"
-  }
-}
-
-resource "aws_ebs_volume" "project" {
-  count             = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  availability_zone = local.availability_zone
-  size              = var.storage["project_size"]
-  type              = "gp2"
-
-  tags = {
-    Name = "${var.cluster_name}-project"
-  }
-}
-
-resource "aws_ebs_volume" "scratch" {
-  count             = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  availability_zone = local.availability_zone
-  size              = var.storage["scratch_size"]
-  type              = "gp2"
-
-  tags = {
-    Name = "${var.cluster_name}-scratch"
-  }
-}
-
-resource "aws_volume_attachment" "home" {
-  count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  device_name  = "/dev/sdb"
-  volume_id    = aws_ebs_volume.home[count.index].id
-  instance_id  = aws_instance.mgmt[0].id
-  skip_destroy = true
-}
-
-resource "aws_volume_attachment" "project" {
-  count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  device_name  = "/dev/sdc"
-  volume_id    = aws_ebs_volume.project[count.index].id
-  instance_id  = aws_instance.mgmt[0].id
-  skip_destroy = true
-}
-
-resource "aws_volume_attachment" "scratch" {
-  count        = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  device_name  = "/dev/sdd"
-  volume_id    = aws_ebs_volume.scratch[count.index].id
-  instance_id  = aws_instance.mgmt[0].id
-  skip_destroy = true
-}
-
-resource "aws_instance" "login" {
-  count         = var.instances["login"]["count"]
-  instance_type = var.instances["login"]["type"]
-  ami           = var.image
-  user_data = data.template_cloudinit_config.login_config[count.index].rendered
-
-  subnet_id                   = aws_subnet.private_subnet.id
-  key_name                    = aws_key_pair.key.key_name
-
-  ebs_optimized = true
-  root_block_device {
-    volume_type = "gp2"
-    volume_size = var.root_disk_size
-  }
-
-  vpc_security_group_ids = [
-    aws_security_group.allow_in_services.id,
-    aws_security_group.allow_any_inside_vpc.id,
-    aws_security_group.allow_out_any.id,
-  ]
-
-  lifecycle {
-    ignore_changes = [
-      ami
-    ]
-  }
-
-  tags = {
-    Name = format("${var.cluster_name}-login%d", count.index + 1)
-  }
-}
-
-resource "aws_eip" "login" {
-  count      = var.instances["login"]["count"]
-  vpc        = true
-  instance   = aws_instance.login[count.index].id
+  instance   = aws_instance.instances[each.key].id
   depends_on = [aws_internet_gateway.gw]
   tags = {
-    Name = format("${var.cluster_name}-login%d-eip", count.index + 1)
+    Name = "${var.cluster_name}-${each.key}-eip"
   }
 }
 
 locals {
-  node_map = {
-    for key in keys(local.node):
-      key => merge(
-        {
-          image          = var.image,
-          user_data      = data.template_cloudinit_config.node_config[key].rendered,
-          root_disk_size = var.root_disk_size,
-        },
-        local.node[key]
-    )
+  public_ip = { 
+    for x, values in local.instances : x => aws_eip.eip[x].public_ip
+    if contains(values.tags, "public")
   }
 }
 
-resource "aws_instance" "node" {
-  for_each      = local.node_map
-  instance_type = each.value["type"]
-  ami           = each.value["image"]
-  user_data     = each.value["user_data"]
-
-  subnet_id                   = aws_subnet.private_subnet.id
-  key_name                    = aws_key_pair.key.key_name
-  associate_public_ip_address = "true"
-
-  ebs_optimized = true
-  root_block_device {
-    volume_type = "gp2"
-    volume_size = each.value["root_disk_size"]
-  }
-
-  vpc_security_group_ids = [
-    aws_security_group.allow_any_inside_vpc.id,
-    aws_security_group.allow_out_any.id,
-  ]
-
-  lifecycle {
-    ignore_changes = [
-      ami
-    ]
-  }
+resource "aws_ebs_volume" "volumes" {
+  for_each          = local.volumes
+  availability_zone = local.availability_zone
+  size              = each.value.size
+  type              = each.value.type
 
   tags = {
     Name = "${var.cluster_name}-${each.key}"
@@ -325,13 +205,42 @@ resource "aws_instance" "node" {
 }
 
 locals {
-  mgmt1_ip        = try(aws_network_interface.mgmt[0].private_ip, "")
-  puppetmaster_ip = try(aws_network_interface.mgmt[0].private_ip, "")
-  puppetmaster_id = try(aws_instance.mgmt[0].id, "")
-  public_ip       = aws_eip.login[*].public_ip
-  login_ids       = aws_instance.login[*].id
-  cidr            = aws_subnet.private_subnet.cidr_block
-  home_dev        = [for vol in aws_ebs_volume.home:    "/dev/disk/by-id/*${replace(vol.id, "-", "")}"]
-  project_dev     = [for vol in aws_ebs_volume.project: "/dev/disk/by-id/*${replace(vol.id, "-", "")}"]
-  scratch_dev     = [for vol in aws_ebs_volume.scratch: "/dev/disk/by-id/*${replace(vol.id, "-", "")}"]
+  device_names = [
+    "/dev/sbf", "/dev/sdg", "/dev/sdh", "/dev/sdi", "/dev/sdj",
+    "/dev/sdk", "/dev/sdl", "/dev/sdm", "/dev/sdn", "/dev/sdp"
+  ]
+}
+
+resource "aws_volume_attachment" "attachments" {
+  for_each    = { for k, v in local.volumes : k => v if v.instance != null }
+  device_name  = local.device_names[index(local.volume_per_instance[each.value.instance], each.key)]
+  volume_id    = aws_ebs_volume.volumes[each.key].id
+  instance_id  = aws_instance.instances[each.value.instance].id
+  skip_destroy = true
+}
+
+locals {
+  volume_devices = {
+    for ki, vi in var.storage :
+    ki => {
+      for kj, vj in vi :
+      kj => ["/dev/disk/by-id/*${replace(aws_ebs_volume.volumes["${ki}-${kj}"].id, "-", "")}"]
+    }
+  }
+}
+
+locals {
+  puppetmaster_ip = [for x, values in local.instances : aws_network_interface.netifs[x].private_ip if contains(values.tags, "puppet")]
+  puppetmaster_id = try(element([for x, values in local.instances : aws_instance.instances[x].id if contains(values.tags, "puppet")], 0), "")
+  all_instances = { for x, values in local.instances :
+    x => {
+      public_ip   = contains(values["tags"], "public") ? local.public_ip[x] : ""
+      local_ip    = aws_network_interface.netifs[x].private_ip
+      tags        = values["tags"]
+      id          = aws_instance.instances[x].id
+      hostkeys    = {
+        rsa = tls_private_key.rsa_hostkeys[local.host2prefix[x]].public_key_openssh
+      }
+    }
+  }
 }
