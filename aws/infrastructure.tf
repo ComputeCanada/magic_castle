@@ -230,6 +230,7 @@ locals {
 }
 
 locals {
+  puppetmaster_ip = [for x, values in local.instances : aws_network_interface.netifs[x].private_ip if contains(values.tags, "puppet")]
   puppetmaster_id = try(element([for x, values in local.instances : aws_instance.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in local.instances :
     x => {
