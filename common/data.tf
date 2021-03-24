@@ -73,7 +73,7 @@ resource "tls_private_key" "rsa_hostkeys" {
 
 locals {
   public_instances = { for key, values in local.all_instances: key => values if contains(values["tags"], "public")}
-  all_tags = flatten([for key, values in local.instances : values["tags"]])
+  all_tags = toset(flatten([for key, values in local.instances : values["tags"]]))
   tag_ip = { for tag in local.all_tags:
     tag => [for key, values in local.all_instances: values["local_ip"] if contains(values["tags"], tag)]
   }
