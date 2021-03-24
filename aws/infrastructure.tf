@@ -197,7 +197,7 @@ resource "aws_ebs_volume" "volumes" {
   for_each          = local.volumes
   availability_zone = local.availability_zone
   size              = each.value.size
-  type              = each.value.type
+  type              = lookup(each.value, "type", null)
 
   tags = {
     Name = "${var.cluster_name}-${each.key}"
