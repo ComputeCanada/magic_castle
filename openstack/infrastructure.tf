@@ -115,7 +115,7 @@ resource "openstack_blockstorage_volume_v3" "volumes" {
   name        = "${var.cluster_name}-${each.key}"
   description = "${var.cluster_name} ${each.key}"
   size        = each.value.size
-  volume_type = each.value.type
+  volume_type = lookup(each.value, "type", null)
 }
 
 resource "openstack_compute_volume_attach_v2" "attachments" {
