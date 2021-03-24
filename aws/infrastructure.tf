@@ -204,9 +204,16 @@ resource "aws_ebs_volume" "volumes" {
   }
 }
 
+locals {
+  device_names = [
+    "/dev/sbf", "/dev/sdg", "/dev/sdh", "/dev/sdi", "/dev/sdj",
+    "/dev/sdk", "/dev/sdl", "/dev/sdm", "/dev/sdn", "/dev/sdp"
+  ]
+}
+
 resource "aws_volume_attachment" "attachments" {
   for_each    = { for k, v in local.volumes : k => v if v.instance != null }
-  device_name  = "/dev/sdb" #TODO FIX THIS
+  device_name  = local.device_names[index(local.volume_per_instance[each.value.instance], each.key)]
   volume_id    = aws_ebs_volume.volumes[each.key].id
   instance_id  = aws_instance.instances[each.value.instance].id
   skip_destroy = true
