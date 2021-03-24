@@ -26,6 +26,14 @@ locals {
       }, vj)
     }
   ]...) : {}
+  volume_per_instance = {
+    for key, values in local.instances: key => flatten([
+      for ki, vi in var.storage: [
+        for kj, vj in vi:
+          "${ki}-${kj}"
+      ] if contains(values.tags, ki)
+    ])
+  }
 }
 
 resource "random_string" "munge_key" {
