@@ -198,6 +198,7 @@ resource "aws_ebs_volume" "volumes" {
   availability_zone = local.availability_zone
   size              = each.value.size
   type              = lookup(each.value, "type", null)
+  snapshot_id       = lookup(each.value, "snapshot", null)
 
   tags = {
     Name = "${var.cluster_name}-${each.key}"
