@@ -130,7 +130,10 @@ locals {
     for ki, vi in var.storage :
     ki => {
       for kj, vj in vi :
-      kj => ["/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v3.volumes["${ki}-${kj}"].id, 0, 20)}"]
+      kj => [ for key, volume in local.volumes:
+        "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v3.volumes["${volume["instance"]}-${ki}-${kj}"].id, 0, 20)}"
+        if key == "${volume["instance"]}-${ki}-${kj}"
+      ]
     }
   }
 }

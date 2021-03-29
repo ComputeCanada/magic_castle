@@ -18,22 +18,28 @@ locals {
       ]
     ])...
   )
-  volumes = length(var.storage) > 0 ? merge([
+
+  instance_per_volume = merge([
     for ki, vi in var.storage : {
       for kj, vj in vi :
       "${ki}-${kj}" => merge({
-        instance = try(element([for x, values in local.instances : x if contains(values.tags, ki)], 0), null)
+        instances = [for x, values in local.instances : x if contains(values.tags, ki)]
       }, vj)
     }
-  ]...) : {}
-  volume_per_instance = {
-    for key, values in local.instances: key => flatten([
-      for ki, vi in var.storage: [
-        for kj, vj in vi:
-          "${ki}-${kj}"
-      ] if contains(values.tags, ki)
-    ])
-  }
+  ]...)
+  volumes = merge([
+    for key, values in local.instance_per_volume: {
+      for instance in values["instances"]:
+        "${instance}-${key}"  =>  merge(
+          { for key, value in values: key => value if key != "instances" },
+          { instance = instance })
+    }
+  ]...)
+  volume_per_instance = transpose({for key, value in local.instance_per_volume: key => value["instances"]})
+}
+
+output "volumes" {
+  value = local.volumes
 }
 
 resource "random_string" "munge_key" {
