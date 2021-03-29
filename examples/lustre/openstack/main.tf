@@ -21,7 +21,6 @@ module "openstack" {
   storage = {
     mdt = {
       mdt0 = { size = 5 }
-      mdt1 = { size = 5 }
     }
     ost = {
       ost0 = { size = 5 }
