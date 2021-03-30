@@ -1,9 +1,9 @@
 terraform {
-  required_version = ">= 0.13.4"
+  required_version = ">= 0.14.5"
 }
 
 module "openstack" {
-  source         = "../../../openstack"
+  source         = "git::https://github.com/ComputeCanada/magic_castle.git//openstack?ref=tags"
   config_git_url = "https://github.com/MagicCastle/lustre-environment.git"
   config_version = "main"
 
