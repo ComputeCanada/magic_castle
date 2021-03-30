@@ -4,7 +4,7 @@ terraform {
 
 module "openstack" {
   source         = "../../../openstack"
-  config_git_url = "https://github.com/MagicCastle/puppet-environment.git"
+  config_git_url = "https://github.com/MagicCastle/lustre-environment.git"
   config_version = "main"
 
   cluster_name = "lustre"
@@ -13,16 +13,16 @@ module "openstack" {
 
   instances = {
     puppet = { type = "p4-7.5gb", tags = ["puppet"] }
-    mds    = { type = "p2-3.75gb", tags = ["mdt"], count = 1 }
-    oss    = { type = "p2-3.75gb", tags = ["ost"], count = 1 }
+    mds    = { type = "p2-3.75gb", tags = ["mds"], count = 1 }
+    oss    = { type = "p2-3.75gb", tags = ["oss"], count = 2 }
     login = { type = "p2-3.75gb", tags = ["public"], count = 1 }
   }
 
   storage = {
-    mdt = {
+    mds = {
       mdt0 = { size = 5 }
     }
-    ost = {
+    oss = {
       ost0 = { size = 5 }
       ost1 = { size = 5 }
     }
