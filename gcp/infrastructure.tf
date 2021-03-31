@@ -53,8 +53,8 @@ resource "google_compute_router_nat" "nat" {
 
 resource "google_compute_disk" "disks" {
   for_each  = local.volumes
-  name      = "${var.cluster_name}-${key}"
-  type      = each.value.type
+  name      = "${var.cluster_name}-${each.key}"
+  type      = lookup(each.value, "type", "pd-standard")
   zone      = local.zone
   size      = each.value.size
 }
@@ -83,7 +83,7 @@ resource "google_compute_instance" "instances" {
 
   boot_disk {
     initialize_params {
-      image = each.value.image
+      image = var.image
       type  = "pd-ssd"
       size  = var.root_disk_size
     }
@@ -95,7 +95,7 @@ resource "google_compute_instance" "instances" {
   }
 
   guest_accelerator {
-    type  = lookup(each.value, "gpu_type", null)
+    type  = lookup(each.value, "gpu_type", "")
     count = lookup(each.value, "gpu_count", 0)
   }
 
@@ -176,7 +176,7 @@ locals {
     ki => {
       for kj, vj in vi :
       kj => [ for key, volume in local.volumes:
-        "/dev/disk/by-id/google-${volume["instance"]}-${ki}-${kj}"
+        "/dev/disk/by-id/google-${var.cluster_name}-${volume["instance"]}-${ki}-${kj}"
         if key == "${volume["instance"]}-${ki}-${kj}"
       ]
     }
@@ -185,7 +185,7 @@ locals {
 
 locals {
   public_ip = { 
-    for x, values in local.instances : x => google_compute_instance.public[x].address
+    for x, values in local.instances : x => google_compute_address.public[x].address
     if contains(values.tags, "public")
   }  
   puppetmaster_ip = [for x, values in local.instances : google_compute_address.internal[x].address if contains(values.tags, "puppet")]  
