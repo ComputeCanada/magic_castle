@@ -7,15 +7,14 @@ module "openstack" {
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
   config_version = "tags"
 
-  cluster_name = "beluga"
+  cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
-  image        = "CentOS-7-x64-2020-03"
+  image        = "CentOS-7-x64-2020-09"
 
   instances = {
-    blg-puppet    = { type = "p4-6gb", tags = ["puppet"] }
-    blg-slurmctld = { type = "p4-6gb", tags = ["mgmt", "nfs"], count = 1 }
-    beluga        = { type = "p2-3gb", tags = ["login", "public", "proxy"], count = 1 }
-    blg           = { type = "p2-3gb", tags = ["node"], count = 1 }
+    mgmt   = { type = "p4-7.5gb", tags = ["puppet", "mgmt", "nfs"], count = 1 }
+    login  = { type = "p2-3.75gb", tags = ["login", "public", "proxy"], count = 1 }
+    node   = { type = "p2-3.75gb", tags = ["node"], count = 1 }
   }
 
   storage = {
@@ -35,10 +34,6 @@ module "openstack" {
   # OpenStack specific
   os_floating_ips = {}
 }
-
-#output "public_instances" {
-#  value = module.openstack.public_instances
-#}
 
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
