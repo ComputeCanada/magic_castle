@@ -31,14 +31,6 @@ module "openstack" {
   public_keys = [file("~/.ssh/id_rsa.pub")]
 }
 
-#output "volume_per_instance" {
-# value = module.openstack.volume_per_instance
-#}
-
-#output "public_instances" {
-#  value = module.openstack.public_instances
-#}
-
 ## Uncomment to register your domain name with CloudFlare
 module "dns" {
   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare?ref=tags"
