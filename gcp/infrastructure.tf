@@ -51,64 +51,65 @@ resource "google_compute_router_nat" "nat" {
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
 }
 
-resource "google_compute_disk" "home" {
-  count = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  name  = "${var.cluster_name}-home"
-  type  = "pd-standard"
-  zone  = local.zone
-  size  = var.storage["home_size"]
+resource "google_compute_disk" "disks" {
+  for_each  = local.volumes
+  name      = "${var.cluster_name}-${key}"
+  type      = each.value.type
+  zone      = local.zone
+  size      = each.value.size
 }
 
-resource "google_compute_disk" "project" {
-  count = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  name  = "${var.cluster_name}-project"
-  type  = "pd-standard"
-  zone  = local.zone
-  size  = var.storage["project_size"]
-}
-
-resource "google_compute_disk" "scratch" {
-  count = lower(var.storage["type"]) == "nfs" ? 1 : 0
-  name  = "${var.cluster_name}-scratch"
-  type  = "pd-standard"
-  zone  = local.zone
-  size  = var.storage["scratch_size"]
-}
-
-resource "google_compute_address" "mgmt" {
-  count        = var.instances["mgmt"]["count"]
-  name         = format("%s-mgmt%d-ipv4", var.cluster_name, count.index + 1)
+resource "google_compute_address" "internal" {
+  for_each     = local.instances
+  name         = format("%s-%s-ipv4", var.cluster_name, each.key)
   address_type = "INTERNAL"
   subnetwork   = google_compute_subnetwork.subnet.self_link
   region       = var.region
 }
 
-resource "google_compute_instance" "mgmt" {
+resource "google_compute_address" "public" {
+  for_each = { for x, values in local.instances : x => true if contains(values.tags, "public") }
+  name     = format("%s-%s-public-ipv4",  var.cluster_name, each.key)
+}
+
+resource "google_compute_instance" "instances" {
+  for_each     = local.instances
   project      = var.project
   zone         = local.zone
-  count        = var.instances["mgmt"]["count"]
-  name         = format("%s-mgmt%d", var.cluster_name, count.index + 1)
-  machine_type = var.instances["mgmt"]["type"]
-  tags         = ["mgmt"]
+
+  name         = format("%s-%s", var.cluster_name, each.key)
+  machine_type = each.value.type
+  tags         = each.value.tags
 
   boot_disk {
     initialize_params {
-      image = var.image
+      image = each.value.image
       type  = "pd-ssd"
       size  = var.root_disk_size
     }
   }
 
+  scheduling {
+    # Instances with guest accelerators do not support live migration.
+    on_host_maintenance = lookup(each.value, "gpu_count", 0) > 0 ? "TERMINATE" : "MIGRATE"
+  }
+
+  guest_accelerator {
+    type  = lookup(each.value, "gpu_type", null)
+    count = lookup(each.value, "gpu_count", 0)
+  }
+
   network_interface {
     subnetwork = google_compute_subnetwork.subnet.self_link
-    network_ip = google_compute_address.mgmt[count.index].address
+    network_ip = google_compute_address.internal[each.key].address
     access_config {
+      nat_ip = contains(each.value.tags, "public") ?  google_compute_address.public[each.key].address : null
     }
   }
 
   metadata = {
     enable-oslogin     = "FALSE"
-    user-data          = data.template_cloudinit_config.mgmt_config[count.index].rendered
+    user-data          = base64gzip(local.user_data[each.key])
     user-data-encoding = "base64"
     VmDnsSetting       = "ZonalOnly"
   }
@@ -123,135 +124,12 @@ resource "google_compute_instance" "mgmt" {
   }
 }
 
-resource "google_compute_attached_disk" "home" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  disk        = google_compute_disk.home[count.index].self_link
-  device_name = google_compute_disk.home[count.index].name
+resource "google_compute_attached_disk" "attachments" {
+  for_each    = local.volumes
+  disk        = google_compute_disk.disks[each.key].self_link
+  device_name = google_compute_disk.disks[each.key].name
   mode        = "READ_WRITE"
-  instance    = google_compute_instance.mgmt[0].self_link
-}
-
-resource "google_compute_attached_disk" "project" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  disk        = google_compute_disk.project[count.index].self_link
-  device_name = google_compute_disk.project[count.index].name
-  mode        = "READ_WRITE"
-  instance    = google_compute_instance.mgmt[0].self_link
-}
-
-resource "google_compute_attached_disk" "scratch" {
-  count       = (lower(var.storage["type"]) == "nfs" && var.instances["mgmt"]["count"] > 0) ? 1 : 0
-  disk        = google_compute_disk.scratch[count.index].self_link
-  device_name = google_compute_disk.scratch[count.index].name
-  mode        = "READ_WRITE"
-  instance    = google_compute_instance.mgmt[0].self_link
-}
-
-resource "google_compute_address" "static" {
-  count = max(var.instances["login"]["count"], 1)
-  name  = format("%s-login%d-ipv4",  var.cluster_name, count.index + 1)
-}
-
-resource "google_compute_instance" "login" {
-  count        = var.instances["login"]["count"]
-  project      = var.project
-  zone         = local.zone
-  name         = format("%s-login%d", var.cluster_name, count.index + 1)
-  machine_type = var.instances["login"]["type"]
-  tags         = ["login"]
-
-  boot_disk {
-    initialize_params {
-      image = var.image
-      type  = "pd-ssd"
-      size  = var.root_disk_size
-    }
-  }
-
-  network_interface {
-    subnetwork = google_compute_subnetwork.subnet.self_link
-    access_config {
-      nat_ip = google_compute_address.static[count.index].address
-    }
-  }
-
-  metadata = {
-    enable-oslogin     = "FALSE"
-    user-data          = data.template_cloudinit_config.login_config[count.index].rendered
-    user-data-encoding = "base64"
-    VmDnsSetting       = "ZonalOnly"
-  }
-
-  metadata_startup_script = file("${path.module}/install_cloudinit.sh")
-
-  lifecycle {
-    ignore_changes = [
-      boot_disk[0].initialize_params[0].image
-    ]
-  }
-}
-
-locals {
-  node_map = {
-    for key in keys(local.node):
-      key => merge(
-        {
-          name           = format("%s-%s", var.cluster_name, key),
-          project        = var.project,
-          zone           = local.zone,
-          image          = var.image,
-          root_disk_size = var.root_disk_size,
-          user_data      = data.template_cloudinit_config.node_config[key].rendered,
-          gpu_type       = "",
-          gpu_count      = 0
-        },
-        local.node[key]
-    )
-  }
-}
-
-resource "google_compute_instance" "node" {
-  for_each     = local.node_map
-  project      = each.value["project"]
-  zone         = each.value["zone"]
-  name         = each.value["name"]
-  machine_type = each.value["type"]
-  scheduling {
-    # Instances with guest accelerators do not support live migration.
-    on_host_maintenance = each.value["gpu_count"] > 0 ? "TERMINATE" : "MIGRATE"
-  }
-  guest_accelerator {
-    type  = each.value["gpu_type"]
-    count = each.value["gpu_count"]
-  }
-  tags = ["node"]
-
-  boot_disk {
-    initialize_params {
-      image = each.value["image"]
-      type  = "pd-ssd"
-      size  = each.value["root_disk_size"]
-    }
-  }
-
-  network_interface {
-    subnetwork = google_compute_subnetwork.subnet.self_link
-  }
-
-  metadata = {
-    enable-oslogin     = "FALSE"
-    user-data          = each.value["user_data"]
-    user-data-encoding = "base64"
-    VmDnsSetting       = "ZonalOnly"
-  }
-
-  metadata_startup_script = file("${path.module}/install_cloudinit.sh")
-
-  lifecycle {
-    ignore_changes = [
-      boot_disk[0].initialize_params[0].image
-    ]
-  }
+  instance    = google_compute_instance.instances[each.value.instance].self_link
 }
 
 resource "google_compute_firewall" "allow_all_internal" {
@@ -289,16 +167,38 @@ resource "google_compute_firewall" "default" {
     ]
   }
 
-  target_tags = ["login"]
+  target_tags = ["public"]
 }
 
 locals {
-  mgmt1_ip        = try(google_compute_address.mgmt[0].address, "")
-  puppetmaster_ip = try(google_compute_address.mgmt[0].address, "")
-  puppetmaster_id = try(google_compute_instance.mgmt[0].id, "")
-  public_ip       = google_compute_address.static[*].address
-  login_ids       = google_compute_instance.login[*].id
-  home_dev        = [for vol in google_compute_disk.home:    "/dev/disk/by-id/google-${vol.name}"]
-  project_dev     = [for vol in google_compute_disk.project: "/dev/disk/by-id/google-${vol.name}"]
-  scratch_dev     = [for vol in google_compute_disk.scratch: "/dev/disk/by-id/google-${vol.name}"]
+  volume_devices = {
+    for ki, vi in var.storage :
+    ki => {
+      for kj, vj in vi :
+      kj => [ for key, volume in local.volumes:
+        "/dev/disk/by-id/google-${volume["instance"]}-${ki}-${kj}"
+        if key == "${volume["instance"]}-${ki}-${kj}"
+      ]
+    }
+  }
+}
+
+locals {
+  public_ip = { 
+    for x, values in local.instances : x => google_compute_instance.public[x].address
+    if contains(values.tags, "public")
+  }  
+  puppetmaster_ip = [for x, values in local.instances : google_compute_address.internal[x].address if contains(values.tags, "puppet")]  
+  puppetmaster_id = try(element([for x, values in local.instances : google_compute_instance.instances[x].id if contains(values.tags, "puppet")], 0), "")
+  all_instances = { for x, values in local.instances :
+    x => {
+      public_ip   = contains(values["tags"], "public") ? local.public_ip[x] : ""
+      local_ip    = google_compute_address.internal[x].address
+      tags        = values["tags"]
+      id          = google_compute_instance.instances[x].id
+      hostkeys    = {
+        rsa = tls_private_key.rsa_hostkeys[local.host2prefix[x]].public_key_openssh
+      }
+    }
+  }
 }
