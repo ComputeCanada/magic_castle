@@ -3,29 +3,27 @@ terraform {
 }
 
 module "ovh" {
-  source         = "git::https://github.com/ComputeCanada/magic_castle.git//ovh"
+  source         = "git::https://github.com/ComputeCanada/magic_castle.git//ovh?ref=tags"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
-  config_version = "master"
+  config_version = "tags"
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
   image        = "CentOS-7-x64-2019-07"
 
   instances = {
-    mgmt  = { type = "s1-2", count = 1 },
-    login = { type = "s1-2", count = 1 },
-    node  = [
-       { type = "s1-2", count = 1 },
-    ]
+    mgmt   = { type = "s1-2", tags = ["puppet", "mgmt", "nfs"], count = 1 }
+    login  = { type = "s1-2", tags = ["login", "public", "proxy"], count = 1 }
+    node   = { type = "s1-2", tags = ["node"], count = 1 }
   }
 
   storage = {
-    type         = "nfs"
-    home_size    = 100
-    project_size = 50
-    scratch_size = 50
+    nfs = {
+      home     = { size = 10 }
+      project  = { size = 50 }
+      scratch  = { size = 50 }
+    }
   }
-
   public_keys = [file("~/.ssh/id_rsa.pub")]
 
   nb_users     = 10
@@ -34,50 +32,30 @@ module "ovh" {
 
 }
 
-output "sudoer_username" {
-  value = module.ovh.sudoer_username
-}
-
-output "guest_usernames" {
-  value = module.ovh.guest_usernames
-}
-
-output "guest_passwd" {
-  value = module.ovh.guest_passwd
-}
-
-output "public_ip" {
-  value = module.ovh.ip
-}
-
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
-#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare?ref=tags"
+#   email            = "you@example.com"
 #   name             = module.ovh.cluster_name
 #   domain           = module.ovh.domain
-#   email            = "you@example.com"
-#   public_ip        = module.ovh.ip
-#   login_ids        = module.ovh.login_ids
-#   rsa_public_key   = module.ovh.rsa_public_key
+#   public_instances = module.ovh.public_instances
 #   ssh_private_key  = module.ovh.ssh_private_key
 #   sudoer_username  = module.ovh.sudoer_username
 # }
 
 ## Uncomment to register your domain name with Google Cloud
 # module "dns" {
-#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud?ref=tags"
 #   email            = "you@example.com"
 #   project          = "your-project-id"
 #   zone_name        = "you-zone-name"
 #   name             = module.ovh.cluster_name
 #   domain           = module.ovh.domain
-#   public_ip        = module.ovh.ip
-#   login_ids        = module.ovh.login_ids
-#   rsa_public_key   = module.ovh.rsa_public_key
+#   public_instances = module.ovh.public_instances
 #   ssh_private_key  = module.ovh.ssh_private_key
 #   sudoer_username  = module.ovh.sudoer_username
 # }
 
 # output "hostnames" {
-# 	value = module.dns.hostnames
+#   value = module.dns.hostnames
 # }
