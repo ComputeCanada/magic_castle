@@ -48,15 +48,13 @@ module "aws" {
 
 ## Uncomment to register your domain name with Google Cloud
 # module "dns" {
-#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud?ref=tags"
 #   email            = "you@example.com"
 #   project          = "your-project-id"
 #   zone_name        = "you-zone-name"
 #   name             = module.aws.cluster_name
 #   domain           = module.aws.domain
-#   public_ip        = module.aws.ip
-#   login_ids        = module.aws.login_ids
-#   rsa_public_key   = module.aws.rsa_public_key
+#   public_instances = module.aws.public_instances
 #   ssh_private_key  = module.aws.ssh_private_key
 #   sudoer_username  = module.aws.sudoer_username
 # }
