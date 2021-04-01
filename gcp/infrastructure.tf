@@ -187,7 +187,7 @@ locals {
   public_ip = { 
     for x, values in local.instances : x => google_compute_address.public[x].address
     if contains(values.tags, "public")
-  }  
+  }
   puppetmaster_ip = [for x, values in local.instances : google_compute_address.internal[x].address if contains(values.tags, "puppet")]  
   puppetmaster_id = try(element([for x, values in local.instances : google_compute_instance.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in local.instances :
