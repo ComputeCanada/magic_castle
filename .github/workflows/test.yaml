@@ -43,6 +43,7 @@ jobs:
         run: |
           terraform init aws;
           terraform validate aws;
+          sed -i 's;?ref=.*$;;g' examples/cc_cluster/aws/main.tf;
           sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' examples/cc_cluster/aws/main.tf;
           terraform init examples/cc_cluster/aws;
           terraform validate examples/cc_cluster/aws;
