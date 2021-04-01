@@ -1,4 +1,5 @@
 terraform {
+  required_version = ">= 0.14"
   required_providers {
     acme = {
       source = "vancluever/acme"
@@ -10,5 +11,4 @@ terraform {
       source = "hashicorp/tls"
     }
   }
-  required_version = ">= 0.13"
 }
