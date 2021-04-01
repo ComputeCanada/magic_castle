@@ -1,6 +1,6 @@
 locals {
   domain_name = "${lower(var.cluster_name)}.${lower(var.domain)}"
-  instances = length(var.instances) > 0 ? merge(
+  instances = merge(
     flatten([
       for hostname, attrs in var.instances : [
         for i in range(lookup(attrs, "count", 1)) : {
@@ -8,7 +8,7 @@ locals {
         }
       ]
     ])...
-  ) : {}
+  )
   host2prefix =  merge(
     flatten([
       for hostname, attrs in var.instances : [
