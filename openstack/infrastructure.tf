@@ -122,7 +122,7 @@ locals {
     for ki, vi in var.storage :
     ki => {
       for kj, vj in vi :
-      kj => [ for key, volume in local.volumes:
+      kj => [for key, volume in local.volumes :
         "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v3.volumes["${volume["instance"]}-${ki}-${kj}"].id, 0, 20)}"
         if key == "${volume["instance"]}-${ki}-${kj}"
       ]
@@ -135,11 +135,11 @@ locals {
   puppetmaster_id = try(element([for x, values in local.instances : openstack_compute_instance_v2.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in local.instances :
     x => {
-      public_ip   = contains(values["tags"], "public") ? local.public_ip[x] : ""
-      local_ip    = openstack_networking_port_v2.ports[x].all_fixed_ips[0]
-      tags        = values["tags"]
-      id          = openstack_compute_instance_v2.instances[x].id
-      hostkeys    = {
+      public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
+      local_ip  = openstack_networking_port_v2.ports[x].all_fixed_ips[0]
+      tags      = values["tags"]
+      id        = openstack_compute_instance_v2.instances[x].id
+      hostkeys = {
         rsa = tls_private_key.rsa_hostkeys[local.host2prefix[x]].public_key_openssh
       }
     }

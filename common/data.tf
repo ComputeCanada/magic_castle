@@ -9,7 +9,7 @@ locals {
       ]
     ])...
   )
-  host2prefix =  merge(
+  host2prefix = merge(
     flatten([
       for hostname, attrs in var.instances : [
         for i in range(lookup(attrs, "count", 1)) : {
@@ -28,14 +28,14 @@ locals {
     }
   ]...)
   volumes = merge([
-    for key, values in local.instance_per_volume: {
-      for instance in values["instances"]:
-        "${instance}-${key}"  =>  merge(
-          { for key, value in values: key => value if key != "instances" },
-          { instance = instance })
+    for key, values in local.instance_per_volume : {
+      for instance in values["instances"] :
+      "${instance}-${key}" => merge(
+        { for key, value in values : key => value if key != "instances" },
+      { instance = instance })
     }
   ]...)
-  volume_per_instance = transpose({for key, value in local.instance_per_volume: key => value["instances"]})
+  volume_per_instance = transpose({ for key, value in local.instance_per_volume : key => value["instances"] })
 }
 
 output "volumes" {
@@ -63,7 +63,7 @@ resource "random_pet" "guest_passwd" {
   separator = "."
 }
 
-resource "random_uuid" "consul_token" { }
+resource "random_uuid" "consul_token" {}
 
 resource "tls_private_key" "ssh" {
   count     = var.generate_ssh_key ? 1 : 0
@@ -78,14 +78,14 @@ resource "tls_private_key" "rsa_hostkeys" {
 }
 
 locals {
-  public_instances = { for key, values in local.all_instances: key => values if contains(values["tags"], "public")}
-  all_tags = toset(flatten([for key, values in local.instances : values["tags"]]))
-  tag_ip = { for tag in local.all_tags:
-    tag => [for key, values in local.all_instances: values["local_ip"] if contains(values["tags"], tag)]
+  public_instances = { for key, values in local.all_instances : key => values if contains(values["tags"], "public") }
+  all_tags         = toset(flatten([for key, values in local.instances : values["tags"]]))
+  tag_ip = { for tag in local.all_tags :
+    tag => [for key, values in local.all_instances : values["local_ip"] if contains(values["tags"], tag)]
   }
 
   user_data = {
-    for key, values in local.instances: key =>
+    for key, values in local.instances : key =>
     templatefile("${path.module}/cloud-init/puppet.yaml",
       {
         tags                  = values["tags"]
@@ -120,7 +120,7 @@ locals {
         munge_key       = base64sha512(random_string.munge_key.result)
         nb_users        = var.nb_users
       }
-    })
+  })
   facts = {
     software_stack = var.software_stack
     cloud_provider = local.cloud_provider

@@ -1,5 +1,5 @@
 variable "os_floating_ips" {
-  default = { }
+  default = {}
 }
 
 variable "os_ext_network" {
