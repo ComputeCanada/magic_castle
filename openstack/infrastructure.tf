@@ -62,10 +62,6 @@ resource "openstack_networking_port_v2" "ports" {
   }
 }
 
-locals {
-  puppetmaster_ip = [for x, values in local.instances : openstack_networking_port_v2.ports[x].all_fixed_ips[0] if contains(values.tags, "puppet")]
-}
-
 resource "openstack_compute_instance_v2" "instances" {
   for_each = local.instances
   name     = format("%s-%s", var.cluster_name, each.key)
@@ -106,10 +102,6 @@ resource "openstack_compute_instance_v2" "instances" {
   }
 }
 
-locals {
-
-}
-
 resource "openstack_blockstorage_volume_v3" "volumes" {
   for_each    = local.volumes
   name        = "${var.cluster_name}-${each.key}"
@@ -139,6 +131,7 @@ locals {
 }
 
 locals {
+  puppetmaster_ip = [for x, values in local.instances : openstack_networking_port_v2.ports[x].all_fixed_ips[0] if contains(values.tags, "puppet")]
   puppetmaster_id = try(element([for x, values in local.instances : openstack_compute_instance_v2.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in local.instances :
     x => {
