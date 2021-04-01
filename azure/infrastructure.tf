@@ -178,7 +178,7 @@ locals {
   puppetmaster_id = try(element([for x, values in local.instances : azurerm_linux_virtual_machine.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in local.instances :
     x => {
-      public_ip   = contains(values["tags"], "public") ? local.public_ip[x] : ""
+      public_ip   = azurerm_public_ip.public[x].ip_address
       local_ip    = azurerm_network_interface.nic[x].private_ip_address
       tags        = values["tags"]
       id          = azurerm_linux_virtual_machine.instances[x].id
