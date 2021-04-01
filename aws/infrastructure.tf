@@ -186,13 +186,6 @@ resource "aws_eip" "eip" {
   }
 }
 
-locals {
-  public_ip = { 
-    for x, values in local.instances : x => aws_eip.eip[x].public_ip
-    if contains(values.tags, "public")
-  }
-}
-
 resource "aws_ebs_volume" "volumes" {
   for_each          = local.volumes
   availability_zone = local.availability_zone
@@ -234,6 +227,10 @@ locals {
 }
 
 locals {
+  public_ip = { 
+    for x, values in local.instances : x => aws_eip.eip[x].public_ip
+    if contains(values.tags, "public")
+  }
   puppetmaster_ip = [for x, values in local.instances : aws_network_interface.netifs[x].private_ip if contains(values.tags, "puppet")]
   puppetmaster_id = try(element([for x, values in local.instances : aws_instance.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in local.instances :
