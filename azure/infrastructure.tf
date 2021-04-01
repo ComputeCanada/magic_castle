@@ -6,7 +6,7 @@ provider "azurerm" {
 # Check if user provided resource group is valid
 data "azurerm_resource_group" "example" {
   count = var.azure_resource_group == "" ? 0 : 1
-  name = var.azure_resource_group
+  name  = var.azure_resource_group
 }
 
 # Create a resource group
@@ -34,11 +34,11 @@ resource "azurerm_subnet" "subnet" {
 
 # Create public IPs
 resource "azurerm_public_ip" "public" {
-  for_each              = local.instances
-  name                  = format("%s-%s-public-ipv4",  var.cluster_name, each.key)
-  location              = var.location
-  resource_group_name   = local.resource_group_name
-  allocation_method     = contains(each.value.tags, "public") ? "Static" : "Dynamic"
+  for_each            = local.instances
+  name                = format("%s-%s-public-ipv4", var.cluster_name, each.key)
+  location            = var.location
+  resource_group_name = local.resource_group_name
+  allocation_method   = contains(each.value.tags, "public") ? "Static" : "Dynamic"
 }
 
 # Create Network Security Group and rule
@@ -66,10 +66,10 @@ resource "azurerm_network_security_group" "public" {
 
 # Create network interface
 resource "azurerm_network_interface" "nic" {
-  for_each              = local.instances
-  name                  = format("%s-%s-nic", var.cluster_name, each.key)
-  location              = var.location
-  resource_group_name   = local.resource_group_name
+  for_each            = local.instances
+  name                = format("%s-%s-nic", var.cluster_name, each.key)
+  location            = var.location
+  resource_group_name = local.resource_group_name
 
   ip_configuration {
     name                          = format("%s-%s-nic_config", var.cluster_name, each.key)
@@ -115,14 +115,14 @@ resource "azurerm_linux_virtual_machine" "instances" {
 
   computer_name  = each.key
   admin_username = "azure"
-  custom_data = base64gzip(local.user_data[each.key])
+  custom_data    = base64gzip(local.user_data[each.key])
 
   disable_password_authentication = true
   dynamic "admin_ssh_key" {
     for_each = var.public_keys
     iterator = key
     content {
-      username = "azure"
+      username   = "azure"
       public_key = key.value
     }
 
@@ -159,7 +159,7 @@ locals {
     for ki, vi in var.storage :
     ki => {
       for kj, vj in vi :
-      kj => [ for key, volume in local.volumes:
+      kj => [for key, volume in local.volumes :
         "/dev/disk/azure/scsi1/lun${index(local.volume_per_instance[volume.instance], replace(key, "${volume.instance}-", ""))}"
         if key == "${volume["instance"]}-${ki}-${kj}"
       ]
@@ -178,11 +178,11 @@ locals {
   puppetmaster_id = try(element([for x, values in local.instances : azurerm_linux_virtual_machine.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in local.instances :
     x => {
-      public_ip   = azurerm_public_ip.public[x].ip_address
-      local_ip    = azurerm_network_interface.nic[x].private_ip_address
-      tags        = values["tags"]
-      id          = azurerm_linux_virtual_machine.instances[x].id
-      hostkeys    = {
+      public_ip = azurerm_public_ip.public[x].ip_address
+      local_ip  = azurerm_network_interface.nic[x].private_ip_address
+      tags      = values["tags"]
+      id        = azurerm_linux_virtual_machine.instances[x].id
+      hostkeys = {
         rsa = tls_private_key.rsa_hostkeys[local.host2prefix[x]].public_key_openssh
       }
     }

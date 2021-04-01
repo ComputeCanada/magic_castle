@@ -17,9 +17,9 @@ resource "openstack_networking_subnet_v2" "subnet" {
 }
 
 locals {
-  network      = openstack_networking_network_v2.int_network
-  subnet       = openstack_networking_subnet_v2.subnet
-  public_ip    = { for x, values in local.instances : x => openstack_compute_instance_v2.instances[x].network[1].fixed_ip_v4 if contains(values.tags, "public")}
+  network   = openstack_networking_network_v2.int_network
+  subnet    = openstack_networking_subnet_v2.subnet
+  public_ip = { for x, values in local.instances : x => openstack_compute_instance_v2.instances[x].network[1].fixed_ip_v4 if contains(values.tags, "public") }
   ext_networks = [{
     access_network = true,
     name           = data.openstack_networking_network_v2.ext_network.name
