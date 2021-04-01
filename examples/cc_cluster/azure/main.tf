@@ -3,7 +3,7 @@ terraform {
 }
 
 module "azure" {
-  source         = "git::https://github.com/ComputeCanada/magic_castle.git//azure"
+  source         = "git::https://github.com/ComputeCanada/magic_castle.git//azure?ref=tags"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
   config_version = "master"
 
