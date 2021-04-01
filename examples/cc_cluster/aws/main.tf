@@ -36,15 +36,15 @@ module "aws" {
 }
 
 ## Uncomment to register your domain name with CloudFlare
-module "dns" {
-  source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare?ref=tags"
-  email            = "you@example.com"
-  name             = module.aws.cluster_name
-  domain           = module.aws.domain
-  public_instances = module.aws.public_instances
-  ssh_private_key  = module.aws.ssh_private_key
-  sudoer_username  = module.aws.sudoer_username
-}
+# module "dns" {
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare?ref=tags"
+#   email            = "you@example.com"
+#   name             = module.aws.cluster_name
+#   domain           = module.aws.domain
+#   public_instances = module.aws.public_instances
+#   ssh_private_key  = module.aws.ssh_private_key
+#   sudoer_username  = module.aws.sudoer_username
+# }
 
 ## Uncomment to register your domain name with Google Cloud
 # module "dns" {
