@@ -8,3 +8,4 @@ venv
 *.tar.*
 releases/
 *dev/
+.terraform.lock.hcl
