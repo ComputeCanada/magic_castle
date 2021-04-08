@@ -78,6 +78,14 @@ output "public_ip" {
 #   sudoer_username  = module.ovh.sudoer_username
 # }
 
+# output "freeipa_username" {
+#   value = module.ovh.freeipa_username
+# }
+
+# output "freeipa_passwd" {
+#   value = module.ovh.freeipa_passwd
+# }
+
 # output "hostnames" {
 # 	value = module.dns.hostnames
 # }

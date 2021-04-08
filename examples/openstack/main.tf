@@ -80,6 +80,14 @@ output "public_ip" {
 #   sudoer_username  = module.openstack.sudoer_username
 # }
 
+# output "freeipa_username" {
+#   value = module.openstack.freeipa_username
+# }
+
+# output "freeipa_passwd" {
+#   value = module.openstack.freeipa_passwd
+# }
+
 # output "hostnames" {
 #   value = module.dns.hostnames
 # }

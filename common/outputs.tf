@@ -14,6 +14,10 @@ output "sudoer_username" {
   value = var.sudoer_username
 }
 
+output "freeipa_username" {
+  value = "admin"
+}
+
 output "freeipa_passwd" {
   value = random_string.freeipa_passwd.result
 }
