@@ -515,7 +515,7 @@ Password of already created guest accounts will not be changed. Guest accounts c
 the password change will have this password.
 
 To modify the password of previously created guest accounts, refer to section
-([see section 10.2](#102-replace-the-user-account-password)).
+([see section 10.2](#102-replace-the-guest-account-password)).
 
 ### 4.12 root_disk_size (optional)
 
@@ -1002,19 +1002,17 @@ sudo puppet agent --disable "<MESSAGE>"
 
 ### 10.2 Replace the Guest Account Password
 
-A four words password might not be ideal for workshops with new users
-who barely know how to type. To replace the randomly generated
-password of the user accounts, follow these steps:
+In case the guest account password needs to be replaced, follow these steps:
 
-1. Connect to the cluster.
-2. Create a variable containing the randomly generated password: `OLD_PASSWD=<random_passwd>`
-3. Create a variable containing the new human defined password: `NEW_PASSWD=<human_passwd>`.
-This password must respect the FreeIPA password policy. To display the policy enter
+1. Connect to `mgmt1` as `centos` or as the sudoer account.
+2. Create a variable containing the current guest account password: `OLD_PASSWD=<current_passwd>`
+3. Create a variable containing the new guest account password: `NEW_PASSWD=<new_passwd>`.
+Note: this password must respect the FreeIPA password policy. To display the policy, run the following four commands:
     ```
-    # Enter FreeIPA admin password available in /etc/puppetlabs/code/environments/production/data/terraform_data.yaml
-    $ kinit admin
-    $ ipa pwpolicy-show
-    $ kdestroy
+    TF_DATA_YAML=/etc/puppetlabs/code/environments/production/data/terraform_data.yaml
+    echo -e "$(sudo grep admin_passwd $TF_DATA_YAML | cut -d'"' -f2)" | kinit admin
+    ipa pwpolicy-show
+    kdestroy
     ```
 4. Loop on all user accounts to replace the old password by the new one:
     ```
