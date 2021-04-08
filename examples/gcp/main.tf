@@ -85,6 +85,14 @@ output "public_ip" {
 #   sudoer_username  = module.gcp.sudoer_username
 # }
 
+# output "freeipa_username" {
+#   value = module.gcp.freeipa_username
+# }
+
+# output "freeipa_passwd" {
+#   value = module.gcp.freeipa_passwd
+# }
+
 # output "hostnames" {
 # 	value = module.dns.hostnames
 # }

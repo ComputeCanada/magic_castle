@@ -78,6 +78,14 @@ output "public_ip" {
 #   sudoer_username  = module.aws.sudoer_username
 # }
 
+# output "freeipa_username" {
+#   value = module.aws.freeipa_username
+# }
+
+# output "freeipa_passwd" {
+#   value = module.aws.freeipa_passwd
+# }
+
 # output "hostnames" {
 # 	value = module.dns.hostnames
 # }

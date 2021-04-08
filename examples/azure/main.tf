@@ -87,6 +87,13 @@ output "public_ip" {
 #   sudoer_username  = module.azure.sudoer_username
 # }
 
+# output "freeipa_username" {
+#   value = module.azure.freeipa_username
+# }
+
+# output "freeipa_passwd" {
+#   value = module.azure.freeipa_passwd
+# }
 
 # output "hostnames" {
 # 	value = module.dns.hostnames
