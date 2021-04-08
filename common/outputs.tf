@@ -19,7 +19,12 @@ output "freeipa_passwd" {
 }
 
 output "guest_usernames" {
-  value = "user[${format(format("%%0%dd", length(tostring(var.nb_users))), 1)}-${var.nb_users}]"
+  value = var.nb_users != 0 ? (
+    "user[${format(format("%%0%dd", length(tostring(var.nb_users))), 1)}-${var.nb_users}]"
+    ) : (
+    "You have chosen to create user accounts yourself (`nb_users = 0`), please read the documentation on how to manage this at https://github.com/ComputeCanada/magic_castle/blob/main/docs/README.md#103-add-a-user-account"
+    )
+
 }
 
 output "guest_passwd" {
