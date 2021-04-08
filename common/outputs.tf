@@ -24,7 +24,6 @@ output "guest_usernames" {
   ) : (
     "You have chosen to create user accounts yourself (`nb_users = 0`), please read the documentation on how to manage this at https://github.com/ComputeCanada/magic_castle/blob/main/docs/README.md#103-add-a-user-account"
   )
-
 }
 
 output "guest_passwd" {
