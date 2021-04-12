@@ -28,8 +28,8 @@ variable "root_disk_size" {
   description = "Size of the instances root disk in GB"
 }
 
-variable "storage" {
-  description = "Map that defines the storage parameters"
+variable "volumes" {
+  description = "Map that defines the volumes to be attached to the instances"
 }
 
 variable "domain" {

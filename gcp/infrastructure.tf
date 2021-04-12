@@ -93,7 +93,7 @@ resource "google_compute_attached_disk" "attachments" {
 
 locals {
   volume_devices = {
-    for ki, vi in var.storage :
+    for ki, vi in var.volumes :
     ki => {
       for kj, vj in vi :
       kj => [for key, volume in local.volumes :

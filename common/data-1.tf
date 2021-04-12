@@ -22,7 +22,7 @@ locals {
   )
 
   instance_per_volume = merge([
-    for ki, vi in var.storage : {
+    for ki, vi in var.volumes : {
       for kj, vj in vi :
       "${ki}-${kj}" => merge({
         instances = [for x, values in local.instances : x if contains(values.tags, ki)]
