@@ -1,110 +1,10 @@
 locals {
-  domain_name = "${lower(var.cluster_name)}.${lower(var.domain)}"
-  instances = merge(
-    flatten([
-      for hostname, attrs in var.instances : [
-        for i in range(lookup(attrs, "count", 1)) : {
-          (format("%s%d", hostname, i + 1)) = { for attr, value in attrs : attr => value if attr != "count" }
-        }
-      ]
-    ])...
-  )
-  host2prefix = merge(
-    flatten([
-      for hostname, attrs in var.instances : [
-        for i in range(lookup(attrs, "count", 1)) : {
-          (format("%s%d", hostname, i + 1)) = hostname
-        }
-      ]
-    ])...
-  )
-
-  instance_per_volume = merge([
-    for ki, vi in var.storage : {
-      for kj, vj in vi :
-      "${ki}-${kj}" => merge({
-        instances = [for x, values in local.instances : x if contains(values.tags, ki)]
-      }, vj)
-    }
-  ]...)
-  volumes = merge([
-    for key, values in local.instance_per_volume : {
-      for instance in values["instances"] :
-      "${instance}-${key}" => merge(
-        { for key, value in values : key => value if key != "instances" },
-      { instance = instance })
-    }
-  ]...)
-  volume_per_instance = transpose({ for key, value in local.instance_per_volume : key => value["instances"] })
-}
-
-output "volumes" {
-  value = local.volumes
-}
-
-resource "random_string" "munge_key" {
-  length  = 32
-  special = false
-}
-
-resource "random_string" "puppetmaster_password" {
-  length  = 32
-  special = false
-}
-
-resource "random_string" "freeipa_passwd" {
-  length  = 16
-  special = false
-}
-
-resource "random_pet" "guest_passwd" {
-  count     = var.guest_passwd != "" ? 0 : 1
-  length    = 4
-  separator = "."
-}
-
-resource "random_uuid" "consul_token" {}
-
-resource "tls_private_key" "ssh" {
-  count     = var.generate_ssh_key ? 1 : 0
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "tls_private_key" "rsa_hostkeys" {
-  for_each  = toset(keys(var.instances))
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-locals {
   public_instances = { for key, values in local.all_instances : key => values if contains(values["tags"], "public") }
-  all_tags         = toset(flatten([for key, values in local.instances : values["tags"]]))
+
   tag_ip = { for tag in local.all_tags :
     tag => [for key, values in local.all_instances : values["local_ip"] if contains(values["tags"], tag)]
   }
 
-  user_data = {
-    for key, values in local.instances : key =>
-    templatefile("${path.module}/cloud-init/puppet.yaml",
-      {
-        tags                  = values["tags"]
-        node_name             = key,
-        puppetenv_git         = var.config_git_url,
-        puppetenv_rev         = var.config_version,
-        puppetmaster_ip       = local.puppetmaster_ip,
-        puppetmaster_password = random_string.puppetmaster_password.result,
-        sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = var.public_keys,
-        hostkeys = {
-          rsa = {
-            private = tls_private_key.rsa_hostkeys[local.host2prefix[key]].private_key_pem
-            public  = tls_private_key.rsa_hostkeys[local.host2prefix[key]].public_key_openssh
-          }
-        }
-      }
-    )
-  }
   hieradata = templatefile("${path.module}/terraform_data.yaml",
     {
       instances = yamlencode(local.all_instances)
@@ -127,6 +27,7 @@ locals {
     cloud_region   = local.cloud_region
   }
 }
+
 
 resource "null_resource" "deploy_hieradata" {
   count = contains(local.all_tags, "puppet") && contains(local.all_tags, "public") ? 1 : 0
