@@ -16,7 +16,7 @@ module "openstack" {
     agent  = { type = "p2-3.75gb", tags = ["public"] }
   }
 
-  storage = { }
+  volumes = { }
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
 

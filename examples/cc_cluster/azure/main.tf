@@ -24,7 +24,7 @@ module "azure" {
     node  = { type = "Standard_DS1_v2",  count = 1, tags = ["node"] }
   }
 
-  storage = {
+  volumes = {
     nfs = {
       home     = { size = 10 }
       project  = { size = 50 }

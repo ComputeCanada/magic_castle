@@ -17,7 +17,7 @@ module "ovh" {
     node   = { type = "s1-2", tags = ["node"], count = 1 }
   }
 
-  storage = {
+  volumes = {
     nfs = {
       home     = { size = 10 }
       project  = { size = 50 }
