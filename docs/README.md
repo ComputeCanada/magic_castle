@@ -370,7 +370,7 @@ Puppet tags:
 - `nfs`: identify the instance that will act as an NFS server (min. req: 3 volumes named `home`, `project`and `scratch`.)
 - `node`: identify a compute node instance (min. req: 1 CPUs, 2GB RAM)
 
-##### Providing and overriding cloud specific attributes
+#### 4.7.2 Providing and overriding cloud specific attributes
 
 It is possible to define key-value pair that are specific to a cloud in the
 node associative map. We provide a few examples here, but any attribute of
