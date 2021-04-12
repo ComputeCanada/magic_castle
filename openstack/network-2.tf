@@ -45,7 +45,7 @@ resource "openstack_networking_port_v2" "nic" {
 }
 
 locals {
-  puppetmaster_ip = [
+  puppetserver_ip = [
     for x, values in local.instances : openstack_networking_port_v2.nic[x].all_fixed_ips[0]
     if contains(values.tags, "puppet")
   ]

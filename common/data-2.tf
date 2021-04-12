@@ -3,7 +3,7 @@ resource "random_string" "munge_key" {
   special = false
 }
 
-resource "random_string" "puppetmaster_password" {
+resource "random_string" "puppetserver_password" {
   length  = 32
   special = false
 }
@@ -42,8 +42,8 @@ locals {
         node_name             = key,
         puppetenv_git         = var.config_git_url,
         puppetenv_rev         = var.config_version,
-        puppetmaster_ip       = local.puppetmaster_ip,
-        puppetmaster_password = random_string.puppetmaster_password.result,
+        puppetserver_ip       = local.puppetserver_ip,
+        puppetserver_password = random_string.puppetserver_password.result,
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = var.public_keys,
         hostkeys = {
