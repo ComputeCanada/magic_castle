@@ -416,7 +416,7 @@ volumes {
         oss2 = { size = 500 }
     }
 }
-``` 
+```
 
 The instance `server1` has three volumes attached to it, while the volumes tagged `mds` are
 not created since no instances have the corresponding tag.
