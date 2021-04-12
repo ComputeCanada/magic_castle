@@ -1,12 +1,37 @@
 provider "openstack" {
 }
 
+module "design" {
+  source       = "../common/design"
+  cluster_name = var.cluster_name
+  domain       = var.domain
+  instances    = var.instances
+  volumes      = var.volumes
+}
+
+module "instance_config" {
+  source           = "../common/instance_config"
+  instances        = module.design.instances
+  config_git_url   = var.config_git_url
+  config_version   = var.config_version
+  puppetserver_ip  = local.puppetserver_ip
+  sudoer_username  = var.sudoer_username
+  public_keys      = var.public_keys
+  host2prefix      = module.design.host2prefix
+  generate_ssh_key = var.generate_ssh_key
+}
+
+module "cluster_config" {
+  source    = "../common/cluster_config"
+  instances = local.all_instances
+}
+
 data "openstack_images_image_v2" "image" {
   name = var.image
 }
 
 data "openstack_compute_flavor_v2" "flavors" {
-  for_each = local.instances
+  for_each = module.design.instances
   name     = each.value.type
 }
 
@@ -16,13 +41,13 @@ resource "openstack_compute_keypair_v2" "keypair" {
 }
 
 resource "openstack_compute_instance_v2" "instances" {
-  for_each = local.instances
+  for_each = module.design.instances
   name     = format("%s-%s", var.cluster_name, each.key)
   image_id = var.root_disk_size > data.openstack_compute_flavor_v2.flavors[each.key].disk ? null : data.openstack_images_image_v2.image.id
 
   flavor_name = each.value.type
   key_pair    = openstack_compute_keypair_v2.keypair.name
-  user_data   = base64gzip(local.user_data[each.key])
+  user_data   = base64gzip(module.instance_config.user_data[each.key])
 
   network {
     port = openstack_networking_port_v2.nic[each.key].id
@@ -56,7 +81,7 @@ resource "openstack_compute_instance_v2" "instances" {
 }
 
 resource "openstack_blockstorage_volume_v3" "volumes" {
-  for_each    = local.volumes
+  for_each    = module.design.volumes
   name        = "${var.cluster_name}-${each.key}"
   description = "${var.cluster_name} ${each.key}"
   size        = each.value.size
@@ -65,7 +90,7 @@ resource "openstack_blockstorage_volume_v3" "volumes" {
 }
 
 resource "openstack_compute_volume_attach_v2" "attachments" {
-  for_each    = { for k, v in local.volumes : k => v if v.instance != null }
+  for_each    = { for k, v in module.design.volumes : k => v if v.instance != null }
   instance_id = openstack_compute_instance_v2.instances[each.value.instance].id
   volume_id   = openstack_blockstorage_volume_v3.volumes[each.key].id
 }
@@ -75,7 +100,7 @@ locals {
     for ki, vi in var.volumes :
     ki => {
       for kj, vj in vi :
-      kj => [for key, volume in local.volumes :
+      kj => [for key, volume in module.design.volumes :
         "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v3.volumes["${volume["instance"]}-${ki}-${kj}"].id, 0, 20)}"
         if key == "${volume["instance"]}-${ki}-${kj}"
       ]
@@ -84,15 +109,15 @@ locals {
 }
 
 locals {
-  puppetserver_id = try(element([for x, values in local.instances : openstack_compute_instance_v2.instances[x].id if contains(values.tags, "puppet")], 0), "")
-  all_instances = { for x, values in local.instances :
+  puppetserver_id = try(element([for x, values in module.design.instances : openstack_compute_instance_v2.instances[x].id if contains(values.tags, "puppet")], 0), "")
+  all_instances = { for x, values in module.design.instances :
     x => {
       public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
       local_ip  = openstack_networking_port_v2.nic[x].all_fixed_ips[0]
       tags      = values["tags"]
       id        = openstack_compute_instance_v2.instances[x].id
       hostkeys = {
-        rsa = tls_private_key.rsa_hostkeys[local.host2prefix[x]].public_key_openssh
+        rsa = module.instance_config.rsa_hostkeys[x]
       }
     }
   }
