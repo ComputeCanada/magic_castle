@@ -1,3 +1,6 @@
+## 
+
+![Magic Castle Terraform Structure](https://docs.google.com/drawings/d/e/2PACX-1vSL84MSd1rz5hgjLMfWBBKwp6-jNTEJovNUOXtTwDovpvmyFG7qo12HD32a3fhaKl8hpjcIfM5fZ8II/pub?w=1864&h=1972)
 
 ## Resource per provider
 
