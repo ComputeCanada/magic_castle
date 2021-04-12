@@ -242,7 +242,7 @@ Defines
 Optional modules following the current module in the example `main.tf` can
 be used to register DNS records in relation to your cluster if the
 DNS zone of this domain is administered by one of the supported providers.
-Refer to [section 6](#6-dns-configuration-and-ssl-certificates)
+Refer to section [6. DNS Configuration and SSL Certificates](#6-dns-configuration-and-ssl-certificates)
 for more details.
 
 **Requirements**:
@@ -432,8 +432,8 @@ List of SSH public keys that will have access to your cluster sudoer account.
 **Note 1**: You will need to add the private key associated with one of the public
 keys to your local authentication agent (i.e: `ssh-add`) because Terraform will
 use this key to copy some configuration files with scp on the cluster. Otherwise,
-Magic Castle can create a keypair for unique to this cluster, see
-[section 4.16 - generate_ssh_key](#416-generate_ssh_key).
+Magic Castle can create a keypair for unique to this cluster, see section
+[4.16 - generate_ssh_key](#416-generate_ssh_key).
 
 **Note 2**: The SSH key type has to be ECDSA or RSA for some cloud providers
 including AWS and OpenStack because they do not support ed25519 and DSA
