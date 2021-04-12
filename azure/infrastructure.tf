@@ -67,7 +67,7 @@ resource "azurerm_linux_virtual_machine" "instances" {
   }
 }
 
-resource "azurerm_managed_disk" "disks" {
+resource "azurerm_managed_disk" "volumes" {
   for_each             = local.volumes
   name                 = format("%s-%s", var.cluster_name, each.key)
   location             = var.location
@@ -79,7 +79,7 @@ resource "azurerm_managed_disk" "disks" {
 
 resource "azurerm_virtual_machine_data_disk_attachment" "attachments" {
   for_each           = local.volumes
-  managed_disk_id    = azurerm_managed_disk.disks[each.key].id
+  managed_disk_id    = azurerm_managed_disk.volumes[each.key].id
   virtual_machine_id = azurerm_linux_virtual_machine.instances[each.value.instance].id
   lun                = index(local.volume_per_instance[each.value.instance], replace(each.key, "${each.value.instance}-", ""))
   caching            = "ReadWrite"
