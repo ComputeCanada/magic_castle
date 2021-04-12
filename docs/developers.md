@@ -24,16 +24,10 @@ This repository must contain at the least the following files and folders:
 ```
 config_git_repo
 ┣ Puppetfile
-┗ data/
-  ┗ terraform_data.yaml.tmpl
 ┣ environment.conf
 ┣ hiera.yaml
 ┗ manifests/
   ┗ site.pp
-┗ site/
-  ┗ profile/
-    ┗ facts.d
-      ┗ terraform_facts.yaml.tmpl
 ```
 
 ## 3. Release

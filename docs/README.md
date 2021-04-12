@@ -242,7 +242,7 @@ Defines
 Optional modules following the current module in the example `main.tf` can
 be used to register DNS records in relation to your cluster if the
 DNS zone of this domain is administered by one of the supported providers.
-Refer to [section 6](#6-dns-configuration-and-ssl-certificates)
+Refer to section [6. DNS Configuration and SSL Certificates](#6-dns-configuration-and-ssl-certificates)
 for more details.
 
 **Requirements**:
@@ -320,146 +320,110 @@ Once the image is built, make sure to use to input its name in your `main.tf` fi
 
 ### 4.7 instances
 
-The `instances` variable is a map with 3 keys: `mgmt`, `login` and `node`.
+The `instances` variable is a map that defines the virtual machines that will compose
+the cluster, where the keys define the hostnames and the values are the attributes
+of the virtual machines.
 
-#### 4.7.1 mgmt
-
-The value associated with the `mgmt` key is required to be a map
-with 2 keys: `type` and `count`.
-
-##### type
-
-Cloud provider name for the combination of CPU, RAM and other features
-on which will run the management instances.
-
-**Minimum requirements:**
-- CPUs: 2 cores
-- RAM: 6GB
-
-##### count
-
-Number of management instances to create.
-
-**Minimum**: 1
-
-
-#### 4.7.2 login
-
-The value associated with the `login` key is required to be a map
-with 2 keys: `type` and `count`.
-
-##### type
-
-Cloud provider name for the combination of CPU, RAM and other features
-on which will run the login instances.
-
-**Minimum requirements:**
-- CPUs: 2 cores
-- RAM: 2GB
-
-##### count
-
-Number of login instances to create.
-
-**Minimum**: 1
-
-#### 4.7.3 node
-
-The value associated with the `node` key is required to be a list of
-maps with at least two keys: `type` and `count`.
-
-If the list contains more than one map, at least one of the map will need
-to define a value for the key `prefix`.
-
-##### type
-
-Cloud provider name for the combination of CPU, RAM and other features
-on which will run the compute node instances.
-
-**Minimum requirements:**
-- CPUs: 1 core
-- RAM: 2GB
-
-##### count
-
-Number of compute node instances to create.
-
-**Minimum**: 0
-
-##### prefix (optional)
-
-Each compute node is identified by a unique hostname. The default hostname
-structure is `node` followed by the node 1-based index, i.e: `node1`. When
-more than one map is provided in the `instances["node"]` list, a prefix has
-to be defined for at least N-1 maps to avoid hostname conflicts.
-
-When a prefix is configured, the hostname structure is `prefix-node` followed
-by the node index in its map. For example, the following `instance["node"]`
-list
+Each instance is identified by a unique hostname. The hostname
+structure is the key followed by the instance 1-based index. The following map:
+```hcl
+instances = {
+  mgmt     = { type = "p2-4gb", tags = [...] },
+  login    = { type = "p2-4gb",     count = 1, tags = [...] },
+  node     = { type = "c2-15gb-31", count = 2, tags = [...] },
+  gpu-node = { type = "gpu2.large", count = 3, tags = [...] },
+}
 ```
-[
-  { type = "p2-4gb",     count = 4 },
-  { type = "c2-15gb-31", count = 2, prefix = "highmem" },
-  { type = "gpu2.large", count = 3, prefix = "gpu" },
-]
+would spawn instances with the following hostnames:
 ```
-would spawn compute nodes with the following hostnames:
-```
+mgmt1
+login1
 node1
 node2
-node3
-node4
-highmem-node1
-highmem-node2
 gpu-node1
 gpu-node2
 gpu-node3
 ```
 
-##### Providing and overriding cloud specific parameters for node instances
+Three attributes are expected to be defined for each instance:
+1. `type`: cloud provider name for the combination of CPU, RAM and other features of the virtual machine;
+2. `tags`: list of labels that defines the role of the instance;
+3. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create. (default: 1)
 
-It is possible to define key-value pair that are specific to a cloud in the
-node associative map. We provide a few examples here, but any attribute of
-the cloud provider instance resource can be used.
+Tags are used in Terraform code to identify if devices (volume, network) needs to be attached to an
+instance, while in Puppet code tags are used to identify roles of the instances. Next section defines
+the tags that are expected by Magic Castle Terraform code and `puppet-magic_castle` environment, but
+you are free to define your own tags.
 
-- [AWS instance attributes reference](https://www.terraform.io/docs/providers/aws/r/instance.html#argument-reference)
-- [Azure instance attributes reference](https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html#argument-reference)
-- [Google Cloud instance attributes reference](https://www.terraform.io/docs/providers/google/d/datasource_compute_instance.html#attributes-reference)
-- [OpenStack and OVH instance attributes reference](https://www.terraform.io/docs/providers/openstack/r/compute_instance_v2.html#argument-reference)
+#### 4.7.1 tags
 
-###### OpenStack: image_id (optional)
+Terraform tags:
+- `login`: identify instances that will be pointed by the domain name A record
+- `proxy`: identify instances that will be pointed by the vhost A records
+- `public`: identify instances that need to have a public ip address and be accessible from Internet
+- `puppet`: identify the instance that will be configured as the main Puppet server
+- `ssl`: identify instances that will receive a copy of the SSL wildcard certificate for the domain
 
-UUID of the image to use as a boot disk instead of using the one set by the `image` variable.
+Puppet tags:
+- `login`: identify a login instance (min. req: 2 CPUs, 2GB RAM)
+- `mgmt`: identify a management instance (min. req: 2 CPUs, 6GB RAM)
+- `nfs`: identify the instance that will act as an NFS server (min. req: 3 volumes named `home`, `project`and `scratch`)
+- `node`: identify a compute node instance (min. req: 1 CPUs, 2GB RAM)
 
-###### Google Cloud: gpu_type (optional)
+#### 4.7.2 Providing cloud specific attributes
 
-Name of the GPU model to attach to the instance. Refer to
+For some cloud providers, it possible to define attributes for the instances. The attributes
+that can be added in an instance map are defined in the following sections.
+
+##### GCP
+
+- `gpu_type`: name of the GPU model to attach to the instance. Refer to
 [Google Cloud documentation](https://cloud.google.com/compute/docs/gpus) for the list of
-available models per region.
+available models per region
+- `gpu_count`: number of GPUs of the `gpu_type` model to attach to the instance
 
-###### Google Cloud: gpu_count (optional)
+#### 4.7.3 Post build modification effect
 
-Number of GPUs of the `gpu_type` model to attach to the instance.
+Modifying any part of the map after the cluster is built will only affect
+the type of instances associated with what as modified at
+next `terraform apply`.
 
-#### 4.7.4 Post build modification effect
+### 4.8 Volumes
 
-type and count variables can be modified at any point of your cluster lifetime.
-Terraform will manage the creation or destruction of the virtual machines
-for you.
+The `volumes` variable is a map that defines the block devices that should be attached
+to instances that have the corresponding key in their list of tags. To each instance
+with the tag, unique block devices are attached, no multi-instance attachment is supported.
 
-Modifying any of these variables after the cluster is built will only affect
-the type of instances associated with the variables at next `terraform apply`.
+Each volume in map is defined a key corresponding to its and a map of attributes:
+- `size`: size of the block device in GB
+- `type` (optional): type of volume to use (provider dependent, i.e: `gp2`)
 
-### 4.8 Storage: type, home_size, project_size, scratch_size
+Volumes with a tag that have no corresponding instance will not be created.
 
-Define the type of network storage and the size of the volumes
-for respectively `/home`, `/project` and `/scratch`.
+In the following example:
+```hcl
+instances{ 
+  server = { type = "p4-6gb", tags = ["nfs"] }
+}
+volumes {
+  nfs = {
+    home = { size = 100 }
+    project = { size = 100 }
+    scratch = { size = 100 }
+  }
+  mds = {
+    oss1 = { size = 500 }
+    oss2 = { size = 500 }
+  }
+}
+```
 
-If `type` is set to `nfs`, each volume is mounted on `mgmt1` and
-exported with NFS to the login and the compute nodes.
+The instance `server1` has three volumes attached to it, while the volumes tagged `mds` are
+not created since no instances have the corresponding tag.
 
-**Post build modification effect**: destruction of the corresponding volumes and attachments, and creation
-of new empty volumes and attachments.
+**Post build modification effect**: destruction of the corresponding volumes and attachments,
+and creation of new empty volumes and attachments. If an no instance with a corresponding tag
+exist following modifications, the volumes will be deleted.
 
 ### 4.9 public_keys
 
@@ -468,8 +432,8 @@ List of SSH public keys that will have access to your cluster sudoer account.
 **Note 1**: You will need to add the private key associated with one of the public
 keys to your local authentication agent (i.e: `ssh-add`) because Terraform will
 use this key to copy some configuration files with scp on the cluster. Otherwise,
-Magic Castle can create a keypair for unique to this cluster, see
-[section 4.16 - generate_ssh_key](#416-generate_ssh_key).
+Magic Castle can create a keypair for unique to this cluster, see section
+[4.16 - generate_ssh_key](#416-generate_ssh_key).
 
 **Note 2**: The SSH key type has to be ECDSA or RSA for some cloud providers
 including AWS and OpenStack because they do not support ed25519 and DSA
@@ -477,7 +441,9 @@ is deprecated.
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.10 nb_users
+### 4.10 nb_users (optional)
+
+**default value**: 0
 
 Defines how many guest user accounts will be created in
 FreeIPA. Each user account shares the same randomly generated password.
@@ -563,7 +529,7 @@ Refer to the following Puppet modules' documentation to know more about the key-
 - [puppet-jupyterhub](https://github.com/ComputeCanada/puppet-jupyterhub/blob/main/README.md#hieradata-configuration)
 
 
-The file created from this string can be found on `mgmt1` as
+The file created from this string can be found on `puppet` as
 ```
 /etc/puppetlabs/data/user_data.yaml
 ```
@@ -575,7 +541,7 @@ The file created from this string can be found on `mgmt1` as
 ### 4.15 firewall_rules (optional)
 
 **default value**:
-```
+```hcl
 [
   { "name" = "SSH",     "from_port" = 22,    "to_port" = 22,    "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
   { "name" = "HTTP",    "from_port" = 80,    "to_port" = 80,    "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
@@ -814,7 +780,7 @@ Magic Castle provides a module that creates a text file with the DNS records tha
 then be imported manually in your DNS zone. To use this module, add the following
 snippet to your `main.tf`:
 
-```
+```hcl
 module "dns" {
     source           = "./dns/txt"
     name             = module.openstack.cluster_name
@@ -971,15 +937,15 @@ git repo or fork the puppet-magic_castle repo and make a pull request.
 We will list here a few common customizations that are not currently
 supported directly by Magic Castle, but that are easy to do live.
 
-Most customizations are done from the management node (`mgmt1`).
-To connect to the management node, follow these steps:
+Most customizations are done from the Puppet server instance (`puppet`).
+To connect to the puppet server, follow these steps:
 
 1. Make sure your SSH key is loaded in your ssh-agent.
 2. SSH in your cluster with forwarding of the authentication
 agent connection enabled: `ssh -A centos@cluster_ip`.
 Replace `centos` by the value of `sudoer_username` if it is
 different.
-3. SSH in the management node : `ssh mgmt1`
+3. SSH in the Puppet server instance: `ssh puppet`
 
 **Note on Google Cloud**: In GCP, [OS Login](https://cloud.google.com/compute/docs/instances/managing-instance-access)
 lets you use Compute Engine IAM roles to manage SSH access to Linux instances.
@@ -1008,14 +974,14 @@ In case the guest account password needs to be replaced, follow these steps:
 2. Create a variable containing the current guest account password: `OLD_PASSWD=<current_passwd>`
 3. Create a variable containing the new guest account password: `NEW_PASSWD=<new_passwd>`.
 Note: this password must respect the FreeIPA password policy. To display the policy, run the following four commands:
-    ```
+    ```bash
     TF_DATA_YAML=/etc/puppetlabs/code/environments/production/data/terraform_data.yaml
-    echo -e "$(sudo grep admin_passwd $TF_DATA_YAML | cut -d'"' -f2)" | kinit admin
+    echo -e "$(ssh puppet sudo grep admin_passwd $TF_DATA_YAML | cut -d'"' -f2)" | kinit admin
     ipa pwpolicy-show
     kdestroy
     ```
 4. Loop on all user accounts to replace the old password by the new one:
-    ```
+    ```bash
     for username in $(ls /mnt/home/ | grep user); do
       echo -e "$OLD_PASSWD" | kinit $username
       echo -e "$NEW_PASSWD\n$NEW_PASSWD" | ipa user-mod $username --password
@@ -1064,11 +1030,11 @@ The number of guest accounts is originally set in the Terraform main file. If yo
 to increase the number of guest accounts after creating the cluster with Terraform, you
 can modify the hieradata file of the Puppet environment.
 
-1. On `mgmt1` and with `sudo`, open the file
+1. On `puppet` and with `sudo`, open the file
     ```
     /etc/puppetlabs/code/environments/production/data/terraform_data.yaml
     ```
-2. Increase the number associated with the field `profile::accounts::guests::nb_accounts:`
+2. Increase the number associated with the key `nb_users`
 to the number of guest accounts you want.
 3. Save the file.
 4. Restart puppet on `mgmt1`: `sudo systemctl restart puppet`.
@@ -1123,23 +1089,23 @@ clush -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
 
 Refer to [Magic Castle Globus Endpoint documentation](globus.md).
 
-### 10.8 Recovering from mgmt1 rebuild
+### 10.8 Recovering from puppet rebuild
 
 The modifications of some of the parameters in the `main.tf` file can trigger the
-rebuild of the `mgmt1` instance. This instance hosts the Puppet Server on which
-depends the Puppet agent of the other instances. When `mgmt1` is rebuilt, the other
+rebuild of the `puppet` instance. This instance hosts the Puppet Server on which
+depends the Puppet agent of the other instances. When `puppet` is rebuilt, the other
 Puppet agents cease to recognize Puppet Server identity since the Puppet Server
 identity and certificates have been regenerated.
 
 To fix the Puppet agents, you will need to apply the following commands on each
-instance other than `mgmt1` once `mgmt1` is rebuilt:
+instance other than `puppet` once `puppet` is rebuilt:
 ```
 sudo systemctl stop puppet
 sudo rm -rf /etc/puppetlabs/puppet/ssl/
 sudo systemctl start puppet
 ```
 
-Then, on `mgmt1`, you will need to sign the new certificate requests made by the
+Then, on `puppet`, you will need to sign the new certificate requests made by the
 instances. First, you can list the requests:
 ```
 sudo /opt/puppetlabs/bin/puppetserver ca list
@@ -1170,7 +1136,7 @@ solutions to mitigate this problem.
 #### 10.9.1 Define a list of ip addresses that can never be banned
 
 fail2ban keeps a list of ip addresses that are allowed to fail to login without risking jail
-time. To add an ip address to that list, on `mgmt1` add to
+time. To add an ip address to that list, on `puppet` add to
 ```
 /etc/puppetlabs/data/user_data.yaml
 ```
@@ -1192,7 +1158,7 @@ sudo systemctl restart puppet
 #### 10.9.2 Remove fail2ban ssh-route jail
 
 fail2ban rule that banned ip addresses that failed to connect
-with SSH can be disabled. To do so, on `mgmt1` add to
+with SSH can be disabled. To do so, on `puppet` add to
 ```
 /etc/puppetlabs/data/user_data.yaml
 ```
@@ -1225,7 +1191,7 @@ sudo fail2ban-client set ssh-route unbanip
 
 #### 10.9.4 Disable fail2ban
 
-While this is not recommended, fail2ban can be completely disabled. To do so, on `mgmt1` add to
+While this is not recommended, fail2ban can be completely disabled. To do so, on `puppet` add to
 ```
 /etc/puppetlabs/data/user_data.yaml
 ```
