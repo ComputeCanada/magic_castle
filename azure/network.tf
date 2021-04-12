@@ -57,7 +57,7 @@ resource "azurerm_network_interface" "nic" {
     name                          = format("%s-%s-nic_config", var.cluster_name, each.key)
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "dynamic"
-    public_ip_address_id          = azurerm_public_ip.public[each.key].id
+    public_ip_address_id          = azurerm_public_ip.public_ip[each.key].id
   }
 }
 
