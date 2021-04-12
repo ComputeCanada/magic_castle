@@ -70,7 +70,7 @@ Magic Castle:
 
 ### 4.1 cloud-init
 
-To test new additions to `cloud-init/puppetagent.yaml` or `cloud-init/puppetmaster.yaml`, it is possible to
+To test new additions to `cloud-init/puppet.yaml`, it is possible to
 execute cloud-init phases manually. There are four steps that can be executed sequentially: init local, init
 modules config and modules final. Here are the corresponding commands to execute each step:
 ```

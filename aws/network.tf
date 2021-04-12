@@ -126,7 +126,7 @@ locals {
     for x, values in local.instances : x => aws_eip.public_ip[x].public_ip
     if contains(values.tags, "public")
   }
-  puppetmaster_ip = [
+  puppetserver_ip = [
       for x, values in local.instances : aws_network_interface.nic[x].private_ip
       if contains(values.tags, "puppet")
   ]

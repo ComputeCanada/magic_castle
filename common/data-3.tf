@@ -46,7 +46,7 @@ resource "null_resource" "deploy_hieradata" {
     user_data    = md5(var.hieradata)
     hieradata    = md5(local.hieradata)
     facts        = md5(yamlencode(local.facts))
-    puppetmaster = local.puppetmaster_id
+    puppetserver = local.puppetserver_id
   }
 
   provisioner "file" {
@@ -71,7 +71,7 @@ resource "null_resource" "deploy_hieradata" {
       "sudo install -m 650 terraform_data.yaml user_data.yaml /etc/puppetlabs/data/",
       "sudo install -m 650 terraform_facts.yaml /etc/puppetlabs/facts/",
       # These chgrp commands do nothing if the puppet group does not yet exist
-      # so these are also handled by puppetmaster.yaml
+      # so these are also handled by puppet.yaml
       "sudo chgrp puppet /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/data/user_data.yaml &> /dev/null || true",
       "sudo chgrp puppet /etc/puppetlabs/facts/terraform_facts.yaml &> /dev/null || true",
       "rm -f terraform_data.yaml user_data.yaml terraform_facts.yaml",

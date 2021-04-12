@@ -82,7 +82,7 @@ locals {
     for x, values in local.instances : x => google_compute_address.public_ip[x].address
     if contains(values.tags, "public")
   }
-  puppetmaster_ip = [
+  puppetserver_ip = [
       for x, values in local.instances : google_compute_address.nic[x].address
       if contains(values.tags, "puppet")
   ]
