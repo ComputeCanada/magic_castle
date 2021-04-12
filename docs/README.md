@@ -367,7 +367,7 @@ Terraform tags:
 Puppet tags:
 - `login`: identify a login instance (min. req: 2 CPUs, 2GB RAM)
 - `mgmt`: identify a management instance (min. req: 2 CPUs, 6GB RAM)
-- `nfs`: identify the instance that will act as an NFS server (min. req: 3 volumes named `home`, `project`and `scratch`.)
+- `nfs`: identify the instance that will act as an NFS server (min. req: 3 volumes named `home`, `project`and `scratch`)
 - `node`: identify a compute node instance (min. req: 1 CPUs, 2GB RAM)
 
 #### 4.7.2 Providing cloud specific attributes
