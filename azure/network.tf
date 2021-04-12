@@ -72,7 +72,7 @@ locals {
     for x, values in local.instances : x => azurerm_public_ip.public_ip[x].ip_address
     if contains(values.tags, "public")
   }
-  puppetmaster_ip = [
+  puppetserver_ip = [
       for x, values in local.instances : azurerm_network_interface.nic[x].private_ip_address
       if contains(values.tags, "puppet")
   ]

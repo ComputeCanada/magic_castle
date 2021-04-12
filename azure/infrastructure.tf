@@ -101,7 +101,7 @@ locals {
 locals {
   resource_group_name = var.azure_resource_group == "" ? azurerm_resource_group.group[0].name : var.azure_resource_group
 
-  puppetmaster_id = try(element([for x, values in local.instances : azurerm_linux_virtual_machine.instances[x].id if contains(values.tags, "puppet")], 0), "")
+  puppetserver_id = try(element([for x, values in local.instances : azurerm_linux_virtual_machine.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in local.instances :
     x => {
       public_ip = azurerm_public_ip.public_ip[x].ip_address

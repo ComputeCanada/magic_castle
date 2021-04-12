@@ -84,7 +84,7 @@ locals {
 }
 
 locals {
-  puppetmaster_id = try(element([for x, values in local.instances : openstack_compute_instance_v2.instances[x].id if contains(values.tags, "puppet")], 0), "")
+  puppetserver_id = try(element([for x, values in local.instances : openstack_compute_instance_v2.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in local.instances :
     x => {
       public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
