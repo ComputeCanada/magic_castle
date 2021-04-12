@@ -347,12 +347,12 @@ gpu-node3
 
 Three attributes are expected to be defined for each instance:
 1. `type`: cloud provider name for the combination of CPU, RAM and other features of the virtual machine;
-2. `tags`: list of labels that defines the role of the instance; 
+2. `tags`: list of labels that defines the role of the instance;
 3. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create. (default: 1)
 
 Tags are used in Terraform code to identify if devices (volume, network) needs to be attached to an
 instance, while in Puppet code tags are used to identify roles of the instances. Next section defines
-the tags that are expected by Magic Castle Terraform code and `puppet-magic_castle` environment, but 
+the tags that are expected by Magic Castle Terraform code and `puppet-magic_castle` environment, but
 you are free to define your own tags.
 
 #### 4.7.1 instance tags
@@ -370,39 +370,28 @@ Puppet tags:
 - `nfs`: identify the instance that will act as an NFS server (min. req: 3 volumes named `home`, `project`and `scratch`.)
 - `node`: identify a compute node instance (min. req: 1 CPUs, 2GB RAM)
 
-#### 4.7.2 Providing and overriding cloud specific attributes
+#### 4.7.2 Providing cloud specific attributes
 
-It is possible to define key-value pair that are specific to a cloud in the
-node associative map. We provide a few examples here, but any attribute of
-the cloud provider instance resource can be used.
+For some cloud providers, it possible to define attributes for the instances. The attributes
+that can be added in an instance map are defined in the following sections.
 
-- [AWS instance attributes reference](https://www.terraform.io/docs/providers/aws/r/instance.html#argument-reference)
-- [Azure instance attributes reference](https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html#argument-reference)
-- [Google Cloud instance attributes reference](https://www.terraform.io/docs/providers/google/d/datasource_compute_instance.html#attributes-reference)
-- [OpenStack and OVH instance attributes reference](https://www.terraform.io/docs/providers/openstack/r/compute_instance_v2.html#argument-reference)
+##### GCP
 
-###### OpenStack: image_id (optional)
-
-UUID of the image to use as a boot disk instead of using the one set by the `image` variable.
-
-###### Google Cloud: gpu_type (optional)
+###### gpu_type (optional)
 
 Name of the GPU model to attach to the instance. Refer to
 [Google Cloud documentation](https://cloud.google.com/compute/docs/gpus) for the list of
 available models per region.
 
-###### Google Cloud: gpu_count (optional)
+###### gpu_count (optional)
 
 Number of GPUs of the `gpu_type` model to attach to the instance.
 
-#### 4.7.4 Post build modification effect
+#### 4.7.3 Post build modification effect
 
-type and count variables can be modified at any point of your cluster lifetime.
-Terraform will manage the creation or destruction of the virtual machines
-for you.
-
-Modifying any of these variables after the cluster is built will only affect
-the type of instances associated with the variables at next `terraform apply`.
+Modifying any part of the map after the cluster is built will only affect
+the type of instances associated with what as modified at
+next `terraform apply`.
 
 ### 4.8 Storage: type, home_size, project_size, scratch_size
 
