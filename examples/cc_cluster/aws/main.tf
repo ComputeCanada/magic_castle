@@ -17,7 +17,7 @@ module "aws" {
     node  = { type = "t3.medium",  count = 1, tags = ["node"] }
   }
 
-  storage = {
+  volumes = {
     nfs = {
       home     = { size = 10, type = "gp2" }
       project  = { size = 50, type = "gp2" }

@@ -18,7 +18,7 @@ module "openstack" {
     login = { type = "p2-3.75gb", tags = ["public"], count = 1 }
   }
 
-  storage = {
+  volumes = {
     mds = {
       mdt0 = { size = 5 }
     }

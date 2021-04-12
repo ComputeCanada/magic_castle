@@ -17,7 +17,7 @@ module "openstack" {
     node   = { type = "p2-3.75gb", tags = ["node"], count = 1 }
   }
 
-  storage = {
+  volumes = {
     nfs = {
       home     = { size = 10, type = "volumes-ssd" }
       project  = { size = 50, type = "volumes-ssd" }
