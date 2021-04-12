@@ -388,16 +388,42 @@ Modifying any part of the map after the cluster is built will only affect
 the type of instances associated with what as modified at
 next `terraform apply`.
 
-### 4.8 Storage: type, home_size, project_size, scratch_size
+### 4.8 Volumes
 
-Define the type of network storage and the size of the volumes
-for respectively `/home`, `/project` and `/scratch`.
+The `volumes` variable is a map that defines the block devices that should be attached
+to instances that have the corresponding key in their list of tags. To each instance
+with the tag, unique block devices are attached, no multi-instance attachment is supported.
 
-If `type` is set to `nfs`, each volume is mounted on `mgmt1` and
-exported with NFS to the login and the compute nodes.
+Each volume in map is defined a key corresponding to its and a map of attributes:
+- `size`: size of the block device in GB
+- `type` (optional): type of volume to use (provider dependent, i.e: `gp2`)
 
-**Post build modification effect**: destruction of the corresponding volumes and attachments, and creation
-of new empty volumes and attachments.
+Volumes with a tag that have no corresponding instance will not be created.
+
+In the following example:
+```
+instances{ 
+    server = { type = "p4-6gb", tags = ["nfs"] }
+}
+volumes {
+    nfs = {
+        home = { size = 100 }
+        project = { size = 100 }
+        scratch = { size = 100 }
+    }
+    mds = {
+        oss1 = { size = 500 }
+        oss2 = { size = 500 }
+    }
+}
+``` 
+
+The instance `server1` has three volumes attached to it, while the volumes tagged `mds` are
+not created since no instances have the corresponding tag.
+
+**Post build modification effect**: destruction of the corresponding volumes and attachments,
+and creation of new empty volumes and attachments. If an no instance with a corresponding tag
+exist following modifications, the volumes will be deleted.
 
 ### 4.9 public_keys
 
@@ -415,7 +441,9 @@ is deprecated.
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.10 nb_users
+### 4.10 nb_users (optional)
+
+**default value**: 0
 
 Defines how many guest user accounts will be created in
 FreeIPA. Each user account shares the same randomly generated password.
