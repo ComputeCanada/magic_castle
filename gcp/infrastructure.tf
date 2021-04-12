@@ -23,55 +23,6 @@ locals {
   )
 }
 
-resource "google_compute_network" "network" {
-  name = "${var.cluster_name}-network"
-}
-
-resource "google_compute_subnetwork" "subnet" {
-  name          = "${var.cluster_name}-subnet"
-  network       = google_compute_network.network.self_link
-  ip_cidr_range = "10.0.0.0/16"
-  region        = var.region
-}
-
-resource "google_compute_router" "router" {
-  name    = "${var.cluster_name}-router"
-  region  = var.region
-  network = google_compute_network.network.self_link
-  bgp {
-    asn = 64514
-  }
-}
-
-resource "google_compute_router_nat" "nat" {
-  name                               = "${var.cluster_name}-nat"
-  router                             = google_compute_router.router.name
-  region                             = var.region
-  nat_ip_allocate_option             = "AUTO_ONLY"
-  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
-}
-
-resource "google_compute_disk" "disks" {
-  for_each = local.volumes
-  name     = "${var.cluster_name}-${each.key}"
-  type     = lookup(each.value, "type", "pd-standard")
-  zone     = local.zone
-  size     = each.value.size
-}
-
-resource "google_compute_address" "internal" {
-  for_each     = local.instances
-  name         = format("%s-%s-ipv4", var.cluster_name, each.key)
-  address_type = "INTERNAL"
-  subnetwork   = google_compute_subnetwork.subnet.self_link
-  region       = var.region
-}
-
-resource "google_compute_address" "public" {
-  for_each = { for x, values in local.instances : x => true if contains(values.tags, "public") }
-  name     = format("%s-%s-public-ipv4", var.cluster_name, each.key)
-}
-
 resource "google_compute_instance" "instances" {
   for_each = local.instances
   project  = var.project
@@ -101,9 +52,9 @@ resource "google_compute_instance" "instances" {
 
   network_interface {
     subnetwork = google_compute_subnetwork.subnet.self_link
-    network_ip = google_compute_address.internal[each.key].address
+    network_ip = google_compute_address.local_ip[each.key].address
     access_config {
-      nat_ip = contains(each.value.tags, "public") ? google_compute_address.public[each.key].address : null
+      nat_ip = contains(each.value.tags, "public") ? google_compute_address.public_ip[each.key].address : null
     }
   }
 
@@ -124,50 +75,20 @@ resource "google_compute_instance" "instances" {
   }
 }
 
+resource "google_compute_disk" "disks" {
+  for_each = local.volumes
+  name     = "${var.cluster_name}-${each.key}"
+  type     = lookup(each.value, "type", "pd-standard")
+  zone     = local.zone
+  size     = each.value.size
+}
+
 resource "google_compute_attached_disk" "attachments" {
   for_each    = local.volumes
   disk        = google_compute_disk.disks[each.key].self_link
   device_name = google_compute_disk.disks[each.key].name
   mode        = "READ_WRITE"
   instance    = google_compute_instance.instances[each.value.instance].self_link
-}
-
-resource "google_compute_firewall" "allow_all_internal" {
-  name    = format("%s-allow-all-internal", var.cluster_name)
-  network = google_compute_network.network.self_link
-
-  source_ranges = [google_compute_subnetwork.subnet.ip_cidr_range]
-
-  allow {
-    protocol = "tcp"
-  }
-
-  allow {
-    protocol = "udp"
-  }
-
-  allow {
-    protocol = "icmp"
-  }
-
-}
-
-resource "google_compute_firewall" "default" {
-  count   = length(var.firewall_rules)
-  name    = format("%s-%s", var.cluster_name, lower(var.firewall_rules[count.index].name))
-  network = google_compute_network.network.self_link
-
-  source_ranges = [var.firewall_rules[count.index].cidr]
-
-  allow {
-    protocol = var.firewall_rules[count.index].ip_protocol
-    ports = [var.firewall_rules[count.index].from_port != var.firewall_rules[count.index].to_port ?
-      "${var.firewall_rules[count.index].from_port}-${var.firewall_rules[count.index].to_port}" :
-      var.firewall_rules[count.index].from_port
-    ]
-  }
-
-  target_tags = ["public"]
 }
 
 locals {
@@ -184,16 +105,11 @@ locals {
 }
 
 locals {
-  public_ip = {
-    for x, values in local.instances : x => google_compute_address.public[x].address
-    if contains(values.tags, "public")
-  }
-  puppetmaster_ip = [for x, values in local.instances : google_compute_address.internal[x].address if contains(values.tags, "puppet")]
   puppetmaster_id = try(element([for x, values in local.instances : google_compute_instance.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in local.instances :
     x => {
       public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
-      local_ip  = google_compute_address.internal[x].address
+      local_ip  = google_compute_address.local_ip[x].address
       tags      = values["tags"]
       id        = google_compute_instance.instances[x].id
       hostkeys = {
