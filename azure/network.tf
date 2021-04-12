@@ -1,5 +1,5 @@
 # Create virtual network
-resource "azurerm_virtual_network" "virtualNetwork" {
+resource "azurerm_virtual_network" "network" {
   name                = "${var.cluster_name}_vnet"
   address_space       = ["10.0.0.0/16"]
   location            = var.location
@@ -10,7 +10,7 @@ resource "azurerm_virtual_network" "virtualNetwork" {
 resource "azurerm_subnet" "subnet" {
   name                 = "${var.cluster_name}_subnet"
   resource_group_name  = local.resource_group_name
-  virtual_network_name = azurerm_virtual_network.virtualNetwork.name
+  virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
