@@ -31,22 +31,17 @@ We will refer to the user of Magic Castle as the operator.
 1. After downloading the latest release of the cloud provider of choice
 and adapting the main configuration file, the operator launches
 Terraform and accepts the proposed plan.
-
-2. Terraform fetches the template hieradata yaml file from the Puppet
-configuration management repository. This template is read by Terraform
-and variable placeholders are replaced by the values inferred from the
-values prescribed in main configuration file.
-
-3. Terraform communicates with the cloud provider REST API and requests
+2. Terraform communicates with the cloud provider REST API and requests
 the creation of the virtual machines.
-
-4. For each virtual machine creation request, Magic Castle
+3. For each virtual machine creation request, Magic Castle
 provides a [cloud-init](https://cloudinit.readthedocs.io/en/latest/) file. This
 file is used to initialize the virtual machine base configuration and installs
-puppet agent. The cloud-init file of the management node (`mgmt1`) also installs and configures a Puppet primary server.
-
+puppet agent. The cloud-init file of the `puppet` virtual machine installs
+and configures a Puppet primary server.
+4. Terraform uploads on the Puppet primary server instance a YAML file containing
+information about the roles of each instances specified as tags.
 5. The Puppet agents communicate with the Puppet primary server to retrieve
-and apply their configuration based on their hostnames.
+and apply their configuration based on the tags defined in the preceding YAML file.
 
 ## Talks, slides and videos
 
@@ -68,4 +63,4 @@ and apply their configuration based on their hostnames.
 
 ## Contributing / Customizing
 
-Refer to [Magic Castle developer documentation](docs/developers.md).
+Refer to the [reference design](docs/design.md) and the [developer documentation](docs/developers.md).
