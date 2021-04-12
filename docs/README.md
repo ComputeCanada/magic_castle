@@ -355,7 +355,7 @@ instance, while in Puppet code tags are used to identify roles of the instances.
 the tags that are expected by Magic Castle Terraform code and `puppet-magic_castle` environment, but
 you are free to define your own tags.
 
-#### 4.7.1 instance tags
+#### 4.7.1 tags
 
 Terraform tags:
 - `login`: identify instances that will be pointed by the domain name A record
