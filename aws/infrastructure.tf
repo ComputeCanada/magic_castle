@@ -39,7 +39,7 @@ resource "aws_instance" "instances" {
   key_name          = aws_key_pair.key.key_name
 
   network_interface {
-    network_interface_id = aws_network_interface.local_ip[each.key].id
+    network_interface_id = aws_network_interface.nic[each.key].id
     device_index         = 0
   }
 
@@ -107,7 +107,7 @@ locals {
   all_instances = { for x, values in local.instances :
     x => {
       public_ip   = contains(values["tags"], "public") ? local.public_ip[x] : ""
-      local_ip    = aws_network_interface.local_ip[x].private_ip
+      local_ip    = aws_network_interface.nic[x].private_ip
       tags        = values["tags"]
       id          = aws_instance.instances[x].id
       hostkeys    = {
