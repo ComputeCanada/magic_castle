@@ -320,103 +320,57 @@ Once the image is built, make sure to use to input its name in your `main.tf` fi
 
 ### 4.7 instances
 
-The `instances` variable is a map with 3 keys: `mgmt`, `login` and `node`.
+The `instances` variable is a map that defines the virtual machines that will compose
+the cluster, where the keys define the hostnames and the values are the attributes
+of the virtual machines.
 
-#### 4.7.1 mgmt
-
-The value associated with the `mgmt` key is required to be a map
-with 2 keys: `type` and `count`.
-
-##### type
-
-Cloud provider name for the combination of CPU, RAM and other features
-on which will run the management instances.
-
-**Minimum requirements:**
-- CPUs: 2 cores
-- RAM: 6GB
-
-##### count
-
-Number of management instances to create.
-
-**Minimum**: 1
-
-
-#### 4.7.2 login
-
-The value associated with the `login` key is required to be a map
-with 2 keys: `type` and `count`.
-
-##### type
-
-Cloud provider name for the combination of CPU, RAM and other features
-on which will run the login instances.
-
-**Minimum requirements:**
-- CPUs: 2 cores
-- RAM: 2GB
-
-##### count
-
-Number of login instances to create.
-
-**Minimum**: 1
-
-#### 4.7.3 node
-
-The value associated with the `node` key is required to be a list of
-maps with at least two keys: `type` and `count`.
-
-If the list contains more than one map, at least one of the map will need
-to define a value for the key `prefix`.
-
-##### type
-
-Cloud provider name for the combination of CPU, RAM and other features
-on which will run the compute node instances.
-
-**Minimum requirements:**
-- CPUs: 1 core
-- RAM: 2GB
-
-##### count
-
-Number of compute node instances to create.
-
-**Minimum**: 0
-
-##### prefix (optional)
-
-Each compute node is identified by a unique hostname. The default hostname
-structure is `node` followed by the node 1-based index, i.e: `node1`. When
-more than one map is provided in the `instances["node"]` list, a prefix has
-to be defined for at least N-1 maps to avoid hostname conflicts.
-
-When a prefix is configured, the hostname structure is `prefix-node` followed
-by the node index in its map. For example, the following `instance["node"]`
-list
+Each instance is identified by a unique hostname. The hostname
+structure is the key followed by the instance 1-based index. The following map:
 ```
-[
-  { type = "p2-4gb",     count = 4 },
-  { type = "c2-15gb-31", count = 2, prefix = "highmem" },
-  { type = "gpu2.large", count = 3, prefix = "gpu" },
-]
+instances = {
+  mgmt     = { type = "p2-4gb", tags = [...] },
+  login    = { type = "p2-4gb",     count = 1, tags = [...] },
+  node     = { type = "c2-15gb-31", count = 2, tags = [...] },
+  gpu-node = { type = "gpu2.large", count = 3, tags = [...] },
+}
 ```
-would spawn compute nodes with the following hostnames:
+would spawn instances with the following hostnames:
 ```
+mgmt1
+login1
 node1
 node2
-node3
-node4
-highmem-node1
-highmem-node2
 gpu-node1
 gpu-node2
 gpu-node3
 ```
 
-##### Providing and overriding cloud specific parameters for node instances
+Three attributes are expected to be defined for each instance:
+1. `type`: cloud provider name for the combination of CPU, RAM and other features of the virtual machine;
+2. `tags`: list of labels that defines the role of the instance; 
+3. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create. (default: 1)
+
+Tags are used in Terraform code to identify if devices (volume, network) needs to be attached to an
+instance, while in Puppet code tags are used to identify roles of the instances. Next section defines
+the tags that are expected by Magic Castle Terraform code and `puppet-magic_castle` environment, but 
+you are free to define your own tags.
+
+#### 4.7.1 instance tags
+
+Terraform tags:
+- `login`: identify instances that will be pointed by the domain name A record
+- `proxy`: identify instances that will be pointed by the vhost A records
+- `public`: identify instances that need to have a public ip address and be accessible from Internet
+- `puppet`: identify the instance that will be configured as the main Puppet server
+- `ssl`: identify instances that will receive a copy of the SSL wildcard certificate for the domain
+
+Puppet tags:
+- `login`: identify a login instance (min. req: 2 CPUs, 2GB RAM)
+- `mgmt`: identify a management instance (min. req: 2 CPUs, 6GB RAM)
+- `nfs`: identify the instance that will act as an NFS server (min. req: 3 volumes named `home`, `project`and `scratch`.)
+- `node`: identify a compute node instance (min. req: 1 CPUs, 2GB RAM)
+
+##### Providing and overriding cloud specific attributes
 
 It is possible to define key-value pair that are specific to a cloud in the
 node associative map. We provide a few examples here, but any attribute of
