@@ -10,7 +10,7 @@ resource "tls_private_key" "ssh" {
 }
 
 resource "tls_private_key" "rsa_hostkeys" {
-  for_each  = toset(keys(var.instances))
+  for_each  = var.host_prefixes
   algorithm = "RSA"
   rsa_bits  = 4096
 }

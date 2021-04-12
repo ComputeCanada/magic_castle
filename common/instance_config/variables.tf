@@ -1,4 +1,5 @@
 variable "instances" { }
+variable "host_prefixes" { }
 variable "config_git_url" { }
 variable "config_version" { }
 variable "puppetserver_ip" { }

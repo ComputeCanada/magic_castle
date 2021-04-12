@@ -11,6 +11,7 @@ module "design" {
 
 module "instance_config" {
   source           = "../common/instance_config"
+  host_prefixes    = toset(keys(var.instances))
   instances        = module.design.instances
   config_git_url   = var.config_git_url
   config_version   = var.config_version
