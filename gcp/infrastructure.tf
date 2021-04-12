@@ -75,7 +75,7 @@ resource "google_compute_instance" "instances" {
   }
 }
 
-resource "google_compute_disk" "disks" {
+resource "google_compute_disk" "volumes" {
   for_each = local.volumes
   name     = "${var.cluster_name}-${each.key}"
   type     = lookup(each.value, "type", "pd-standard")
@@ -85,8 +85,8 @@ resource "google_compute_disk" "disks" {
 
 resource "google_compute_attached_disk" "attachments" {
   for_each    = local.volumes
-  disk        = google_compute_disk.disks[each.key].self_link
-  device_name = google_compute_disk.disks[each.key].name
+  disk        = google_compute_disk.volumes[each.key].self_link
+  device_name = google_compute_disk.volumes[each.key].name
   mode        = "READ_WRITE"
   instance    = google_compute_instance.instances[each.value.instance].self_link
 }
