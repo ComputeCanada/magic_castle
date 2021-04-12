@@ -15,53 +15,6 @@ resource "openstack_compute_keypair_v2" "keypair" {
   public_key = var.public_keys[0]
 }
 
-resource "openstack_compute_secgroup_v2" "secgroup" {
-  name        = "${var.cluster_name}-secgroup"
-  description = "${var.cluster_name} security group"
-
-  rule {
-    from_port   = -1
-    to_port     = -1
-    ip_protocol = "icmp"
-    self        = true
-  }
-
-  rule {
-    from_port   = 1
-    to_port     = 65535
-    ip_protocol = "tcp"
-    self        = true
-  }
-
-  rule {
-    from_port   = 1
-    to_port     = 65535
-    ip_protocol = "udp"
-    self        = true
-  }
-
-  dynamic "rule" {
-    for_each = var.firewall_rules
-    content {
-      from_port   = rule.value.from_port
-      to_port     = rule.value.to_port
-      ip_protocol = rule.value.ip_protocol
-      cidr        = rule.value.cidr
-    }
-  }
-
-}
-
-resource "openstack_networking_port_v2" "ports" {
-  for_each           = local.instances
-  name               = format("%s-%s-port", var.cluster_name, each.key)
-  network_id         = local.network.id
-  security_group_ids = [openstack_compute_secgroup_v2.secgroup.id]
-  fixed_ip {
-    subnet_id = local.subnet.id
-  }
-}
-
 resource "openstack_compute_instance_v2" "instances" {
   for_each = local.instances
   name     = format("%s-%s", var.cluster_name, each.key)
@@ -72,7 +25,7 @@ resource "openstack_compute_instance_v2" "instances" {
   user_data   = base64gzip(local.user_data[each.key])
 
   network {
-    port = openstack_networking_port_v2.ports[each.key].id
+    port = openstack_networking_port_v2.local_ip[each.key].id
   }
   dynamic "network" {
     for_each = local.ext_networks
@@ -131,12 +84,11 @@ locals {
 }
 
 locals {
-  puppetmaster_ip = [for x, values in local.instances : openstack_networking_port_v2.ports[x].all_fixed_ips[0] if contains(values.tags, "puppet")]
   puppetmaster_id = try(element([for x, values in local.instances : openstack_compute_instance_v2.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in local.instances :
     x => {
       public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
-      local_ip  = openstack_networking_port_v2.ports[x].all_fixed_ips[0]
+      local_ip  = openstack_networking_port_v2.local_ip[x].all_fixed_ips[0]
       tags      = values["tags"]
       id        = openstack_compute_instance_v2.instances[x].id
       hostkeys = {
