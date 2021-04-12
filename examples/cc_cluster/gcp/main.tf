@@ -23,7 +23,7 @@ module "gcp" {
   # GCP requires at least 20GB of root disk.
   root_disk_size = 20
 
-  storage = {
+  volumes = {
     nfs = {
       home     = { size = 10 }
       project  = { size = 50 }
