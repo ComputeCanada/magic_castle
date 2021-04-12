@@ -1,25 +1,7 @@
-resource "random_string" "munge_key" {
-  length  = 32
-  special = false
-}
-
 resource "random_string" "puppetserver_password" {
   length  = 32
   special = false
 }
-
-resource "random_string" "freeipa_passwd" {
-  length  = 16
-  special = false
-}
-
-resource "random_pet" "guest_passwd" {
-  count     = var.guest_passwd != "" ? 0 : 1
-  length    = 4
-  separator = "."
-}
-
-resource "random_uuid" "consul_token" {}
 
 resource "tls_private_key" "ssh" {
   count     = var.generate_ssh_key ? 1 : 0
@@ -45,7 +27,7 @@ locals {
         puppetserver_ip       = local.puppetserver_ip,
         puppetserver_password = random_string.puppetserver_password.result,
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = var.public_keys,
+        ssh_authorized_keys   = concat(var.public_keys, tls_private_key.ssh[*].public_key_openssh),
         hostkeys = {
           rsa = {
             private = tls_private_key.rsa_hostkeys[local.host2prefix[key]].private_key_pem
