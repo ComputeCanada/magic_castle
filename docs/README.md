@@ -377,15 +377,10 @@ that can be added in an instance map are defined in the following sections.
 
 ##### GCP
 
-###### gpu_type (optional)
-
-Name of the GPU model to attach to the instance. Refer to
+- `gpu_type`: name of the GPU model to attach to the instance. Refer to
 [Google Cloud documentation](https://cloud.google.com/compute/docs/gpus) for the list of
-available models per region.
-
-###### gpu_count (optional)
-
-Number of GPUs of the `gpu_type` model to attach to the instance.
+available models per region
+- `gpu_count`: number of GPUs of the `gpu_type` model to attach to the instance
 
 #### 4.7.3 Post build modification effect
 
