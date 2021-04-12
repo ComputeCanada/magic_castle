@@ -87,7 +87,7 @@ resource "azurerm_virtual_machine_data_disk_attachment" "attachments" {
 
 locals {
   volume_devices = {
-    for ki, vi in var.storage :
+    for ki, vi in var.volumes :
     ki => {
       for kj, vj in vi :
       kj => [for key, volume in local.volumes :
