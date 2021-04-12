@@ -1,3 +1,22 @@
+resource "random_string" "munge_key" {
+  length  = 32
+  special = false
+}
+
+resource "random_string" "freeipa_passwd" {
+  length  = 16
+  special = false
+}
+
+resource "random_pet" "guest_passwd" {
+  count     = var.guest_passwd != "" ? 0 : 1
+  length    = 4
+  separator = "."
+}
+
+resource "random_uuid" "consul_token" {}
+
+
 locals {
   public_instances = { for key, values in local.all_instances : key => values if contains(values["tags"], "public") }
 
