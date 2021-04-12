@@ -1,5 +1,5 @@
 output "public_instances" {
-  value = local.public_instances
+  value = module.cluster_config.public_instances
 }
 
 output "cluster_name" {
@@ -15,7 +15,7 @@ output "sudoer_username" {
 }
 
 output "freeipa_passwd" {
-  value = random_string.freeipa_passwd.result
+  value = module.cluster_config.freeipa_passwd
 }
 
 output "guest_usernames" {
@@ -23,10 +23,10 @@ output "guest_usernames" {
 }
 
 output "guest_passwd" {
-  value = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
+  value = module.cluster_config.guest_passwd
 }
 
 output "ssh_private_key" {
-  value     = try(tls_private_key.ssh[0].private_key_pem, null)
+  value     = module.instance_config.private_key
   sensitive = true
 }

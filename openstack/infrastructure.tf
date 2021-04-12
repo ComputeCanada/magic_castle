@@ -22,8 +22,22 @@ module "instance_config" {
 }
 
 module "cluster_config" {
-  source    = "../common/cluster_config"
-  instances = local.all_instances
+  source          = "../common/cluster_config"
+  instances       = local.all_instances
+  nb_users        = var.nb_users
+  hieradata       = var.hieradata
+  software_stack  = var.software_stack
+  cloud_provider  = local.cloud_provider
+  cloud_region    = local.cloud_region
+  sudoer_username = var.sudoer_username
+  guest_passwd    = var.guest_passwd
+  all_tags        = module.design.all_tags
+  public_ip       = local.public_ip
+  domain_name     = module.design.domain_name
+  cluster_name    = var.cluster_name
+  puppetserver_id = local.puppetserver_id
+  volume_devices  = local.volume_devices
+  private_ssh_key = module.instance_config.private_key
 }
 
 data "openstack_images_image_v2" "image" {
