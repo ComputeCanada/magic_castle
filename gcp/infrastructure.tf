@@ -52,7 +52,7 @@ resource "google_compute_instance" "instances" {
 
   network_interface {
     subnetwork = google_compute_subnetwork.subnet.self_link
-    network_ip = google_compute_address.local_ip[each.key].address
+    network_ip = google_compute_address.nic[each.key].address
     access_config {
       nat_ip = contains(each.value.tags, "public") ? google_compute_address.public_ip[each.key].address : null
     }
@@ -109,7 +109,7 @@ locals {
   all_instances = { for x, values in local.instances :
     x => {
       public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
-      local_ip  = google_compute_address.local_ip[x].address
+      local_ip  = google_compute_address.nic[x].address
       tags      = values["tags"]
       id        = google_compute_instance.instances[x].id
       hostkeys = {
