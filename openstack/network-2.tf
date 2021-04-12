@@ -34,7 +34,7 @@ resource "openstack_compute_secgroup_v2" "secgroup" {
   }
 }
 
-resource "openstack_networking_port_v2" "local_ip" {
+resource "openstack_networking_port_v2" "nic" {
   for_each           = local.instances
   name               = format("%s-%s-port", var.cluster_name, each.key)
   network_id         = local.network.id
@@ -46,7 +46,7 @@ resource "openstack_networking_port_v2" "local_ip" {
 
 locals {
   puppetmaster_ip = [
-    for x, values in local.instances : openstack_networking_port_v2.local_ip[x].all_fixed_ips[0] 
+    for x, values in local.instances : openstack_networking_port_v2.nic[x].all_fixed_ips[0]
     if contains(values.tags, "puppet")
   ]
 }

@@ -25,7 +25,7 @@ resource "openstack_compute_instance_v2" "instances" {
   user_data   = base64gzip(local.user_data[each.key])
 
   network {
-    port = openstack_networking_port_v2.local_ip[each.key].id
+    port = openstack_networking_port_v2.nic[each.key].id
   }
   dynamic "network" {
     for_each = local.ext_networks
@@ -88,7 +88,7 @@ locals {
   all_instances = { for x, values in local.instances :
     x => {
       public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
-      local_ip  = openstack_networking_port_v2.local_ip[x].all_fixed_ips[0]
+      local_ip  = openstack_networking_port_v2.nic[x].all_fixed_ips[0]
       tags      = values["tags"]
       id        = openstack_compute_instance_v2.instances[x].id
       hostkeys = {

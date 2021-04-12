@@ -64,7 +64,7 @@ resource "google_compute_firewall" "default" {
   target_tags = ["public"]
 }
 
-resource "google_compute_address" "local_ip" {
+resource "google_compute_address" "nic" {
   for_each     = local.instances
   name         = format("%s-%s-ipv4", var.cluster_name, each.key)
   address_type = "INTERNAL"
@@ -83,7 +83,7 @@ locals {
     if contains(values.tags, "public")
   }
   puppetmaster_ip = [
-      for x, values in local.instances : google_compute_address.local_ip[x].address
+      for x, values in local.instances : google_compute_address.nic[x].address
       if contains(values.tags, "puppet")
   ]
 }

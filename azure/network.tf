@@ -47,7 +47,7 @@ resource "azurerm_network_security_group" "public" {
 }
 
 # Create network interface
-resource "azurerm_network_interface" "local_ip" {
+resource "azurerm_network_interface" "nic" {
   for_each            = local.instances
   name                = format("%s-%s-nic", var.cluster_name, each.key)
   location            = var.location
@@ -63,7 +63,7 @@ resource "azurerm_network_interface" "local_ip" {
 
 resource "azurerm_network_interface_security_group_association" "public" {
   for_each                  = { for x, values in local.instances : x => true if contains(values.tags, "public") }
-  network_interface_id      = azurerm_network_interface.local_ip[each.key].id
+  network_interface_id      = azurerm_network_interface.nic[each.key].id
   network_security_group_id = azurerm_network_security_group.public.id
 }
 
@@ -73,7 +73,7 @@ locals {
     if contains(values.tags, "public")
   }
   puppetmaster_ip = [
-      for x, values in local.instances : azurerm_network_interface.local_ip[x].private_ip_address 
+      for x, values in local.instances : azurerm_network_interface.nic[x].private_ip_address
       if contains(values.tags, "puppet")
-  ]     
+  ]
 }

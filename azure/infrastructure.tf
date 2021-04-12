@@ -105,7 +105,7 @@ locals {
   all_instances = { for x, values in local.instances :
     x => {
       public_ip = azurerm_public_ip.public_ip[x].ip_address
-      local_ip  = azurerm_network_interface.local_ip[x].private_ip_address
+      local_ip  = azurerm_network_interface.nic[x].private_ip_address
       tags      = values["tags"]
       id        = azurerm_linux_virtual_machine.instances[x].id
       hostkeys = {

@@ -93,7 +93,7 @@ resource "aws_security_group" "allow_any_inside_vpc" {
   }
 }
 
-resource "aws_network_interface" "local_ip" {
+resource "aws_network_interface" "nic" {
   for_each        = local.instances
   subnet_id       = aws_subnet.private_subnet.id
   security_groups = concat(
@@ -127,7 +127,7 @@ locals {
     if contains(values.tags, "public")
   }
   puppetmaster_ip = [
-      for x, values in local.instances : aws_network_interface.local_ip[x].private_ip
+      for x, values in local.instances : aws_network_interface.nic[x].private_ip
       if contains(values.tags, "puppet")
   ]
 }
