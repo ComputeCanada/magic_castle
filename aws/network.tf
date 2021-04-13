@@ -94,7 +94,7 @@ resource "aws_security_group" "allow_any_inside_vpc" {
 }
 
 resource "aws_network_interface" "nic" {
-  for_each        = local.instances
+  for_each        = module.design.instances
   subnet_id       = aws_subnet.subnet.id
   security_groups = concat(
     [
@@ -111,7 +111,7 @@ resource "aws_network_interface" "nic" {
 
 resource "aws_eip" "public_ip" {
   for_each = {
-    for x, values in local.instances : x => true if contains(values.tags, "public")
+    for x, values in module.design.instances : x => true if contains(values.tags, "public")
   }
   vpc        = true
   instance   = aws_instance.instances[each.key].id
@@ -123,11 +123,11 @@ resource "aws_eip" "public_ip" {
 
 locals {
   public_ip = {
-    for x, values in local.instances : x => aws_eip.public_ip[x].public_ip
+    for x, values in module.design.instances : x => aws_eip.public_ip[x].public_ip
     if contains(values.tags, "public")
   }
   puppetserver_ip = [
-      for x, values in local.instances : aws_network_interface.nic[x].private_ip
+      for x, values in module.design.instances : aws_network_interface.nic[x].private_ip
       if contains(values.tags, "puppet")
   ]
 }
