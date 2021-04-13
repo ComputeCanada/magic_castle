@@ -43,41 +43,41 @@ jobs:
         run: |
           terraform init aws;
           terraform validate aws;
-          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//aws?ref=tags;../../../aws;g' examples/cc_cluster/aws/main.tf;
-          terraform init examples/cc_cluster/aws;
-          terraform validate examples/cc_cluster/aws;
+          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//aws?ref=tags;../../aws;g' examples/aws/main.tf;
+          terraform init examples/aws;
+          terraform validate examples/aws;
 
       - name: Test Azure
         run: |
           terraform init azure;
           terraform validate azure;
-          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//azure?ref=tags;../../../azure;g' examples/cc_cluster/azure/main.tf;
-          terraform init examples/cc_cluster/azure;
-          terraform validate examples/cc_cluster/azure;
+          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//azure?ref=tags;../../azure;g' examples/azure/main.tf;
+          terraform init examples/azure;
+          terraform validate examples/azure;
 
       - name: Test GCP
         run: |
           terraform init gcp;
           terraform validate gcp;
-          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//gcp?ref=tags;../../../gcp;g' examples/cc_cluster/gcp/main.tf;
-          terraform init examples/cc_cluster/gcp;
-          terraform validate examples/cc_cluster/gcp;
+          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//gcp?ref=tags;../../gcp;g' examples/gcp/main.tf;
+          terraform init examples/gcp;
+          terraform validate examples/gcp;
 
       - name: Test OpenStack
         run: |
           terraform init openstack;
           terraform validate openstack;
-          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//openstack?ref=tags;../../../openstack;g' examples/cc_cluster/openstack/main.tf;
-          terraform init examples/cc_cluster/openstack;
-          terraform validate examples/cc_cluster/openstack;
+          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//openstack?ref=tags;../../openstack;g' examples/openstack/main.tf;
+          terraform init examples/openstack;
+          terraform validate examples/openstack;
 
       - name: Test OVH
         run: |
           terraform init ovh;
           terraform validate ovh;
-          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//ovh?ref=tags;../../../ovh;g' examples/cc_cluster/ovh/main.tf;
-          terraform init examples/cc_cluster/ovh;
-          terraform validate examples/cc_cluster/ovh;
+          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//ovh?ref=tags;../../ovh;g' examples/ovh/main.tf;
+          terraform init examples/ovh;
+          terraform validate examples/ovh;
 
       - name: Test CloudFlare DNS
         run: |

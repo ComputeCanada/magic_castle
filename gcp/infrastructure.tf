@@ -3,6 +3,46 @@ provider "google" {
   region  = var.region
 }
 
+module "design" {
+  source       = "../common/design"
+  cluster_name = var.cluster_name
+  domain       = var.domain
+  instances    = var.instances
+  volumes      = var.volumes
+}
+
+module "instance_config" {
+  source           = "../common/instance_config"
+  host_prefixes    = toset(keys(var.instances))
+  instances        = module.design.instances
+  config_git_url   = var.config_git_url
+  config_version   = var.config_version
+  puppetserver_ip  = local.puppetserver_ip
+  sudoer_username  = var.sudoer_username
+  public_keys      = var.public_keys
+  host2prefix      = module.design.host2prefix
+  generate_ssh_key = var.generate_ssh_key
+}
+
+module "cluster_config" {
+  source          = "../common/cluster_config"
+  instances       = local.all_instances
+  nb_users        = var.nb_users
+  hieradata       = var.hieradata
+  software_stack  = var.software_stack
+  cloud_provider  = local.cloud_provider
+  cloud_region    = local.cloud_region
+  sudoer_username = var.sudoer_username
+  guest_passwd    = var.guest_passwd
+  all_tags        = module.design.all_tags
+  public_ip       = local.public_ip
+  domain_name     = module.design.domain_name
+  cluster_name    = var.cluster_name
+  puppetserver_id = local.puppetserver_id
+  volume_devices  = local.volume_devices
+  private_ssh_key = module.instance_config.private_key
+}
+
 data "google_compute_zones" "available" {
   status = "UP"
 }
@@ -24,7 +64,7 @@ locals {
 }
 
 resource "google_compute_instance" "instances" {
-  for_each = local.instances
+  for_each = module.design.instances
   project  = var.project
   zone     = local.zone
 
@@ -60,7 +100,7 @@ resource "google_compute_instance" "instances" {
 
   metadata = {
     enable-oslogin     = "FALSE"
-    user-data          = base64gzip(local.user_data[each.key])
+    user-data          = base64gzip(module.instance_config.user_data[each.key])
     user-data-encoding = "base64"
     VmDnsSetting       = "ZonalOnly"
   }
@@ -76,7 +116,7 @@ resource "google_compute_instance" "instances" {
 }
 
 resource "google_compute_disk" "volumes" {
-  for_each = local.volumes
+  for_each = module.design.volumes
   name     = "${var.cluster_name}-${each.key}"
   type     = lookup(each.value, "type", "pd-standard")
   zone     = local.zone
@@ -84,7 +124,7 @@ resource "google_compute_disk" "volumes" {
 }
 
 resource "google_compute_attached_disk" "attachments" {
-  for_each    = local.volumes
+  for_each    = module.design.volumes
   disk        = google_compute_disk.volumes[each.key].self_link
   device_name = google_compute_disk.volumes[each.key].name
   mode        = "READ_WRITE"
@@ -96,7 +136,7 @@ locals {
     for ki, vi in var.volumes :
     ki => {
       for kj, vj in vi :
-      kj => [for key, volume in local.volumes :
+      kj => [for key, volume in module.design.volumes :
         "/dev/disk/by-id/google-${var.cluster_name}-${volume["instance"]}-${ki}-${kj}"
         if key == "${volume["instance"]}-${ki}-${kj}"
       ]
@@ -105,15 +145,15 @@ locals {
 }
 
 locals {
-  puppetserver_id = try(element([for x, values in local.instances : google_compute_instance.instances[x].id if contains(values.tags, "puppet")], 0), "")
-  all_instances = { for x, values in local.instances :
+  puppetserver_id = try(element([for x, values in module.design.instances : google_compute_instance.instances[x].id if contains(values.tags, "puppet")], 0), "")
+  all_instances = { for x, values in module.design.instances :
     x => {
       public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
       local_ip  = google_compute_address.nic[x].address
       tags      = values["tags"]
       id        = google_compute_instance.instances[x].id
       hostkeys = {
-        rsa = tls_private_key.rsa_hostkeys[local.host2prefix[x]].public_key_openssh
+        rsa = module.instance_config.rsa_hostkeys[x]
       }
     }
   }

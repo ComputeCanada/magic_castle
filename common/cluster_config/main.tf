@@ -16,24 +16,23 @@ resource "random_pet" "guest_passwd" {
 
 resource "random_uuid" "consul_token" {}
 
-
 locals {
-  public_instances = { for key, values in local.all_instances : key => values if contains(values["tags"], "public") }
+  public_instances = { for key, values in var.instances : key => values if contains(values["tags"], "public") }
 
-  tag_ip = { for tag in local.all_tags :
-    tag => [for key, values in local.all_instances : values["local_ip"] if contains(values["tags"], tag)]
+  tag_ip = { for tag in var.all_tags :
+    tag => [for key, values in var.instances : values["local_ip"] if contains(values["tags"], tag)]
   }
 
   hieradata = templatefile("${path.module}/terraform_data.yaml",
     {
-      instances = yamlencode(local.all_instances)
+      instances = yamlencode(var.instances)
       tag_ip    = yamlencode(local.tag_ip)
-      storage   = yamlencode(local.volume_devices)
+      storage   = yamlencode(var.volume_devices)
       data = {
         sudoer_username = var.sudoer_username
         freeipa_passwd  = random_string.freeipa_passwd.result
         cluster_name    = lower(var.cluster_name)
-        domain_name     = local.domain_name
+        domain_name     = var.domain_name
         guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
         consul_token    = random_uuid.consul_token.result
         munge_key       = base64sha512(random_string.munge_key.result)
@@ -42,30 +41,30 @@ locals {
   })
   facts = {
     software_stack = var.software_stack
-    cloud_provider = local.cloud_provider
-    cloud_region   = local.cloud_region
+    cloud_provider = var.cloud_provider
+    cloud_region   = var.cloud_region
   }
 }
 
 
 resource "null_resource" "deploy_hieradata" {
-  count = contains(local.all_tags, "puppet") && contains(local.all_tags, "public") ? 1 : 0
+  count = contains(var.all_tags, "puppet") && contains(var.all_tags, "public") ? 1 : 0
 
   connection {
     type                = "ssh"
-    bastion_host        = local.public_ip[keys(local.public_ip)[0]]
+    bastion_host        = var.public_ip[keys(var.public_ip)[0]]
     bastion_user        = var.sudoer_username
-    bastion_private_key = try(tls_private_key.ssh[0].private_key_pem, null)
+    bastion_private_key = var.private_ssh_key
     user                = var.sudoer_username
     host                = "puppet"
-    private_key         = try(tls_private_key.ssh[0].private_key_pem, null)
+    private_key         = var.private_ssh_key
   }
 
   triggers = {
     user_data    = md5(var.hieradata)
     hieradata    = md5(local.hieradata)
     facts        = md5(yamlencode(local.facts))
-    puppetserver = local.puppetserver_id
+    puppetserver = var.puppetserver_id
   }
 
   provisioner "file" {

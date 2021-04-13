@@ -3,6 +3,46 @@ provider "aws" {
   region = var.region
 }
 
+module "design" {
+  source       = "../common/design"
+  cluster_name = var.cluster_name
+  domain       = var.domain
+  instances    = var.instances
+  volumes      = var.volumes
+}
+
+module "instance_config" {
+  source           = "../common/instance_config"
+  host_prefixes    = toset(keys(var.instances))
+  instances        = module.design.instances
+  config_git_url   = var.config_git_url
+  config_version   = var.config_version
+  puppetserver_ip  = local.puppetserver_ip
+  sudoer_username  = var.sudoer_username
+  public_keys      = var.public_keys
+  host2prefix      = module.design.host2prefix
+  generate_ssh_key = var.generate_ssh_key
+}
+
+module "cluster_config" {
+  source          = "../common/cluster_config"
+  instances       = local.all_instances
+  nb_users        = var.nb_users
+  hieradata       = var.hieradata
+  software_stack  = var.software_stack
+  cloud_provider  = local.cloud_provider
+  cloud_region    = local.cloud_region
+  sudoer_username = var.sudoer_username
+  guest_passwd    = var.guest_passwd
+  all_tags        = module.design.all_tags
+  public_ip       = local.public_ip
+  domain_name     = module.design.domain_name
+  cluster_name    = var.cluster_name
+  puppetserver_id = local.puppetserver_id
+  volume_devices  = local.volume_devices
+  private_ssh_key = module.instance_config.private_key
+}
+
 data "aws_availability_zones" "available" {
   state = "available"
 }
@@ -30,10 +70,10 @@ resource "aws_key_pair" "key" {
 
 # Instances
 resource "aws_instance" "instances" {
-  for_each          = local.instances
+  for_each          = module.design.instances
   instance_type     = each.value.type
   ami               = var.image
-  user_data         = base64gzip(local.user_data[each.key])
+  user_data         = base64gzip(module.instance_config.user_data[each.key])
   availability_zone = local.availability_zone
 
   key_name          = aws_key_pair.key.key_name
@@ -63,7 +103,7 @@ resource "aws_instance" "instances" {
 }
 
 resource "aws_ebs_volume" "volumes" {
-  for_each          = local.volumes
+  for_each          = module.design.volumes
   availability_zone = local.availability_zone
   size              = each.value.size
   type              = lookup(each.value, "type", null)
@@ -82,8 +122,8 @@ locals {
 }
 
 resource "aws_volume_attachment" "attachments" {
-  for_each    = { for k, v in local.volumes : k => v if v.instance != null }
-  device_name  = local.device_names[index(local.volume_per_instance[each.value.instance], replace(each.key, "${each.value.instance}-", ""))]
+  for_each     = module.design.volumes
+  device_name  = local.device_names[index(module.design.volume_per_instance[each.value.instance], replace(each.key, "${each.value.instance}-", ""))]
   volume_id    = aws_ebs_volume.volumes[each.key].id
   instance_id  = aws_instance.instances[each.value.instance].id
   skip_destroy = true
@@ -94,7 +134,7 @@ locals {
     for ki, vi in var.volumes :
     ki => {
       for kj, vj in vi :
-      kj => [ for key, volume in local.volumes:
+      kj => [ for key, volume in module.design.volumes:
         "/dev/disk/by-id/*${replace(aws_ebs_volume.volumes["${volume["instance"]}-${ki}-${kj}"].id, "-", "")}"
         if key == "${volume["instance"]}-${ki}-${kj}"
       ]
@@ -103,15 +143,15 @@ locals {
 }
 
 locals {
-  puppetserver_id = try(element([for x, values in local.instances : aws_instance.instances[x].id if contains(values.tags, "puppet")], 0), "")
-  all_instances = { for x, values in local.instances :
+  puppetserver_id = try(element([for x, values in module.design.instances : aws_instance.instances[x].id if contains(values.tags, "puppet")], 0), "")
+  all_instances = { for x, values in module.design.instances :
     x => {
       public_ip   = contains(values["tags"], "public") ? local.public_ip[x] : ""
       local_ip    = aws_network_interface.nic[x].private_ip
       tags        = values["tags"]
       id          = aws_instance.instances[x].id
       hostkeys    = {
-        rsa = tls_private_key.rsa_hostkeys[local.host2prefix[x]].public_key_openssh
+        rsa = module.instance_config.rsa_hostkeys[x]
       }
     }
   }

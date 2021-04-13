@@ -18,7 +18,7 @@ variable "os_int_subnet" {
 }
 
 data "external" "keystone" {
-  program = ["python", "${path.module}/keystone.py"]
+  program = ["python", "${path.module}/external/keystone.py"]
 }
 
 locals {
