@@ -122,7 +122,7 @@ locals {
 }
 
 resource "aws_volume_attachment" "attachments" {
-  for_each    = { for k, v in module.design.volumes : k => v if v.instance != null }
+  for_each     = module.design.volumes
   device_name  = local.device_names[index(module.design.volume_per_instance[each.value.instance], replace(each.key, "${each.value.instance}-", ""))]
   volume_id    = aws_ebs_volume.volumes[each.key].id
   instance_id  = aws_instance.instances[each.value.instance].id
