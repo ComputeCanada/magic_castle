@@ -5,12 +5,7 @@ once `terraform apply` is called. Some details were left out of the diagrams,
 but every diagram is followed by references to the code files that were used
 to build it.
 
-To limit the size of the diagram, the sequences represent a cluster composed
-of one management node (`mgmt1`), one login node (`login1`) and one compute
-node (`node1`). Clusters with multiple nodes each type would follow the same
-sequences, repeated for each type.
-
-## 1. Cluster Creation Sequence
+## 1. Cluster creation
 
 ![Cluster Creation Sequence](./diagrams/cluster_creation_sequence.svg)
 
@@ -21,19 +16,21 @@ Users can use their own fork. See the [developer documentation](/docs/developers
 
 ### References
 
-- [`magic_castle:/common/data.tf`](/common/data.tf)
-- [`puppet-magic_castle:/data/terraform_data.yaml.tmpl`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/data/terraform_data.yaml.tmpl)
+- [`magic_castle:/common/design/main.tf`](/common/design/main.tf)
+- [`magic_castle:/openstack/infrastructure.tf`](/openstack/network.tf)
+- [`magic_castle:/common/instance_config/main.tf`](/common/instance_config/main.tf)
 - [`magic_castle:/openstack/infrastructure.tf`](/openstack/infrastructure.tf)
+- [`magic_castle:/common/cluster_config/main.tf`](/common/cluster_config/main.tf)
 - [`magic_castle:/dns/cloudflare/dns.tf`](/dns/cloudflare/dns.tf)
 - [`magic_castle:/dns/acme/acme.tf`](/dns/acme/acme.tf)
 
-## 2. Provisioning with Cloud-Init Sequence
+## 2. Configuration with cloud-init
 
-![Provisioning with Cloud-Init Sequence](./diagrams/cluster_provisioning_cloud-init_sequence.svg)
+![Configuration with cloud-init sequence](./diagrams/cluster_configuration_cloud-init_sequence.svg)
 
 ### Notes
 
-1. `puppet-magic_castle.git` does not have to refer to `ComputeCanada/puppet-magic_castle.git` repo.
+1. `config_git_url repo` does not have to refer to `ComputeCanada/puppet-magic_castle.git` repo.
 Users can use their own fork. See the [developer documentation](/docs/developers.md) for more details.
 2. While the diagram represents each step as completed sequentially, each node provisioning
 is independent. The only step that requires synchronisation between nodes and the management node
@@ -41,11 +38,10 @@ is the puppet certificate generation.
 
 ### References
 
-- [`magic_castle:/cloud-init/mgmt.yaml`](/cloud-init/mgmt.yaml)
-- [`magic_castle:/cloud-init/puppet.yaml`](/cloud-init/puppet.yaml)
+- [`magic_castle:/common/instance_config/puppet.yaml`](/common/instance_config/puppet.yaml)
 
 
-## 3. Provisioning with Puppet Sequence
+## 3. Configuration with Puppet
 
 ![Provisioning with Puppet](./diagrams/cluster_provisioning_puppet_sequence.svg)
 
@@ -56,7 +52,7 @@ is the puppet certificate generation.
 - [`puppet-magic_castle:/profile/manifests/consul.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/consul.pp)
 - [`puppet-magic_castle:/profile/manifests/freeipa.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/freeipa.pp)
 
-## 4. Provisioning with Consul and Consul Template Sequence
+## 4. Configuration with Consul and Consul Template
 
 ![Provisioning with Consul](./diagrams/cluster_provisioning_consul_sequence.svg)
 
