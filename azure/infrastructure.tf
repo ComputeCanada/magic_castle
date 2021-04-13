@@ -121,7 +121,7 @@ resource "azurerm_virtual_machine_data_disk_attachment" "attachments" {
   for_each           = module.design.volumes
   managed_disk_id    = azurerm_managed_disk.volumes[each.key].id
   virtual_machine_id = azurerm_linux_virtual_machine.instances[each.value.instance].id
-  lun                = index(local.volume_per_instance[each.value.instance], replace(each.key, "${each.value.instance}-", ""))
+  lun                = index(module.design.volume_per_instance[each.value.instance], replace(each.key, "${each.value.instance}-", ""))
   caching            = "ReadWrite"
 }
 
@@ -130,8 +130,8 @@ locals {
     for ki, vi in var.volumes :
     ki => {
       for kj, vj in vi :
-      kj => [for key, volume in local.volumes :
-        "/dev/disk/azure/scsi1/lun${index(local.volume_per_instance[volume.instance], replace(key, "${volume.instance}-", ""))}"
+      kj => [for key, volume in module.design.volumes :
+        "/dev/disk/azure/scsi1/lun${index(module.design.volume_per_instance[volume.instance], replace(key, "${volume.instance}-", ""))}"
         if key == "${volume["instance"]}-${ki}-${kj}"
       ]
     }
