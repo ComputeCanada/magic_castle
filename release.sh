@@ -30,8 +30,10 @@ mkdir -p releases
 for provider in "${CLOUD[@]}"; do
     cur_folder=$FOLDER/magic_castle-$provider-$VERSION
     mkdir -p $cur_folder
-    cp -RfL $provider $cur_folder/
+    cp -RfL common $cur_folder/
+    rm $cur_folder/common/{variables,outputs}.tf
     cp -RfL dns $cur_folder/
+    cp -RfL $provider $cur_folder/
     cp -fL examples/$provider/main.tf $cur_folder
     mv $cur_folder/$provider/README.md $cur_folder
     sed_i 's;git::https://github.com/ComputeCanada/magic_castle.git//;./;g' $cur_folder/main.tf
