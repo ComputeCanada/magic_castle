@@ -65,7 +65,7 @@ resource "google_compute_firewall" "default" {
 }
 
 resource "google_compute_address" "nic" {
-  for_each     = local.instances
+  for_each     = module.design.instances
   name         = format("%s-%s-ipv4", var.cluster_name, each.key)
   address_type = "INTERNAL"
   subnetwork   = google_compute_subnetwork.subnet.self_link
@@ -73,17 +73,17 @@ resource "google_compute_address" "nic" {
 }
 
 resource "google_compute_address" "public_ip" {
-  for_each = { for x, values in local.instances : x => true if contains(values.tags, "public") }
+  for_each = { for x, values in module.design.instances : x => true if contains(values.tags, "public") }
   name     = format("%s-%s-public-ipv4", var.cluster_name, each.key)
 }
 
 locals {
   public_ip = {
-    for x, values in local.instances : x => google_compute_address.public_ip[x].address
+    for x, values in module.design.instances : x => google_compute_address.public_ip[x].address
     if contains(values.tags, "public")
   }
   puppetserver_ip = [
-      for x, values in local.instances : google_compute_address.nic[x].address
+      for x, values in module.design.instances : google_compute_address.nic[x].address
       if contains(values.tags, "puppet")
   ]
 }
