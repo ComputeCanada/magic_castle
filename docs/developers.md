@@ -5,8 +5,9 @@
 1. [Setup](#1-setup)
 2. [Where to start](#2-where-to-start)
 3. [Puppet environment](#3-puppet-environment)
-4. [Release](#4-release)
-5. [Troubleshooting](#5-troubleshooting)
+4. [Troubleshooting](#4-troubleshooting)
+5. [Release](#5-release)
+
 
 ## 1. Setup
 
@@ -72,13 +73,14 @@ Puppet environment that replicates a Compute Canada HPC cluster is named
 ### terraform_data.yaml: a bridge between Terraform and Puppet
 
 To provide information on the deployed resources and the value of the input parameters,
-Magic Castle Terraform code uploads to the Puppet main server two files:
-- `/etc/puppetlabs/code/environment/production/data/terraform_data.yaml`
-- `/etc/puppetlabs/code/environment/production/site/profile/facts.d/terraform_data.yaml`
+Magic Castle Terraform code uploads to the Puppet main server a file named `terraform_data.yaml`,
+in the folder `/etc/puppetlabs/data/`. There is also a symlink created in
+`/etc/puppetlabs/code/environment/production/data/` to ease its usage inside the Puppet
+environment.
 
-When included in the data hierarchy, `terraform_data.yaml` provides information about the
-instances, the volumes and the variables set by the user through the `main.tf` file. The
-file has the following structure:
+When included in the data hierarchy (`hiera.yaml`), `terraform_data.yaml` can provide
+information about the instances, the volumes and the variables set by the user
+through the `main.tf` file. The file has the following structure:
 ```yaml
 ---
 terraform:
@@ -96,7 +98,7 @@ terraform:
       volume_2:
         - "/dev/disk/by-id/123-abc-*"
   tag_ip:
-    tag_1: 
+    tag_1:
       - 10.0.0.x
   data:
     cluster_name: ""
@@ -109,17 +111,67 @@ terraform:
     sudoer_username: ""
 ```
 
-The value provided by this data source can be accessed in Puppet by using the `lookup()` function.
-For example, to access an instance's list of tags:
+The values provided by `terraform_data.yaml` can be accessed in Puppet by using the
+`lookup()` function. For example, to access an instance's list of tags:
 ```puppet
 lookup("terraform.instances.${::hostname}.tags")
 ```
 The data source can also be used to define a key in another data source YAML file by using the
 `alias()` function. For example, to define the number of guest accounts using the value of `nb_user`,
 we could add this to `common.yaml`
-```
+```yaml
 profile::accounts::guests::nb_accounts: "%{alias('terraform.data.nb_users')}"
 ```
+
+### Configuring instances: site.pp and classes
+
+The configuration of each instance is defined in `manifests/site.pp` file of the Puppet environment.
+In this file, it is possible to define a configuration based on an instance hostname
+```
+node "mgmt1" { }
+```
+or using the instance tags by defining the configuration for the `default` node :
+```
+node default {
+  $instance_tags = lookup("terraform.instances.${::hostname}.tags")
+  if 'tag_1' in $instances_tags { }
+}
+```
+
+It is possible to define [Puppet resource](https://puppet.com/docs/puppet/7.5/type.html) directly
+in `site.pp`. However, above a certain level of complexity, which can be reach fairly quickly, it
+is preferable to define classes and include these classes in `site.pp` based on the node hostname
+or tags.
+
+Classes can be defined in the Puppet environment under the following path:
+`site/profile/manifests`. These classes are named profile classes and the philosophy
+behind it is explained in [Puppet documentation](https://puppet.com/docs/pe/2019.8/osp/the_roles_and_profiles_method.html). Because these classes are defined in `site/profile`,
+their name has to start with the prefix `profile::`.
+
+It is also possible to include classes defined externally and installed using the `Puppetfile`.
+These classes installed by [librarian-puppet](https://github.com/voxpupuli/librarian-puppet) can be found in the `modules` folder of the
+Puppet environment.
+
+## 4. Troubleshooting
+
+### 4.1 cloud-init
+
+To test new additions to `puppet.yaml`, it is possible to
+execute cloud-init phases manually. There are four steps that can be executed sequentially: init local, init
+modules config and modules final. Here are the corresponding commands to execute each step:
+```
+cloud-init init --local
+cloud-init init
+cloud-init modules --mode=config
+cloud-init modules --mode=final
+```
+
+It is also possible to clean a cloud-init execution and have it execute again at next reboot. To do so, enter
+the following command:
+```
+cloud-init clean
+```
+Add `-r` to the previous command to reboot the instance once cloud-init has finishing cleaning.
 
 ## 5. Release
 
@@ -149,25 +201,3 @@ Magic Castle:
     ```
     $ ./release.sh 5.7 azure ovh
     ```
-
-## 4. Troubleshooting
-
-
-### 4.1 cloud-init
-
-To test new additions to `puppet.yaml`, it is possible to
-execute cloud-init phases manually. There are four steps that can be executed sequentially: init local, init
-modules config and modules final. Here are the corresponding commands to execute each step:
-```
-cloud-init init --local
-cloud-init init
-cloud-init modules --mode=config
-cloud-init modules --mode=final
-```
-
-It is also possible to clean a cloud-init execution and have it execute again at next reboot. To do so, enter
-the following command:
-```
-cloud-init clean
-```
-Add `-r` to the previous command to reboot the instance once cloud-init has finishing cleaning.
