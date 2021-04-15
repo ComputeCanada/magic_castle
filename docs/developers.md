@@ -89,7 +89,7 @@ terraform:
       tags: ["tag_1"]
       hostkeys:
         rsa: ""
-  storage:
+  volumes:
     volume_tag1:
       volume_1:
         - "/dev/disk/by-id/123-*"
