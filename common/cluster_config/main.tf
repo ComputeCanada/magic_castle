@@ -27,7 +27,7 @@ locals {
     {
       instances = yamlencode(var.instances)
       tag_ip    = yamlencode(local.tag_ip)
-      storage   = yamlencode(var.volume_devices)
+      volumes   = yamlencode(var.volume_devices)
       data = {
         sudoer_username = var.sudoer_username
         freeipa_passwd  = random_string.freeipa_passwd.result
