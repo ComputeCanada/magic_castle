@@ -22,7 +22,7 @@ Users can use their own fork. See the [developer documentation](/docs/developers
 ### References
 
 - [`magic_castle:/common/data.tf`](/common/data.tf)
-- [`puppet-magic_castle:/data/terraform_data.yaml.tmpl`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/data/terraform_data.yaml.tmpl)
+- [`puppet-magic_castle:/data/terraform_data.yaml.tmpl`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/data/terraform_data.yaml.tmpl)
 - [`magic_castle:/openstack/infrastructure.tf`](/openstack/infrastructure.tf)
 - [`magic_castle:/dns/cloudflare/dns.tf`](/dns/cloudflare/dns.tf)
 - [`magic_castle:/dns/acme/acme.tf`](/dns/acme/acme.tf)
@@ -51,10 +51,10 @@ is the puppet certificate generation.
 
 ### References
 
-- [`puppet-magic_castle:/manifests/site.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/manifests/site.pp)
-- [`puppet-magic_castle:/profile/manifests/base.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/base.pp)
-- [`puppet-magic_castle:/profile/manifests/consul.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/consul.pp)
-- [`puppet-magic_castle:/profile/manifests/freeipa.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/freeipa.pp)
+- [`puppet-magic_castle:/manifests/site.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/manifests/site.pp)
+- [`puppet-magic_castle:/profile/manifests/base.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/base.pp)
+- [`puppet-magic_castle:/profile/manifests/consul.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/consul.pp)
+- [`puppet-magic_castle:/profile/manifests/freeipa.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/freeipa.pp)
 
 ## 4. Provisioning with Consul and Consul Template Sequence
 
@@ -62,6 +62,6 @@ is the puppet certificate generation.
 
 ### References
 
-- [`puppet-magic_castle:/profile/manifests/consul.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/consul.pp)
-- [`puppet-magic_castle:/profile/manifests/cvmfs.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/cvmfs.pp)
-- [`puppet-magic_castle:/profile/manifests/slurm.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/slurm.pp)
+- [`puppet-magic_castle:/profile/manifests/consul.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/consul.pp)
+- [`puppet-magic_castle:/profile/manifests/cvmfs.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/cvmfs.pp)
+- [`puppet-magic_castle:/profile/manifests/slurm.pp`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/slurm.pp)

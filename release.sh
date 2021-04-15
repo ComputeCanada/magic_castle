@@ -35,7 +35,7 @@ for provider in "${CLOUD[@]}"; do
     cp -fL examples/$provider/main.tf $cur_folder
     mv $cur_folder/$provider/README.md $cur_folder
     sed_i 's;git::https://github.com/ComputeCanada/magic_castle.git//;./;g' $cur_folder/main.tf
-    sed_i "s;\"master\";\"$VERSION\";" $cur_folder/main.tf
+    sed_i "s;\"main\";\"$VERSION\";" $cur_folder/main.tf
     cp LICENSE $cur_folder
 
     ## Initialize to create .terraform.lock.hcl file
@@ -52,7 +52,7 @@ for provider in "${CLOUD[@]}"; do
     ## Recreate a new unmodified main.tf
     cp -fL examples/$provider/main.tf $cur_folder
     sed_i 's;git::https://github.com/ComputeCanada/magic_castle.git//;./;g' $cur_folder/main.tf
-    sed_i "s;\"master\";\"$VERSION\";" $cur_folder/main.tf
+    sed_i "s;\"main\";\"$VERSION\";" $cur_folder/main.tf
 
     cd $FOLDER
     tar czvf magic_castle-$provider-$VERSION.tar.gz magic_castle-$provider-$VERSION

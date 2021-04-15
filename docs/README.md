@@ -559,8 +559,8 @@ following line to the string:
     ```
 
 Refer to the following Puppet modules' documentation to know more about the key-values that can be defined:
-- [puppet-magic_castle](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/README.md)
-- [puppet-jupyterhub](https://github.com/ComputeCanada/puppet-jupyterhub/blob/master/README.md#hieradata-configuration)
+- [puppet-magic_castle](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/README.md)
+- [puppet-jupyterhub](https://github.com/ComputeCanada/puppet-jupyterhub/blob/main/README.md#hieradata-configuration)
 
 
 The file created from this string can be found on `mgmt1` as
@@ -841,7 +841,7 @@ Apache configuration expects the following files to exist:
 - `/etc/letsencrypt/live/${domain_name}/privkey.pem`
 - `/etc/letsencrypt/live/${domain_name}/chain.pem`
 
-Refer to the [reverse proxy configuration](https://github.com/ComputeCanada/puppet-magic_castle/blob/master/site/profile/manifests/reverse_proxy.pp) for more details.
+Refer to the [reverse proxy configuration](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/reverse_proxy.pp) for more details.
 
 ## 7. Planification
 

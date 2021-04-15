@@ -50,9 +50,9 @@ release files will be built for all providers currently supported by Magic Castl
 
 Examples:
 
-- Building a release for OpenStack with the puppet repo master branch:
+- Building a release for OpenStack with the puppet repo main branch:
     ```
-    $ ./release.sh master openstack
+    $ ./release.sh main openstack
     ```
 - Building a release for GCP with the latest Terraform and cloud-init, and version 5.8 of puppet
 Magic Castle:
