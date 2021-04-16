@@ -361,7 +361,6 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
 11. **Consolidate the instances' information**. Add the following snippet to `infrastructure.tf`:
   ```hcl
   locals {
-    puppetserver_id = try(element([for x, values in module.design.instances : alicloud_instance.instances[x].id if contains(values.tags, "puppet")], 0), "")
     all_instances = { for x, values in module.design.instances :
       x => {
         public_ip   = contains(values["tags"], "public") ? local.public_ip[x] : ""
@@ -404,7 +403,6 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
     all_tags        = module.design.all_tags
     domain_name     = module.design.domain_name
     cluster_name    = var.cluster_name
-    puppetserver_id = local.puppetserver_id
     volume_devices  = local.volume_devices
     private_ssh_key = module.instance_config.private_key
   }

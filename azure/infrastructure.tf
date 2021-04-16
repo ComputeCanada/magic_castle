@@ -37,7 +37,6 @@ module "cluster_config" {
   all_tags        = module.design.all_tags
   domain_name     = module.design.domain_name
   cluster_name    = var.cluster_name
-  puppetserver_id = local.puppetserver_id
   volume_devices  = local.volume_devices
   private_ssh_key = module.instance_config.private_key
 }
@@ -140,7 +139,6 @@ locals {
 locals {
   resource_group_name = var.azure_resource_group == "" ? azurerm_resource_group.group[0].name : var.azure_resource_group
 
-  puppetserver_id = try(element([for x, values in module.design.instances : azurerm_linux_virtual_machine.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in module.design.instances :
     x => {
       public_ip = azurerm_public_ip.public_ip[x].ip_address
