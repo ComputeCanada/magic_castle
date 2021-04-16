@@ -40,6 +40,4 @@ locals {
   ]...)
 
   volume_per_instance = transpose({ for key, value in local.instance_per_volume : key => value["instances"] })
-  
-  all_tags = toset(flatten([for key, values in local.instances : values["tags"]]))
 }
