@@ -18,7 +18,7 @@ resource "random_uuid" "consul_token" {}
 
 locals {
   public_instances = { for key, values in var.instances : key => values if contains(values["tags"], "public") }
-  puppetserver_id = try(element([for key, values in var.instances: value["id"] if contains(values["tags"], "puppet")], 0), "")
+  puppetserver_id = try(element([for key, values in var.instances: values["id"] if contains(values["tags"], "puppet")], 0), "")
   all_tags = toset(flatten([for key, values in var.instances : values["tags"]]))
 
   tag_ip = { for tag in local.all_tags :
