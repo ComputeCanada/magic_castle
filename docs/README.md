@@ -1026,19 +1026,16 @@ with FreeIPA web interface or using the command-line.
 
 ### 10.4 Increase the Number of Guest Accounts
 
-The number of guest accounts is originally set in the Terraform main file. If you wish
-to increase the number of guest accounts after creating the cluster with Terraform, you
-can modify the hieradata file of the Puppet environment.
+To increase the number of guest accounts after creating the cluster with Terraform,
+simply increase the value of `nb_users`, then call :
+```
+terraform apply
+```
 
-1. On `puppet` and with `sudo`, open the file
-    ```
-    /etc/puppetlabs/code/environments/production/data/terraform_data.yaml
-    ```
-2. Increase the number associated with the key `nb_users`
-to the number of guest accounts you want.
-3. Save the file.
-4. Restart puppet on `mgmt1`: `sudo systemctl restart puppet`.
-5. The accounts will be created in the following minutes.
+To trigger the account creation before the Puppet agent 30-minute window:
+1. Connect to `mgmt1` as `centos` or as the sudoer account.
+2. Restart puppet: `sudo systemctl restart puppet`.
+3. The accounts will be created in the following minutes.
 
 
 ### 10.5 Restrict SSH Access
