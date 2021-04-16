@@ -6,10 +6,6 @@ output "host2prefix" {
   value = local.host2prefix
 }
 
-output "instance_per_volume" {
-  value = local.instance_per_volume
-}
-
 output "volumes" {
   value = local.volumes
 }
