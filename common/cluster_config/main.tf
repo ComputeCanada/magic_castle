@@ -18,7 +18,7 @@ resource "random_uuid" "consul_token" {}
 
 locals {
   public_instances = { for key, values in var.instances : key => values if contains(values["tags"], "public") }
-
+  puppetserver_id = try(element([for key, values in var.instances: value["id"] if contains(values["tags"], "puppet")], 0), "")
   tag_ip = { for tag in var.all_tags :
     tag => [for key, values in var.instances : values["local_ip"] if contains(values["tags"], tag)]
   }
@@ -63,7 +63,7 @@ resource "null_resource" "deploy_hieradata" {
     user_data    = md5(var.hieradata)
     hieradata    = md5(local.hieradata)
     facts        = md5(yamlencode(local.facts))
-    puppetserver = var.puppetserver_id
+    puppetserver = local.puppetserver_id
   }
 
   provisioner "file" {

@@ -37,7 +37,6 @@ module "cluster_config" {
   all_tags        = module.design.all_tags
   domain_name     = module.design.domain_name
   cluster_name    = var.cluster_name
-  puppetserver_id = local.puppetserver_id
   volume_devices  = local.volume_devices
   private_ssh_key = module.instance_config.private_key
 }
@@ -144,7 +143,6 @@ locals {
 }
 
 locals {
-  puppetserver_id = try(element([for x, values in module.design.instances : google_compute_instance.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in module.design.instances :
     x => {
       public_ip = contains(values["tags"], "public") ? google_compute_address.public_ip[x].address : ""

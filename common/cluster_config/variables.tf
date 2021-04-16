@@ -10,5 +10,4 @@ variable "software_stack" { }
 variable "cloud_provider" { }
 variable "cloud_region" { }
 variable "private_ssh_key" { }
-variable "puppetserver_id" { }
 variable "hieradata" { }
