@@ -21,8 +21,8 @@ submodule, you are on your own.
 
 ## Setup
 
-On `mgmt1`:
-1. Open the file `/etc/puppetlabs/code/environments/production/data/common.yaml` with sudo rights
+1. Connect to the Puppet main server from within the cluster: `ssh puppet`
+2. Open the file `/etc/puppetlabs/code/environments/production/data/common.yaml` with sudo rights
 and add the following lines:
     ```
     profile::globus::base::globus_user: your_globus_username
