@@ -1035,7 +1035,7 @@ terraform apply
 To trigger the account creation before the Puppet agent 30-minute window:
 1. Connect to `mgmt1` as `centos` or as the sudoer account.
 2. Restart puppet: `sudo systemctl restart puppet`.
-3. The accounts will be created in the following minutes.
+The accounts will be created in the following minutes.
 
 
 ### 10.5 Restrict SSH Access
