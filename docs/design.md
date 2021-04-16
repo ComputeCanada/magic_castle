@@ -402,7 +402,6 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
     sudoer_username = var.sudoer_username
     guest_passwd    = var.guest_passwd
     all_tags        = module.design.all_tags
-    public_ip       = local.public_ip
     domain_name     = module.design.domain_name
     cluster_name    = var.cluster_name
     puppetserver_id = local.puppetserver_id

@@ -78,10 +78,6 @@ resource "google_compute_address" "public_ip" {
 }
 
 locals {
-  public_ip = {
-    for x, values in module.design.instances : x => google_compute_address.public_ip[x].address
-    if contains(values.tags, "public")
-  }
   puppetserver_ip = [
       for x, values in module.design.instances : google_compute_address.nic[x].address
       if contains(values.tags, "puppet")

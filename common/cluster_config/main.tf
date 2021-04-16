@@ -46,13 +46,12 @@ locals {
   }
 }
 
-
 resource "null_resource" "deploy_hieradata" {
   count = contains(var.all_tags, "puppet") && contains(var.all_tags, "public") ? 1 : 0
 
   connection {
     type                = "ssh"
-    bastion_host        = var.public_ip[keys(var.public_ip)[0]]
+    bastion_host        = local.public_instances[keys(local.public_instances)[0]]["public_ip"]
     bastion_user        = var.sudoer_username
     bastion_private_key = var.private_ssh_key
     user                = var.sudoer_username
