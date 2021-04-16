@@ -9,7 +9,6 @@ variable "nb_users" { }
 variable "software_stack" { }
 variable "cloud_provider" { }
 variable "cloud_region" { }
-variable "public_ip" { }
 variable "private_ssh_key" { }
 variable "puppetserver_id" { }
 variable "hieradata" { }

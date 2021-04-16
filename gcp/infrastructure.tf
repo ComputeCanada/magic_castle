@@ -35,7 +35,6 @@ module "cluster_config" {
   sudoer_username = var.sudoer_username
   guest_passwd    = var.guest_passwd
   all_tags        = module.design.all_tags
-  public_ip       = local.public_ip
   domain_name     = module.design.domain_name
   cluster_name    = var.cluster_name
   puppetserver_id = local.puppetserver_id
@@ -148,7 +147,7 @@ locals {
   puppetserver_id = try(element([for x, values in module.design.instances : google_compute_instance.instances[x].id if contains(values.tags, "puppet")], 0), "")
   all_instances = { for x, values in module.design.instances :
     x => {
-      public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
+      public_ip = contains(values["tags"], "public") ? google_compute_address.public_ip[x].address : ""
       local_ip  = google_compute_address.nic[x].address
       tags      = values["tags"]
       id        = google_compute_instance.instances[x].id
