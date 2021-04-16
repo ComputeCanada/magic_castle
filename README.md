@@ -36,7 +36,7 @@ the creation of the virtual machines.
 3. For each virtual machine creation request, Magic Castle
 provides a [cloud-init](https://cloudinit.readthedocs.io/en/latest/) file. This
 file is used to initialize the virtual machine base configuration and installs
-puppet agent. The cloud-init file of the `puppet` virtual machine installs
+puppet agent. The cloud-init file of the `puppet` tagged virtual machine installs
 and configures a Puppet primary server.
 4. Terraform uploads on the Puppet primary server instance a YAML file containing
 information about the roles of each instances specified as tags.
