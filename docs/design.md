@@ -400,7 +400,6 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
     cloud_region    = local.cloud_region
     sudoer_username = var.sudoer_username
     guest_passwd    = var.guest_passwd
-    all_tags        = module.design.all_tags
     domain_name     = module.design.domain_name
     cluster_name    = var.cluster_name
     volume_devices  = local.volume_devices

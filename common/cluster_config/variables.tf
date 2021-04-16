@@ -1,5 +1,4 @@
 variable "instances" { }
-variable "all_tags" { }
 variable "volume_devices" { }
 variable "sudoer_username" { }
 variable "cluster_name" { }
