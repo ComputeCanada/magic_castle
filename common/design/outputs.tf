@@ -2,10 +2,6 @@ output "instances" {
   value = local.instances
 }
 
-output "host2prefix" {
-  value = local.host2prefix
-}
-
 output "volumes" {
   value = local.volumes
 }

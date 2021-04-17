@@ -11,14 +11,12 @@ module "design" {
 
 module "instance_config" {
   source           = "../common/instance_config"
-  host_prefixes    = toset(keys(var.instances))
   instances        = module.design.instances
   config_git_url   = var.config_git_url
   config_version   = var.config_version
   puppetserver_ip  = local.puppetserver_ip
   sudoer_username  = var.sudoer_username
   public_keys      = var.public_keys
-  host2prefix      = module.design.host2prefix
   generate_ssh_key = var.generate_ssh_key
 }
 
