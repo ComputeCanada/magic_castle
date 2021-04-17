@@ -314,10 +314,6 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
         for x, values in module.design.instances : alicloud_network_interface.nic[x].private_ip
         if contains(values.tags, "puppet")
     ]
-    public_ip = {
-      for x, values in module.design.instances : x => alicloud_eip.public_ip[x].public_ip
-      if contains(values.tags, "public")
-    }
   }
   ```
 
@@ -363,7 +359,7 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
   locals {
     all_instances = { for x, values in module.design.instances :
       x => {
-        public_ip   = contains(values["tags"], "public") ? local.public_ip[x] : ""
+        public_ip   = contains(values["tags"], "public") ? alicloud_eip.public_ip[x].public_ip : ""
         local_ip    = alicloud_network_interface.nic[x].private_ip
         tags        = values["tags"]
         id          = alicloud_instance.instances[x].id
