@@ -3,19 +3,12 @@ locals {
   
   instances = merge(
     flatten([
-      for hostname, attrs in var.instances : [
+      for prefix, attrs in var.instances : [
         for i in range(lookup(attrs, "count", 1)) : {
-          (format("%s%d", hostname, i + 1)) = { for attr, value in attrs : attr => value if attr != "count" }
-        }
-      ]
-    ])...
-  )
-
-  host2prefix = merge(
-    flatten([
-      for hostname, attrs in var.instances : [
-        for i in range(lookup(attrs, "count", 1)) : {
-          (format("%s%d", hostname, i + 1)) = hostname
+          (format("%s%d", prefix, i + 1)) = merge(
+            { for attr, value in attrs : attr => value if attr != "count" },
+            { prefix = prefix }
+          )
         }
       ]
     ])...

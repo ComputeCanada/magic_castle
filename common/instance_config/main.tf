@@ -10,7 +10,7 @@ resource "tls_private_key" "ssh" {
 }
 
 resource "tls_private_key" "rsa_hostkeys" {
-  for_each  = var.host_prefixes
+  for_each  = toset([for x, values in var.instances: values["prefix"]])
   algorithm = "RSA"
   rsa_bits  = 4096
 }
@@ -30,8 +30,8 @@ locals {
         ssh_authorized_keys   = concat(var.public_keys, tls_private_key.ssh[*].public_key_openssh),
         hostkeys = {
           rsa = {
-            private = tls_private_key.rsa_hostkeys[var.host2prefix[key]].private_key_pem
-            public  = tls_private_key.rsa_hostkeys[var.host2prefix[key]].public_key_openssh
+            private = tls_private_key.rsa_hostkeys[values["prefix"]].private_key_pem
+            public  = tls_private_key.rsa_hostkeys[values["prefix"]].public_key_openssh
           }
         }
       }
