@@ -563,7 +563,7 @@ The file created from this string can be found on `puppet` as
 ]
 ```
 
-Defines a list of firewall rules that control external traffic to the login nodes. Each rule is
+Defines a list of firewall rules that control external traffic to the public nodes. Each rule is
 defined as a map of fives key-value pairs : `name`, `from_port`, `to_port`, `ip_protocol` and
 `cidr`. To add new rules, you will have to recopy the preceding list and add rules to it.
 
@@ -623,7 +623,7 @@ Defines the name of the external network that provides the floating
 IPs. Define this only if your OpenStack cloud provides multiple
 external networks, otherwise, Terraform can find it automatically.
 
-**Post build modification effect**: change the floating ips assigned to the login nodes.
+**Post build modification effect**: change the floating ips assigned to the public nodes.
 
 #### 5.1.3 os_int_network (optional)
 
@@ -740,7 +740,7 @@ generate the SSL certificates. Refer to the last subsection for more details.
 [public keys](#49-public_keys) needs to be tracked (i.e: `ssh-add`) by the local
 [authentication agent](https://www.ssh.com/ssh/agent) (i.e: `ssh-agent`).
 This module uses the ssh-agent tracked SSH keys to authenticate and
-to copy SSL certificate files to the login nodes after their creation.
+to copy SSL certificate files to the proxy nodes after their creation.
 
 ### 6.1 CloudFlare
 
