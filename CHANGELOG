@@ -8,6 +8,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Refer to the [migration guide](docs/migration.md) to know how to deal with
 the changes introduced in this release.
 
+### Added
+- Add `volumes` variable structure to define volumes that will be attached to instances with matching tags.
+- Reference design documentation
+- Added straightforward password replacement procedur (PR #152 @plstonge)
+- Added advice on user management when not creating users (PR #153 @ocaisa)
+- Added freeipa admin username and password to the output (PR #154 @ocaisa)
+- Added a basic puppet cluster example
+- Added a basic lustre cluster setup example
+
+### Changed
+- Changed `instances` variable structure to add tags
+- Updated developper documentation
+- Updated main documentation
+- Merged puppet agent and puppet server cloud-init YAML file in a single file
+- Combined some of the DNS module inputs to in a single variable
+- Defined a default value for `nb_users` (0)
+- Changed format of `terraform_data.yaml` to no longer depends on puppet-magic_castle
+- Moved resources related to networking in `network.tf` for each cloud provider
+- Normalized most resource names across providers
+- Changed `os_floating_ips` input type from list to map
+- [puppet] Updated EESSI CVMFS config version
+- [puppet] Changed how devices for NFS server are identified using facts instead of glob
+- [puppet] Bumped puppet-jupyterhub version to v3.8.2
+- [puppet] Fixed gpu profile for pci passthrough providers
+- [puppet] Replaced site.pp roles based on hostnames by roles based on tags
+
+### Removed
+- Removed fetching of `terraform_data.yaml.tmpl` from `config_git_url` repo
+- Removed `storage` variable, replaced by `volumes`.
+- Removed Azure variable `managed_disk_type`
+- Removed common variable `root_disk_size`
+
 ## [10.2] 2021-03-10
 
 ### Added
