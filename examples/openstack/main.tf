@@ -30,9 +30,6 @@ module "openstack" {
   nb_users = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
-
-  # OpenStack specific
-  os_floating_ips = {}
 }
 
 output "accounts" {

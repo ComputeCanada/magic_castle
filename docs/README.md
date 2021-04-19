@@ -587,17 +587,22 @@ value to `eessi`.
 
 #### 5.1.1 os_floating_ips (optional)
 
-**default value**: None
+**default value**: `{}`
 
-Defines a list of pre-allocated floating ip addresses
-that will be assigned to the login nodes. If this variable is left empty,
-(e.g. : `[]`) the login nodes' floating ips will be managed by Terraform.
+Defines a map of hostnames to pre-allocated floating ip addresses.
+If this variable is not set the instances tagged as public will be
+assigned a floating ip managed by Terraform. Instances that are
+tagged a public but do not have an entry in this map will also be
+assigned a floating ip managed by Terraform. Instances in this
+map that are not tagged as public will not be assigned a floating
+ip.
 
 This variable can be useful if you administer your DNS manually and
 you would like the keep the same domain name for your cluster at each
 build.
 
-**Post build modification effect**: change the floating ips assigned to the login nodes.
+**Post build modification effect**: change the floating ips assigned
+to the public instances.
 
 #### 5.1.2 os_ext_network (optional)
 
