@@ -15,6 +15,10 @@ variable "nb_users" {
 
 variable "instances" {
   description = "Map that defines the parameters for each type of instance of the cluster"
+  validation {
+    condition     = alltrue(concat([for key, values in var.instances: [contains(keys(values), "type"), contains(keys(values), "tags")]]...))
+    error_message = "Each entry in var.instances needs to have at least a type and a list of tags."
+  }
 }
 
 variable "image" {
@@ -30,6 +34,10 @@ variable "root_disk_size" {
 
 variable "volumes" {
   description = "Map that defines the volumes to be attached to the instances"
+  validation {
+    condition     = alltrue(concat([for k_i, v_i in var.volumes: [for k_j, v_j in v_i: contains(keys(v_j), "size")]]...))
+    error_message = "Each volume in var.volumes needs to have at least a size attribute."
+  }
 }
 
 variable "domain" {
