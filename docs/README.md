@@ -373,8 +373,9 @@ You are free to define your own additional tags.
 
 Three optional attributes can be defined:
 1. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create (default: 1).
-2. `disk_size`: size in gibibyte (GiB) of the instance's root disk containing (default: see next table).
-the operating system and services software.
+2. `disk_size`: size in gibibyte (GiB) of the instance's root disk containing
+the operating system and services software
+(default: see next table).
 3. `disk_type`: type of the instance's root disk (default: see next table).
 
 Default root disk's attribute value per provider:
