@@ -42,6 +42,14 @@ module "azure" {
   location = "eastus"
 }
 
+output "accounts" {
+  value = module.azure.accounts
+}
+
+output "public_ip" {
+  value = module.azure.public_ip
+}
+
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare?ref=tags"
@@ -50,7 +58,7 @@ module "azure" {
 #   domain           = module.azure.domain
 #   public_instances = module.azure.public_instances
 #   ssh_private_key  = module.azure.ssh_private_key
-#   sudoer_username  = module.azure.sudoer_username
+#   sudoer_username  = module.azure.accounts.sudoer.username
 # }
 
 ## Uncomment to register your domain name with Google Cloud
@@ -63,15 +71,7 @@ module "azure" {
 #   domain           = module.azure.domain
 #   public_instances = module.azure.public_instances
 #   ssh_private_key  = module.azure.ssh_private_key
-#   sudoer_username  = module.azure.sudoer_username
-# }
-
-# output "freeipa_username" {
-#   value = module.azure.freeipa_username
-# }
-
-# output "freeipa_passwd" {
-#   value = module.azure.freeipa_passwd
+#   sudoer_username  = module.azure.accounts.sudoer.username
 # }
 
 # output "hostnames" {

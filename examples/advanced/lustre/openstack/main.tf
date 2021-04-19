@@ -31,6 +31,14 @@ module "openstack" {
   public_keys = [file("~/.ssh/id_rsa.pub")]
 }
 
+output "public_ip" {
+  value = module.openstack.public_ip
+}
+
+output "sudoer" {
+  value = module.openstack.accounts.sudoer
+}
+
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare?ref=tags"
@@ -39,7 +47,7 @@ module "openstack" {
 #   domain           = module.openstack.domain
 #   public_instances = module.openstack.public_instances
 #   ssh_private_key  = module.openstack.ssh_private_key
-#   sudoer_username  = module.openstack.sudoer_username
+#   sudoer_username  = module.openstack.accounts.sudoer.username
 # }
 
 ## Uncomment to register your domain name with Google Cloud
@@ -52,7 +60,7 @@ module "openstack" {
 #   domain           = module.openstack.domain
 #   public_instances = module.openstack.public_instances
 #   ssh_private_key  = module.openstack.ssh_private_key
-#   sudoer_username  = module.openstack.sudoer_username
+#   sudoer_username  = module.openstack.accounts.sudoer.username
 # }
 
 # output "hostnames" {

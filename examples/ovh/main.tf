@@ -32,6 +32,14 @@ module "ovh" {
 
 }
 
+output "accounts" {
+  value = module.ovh.accounts
+}
+
+output "public_ip" {
+  value = module.ovh.public_ip
+}
+
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare?ref=tags"
@@ -40,7 +48,7 @@ module "ovh" {
 #   domain           = module.ovh.domain
 #   public_instances = module.ovh.public_instances
 #   ssh_private_key  = module.ovh.ssh_private_key
-#   sudoer_username  = module.ovh.sudoer_username
+#   sudoer_username  = module.ovh.accounts.sudoer.username
 # }
 
 ## Uncomment to register your domain name with Google Cloud
@@ -53,15 +61,7 @@ module "ovh" {
 #   domain           = module.ovh.domain
 #   public_instances = module.ovh.public_instances
 #   ssh_private_key  = module.ovh.ssh_private_key
-#   sudoer_username  = module.ovh.sudoer_username
-# }
-
-# output "freeipa_username" {
-#   value = module.ovh.freeipa_username
-# }
-
-# output "freeipa_passwd" {
-#   value = module.ovh.freeipa_passwd
+#   sudoer_username  = module.ovh.accounts.sudoer.username
 # }
 
 # output "hostnames" {

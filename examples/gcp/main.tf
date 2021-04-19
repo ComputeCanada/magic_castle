@@ -47,6 +47,14 @@ module "gcp" {
   region  = "us-central1"
 }
 
+output "accounts" {
+  value = module.gcp.accounts
+}
+
+output "public_ip" {
+  value = module.gcp.public_ip
+}
+
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare?ref=tags"
@@ -55,29 +63,20 @@ module "gcp" {
 #   domain           = module.gcp.domain
 #   public_instances = module.gcp.public_instances
 #   ssh_private_key  = module.gcp.ssh_private_key
-#   sudoer_username  = module.gcp.sudoer_username
+#   sudoer_username  = module.gcp.accounts.sudoer.username
 # }
 
+## Uncomment to register your domain name with Google Cloud
 # module "dns" {
-#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud?ref=tags"
 #   email            = "you@example.com"
 #   project          = "your-project-id"
-#   zone_name        = "your-zone-name"
+#   zone_name        = "you-zone-name"
 #   name             = module.gcp.cluster_name
 #   domain           = module.gcp.domain
-#   public_ip        = module.gcp.ip
-#   login_ids        = module.gcp.login_ids
-#   rsa_public_key   = module.gcp.rsa_public_key
+#   public_instances = module.gcp.public_instances
 #   ssh_private_key  = module.gcp.ssh_private_key
-#   sudoer_username  = module.gcp.sudoer_username
-# }
-
-# output "freeipa_username" {
-#   value = module.gcp.freeipa_username
-# }
-
-# output "freeipa_passwd" {
-#   value = module.gcp.freeipa_passwd
+#   sudoer_username  = module.gcp.accounts.sudoer.username
 # }
 
 # output "hostnames" {

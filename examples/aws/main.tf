@@ -35,6 +35,14 @@ module "aws" {
   region            = "ca-central-1"
 }
 
+output "accounts" {
+  value = module.aws.accounts
+}
+
+output "public_ip" {
+  value = module.aws.public_ip
+}
+
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare?ref=tags"
@@ -43,7 +51,7 @@ module "aws" {
 #   domain           = module.aws.domain
 #   public_instances = module.aws.public_instances
 #   ssh_private_key  = module.aws.ssh_private_key
-#   sudoer_username  = module.aws.sudoer_username
+#   sudoer_username  = module.aws.accounts.sudoer.username
 # }
 
 ## Uncomment to register your domain name with Google Cloud
@@ -56,15 +64,7 @@ module "aws" {
 #   domain           = module.aws.domain
 #   public_instances = module.aws.public_instances
 #   ssh_private_key  = module.aws.ssh_private_key
-#   sudoer_username  = module.aws.sudoer_username
-# }
-
-# output "freeipa_username" {
-#   value = module.aws.freeipa_username
-# }
-
-# output "freeipa_passwd" {
-#   value = module.aws.freeipa_passwd
+#   sudoer_username  = module.aws.accounts.sudoer.username
 # }
 
 # output "hostnames" {
