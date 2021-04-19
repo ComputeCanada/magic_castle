@@ -26,12 +26,6 @@ variable "image" {
   description = "Name of the operating system image that will be used to create a boot disk for the instances"
 }
 
-variable "root_disk_size" {
-  type        = number
-  default     = 10
-  description = "Size of the instances root disk in GB"
-}
-
 variable "volumes" {
   description = "Map that defines the volumes to be attached to the instances"
   validation {

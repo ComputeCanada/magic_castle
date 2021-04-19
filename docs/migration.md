@@ -91,6 +91,17 @@ the cloud provider default for volume type is used.
 longer possible to maintain the `home`, `project` and `scratch` volumes
 while setting the `mgmt` count at 0.
 
+### main.tf: Other changes
+
+- `root_disk_size` variable has been removed. You can define the root
+disk size of each instance type independtly by defining `disk_size`
+in the instance attributes' map.
+- Azure `managed_disk_type` has been removed. The disk type can be
+defined for instances using the `disk_type` attribute in the instance
+attributes' map and the disk type for attached volume can be defined
+with `type` in the volumes map. This attribute works for every cloud
+provider, not only Azure.
+
 ### Puppet: `terraform_data.yaml` format
 
 Instead of fetching a template of a YAML file, Magic Castle now writes

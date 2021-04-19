@@ -63,8 +63,8 @@ resource "azurerm_linux_virtual_machine" "instances" {
   os_disk {
     name                 = format("%s-%s-disk", var.cluster_name, each.key)
     caching              = "ReadWrite"
-    storage_account_type = var.managed_disk_type
-    disk_size_gb         = var.root_disk_size
+    storage_account_type = lookup(each.value, "disk_type", "Premium_LRS")
+    disk_size_gb         = lookup(each.value, "disk_size", 30)
   }
 
   dynamic "source_image_reference" {
@@ -107,7 +107,7 @@ resource "azurerm_managed_disk" "volumes" {
   name                 = format("%s-%s", var.cluster_name, each.key)
   location             = var.location
   resource_group_name  = local.resource_group_name
-  storage_account_type = lookup(each.value, "type", var.managed_disk_type)
+  storage_account_type = lookup(each.value, "type", "Premium_LRS")
   create_option        = "Empty"
   disk_size_gb         = each.value.size
 }

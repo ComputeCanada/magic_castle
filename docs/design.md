@@ -422,8 +422,6 @@ to spawn a Magic Castle cluster with that provider.
       node   = { type = "ecs.g6.large", tags = ["node"], count = 1 }
     }
 
-    root_disk_size = 20
-
     volumes = {
       nfs = {
         home     = { size = 10 }

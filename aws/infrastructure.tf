@@ -80,8 +80,8 @@ resource "aws_instance" "instances" {
 
   ebs_optimized = true
   root_block_device {
-    volume_type = "gp2"
-    volume_size = var.root_disk_size
+    volume_type = lookup(each.value, "disk_type", "gp2")
+    volume_size = lookup(each.value, "disk_size", 10)
   }
 
   tags = {

@@ -345,17 +345,14 @@ gpu-node2
 gpu-node3
 ```
 
-Three attributes are expected to be defined for each instance:
+Two attributes are expected to be defined for each instance:
 1. `type`: cloud provider name for the combination of CPU, RAM and other features of the virtual machine;
-2. `tags`: list of labels that defines the role of the instance;
-3. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create. (default: 1)
-
-Tags are used in the Terraform code to identify if devices (volume, network) need to be attached to an
-instance, while in Puppet code tags are used to identify roles of the instances. The next section defines
-the tags that are expected by the Magic Castle Terraform code and `puppet-magic_castle` environment, but
-you are free to define your own additional tags.
+2. `tags`: list of labels that defines the role of the instance.
 
 #### 4.7.1 tags
+
+Tags are used in the Terraform code to identify if devices (volume, network) need to be attached to an
+instance, while in Puppet code tags are used to identify roles of the instances.
 
 Terraform tags:
 - `login`: identify instances that will be pointed by the domain name A record
@@ -364,16 +361,33 @@ Terraform tags:
 - `puppet`: identify the instance that will be configured as the main Puppet server
 - `ssl`: identify instances that will receive a copy of the SSL wildcard certificate for the domain
 
-Puppet tags:
+Puppet tags excepted by the [puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) environment.
 - `login`: identify a login instance (min. req: 2 CPUs, 2GB RAM)
 - `mgmt`: identify a management instance (min. req: 2 CPUs, 6GB RAM)
 - `nfs`: identify the instance that will act as an NFS server (min. req: 3 volumes named `home`, `project`and `scratch`)
 - `node`: identify a compute node instance (min. req: 1 CPUs, 2GB RAM)
 
-#### 4.7.2 Providing cloud specific attributes
+You are free to define your own additional tags.
 
-For some cloud providers, it possible to define attributes for the instances. The attributes
-that can be added in an instance map are defined in the following sections.
+#### 4.7.2 Optional attributes
+
+Three optional attributes can be defined:
+1. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create (default: 1).
+2. `disk_size`: size in gibibyte (GiB) of the instance's root disk containing (default: see next table).
+the operating system and services software.
+3. `disk_type`: type of the instance's root disk (default: see next table).
+
+Default root disk's attribute value per provider:
+| Provider | `disk_type` | `disk_size` (GiB) |
+| -------- | :---------- | ----------------: |
+| Azure    |`Premium_LRS`| 30                |
+| AWS      | `gp2`       | 10                |
+| GCP      | `pd-ssd`    | 20                |
+| Openstack| `null`      | 10                |
+| OVH      | `null`      | 10                |
+
+For some cloud providers, it possible to define additional attributes.
+The following sections present the available attributes per provider.
 
 ##### GCP
 
@@ -395,8 +409,13 @@ to instances that have the corresponding key in their list of tags. To each inst
 with the tag, unique block devices are attached, no multi-instance attachment is supported.
 
 Each volume in map is defined a key corresponding to its and a map of attributes:
-- `size`: size of the block device in GB
-- `type` (optional): type of volume to use (provider dependent, i.e: `gp2`)
+- `size`: size of the block device in GB.
+- `type` (optional): type of volume to use. Default value per provider:
+  - Azure: `Premium_LRS`
+  - AWS: `gp2`
+  - GCP: `pd-ssd`
+  - Openstack: `null`
+  - OVH: `null`
 
 Volumes with a tag that have no corresponding instance will not be created.
 
@@ -483,16 +502,7 @@ the password change will have this password.
 To modify the password of previously created guest accounts, refer to section
 ([see section 10.2](#102-replace-the-guest-account-password)).
 
-### 4.12 root_disk_size (optional)
-
-**default value**: 10
-
-Defines the size in gibibyte (GiB) of each instance's root volume that contains
-the operating system and softwares required to operate the cluster services.
-
-**Post build modification effect**: rebuild of all instances at next `terraform apply`.
-
-### 4.13 sudoer_username (optional)
+### 4.12 sudoer_username (optional)
 
 **default value**: `centos`
 
@@ -502,7 +512,7 @@ ssh authorized keys are configured with the SSH public keys with
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.14 hieradata (optional)
+### 4.13 hieradata (optional)
 
 **default value**: empty string
 
@@ -538,7 +548,7 @@ The file created from this string can be found on `puppet` as
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 
-### 4.15 firewall_rules (optional)
+### 4.14 firewall_rules (optional)
 
 **default value**:
 ```hcl
@@ -558,7 +568,7 @@ defined as a map of fives key-value pairs : `name`, `from_port`, `to_port`, `ip_
 
 **Post build modification effect**: modify the cloud provider firewall rules at next `terraform apply`.
 
-### 4.16 generate_ssh_key (optional)
+### 4.15 generate_ssh_key (optional)
 
 **default_value**: `false`
 
@@ -570,7 +580,7 @@ public keys provided in `public_keys`.
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
-### 4.17 software_stack (optional)
+### 4.16 software_stack (optional)
 
 **default_value**: `computecanada`
 
@@ -696,19 +706,9 @@ use Azure CLI : `az account list-locations -o table`.
 
 **Post build modification effect**: rebuild of all resources at next `terraform apply`.
 
-#### 5.4.2 managed_disk_type (optional)
-
-**default value**: `Premium_LRS`
-
-Defines the type of the instances' root disk and the type of the disks for the NFS storage.
-
-**Requirement**: Must be a valid managed disk type label. Refer to
-[managed_disk_type documentation](https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html#managed_disk_type)
-to get a list of available values.
-
 **Post build modification effect**: rebuild of all instances and disks at next `terraform apply`.
 
-#### 5.4.3 azure_resource_group (optional)
+#### 5.4.2 azure_resource_group (optional)
 
 **default value**: None
 

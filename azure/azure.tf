@@ -9,11 +9,6 @@ variable "azure_resource_group" {
   description = "Name of an existing resource group that will be used when creating the computing resources. If left empty, terraform will create a new resource group."
 }
 
-variable "managed_disk_type" {
-  default     = "Premium_LRS"
-  description = "Typename of the instances' root disk and NFS storage disks."
-}
-
 locals {
   cloud_provider = "azure"
   cloud_region   = var.location
