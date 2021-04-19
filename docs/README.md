@@ -350,7 +350,7 @@ Three attributes are expected to be defined for each instance:
 2. `tags`: list of labels that defines the role of the instance;
 3. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create. (default: 1)
 
-Tags are used in the Terraform code to identify if devices (volume, network) needs to be attached to an
+Tags are used in the Terraform code to identify if devices (volume, network) need to be attached to an
 instance, while in Puppet code tags are used to identify roles of the instances. The next section defines
 the tags that are expected by the Magic Castle Terraform code and `puppet-magic_castle` environment, but
 you are free to define your own additional tags.
