@@ -1,91 +1,70 @@
 terraform {
-  required_version = ">= 0.13.4"
+  required_version = ">= 0.14.2"
 }
 
 module "openstack" {
-  source         = "git::https://github.com/ComputeCanada/magic_castle.git//openstack"
+  source         = "git::https://github.com/ComputeCanada/magic_castle.git//openstack?ref=tags"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
-  config_version = "main"
+  config_version = "tags"
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
-  image        = "CentOS-7-x64-2020-03"
+  image        = "CentOS-7-x64-2020-09"
 
   instances = {
-    mgmt  = { type = "p4-6gb", count = 1 },
-    login = { type = "p2-3gb", count = 1 },
-    node  = [
-      { type = "p2-3gb", count = 1 },
-    ]
+    mgmt   = { type = "p4-7.5gb", tags = ["puppet", "mgmt", "nfs"], count = 1 }
+    login  = { type = "p2-3.75gb", tags = ["login", "public", "proxy"], count = 1 }
+    node   = { type = "p2-3.75gb", tags = ["node"], count = 1 }
   }
 
-  storage = {
-    type         = "nfs"
-    home_size    = 100
-    project_size = 50
-    scratch_size = 50
+  volumes = {
+    nfs = {
+      home     = { size = 10, type = "volumes-ssd" }
+      project  = { size = 50, type = "volumes-ssd" }
+      scratch  = { size = 50, type = "volumes-ssd" }
+    }
   }
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
 
-  nb_users     = 10
+  nb_users = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
 
   # OpenStack specific
-  os_floating_ips = []
+  os_floating_ips = {}
 }
 
-output "sudoer_username" {
-  value = module.openstack.sudoer_username
-}
-
-output "guest_usernames" {
-  value = module.openstack.guest_usernames
-}
-
-output "guest_passwd" {
-  value = module.openstack.guest_passwd
+output "accounts" {
+  value = module.openstack.accounts
 }
 
 output "public_ip" {
-  value = module.openstack.ip
+  value = module.openstack.public_ip
 }
 
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
-#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare?ref=tags"
 #   email            = "you@example.com"
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
-#   public_ip        = module.openstack.ip
-#   login_ids        = module.openstack.login_ids
-#   rsa_public_key   = module.openstack.rsa_public_key
+#   public_instances = module.openstack.public_instances
 #   ssh_private_key  = module.openstack.ssh_private_key
-#   sudoer_username  = module.openstack.sudoer_username
+#   sudoer_username  = module.openstack.accounts.sudoer.username
 # }
 
 ## Uncomment to register your domain name with Google Cloud
 # module "dns" {
-#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud?ref=tags"
 #   email            = "you@example.com"
 #   project          = "your-project-id"
 #   zone_name        = "you-zone-name"
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
-#   public_ip        = module.openstack.ip
-#   login_ids        = module.openstack.login_ids
-#   rsa_public_key   = module.openstack.rsa_public_key
+#   public_instances = module.openstack.public_instances
 #   ssh_private_key  = module.openstack.ssh_private_key
-#   sudoer_username  = module.openstack.sudoer_username
-# }
-
-# output "freeipa_username" {
-#   value = module.openstack.freeipa_username
-# }
-
-# output "freeipa_passwd" {
-#   value = module.openstack.freeipa_passwd
+#   sudoer_username  = module.openstack.accounts.sudoer.username
 # }
 
 # output "hostnames" {

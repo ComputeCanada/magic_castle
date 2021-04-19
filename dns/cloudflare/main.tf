@@ -12,8 +12,9 @@ data "cloudflare_zones" "domain" {
 module "record_generator" {
   source         = "../record_generator"
   name           = lower(var.name)
-  login_ips      = var.public_ip
-  rsa_public_key = var.rsa_public_key
+  public_instances = var.public_instances
+  domain_tag       = var.domain_tag
+  vhost_tag        = var.vhost_tag
 }
 
 resource "cloudflare_record" "records" {
@@ -32,9 +33,9 @@ module "acme" {
   domain           = var.domain
   email            = var.email
   sudoer_username  = var.sudoer_username
-  login_ips        = var.public_ip
-  login_ids        = var.login_ids
+  public_instances = var.public_instances
   ssh_private_key  = var.ssh_private_key
+  ssl_tags         = var.ssl_tags
 }
 
 output "hostnames" {

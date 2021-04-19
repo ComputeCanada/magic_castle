@@ -1,6 +1,5 @@
 variable "os_floating_ips" {
-  type    = list(string)
-  default = []
+  default = {}
 }
 
 variable "os_ext_network" {
@@ -19,7 +18,7 @@ variable "os_int_subnet" {
 }
 
 data "external" "keystone" {
-  program = ["python", "${path.module}/keystone.py"]
+  program = ["python", "${path.module}/external/keystone.py"]
 }
 
 locals {

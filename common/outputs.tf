@@ -1,5 +1,9 @@
-output "ip" {
-  value = local.public_ip
+output "public_instances" {
+  value = module.cluster_config.public_instances
+}
+
+output "public_ip" {
+  value = [for key, values in module.cluster_config.public_instances: values["public_ip"] if values["public_ip"] != ""]
 }
 
 output "cluster_name" {
@@ -10,39 +14,28 @@ output "domain" {
   value = lower(var.domain)
 }
 
-output "sudoer_username" {
-  value = var.sudoer_username
-}
-
-output "freeipa_username" {
-  value = "admin"
-}
-
-output "freeipa_passwd" {
-  value = random_string.freeipa_passwd.result
-}
-
-output "guest_usernames" {
-  value = var.nb_users != 0 ? (
-    "user[${format(format("%%0%dd", length(tostring(var.nb_users))), 1)}-${var.nb_users}]"
-  ) : (
-    "You have chosen to create user accounts yourself (`nb_users = 0`), please read the documentation on how to manage this at https://github.com/ComputeCanada/magic_castle/blob/main/docs/README.md#103-add-a-user-account"
-  )
-}
-
-output "guest_passwd" {
-  value = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
-}
-
-output "rsa_public_key" {
-  value = tls_private_key.login_rsa.public_key_openssh
+output "accounts" {
+  value = {
+    guests = {
+      usernames =   var.nb_users != 0 ? (
+        "user[${format(format("%%0%dd", length(tostring(var.nb_users))), 1)}-${var.nb_users}]"
+      ) : (
+        "You have chosen to create user accounts yourself (`nb_users = 0`), please read the documentation on how to manage this at https://github.com/ComputeCanada/magic_castle/blob/main/docs/README.md#103-add-a-user-account"
+      ),
+      password = module.cluster_config.guest_passwd
+    }
+    freeipa_admin = {
+      username = "admin"
+      password = module.cluster_config.freeipa_passwd
+    }
+    sudoer = {
+      username = var.sudoer_username
+      password = "N/A (public ssh-key auth)"
+    }
+  }
 }
 
 output "ssh_private_key" {
-  value     = try(tls_private_key.ssh[0].private_key_pem, null)
+  value     = module.instance_config.private_key
   sensitive = true
-}
-
-output "login_ids" {
-  value = local.login_ids
 }

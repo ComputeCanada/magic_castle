@@ -1,27 +1,28 @@
 terraform {
-  required_version = ">= 0.13.4"
+  required_version = ">= 0.14.2"
 }
 
 module "aws" {
-  source         = "git::https://github.com/ComputeCanada/magic_castle.git//aws"
+  source         = "git::https://github.com/ComputeCanada/magic_castle.git//aws?ref=tags"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
-  config_version = "main"
+  config_version = "tags"
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
   image        = "ami-033e6106180a626d0" # CentOS 7 -  ca-central-1
 
   instances = {
-    mgmt  = { type = "t3.large",  count = 1 },
-    login = { type = "t3.medium", count = 1 },
-    node  = [{ type = "t3.medium",  count = 1 }]
+    mgmt  = { type = "t3.large",  count = 1, tags = ["mgmt", "puppet"] },
+    login = { type = "t3.medium", count = 1, tags = ["login", "public", "proxy"] },
+    node  = { type = "t3.medium",  count = 1, tags = ["node"] }
   }
 
-  storage = {
-    type         = "nfs"
-    home_size    = 100
-    project_size = 50
-    scratch_size = 50
+  volumes = {
+    nfs = {
+      home     = { size = 10, type = "gp2" }
+      project  = { size = 50, type = "gp2" }
+      scratch  = { size = 50, type = "gp2" }
+    }
   }
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
@@ -34,56 +35,36 @@ module "aws" {
   region            = "ca-central-1"
 }
 
-output "sudoer_username" {
-  value = module.aws.sudoer_username
-}
-
-output "guest_usernames" {
-  value = module.aws.guest_usernames
-}
-
-output "guest_passwd" {
-  value = module.aws.guest_passwd
+output "accounts" {
+  value = module.aws.accounts
 }
 
 output "public_ip" {
-  value = module.aws.ip
+  value = module.aws.public_ip
 }
 
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
-#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare?ref=tags"
+#   email            = "you@example.com"
 #   name             = module.aws.cluster_name
 #   domain           = module.aws.domain
-#   public_ip        = module.aws.ip
-#   login_ids        = module.aws.login_ids
-#   email            = "you@example.com"
-#   rsa_public_key   = module.aws.rsa_public_key
+#   public_instances = module.aws.public_instances
 #   ssh_private_key  = module.aws.ssh_private_key
-#   sudoer_username  = module.aws.sudoer_username
+#   sudoer_username  = module.aws.accounts.sudoer.username
 # }
 
 ## Uncomment to register your domain name with Google Cloud
 # module "dns" {
-#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud?ref=tags"
 #   email            = "you@example.com"
 #   project          = "your-project-id"
 #   zone_name        = "you-zone-name"
 #   name             = module.aws.cluster_name
 #   domain           = module.aws.domain
-#   public_ip        = module.aws.ip
-#   login_ids        = module.aws.login_ids
-#   rsa_public_key   = module.aws.rsa_public_key
+#   public_instances = module.aws.public_instances
 #   ssh_private_key  = module.aws.ssh_private_key
-#   sudoer_username  = module.aws.sudoer_username
-# }
-
-# output "freeipa_username" {
-#   value = module.aws.freeipa_username
-# }
-
-# output "freeipa_passwd" {
-#   value = module.aws.freeipa_passwd
+#   sudoer_username  = module.aws.accounts.sudoer.username
 # }
 
 # output "hostnames" {

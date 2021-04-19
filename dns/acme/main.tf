@@ -21,12 +21,9 @@ variable "dns_provider_config" {
   default = {}
 }
 
-variable "login_ips" {
-}
+variable "ssl_tags" { }
 
-variable "login_ids" {
-  type = list(string)
-}
+variable "public_instances" {}
 
 variable "ssh_private_key" {
   type = string
@@ -53,16 +50,17 @@ resource "acme_certificate" "certificate" {
 }
 
 resource "null_resource" "deploy_certs" {
-  count = length(var.login_ids)
+  for_each = { for key, values in var.public_instances: key => values if length(setintersection(var.ssl_tags, values.tags)) > 0 }
 
   triggers = {
-    login_id = var.login_ids[count.index]
+    instance_id = each.value["id"]
   }
 
   connection {
     type        = "ssh"
     user        = var.sudoer_username
-    host        = element(var.login_ips, count.index)
+    host        = each.value["public_ip"]
+    host_key    = each.value["hostkeys"]["rsa"]
     private_key = var.ssh_private_key
   }
 

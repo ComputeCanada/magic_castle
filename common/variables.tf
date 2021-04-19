@@ -9,16 +9,16 @@ variable "cluster_name" {
 
 variable "nb_users" {
   type        = number
+  default     = 0
   description = "Number of user accounts with a common password that will be created"
 }
 
 variable "instances" {
-  type = object({
-    mgmt=object({type=string, count=number}),
-    login=object({type=string, count=number}),
-    node=list(map(any)),
-  })
   description = "Map that defines the parameters for each type of instance of the cluster"
+  validation {
+    condition     = alltrue(concat([for key, values in var.instances: [contains(keys(values), "type"), contains(keys(values), "tags")]]...))
+    error_message = "Each entry in var.instances needs to have at least a type and a list of tags."
+  }
 }
 
 variable "image" {
@@ -32,14 +32,12 @@ variable "root_disk_size" {
   description = "Size of the instances root disk in GB"
 }
 
-variable "storage" {
-  type = object({
-    type=string,
-    home_size=number,
-    project_size=number,
-    scratch_size=number
-  })
-  description = "Map that defines the storage parameters"
+variable "volumes" {
+  description = "Map that defines the volumes to be attached to the instances"
+  validation {
+    condition     = alltrue(concat([for k_i, v_i in var.volumes: [for k_j, v_j in v_i: contains(keys(v_j), "size")]]...))
+    error_message = "Each volume in var.volumes needs to have at least a size attribute."
+  }
 }
 
 variable "domain" {
@@ -48,7 +46,7 @@ variable "domain" {
 }
 
 variable "public_keys" {
-  type        = list
+  type        = list(string)
   description = "List of SSH public keys that can log in as {sudoer_username}"
 }
 
@@ -76,7 +74,7 @@ variable "config_version" {
   description = "Tag, branch, or commit that specifies which Puppet configuration revision is to be used"
 }
 
-variable hieradata {
+variable "hieradata" {
   type        = string
   default     = "---"
   description = "String formatted as YAML defining hiera key-value pairs to be included in the puppet environment"
@@ -89,7 +87,7 @@ variable "sudoer_username" {
 }
 
 variable "firewall_rules" {
-  type    = list(
+  type = list(
     object({
       name        = string
       from_port   = number
@@ -100,39 +98,39 @@ variable "firewall_rules" {
   )
   default = [
     {
-      "name"         = "SSH",
-      "from_port"    = 22,
-      "to_port"      = 22,
-      "ip_protocol"  = "tcp",
-      "cidr"         = "0.0.0.0/0"
+      "name"        = "SSH",
+      "from_port"   = 22,
+      "to_port"     = 22,
+      "ip_protocol" = "tcp",
+      "cidr"        = "0.0.0.0/0"
     },
     {
-      "name"         = "HTTP",
-      "from_port"    = 80,
-      "to_port"      = 80,
-      "ip_protocol"  = "tcp",
-      "cidr"         = "0.0.0.0/0"
+      "name"        = "HTTP",
+      "from_port"   = 80,
+      "to_port"     = 80,
+      "ip_protocol" = "tcp",
+      "cidr"        = "0.0.0.0/0"
     },
     {
-      "name"         = "HTTPS",
-      "from_port"    = 443,
-      "to_port"      = 443,
-      "ip_protocol"  = "tcp",
-      "cidr"         = "0.0.0.0/0"
+      "name"        = "HTTPS",
+      "from_port"   = 443,
+      "to_port"     = 443,
+      "ip_protocol" = "tcp",
+      "cidr"        = "0.0.0.0/0"
     },
     {
-      "name"         = "Globus",
-      "from_port"    = 2811,
-      "to_port"      = 2811,
-      "ip_protocol"  = "tcp",
-      "cidr"         = "54.237.254.192/29"
+      "name"        = "Globus",
+      "from_port"   = 2811,
+      "to_port"     = 2811,
+      "ip_protocol" = "tcp",
+      "cidr"        = "54.237.254.192/29"
     },
     {
-      "name"         = "MyProxy",
-      "from_port"    = 7512,
-      "to_port"      = 7512,
-      "ip_protocol"  = "tcp",
-      "cidr"         = "0.0.0.0/0"
+      "name"        = "MyProxy",
+      "from_port"   = 7512,
+      "to_port"     = 7512,
+      "ip_protocol" = "tcp",
+      "cidr"        = "0.0.0.0/0"
     },
     {
       "name"        = "GridFTP",

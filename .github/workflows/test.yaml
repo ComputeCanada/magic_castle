@@ -40,44 +40,29 @@ jobs:
           ssh-keygen -b 2048 -t rsa -q -N "" -f ~/.ssh/id_rsa
 
       - name: Test AWS
-        run: |
-          terraform init aws;
-          terraform validate aws;
-          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' examples/aws/main.tf;
-          terraform init examples/aws;
-          terraform validate examples/aws;
+        uses: ./.github/actions/test_provider
+        with:
+          provider: 'aws'
 
       - name: Test Azure
-        run: |
-          terraform init azure;
-          terraform validate azure;
-          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' examples/azure/main.tf;
-          terraform init examples/azure;
-          terraform validate examples/azure;
+        uses: ./.github/actions/test_provider
+        with:
+          provider: 'azure'
 
       - name: Test GCP
-        run: |
-          terraform init gcp;
-          terraform validate gcp;
-          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' examples/gcp/main.tf;
-          terraform init examples/gcp;
-          terraform validate examples/gcp;
+        uses: ./.github/actions/test_provider
+        with:
+          provider: 'gcp'
 
       - name: Test OpenStack
-        run: |
-          terraform init openstack;
-          terraform validate openstack;
-          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' examples/openstack/main.tf;
-          terraform init examples/openstack;
-          terraform validate examples/openstack;
+        uses: ./.github/actions/test_provider
+        with:
+          provider: 'openstack'
 
       - name: Test OVH
-        run: |
-          terraform init ovh;
-          terraform validate ovh;
-          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' examples/ovh/main.tf;
-          terraform init examples/ovh;
-          terraform validate examples/ovh;
+        uses: ./.github/actions/test_provider
+        with:
+          provider: 'ovh'
 
       - name: Test CloudFlare DNS
         run: |

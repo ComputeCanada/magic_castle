@@ -1,104 +1,81 @@
 variable "name" {
 }
 
-variable "login_ips" {
-  type = list(string)
+variable "vhosts" {
+    type    = list(string)
+    default = ["dtn", "ipa", "jupyter", "mokey"]
 }
 
-variable "rsa_public_key" {
-}
+variable "public_instances" {}
+
+variable "domain_tag" {}
+variable "vhost_tag" {}
 
 data "external" "key2fp" {
+  for_each = var.public_instances
   program = ["python", "${path.module}/key2fp.py"]
   query = {
-    ssh_key = var.rsa_public_key
+    ssh_key = each.value["hostkeys"]["rsa"]
   }
 }
 
 locals {
-    name_A = [
-        for ip in var.login_ips : {
+    records = concat(
+    [
+        for key, values in var.public_instances: {
+            type = "A"
+            name = join(".", [key, var.name])
+            value = values["public_ip"]
+            data = null
+        }
+    ],
+    flatten([
+        for key, values in var.public_instances: [
+            for vhost in var.vhosts:
+            {
+                type  = "A"
+                name  = join(".", [vhost, var.name])
+                value = values["public_ip"]
+                data  = null
+            }
+        ]
+        if contains(values["tags"], var.vhost_tag)
+    ]),
+    [
+        for key, values in var.public_instances: {
             type  = "A"
             name  = var.name
-            value = ip
+            value = values["public_ip"]
             data  = null
         }
-    ]
-    login_A = [
-        for index in range(length(var.login_ips)) : {
-            type  = "A"
-            name  = join(".", [format("login%d", index + 1), var.name])
-            value = var.login_ips[index]
-            data  = null
+        if contains(values["tags"], var.domain_tag)
+    ],
+    [
+        for key, values in var.public_instances: {
+            type  = "SSHFP"
+            name  = join(".", [key, var.name])
+            value = null
+            data  = {
+                algorithm   = data.external.key2fp[key].result["algorithm"]
+                type        = 2
+                fingerprint = data.external.key2fp[key].result["sha256"]
+            }
         }
-    ]
-    jupyter_A = [
-        for ip in var.login_ips : {
-            type  = "A"
-            name  = join(".", ["jupyter", var.name])
-            value = ip
-            data  = null
-        }
-    ]
-    ipa_A = [
-        for ip in var.login_ips : {
-            type  = "A"
-            name  = join(".", ["ipa", var.name])
-            value = ip
-            data  = null
-        }
-    ]
-    dtn_A = [
-        for ip in var.login_ips : {
-            type  = "A"
-            name  = join(".", ["dtn", var.name])
-            value = ip
-            data  = null
-        }
-    ]
-    mokey_A = [
-        for ip in var.login_ips : {
-            type  = "A"
-            name  = join(".", ["mokey", var.name])
-            value = ip
-            data  = null
-        }
-    ]
-    name_SSHFP = [
-        {
+    ],
+    [
+         {
             type  = "SSHFP"
             name  = var.name
             value = null
             data  = {
-                algorithm   = data.external.key2fp.result["algorithm"]
+                algorithm   = try(coalesce([for key, values in var.public_instances: data.external.key2fp[key].result["algorithm"] if contains(values["tags"], var.domain_tag)]...), 0)
                 type        = 2
-                fingerprint = data.external.key2fp.result["sha256"]
+                fingerprint = try(coalesce([for key, values in var.public_instances: data.external.key2fp[key].result["sha256"] if contains(values["tags"], var.domain_tag)]...), 0)
             }
         }
-    ]
-    login_SSHFP = [
-        for index in range(length(var.login_ips)) : {
-            type  = "SSHFP"
-            name  = join(".", [format("login%d", index + 1), var.name])
-            value = null
-            data  = {
-                algorithm   = data.external.key2fp.result["algorithm"]
-                type        = 2
-                fingerprint = data.external.key2fp.result["sha256"]
-            }
-        }
-    ]
+    ])
 }
 
 output "records" {
-    value = concat(
-        local.name_A,
-        local.login_A,
-        local.jupyter_A,
-        local.ipa_A,
-        local.dtn_A,
-        local.mokey_A,
-        local.name_SSHFP,
-        local.login_SSHFP
-    )
+    value = local.records
 }
