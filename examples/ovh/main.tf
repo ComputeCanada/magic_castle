@@ -3,9 +3,9 @@ terraform {
 }
 
 module "ovh" {
-  source         = "git::https://github.com/ComputeCanada/magic_castle.git//ovh?ref=tags"
+  source         = "git::https://github.com/ComputeCanada/magic_castle.git//ovh"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
-  config_version = "tags"
+  config_version = "main"
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
@@ -42,7 +42,7 @@ output "public_ip" {
 
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
-#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare?ref=tags"
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
 #   email            = "you@example.com"
 #   name             = module.ovh.cluster_name
 #   domain           = module.ovh.domain
@@ -53,7 +53,7 @@ output "public_ip" {
 
 ## Uncomment to register your domain name with Google Cloud
 # module "dns" {
-#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud?ref=tags"
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
 #   email            = "you@example.com"
 #   project          = "your-project-id"
 #   zone_name        = "you-zone-name"

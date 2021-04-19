@@ -3,7 +3,7 @@ terraform {
 }
 
 module "openstack" {
-  source         = "git::https://github.com/ComputeCanada/magic_castle.git//openstack?ref=tags"
+  source         = "git::https://github.com/ComputeCanada/magic_castle.git//openstack"
   config_git_url = "https://github.com/MagicCastle/lustre-environment.git"
   config_version = "main"
 
@@ -41,7 +41,7 @@ output "sudoer" {
 
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
-#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare?ref=tags"
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
 #   email            = "you@example.com"
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
@@ -52,7 +52,7 @@ output "sudoer" {
 
 ## Uncomment to register your domain name with Google Cloud
 # module "dns" {
-#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud?ref=tags"
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
 #   email            = "you@example.com"
 #   project          = "your-project-id"
 #   zone_name        = "you-zone-name"
