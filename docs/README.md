@@ -325,7 +325,7 @@ the cluster, where the keys define the hostnames and the values are the attribut
 of the virtual machines.
 
 Each instance is identified by a unique hostname. The hostname
-structure is the key followed by the instance 1-based index. The following map:
+structure is the key followed by the (1-based) index of the instance. The following map:
 ```hcl
 instances = {
   mgmt     = { type = "p2-4gb", tags = [...] },
@@ -350,10 +350,10 @@ Three attributes are expected to be defined for each instance:
 2. `tags`: list of labels that defines the role of the instance;
 3. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create. (default: 1)
 
-Tags are used in Terraform code to identify if devices (volume, network) needs to be attached to an
-instance, while in Puppet code tags are used to identify roles of the instances. Next section defines
-the tags that are expected by Magic Castle Terraform code and `puppet-magic_castle` environment, but
-you are free to define your own tags.
+Tags are used in the Terraform code to identify if devices (volume, network) needs to be attached to an
+instance, while in Puppet code tags are used to identify roles of the instances. The next section defines
+the tags that are expected by the Magic Castle Terraform code and `puppet-magic_castle` environment, but
+you are free to define your own additional tags.
 
 #### 4.7.1 tags
 
@@ -385,7 +385,7 @@ available models per region
 #### 4.7.3 Post build modification effect
 
 Modifying any part of the map after the cluster is built will only affect
-the type of instances associated with what as modified at
+the type of instances associated with what was modified at the
 next `terraform apply`.
 
 ### 4.8 Volumes
