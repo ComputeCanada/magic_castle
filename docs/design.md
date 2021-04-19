@@ -1,14 +1,14 @@
 ## Magic Castle Terraform Structure
 
-![Magic Castle Terraform Structure](https://docs.google.com/drawings/d/e/2PACX-1vSL84MSd1rz5hgjLMfWBBKwp6-jNTEJovNUOXtTwDovpvmyFG7qo12HD32a3fhaKl8hpjcIfM5fZ8II/pub?w=1864&h=1972)
-*Figure 1. Magic Castle Terraform Project Structure*
-
-Figure 1 illustrates how Magic Castle is structured to provide a unified interface between multiple
+Figure 1 (below) illustrates how Magic Castle is structured to provide a unified interface between multiple
 cloud providers. Each blue block is a file or a module, while white blocks are variables or resources.
 Arrows indicate variables or resources that contribute to the definition of the linked variables or
 resources. The figure can be read as a flow-chart from top to bottom. Some resources and variables have been left out of the chart to avoid cluttering it further.
 
-1. `main.tf`: User provides the instances and volumes structure it wants as maps.
+![Magic Castle Terraform Structure](https://docs.google.com/drawings/d/e/2PACX-1vSL84MSd1rz5hgjLMfWBBKwp6-jNTEJovNUOXtTwDovpvmyFG7qo12HD32a3fhaKl8hpjcIfM5fZ8II/pub?w=1864&h=1972)
+*Figure 1. Magic Castle Terraform Project Structure*
+
+1. `main.tf`: User provides the instances and volumes structure they wants as _map_s.
     ```hcl
     instances = {
       mgmt  = { type = "p4-7.5gb", tags = ["puppet", "mgmt", "nfs"] }
@@ -24,40 +24,40 @@ resources. The figure can be read as a flow-chart from top to bottom. Some resou
       }
     }
     ```
-2. `common/design`: the `instances` map is expanded to form a new map where each
-entry represents a single host.
-    ```hcl
-    instances = {
-      mgmt1 = {
-        type = "p2-3.75gb"
-        tags = ["puppet", "mgmt", "nfs"]
-      }
-      login1 = {
-        type = "p2-3.75gb"
-        tags = ["login", "public", "proxy"]
-      }
-      node1 = {
-        type = "p2-3.75gb"
-        tags = ["node"]
-      }
-      node2 = {
-        type = "p2-3.75gb"
-        tags = ["node"]
-      }
-    }
-    ```
-2. `common/design`: the `volumes` map is expanded to form new map where each entry represent a single volume
-    ```hcl
-    volumes = {
-      mgmt1-nfs-home    = { size = 100 }
-      mgmt1-nfs-project = { size = 100 }
-      mgmt1-nfs-scratch = { size = 500 }
-    }
-    ```
+2. `common/design`: 
+    1. the `instances` map is expanded to form a new map where each entry represents a single host.
+        ```hcl
+        instances = {
+          mgmt1 = {
+            type = "p2-3.75gb"
+            tags = ["puppet", "mgmt", "nfs"]
+          }
+          login1 = {
+            type = "p2-3.75gb"
+            tags = ["login", "public", "proxy"]
+          }
+          node1 = {
+            type = "p2-3.75gb"
+            tags = ["node"]
+          }
+          node2 = {
+            type = "p2-3.75gb"
+            tags = ["node"]
+          }
+        }
+        ```
+    2. the `volumes` map is expanded to form a new map where each entry represent a single volume
+        ```hcl
+        volumes = {
+          mgmt1-nfs-home    = { size = 100 }
+          mgmt1-nfs-project = { size = 100 }
+          mgmt1-nfs-scratch = { size = 500 }
+        }
+        ```
 
 3. `network.tf`: the `instances` map from `common/design` is used to generate a network interface (nic)
 for each host, and a public ip address for each host with the `public` tag. The local
-ip address retrieved from the nic of the instance tagged `puppet` is output as `puppetserver_ip`.
+ip address retrieved from the nic of the instance tagged `puppet` is outputted as `puppetserver_ip`.
     ```hcl
     resource "provider_network_interface" "nic" {
       for_each = module.design.instances
@@ -66,7 +66,8 @@ ip address retrieved from the nic of the instance tagged `puppet` is output as `
     ```
 
 4. `common/instance_config`: for each host in `instances`, a [cloud-init]() yaml config that includes
-`puppetserver_ip` is generated. These configs are output in a `user_data` map where keys are the hostnames.
+`puppetserver_ip` is generated. These configs are outputted to a `user_data` map where the keys are
+the hostnames.
     ```hcl
     user_data = {
       for key, values in var.instances :
@@ -115,8 +116,9 @@ output as `all_instances`.
       ...
     }
     ```
-6. `common/cluster_config`: the created instances informations consolidated in `all_instances`
-are written in a [yaml file](../common/cluster_config/terraform_data.yaml) that is uploaded on the Puppet server as part of the hieradata.
+6. `common/cluster_config`: the information from created instances is consolidated in `all_instances`
+and written in a [yaml file](../common/cluster_config/terraform_data.yaml) that is uploaded on
+the Puppet server as part of the hieradata.
     ```hcl
     resource "null_resource" "deploy_hieradata" {
       ...
@@ -163,9 +165,9 @@ Terraform documentation, and identify the name for each resource in the table.
 determine if the cloud provider can be used to deploy Magic Castle. If you found a name for each
 resource listed in table, the cloud provider can be supported. If some resources are missing, you
 will need to do read the provider's documentation to determine if the absence of the resource can
-be compensated somehow.
+be compensated for somehow.
 
-3. **Initialize the provider folder**. Create a folder named the provider. In this folder, create
+3. **Initialize the provider folder**. Create a folder named after the provider. In this folder, create
 two symlinks, one pointing to `common/variables.tf` and the other to `common/outputs.tf`. These
 files define the interface common to all providers supported by Magic Castle.
 
@@ -174,7 +176,7 @@ files define the interface common to all providers supported by Magic Castle.
 providers, for example the availability zone or the region.
 
 5. **Initialize the infrastructure**. Create a file named  `infrastructure.tf`. In this file,
-define the provider and the include the `common/design` module.
+define the provider and include the `common/design` module.
     ```hcl
     provider "provider_name" { }
 
@@ -187,9 +189,9 @@ define the provider and the include the `common/design` module.
     }
     ```
 
-6. **Create the networking infrastructure**. Create a file named `network.tf` in
+6. **Create the networking infrastructure**. Create a file named `network.tf`
 and define the network, subnet, router, nat, firewall, nic and public ip resources using
-`module.design.instances` map.
+the `module.design.instances` map.
 
 7. **Create the instance configurations**. In `infrastructure.tf`, include the
 `common/instance_config` module and provide the required input parameters.
@@ -211,8 +213,8 @@ for the initial configuration.
 instance's id to which the volume needs to be attached.
 
 11. **Consolidate the instances' information**.  In `infrastructure.tf`, define a local
-variable named `all_instances` that will be map containing for each created instance
-the following keys: `id`, `public_ip`, `local_ip`, `tags`, `hostkeys`, where `hostkeys`
+variable named `all_instances` that will be a map containing the following keys
+(for each created instance): `id`, `public_ip`, `local_ip`, `tags`, `hostkeys`, where `hostkeys`
 is also a map with a key named `rsa` that correspond to the instance hostkey.
 
 12. **Consolidate the volume device information**. In `infrastructure.tf`, define a local
@@ -254,8 +256,8 @@ resource to its device path from within the instance to which it is attached.
 2. **Check minimum requirements**. In the preceding table, we can see Digital Ocean does not have the ability
 to define a network interface. The documentation also leads us to conclude that it is not possible
 to define the private ip address of the instances before creating them. Because the Puppet server
-ip address is required before generating all instances cloud-init YAML config, including the Puppet
-server itself, this means it impossible to use Digital Ocean to spawn Magic Castle cluster.
+ip address is required before generating the cloud-init YAML config for all instances, including the Puppet
+server itself, this means it impossible to use Digital Ocean to spawn a Magic Castle cluster.
 <br><br>
 Oracle Cloud presents the same issue, however, after reading the instance documentation, we find that
 it is possible to define a static ip address as a string in the instance attribute. It would therefore
