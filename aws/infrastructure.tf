@@ -64,8 +64,13 @@ resource "aws_key_pair" "key" {
 }
 
 # Instances
+locals {
+  regular_instances = {for key, values in module.design.instances: key => values if !contains(values["tags"], "spot")}
+  spot_instances    = {for key, values in module.design.instances: key => values if contains(values["tags"], "spot")}
+}
+
 resource "aws_instance" "instances" {
-  for_each          = module.design.instances
+  for_each          = local.regular_instances
   instance_type     = each.value.type
   ami               = var.image
   user_data         = base64gzip(module.instance_config.user_data[each.key])
@@ -95,6 +100,46 @@ resource "aws_instance" "instances" {
   }
 
   depends_on = [aws_internet_gateway.gw]
+}
+
+resource "aws_spot_instance_request" "spot_instances" {
+  for_each          = local.spot_instances
+  instance_type     = each.value.type
+  ami               = var.image
+  user_data         = base64gzip(module.instance_config.user_data[each.key])
+  availability_zone = local.availability_zone
+
+  key_name          = aws_key_pair.key.key_name
+
+  network_interface {
+    network_interface_id = aws_network_interface.nic[each.key].id
+    device_index         = 0
+  }
+
+  ebs_optimized = true
+  root_block_device {
+    volume_type = lookup(each.value, "disk_type", "gp2")
+    volume_size = lookup(each.value, "disk_size", 10)
+  }
+
+  tags = {
+    Name = format("%s-%s", var.cluster_name, each.key)
+  }
+
+  lifecycle {
+    ignore_changes = [
+      ami
+    ]
+  }
+
+  depends_on = [aws_internet_gateway.gw]
+
+  # spot specific variables
+  wait_for_fulfillment   = lookup(each.value, "wait_for_fulfillment", true)
+  spot_type              = lookup(each.value, "spot_type", "one-time")
+  spot_price             = lookup(each.value, "spot_price", null)
+  block_duration_minutes = lookup(each.value, "block_duration_minutes", null)
+
 }
 
 resource "aws_ebs_volume" "volumes" {
@@ -143,7 +188,7 @@ locals {
       public_ip   = contains(values["tags"], "public") ? aws_eip.public_ip[x].public_ip : ""
       local_ip    = aws_network_interface.nic[x].private_ip
       tags        = values["tags"]
-      id          = aws_instance.instances[x].id
+      id          = ! contains(values["tags"], "spot") ? aws_instance.instances[x].id : aws_spot_instance_request.spot_instances[x].spot_instance_id
       hostkeys    = {
         rsa = module.instance_config.rsa_hostkeys[x]
       }
