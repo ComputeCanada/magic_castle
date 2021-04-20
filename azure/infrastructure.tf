@@ -94,6 +94,11 @@ resource "azurerm_linux_virtual_machine" "instances" {
 
   }
 
+  priority = contains(each.value["tags"], "spot") ? "Spot" : "Regular"
+  # Spot instances specifics
+  max_bid_price   = lookup(each.value, "max_bid_price", null)
+  eviction_policy = lookup(each.value, "eviction_policy", "Deallocate")
+
   lifecycle {
     ignore_changes = [
       source_image_reference,
