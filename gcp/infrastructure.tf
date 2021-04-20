@@ -76,8 +76,14 @@ resource "google_compute_instance" "instances" {
   }
 
   scheduling {
-    # Instances with guest accelerators do not support live migration.
-    on_host_maintenance = lookup(each.value, "gpu_count", 0) > 0 ? "TERMINATE" : "MIGRATE"
+    # Instances with guest accelerators
+    # and spot instances
+    # do not support live migration.
+    on_host_maintenance = (lookup(each.value, "gpu_count", 0) > 0) || contains(each.value["tags"], "spot") ? "TERMINATE" : "MIGRATE"
+
+    # Spot instance specifics
+    preemptible       = contains(each.value["tags"], "spot")
+    automatic_restart = !contains(each.value["tags"], "spot")
   }
 
   guest_accelerator {
