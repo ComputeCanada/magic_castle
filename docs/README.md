@@ -359,6 +359,7 @@ Terraform tags:
 - `proxy`: identify instances that will be pointed by the vhost A records
 - `public`: identify instances that need to have a public ip address and be accessible from Internet
 - `puppet`: identify the instance that will be configured as the main Puppet server
+- `spot`: identify instances that are to be spawned as spot/preemptible instances. This tag is supported in AWS, Azure and GCP and ignored by OpenStack and OVH.
 - `ssl`: identify instances that will receive a copy of the SSL wildcard certificate for the domain
 
 Puppet tags excepted by the [puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) environment.
@@ -389,6 +390,24 @@ Default root disk's attribute value per provider:
 
 For some cloud providers, it possible to define additional attributes.
 The following sections present the available attributes per provider.
+
+##### AWS
+
+For instances with the `spot` tags, these attributes can also be set:
+- `wait_for_fulfillment` (default: true)
+- `spot_type` (default: permanent)
+- `spot_price` (default: not set)
+- `block_duration_minutes` (default: not set)
+For more information on these attributes, refer to
+[`aws_spot_instance_request` argument reference](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/spot_instance_request#argument-reference)
+
+##### Azure
+
+For instances with the `spot` tags, these attributes can also be set:
+- `max_bid_price` (default: not set)
+- `eviction_policy` (default: `Deallocate`)
+For more information on these attributes, refer to
+[`azurerm_linux_virtual_machine` argument reference](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine#argument-reference)
 
 ##### GCP
 
