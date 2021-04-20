@@ -27,9 +27,10 @@ locals {
 
   hieradata = templatefile("${path.module}/terraform_data.yaml",
     {
-      instances = yamlencode(var.instances)
-      tag_ip    = yamlencode(local.tag_ip)
-      volumes   = yamlencode(var.volume_devices)
+      instances   = yamlencode(var.instances)
+      tag_ip      = yamlencode(local.tag_ip)
+      volumes     = yamlencode(var.volume_devices)
+      filesystems = yamlencode(var.filesystems)
       data = {
         sudoer_username = var.sudoer_username
         freeipa_passwd  = random_string.freeipa_passwd.result

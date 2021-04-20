@@ -36,6 +36,7 @@ module "cluster_config" {
   cluster_name    = var.cluster_name
   volume_devices  = local.volume_devices
   private_ssh_key = module.instance_config.private_key
+  filesystems     = local.all_filesystems
 }
 
 data "aws_availability_zones" "available" {
@@ -169,6 +170,39 @@ resource "aws_volume_attachment" "attachments" {
   skip_destroy = true
 }
 
+resource "aws_efs_file_system" "efs" {
+  for_each = { for key, values in var.filesystems: key => values if lower(values["type"]) == "efs" }
+
+  performance_mode                = lookup(each.value, "performance_mode", null)
+  provisioned_throughput_in_mibps = lookup(each.value, "provisioned_throughput_in_mibps", null)
+  throughput_mode                 = lookup(each.value, "throughput_mode", null)
+
+  tags = {
+    Name = "${var.cluster_name}-${each.key}-efs"
+  }
+}
+
+resource "aws_efs_mount_target" "efs_target" {
+  for_each = { for key, values in var.filesystems: key => values if lower(values["type"]) == "efs" }
+
+  file_system_id = aws_efs_file_system.efs[each.key].id
+  subnet_id      = aws_subnet.subnet.id
+}
+
+resource "aws_fsx_lustre_file_system" "fsx_lustre" {
+  for_each = { for key, values in var.filesystems: key => values if lower(values["type"]) == "lustre" }
+
+  storage_capacity = max(each.value["size"], 1200)
+  storage_type     = lookup(each.value, "storage_type", null)
+  deployment_type  = lookup(each.value, "deployment_type", null)
+
+  subnet_ids       = [aws_subnet.subnet.id]
+
+  tags = {
+    Name = "${var.cluster_name}-${each.key}-lustre"
+  }
+}
+
 locals {
   volume_devices = {
     for ki, vi in var.volumes :
@@ -194,4 +228,22 @@ locals {
       }
     }
   }
+<<<<<<< HEAD
 }
+=======
+  all_filesystems = {
+    nfs = {
+      for key, values in var.filesystems:
+        key => {
+          ip = aws_efs_mount_target.efs_target[key].ip_address
+        } if lower(values["type"]) == "efs"
+    }
+    lustre = {
+      for key, values in var.filesystems:
+        key => {
+          host = aws_fsx_lustre_file_system.fsx_lustre[key].dns_name
+        } if lower(values["type"]) == "lustre"
+    }
+  }
+}
+>>>>>>> 719b579 (Add filesystems variable)

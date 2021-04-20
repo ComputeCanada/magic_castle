@@ -10,3 +10,4 @@ variable "cloud_provider" { }
 variable "cloud_region" { }
 variable "private_ssh_key" { }
 variable "hieradata" { }
+variable "filesystems" { }

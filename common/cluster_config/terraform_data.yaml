@@ -4,6 +4,8 @@ terraform:
     ${indent(4, instances)}
   volumes:
     ${indent(4, volumes)}
+  filesystems:
+    ${indent(4, filesystems)}
   tag_ip:
     ${indent(4, tag_ip)}
   data:
