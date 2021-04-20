@@ -12,7 +12,7 @@ module "aws" {
   image        = "ami-033e6106180a626d0" # CentOS 7 -  ca-central-1
 
   instances = {
-    mgmt  = { type = "t3.large",  count = 1, tags = ["mgmt", "puppet"] },
+    mgmt  = { type = "t3.large",  count = 1, tags = ["mgmt", "puppet", "nfs"] },
     login = { type = "t3.medium", count = 1, tags = ["login", "public", "proxy"] },
     node  = { type = "t3.medium",  count = 1, tags = ["node"] }
   }
