@@ -3,11 +3,11 @@ terraform {
 }
 
 module "azure" {
-  source         = "../../../../azure"
+  source         = "git::https://github.com/ComputeCanada/magic_castle.git//azure"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
   config_version = "main"
 
-  cluster_name = "phoenix"
+  cluster_name = "spot-azure"
   domain       = "calculquebec.cloud"
   image        = {
     publisher = "OpenLogic",
@@ -22,6 +22,7 @@ module "azure" {
         type          = "Standard_DS1_v2",
         count         = 1,
         tags          = ["node", "spot"],
+        # spot instance attributes
         max_bid_price = 0.05
     }
   }
