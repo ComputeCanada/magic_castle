@@ -16,10 +16,9 @@ module "gcp" {
     mgmt   = { type = "n1-standard-2", tags = ["puppet", "mgmt", "nfs"], count = 1 }
     login  = { type = "n1-standard-2", tags = ["login", "public", "proxy"], count = 1 }
     node   = {
-        tags = ["node", "spot"],
-        type = "n1-standard-2",
+        tags  = ["node", "spot"],
+        type  = "n1-standard-2",
         count = 1
-        # preemptible/spot instance attributes: none
     }
   }
 

@@ -136,7 +136,7 @@ resource "aws_spot_instance_request" "spot_instances" {
 
   # spot specific variables
   wait_for_fulfillment   = lookup(each.value, "wait_for_fulfillment", true)
-  spot_type              = lookup(each.value, "spot_type", "permanent")
+  spot_type              = lookup(each.value, "spot_type", "persistent")
   spot_price             = lookup(each.value, "spot_price", null)
   block_duration_minutes = lookup(each.value, "block_duration_minutes", null)
 

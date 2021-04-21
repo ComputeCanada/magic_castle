@@ -22,7 +22,6 @@ module "azure" {
         type          = "Standard_DS1_v2",
         count         = 1,
         tags          = ["node", "spot"],
-        # spot instance attributes
         max_bid_price = 0.05
     }
   }

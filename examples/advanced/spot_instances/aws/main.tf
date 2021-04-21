@@ -15,14 +15,10 @@ module "aws" {
     mgmt  = { type = "t3.large",  count = 1, tags = ["mgmt", "puppet", "nfs"] },
     login = { type = "t3.medium", count = 1, tags = ["login", "public", "proxy"] },
     node  = {
-        tags                   = ["node", "spot"],
-        type                   = "t3.medium",
-        count                  = 1,
-        # spot instance attributes
-        # wait_for_fulfillment   = true,
-        # spot_type              = "permanent"
-        # spot_price             = 0.03
-        block_duration_minutes = 60
+        tags       = ["node", "spot"],
+        type       = "t3.medium",
+        count      = 1,
+        spot_price = 0.02
     }
   }
 

@@ -397,9 +397,15 @@ For instances with the `spot` tags, these attributes can also be set:
 - `wait_for_fulfillment` (default: true)
 - `spot_type` (default: permanent)
 - `spot_price` (default: not set)
-- `block_duration_minutes` (default: not set)
+- `block_duration_minutes` (default: not set) [note 1]
 For more information on these attributes, refer to
 [`aws_spot_instance_request` argument reference](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/spot_instance_request#argument-reference)
+
+**Note 1**: `block_duration_minutes` is not available to new AWS accounts
+or accounts without billing history -
+[AWS EC2 Spot Instance requests](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-requests.html#fixed-duration-spot-instances). When not available, its usage can trigger
+quota errors like this:
+> Error requesting spot instances: MaxSpotInstanceCountExceeded: Max spot instance count exceeded
 
 ##### Azure
 
