@@ -67,9 +67,9 @@ jobs:
       - name: Test CloudFlare DNS
         run: |
           terraform -chdir=dns/cloudflare init
-          terraform -chdir=dns/cloudflare validate -var email="email@example.com" -var token="1234"
+          terraform -chdir=dns/cloudflare validate
 
       - name: Test Google Cloud DNS
         run: |
           terraform -chdir=dns/gcloud init
-          terraform -chdir=dns/gcloud validate -var email="email@example.com" -var token="1234"
+          terraform -chdir=dns/gcloud validate
