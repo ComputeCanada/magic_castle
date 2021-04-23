@@ -52,6 +52,7 @@ runcmd:
 # Bootstrap services that are essential to puppet agents
 # if the puppet module for consul is present
   - test -d /etc/puppetlabs/code/environments/production/modules/consul && /opt/puppetlabs/bin/puppet apply -e 'include profile::consul::server'
+  - (cd /etc/puppetlabs/code/environments/production; test -e bootstrap.sh && ./bootstrap.sh)
 %{ endif }
   - yum -y install puppet-agent-6.18.0
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
