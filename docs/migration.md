@@ -104,8 +104,7 @@ provider, not only Azure.
 
 ### Puppet: `terraform_data.yaml` format
 
-Instead of fetching a template of a YAML file, Magic Castle now writes
-a its own YAML file that is than integrated in the Puppet data hierarchy.
+Instead of fetching a template of a YAML file, Magic Castle now writes its own YAML file that is than integrated in the Puppet data hierarchy.
 
 In MC 10, `terraform_data.yaml` looked like this when populated on `mgmt1`
 ```yaml
