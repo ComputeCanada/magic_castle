@@ -169,7 +169,7 @@ terraform init -upgrade
 ## 4. Configuration
 
 In the `main.tf` file, there is a module named after your cloud provider,
-i.e.: `module "openstack"`. This module corresdonds to the high-level infrastructure
+i.e.: `module "openstack"`. This module corresponds to the high-level infrastructure
 of your cluster.
 
 The following sections describes each variable that can be used to customize
