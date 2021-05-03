@@ -169,7 +169,7 @@ terraform init -upgrade
 ## 4. Configuration
 
 In the `main.tf` file, there is a module named after your cloud provider,
-i.e.: `module "openstack"`. This module corresdonds to the high-level infrastructure
+i.e.: `module "openstack"`. This module corresponds to the high-level infrastructure
 of your cluster.
 
 The following sections describes each variable that can be used to customize
@@ -478,7 +478,7 @@ List of SSH public keys that will have access to your cluster sudoer account.
 keys to your local authentication agent (i.e: `ssh-add`) because Terraform will
 use this key to copy some configuration files with scp on the cluster. Otherwise,
 Magic Castle can create a keypair for unique to this cluster, see section
-[4.16 - generate_ssh_key](#416-generate_ssh_key).
+[4.15 - generate_ssh_key (optional)](#415-generate_ssh_key-optional).
 
 **Note 2**: The SSH key type has to be ECDSA or RSA for some cloud providers
 including AWS and OpenStack because they do not support ed25519 and DSA
