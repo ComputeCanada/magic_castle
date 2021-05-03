@@ -1,6 +1,3 @@
-provider "google" {
-}
-
 data "google_dns_managed_zone" "domain" {
   name    = var.zone_name
   project = var.project

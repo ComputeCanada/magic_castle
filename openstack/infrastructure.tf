@@ -1,6 +1,3 @@
-provider "openstack" {
-}
-
 module "design" {
   source       = "../common/design"
   cluster_name = var.cluster_name
