@@ -8,7 +8,7 @@
 4. [Configuration](#4-configuration)
 5. [Cloud Specific Configuration](#5-cloud-specific-configuration)
 6. [DNS Configuration and SSL Certificates](#6-dns-configuration-and-ssl-certificates)
-7. [Planification](#7-planification)
+7. [Planning](#7-planning)
 8. [Deployment](#8-deployment)
 9. [Destruction](#9-destruction)
 10. [Online Cluster Configuration](#10-online-cluster-configuration)
@@ -49,18 +49,18 @@ Minimum project requirements:
 #### 1.1.2 Google Cloud
 
 **Global**
-* 1 Network
-* 1 Subnetwork
-* 1 In-use IP address
-* 1 Static IP address
-* 1 Route
-* 11 Firewall rules
+* 1 network
+* 1 subnetwork
+* 1 in-use IP address
+* 1 static IP address
+* 1 route
+* 11 firewall rules
 
 **Region**
-* 1 In-use IP addresses
+* 1 in-use IP addresses
 * 8 CPUs
-* 60 Local SSD (GB)
-* 50 Persistent Disk Standard (GB)
+* 60 local SSD (GB)
+* 50 persistent Disk Standard (GB)
 
 To look and edit your GCP quota go to :
 [https://console.cloud.google.com/iam-admin/quotas](https://console.cloud.google.com/iam-admin/quotas)
@@ -95,8 +95,8 @@ Reference : [Azure Provider: Authenticating using the Azure CLI](https://www.ter
 
 1. Download your OpenStack Open RC file.
 It is project-specific and contains the credentials used
-by Terraform to communicate with OpenStack API. It comes
-as a sourceable shell script. To download, using OpenStack webpage go to:
+by Terraform to communicate with OpenStack API.
+To download, using OpenStack web page go to:
 **Project** → **API Access**, then click on **Download OpenStack RC File**
 then right-click on **OpenStack RC File (Identity API v3)**, **Save Link as...**,
 and save the file.
@@ -180,7 +180,7 @@ but the following sections are ordered as the variables appear in the examples.
 ### 4.1 source
 
 The first line of the module block indicates to Terraform where it can find
-the HCL files that defines the resources that wil constitute your future
+the HCL files that defines the resources that will constitute your future
 cluster. In the releases, this variable is a relative path to the cloud
 provider folder (i.e.: `./openstack`).
 
@@ -236,7 +236,7 @@ the cluster in the Slurm accounting database
 
 Defines
 * the Kerberos realm name when initializing FreeIPA.
-* the internal domain name and the resolv.conf search domain as
+* the internal domain name and the `resolv.conf` search domain as
 `int.{cluster_name}.{domain}`
 
 Optional modules following the current module in the example `main.tf` can
@@ -363,10 +363,10 @@ Terraform tags:
 - `ssl`: identify instances that will receive a copy of the SSL wildcard certificate for the domain
 
 Puppet tags excepted by the [puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) environment.
-- `login`: identify a login instance (min. req: 2 CPUs, 2GB RAM)
-- `mgmt`: identify a management instance (min. req: 2 CPUs, 6GB RAM)
-- `nfs`: identify the instance that will act as an NFS server (min. req: 3 volumes named `home`, `project`and `scratch`)
-- `node`: identify a compute node instance (min. req: 1 CPUs, 2GB RAM)
+- `login`: identify a login instance (minimum: 2 CPUs, 2GB RAM)
+- `mgmt`: identify a management instance (minimum: 2 CPUs, 6GB RAM)
+- `nfs`: identify the instance that will act as an NFS server (minimum: 3 volumes named `home`, `project`and `scratch`)
+- `node`: identify a compute node instance (minimum: 1 CPUs, 2GB RAM)
 
 You are free to define your own additional tags.
 
@@ -385,7 +385,7 @@ Default root disk's attribute value per provider:
 | Azure    |`Premium_LRS`| 30                |
 | AWS      | `gp2`       | 10                |
 | GCP      | `pd-ssd`    | 20                |
-| Openstack| `null`      | 10                |
+| OpenStack| `null`      | 10                |
 | OVH      | `null`      | 10                |
 
 For some cloud providers, it possible to define additional attributes.
@@ -405,7 +405,9 @@ For more information on these attributes, refer to
 or accounts without billing history -
 [AWS EC2 Spot Instance requests](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-requests.html#fixed-duration-spot-instances). When not available, its usage can trigger
 quota errors like this:
-> Error requesting spot instances: MaxSpotInstanceCountExceeded: Max spot instance count exceeded
+``` 
+Error requesting spot instances: MaxSpotInstanceCountExceeded: Max spot instance count exceeded
+```
 
 ##### Azure
 
@@ -440,7 +442,7 @@ Each volume in map is defined a key corresponding to its and a map of attributes
   - Azure: `Premium_LRS`
   - AWS: `gp2`
   - GCP: `pd-ssd`
-  - Openstack: `null`
+  - OpenStack: `null`
   - OVH: `null`
 
 Volumes with a tag that have no corresponding instance will not be created.
@@ -477,7 +479,7 @@ List of SSH public keys that will have access to your cluster sudoer account.
 **Note 1**: You will need to add the private key associated with one of the public
 keys to your local authentication agent (i.e: `ssh-add`) because Terraform will
 use this key to copy some configuration files with scp on the cluster. Otherwise,
-Magic Castle can create a keypair for unique to this cluster, see section
+Magic Castle can create a key pair for unique to this cluster, see section
 [4.15 - generate_ssh_key (optional)](#415-generate_ssh_key-optional).
 
 **Note 2**: The SSH key type has to be ECDSA or RSA for some cloud providers
@@ -598,7 +600,7 @@ defined as a map of fives key-value pairs : `name`, `from_port`, `to_port`, `ip_
 
 **default_value**: `false`
 
-If true, Terraform will generate an ssh keypair that would then be used when copying file with Terraform
+If true, Terraform will generate an ssh key pair that would then be used when copying file with Terraform
 file-provisioner. The public key will be added to the sudoer account authorized keys.
 
 This parameter is useful when Terraform does not have access to one of the private key associated with the
@@ -625,7 +627,7 @@ value to `eessi`.
 
 **default value**: `{}`
 
-Defines a map of hostnames to pre-allocated floating ip addresses.
+Defines a map of hostnames to preallocated floating ip addresses.
 If this variable is not set the instances tagged as public will be
 assigned a floating ip managed by Terraform. Instances that are
 tagged a public but do not have an entry in this map will also be
@@ -645,7 +647,7 @@ to the public instances.
 **default value**: None
 
 Defines the name of the external network that provides the floating
-IPs. Define this only if your OpenStack cloud provides multiple
+ips. Define this only if your OpenStack cloud provides multiple
 external networks, otherwise, Terraform can find it automatically.
 
 **Post build modification effect**: change the floating ips assigned to the public nodes.
@@ -714,7 +716,7 @@ Defines the label of the AWS EC2 region where the cluster will be created (i.e.:
 
 **default value**: None
 
-Defines the label of the datacentre inside the AWS region where the cluster will be created (i.e.: `us-east-2a`).
+Defines the label of the data center inside the AWS region where the cluster will be created (i.e.: `us-east-2a`).
 If left blank, it chosen at random amongst the availability zones of the selected region.
 
 **Requirement**: Must be in a valid availability zone for the selected region. Refer to
@@ -767,17 +769,17 @@ generate the SSL certificates. Refer to the last subsection for more details.
 This module uses the ssh-agent tracked SSH keys to authenticate and
 to copy SSL certificate files to the proxy nodes after their creation.
 
-### 6.1 CloudFlare
+### 6.1 Cloudflare
 
-1. Uncomment the `dns` module for CloudFlare in your `main.tf`.
+1. Uncomment the `dns` module for Cloudflare in your `main.tf`.
 2. Uncomment the `output "hostnames"` block.
 3. In the `dns` module, configure the variable `email` with your email address. This will be used to generate the Let's Encrypt certificate.
-4. Download and install the CloudFlare Terraform module: `terraform init`.
-5. Export the environment variables `CLOUDFLARE_EMAIL` and `CLOUDFLARE_API_KEY`, where `CLOUDFLARE_EMAIL` is your Cloudflare account email adress and `CLOUDFLARE_API_KEY` is your account Global API Key available in your [CloudFlare profile](https://dash.cloudflare.com/profile/api-tokens).
+4. Download and install the Cloudflare Terraform module: `terraform init`.
+5. Export the environment variables `CLOUDFLARE_EMAIL` and `CLOUDFLARE_API_KEY`, where `CLOUDFLARE_EMAIL` is your Cloudflare account email address and `CLOUDFLARE_API_KEY` is your account Global API Key available in your [Cloudflare profile](https://dash.cloudflare.com/profile/api-tokens).
 
-#### 6.1.2 CloudFlare API Token
+#### 6.1.2 Cloudflare API Token
 
-If you prefer using an API token instead of the global API key, you will need to configure a token with the following four permissions with the [CloudFlare API Token interface](https://dash.cloudflare.com/profile/api-tokens).
+If you prefer using an API token instead of the global API key, you will need to configure a token with the following four permissions with the [Cloudflare API Token interface](https://dash.cloudflare.com/profile/api-tokens).
 
 | Section | Subsection | Permission|
 | ------------- |-------------:| -----:|
@@ -840,7 +842,7 @@ Apache configuration expects the following files to exist:
 
 Refer to the [reverse proxy configuration](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/reverse_proxy.pp) for more details.
 
-## 7. Planification
+## 7. Planning
 
 Once your initial cluster configuration is done, you can initiate
 a planning phase where you will ask Terraform to communicate with
@@ -941,7 +943,7 @@ shared storage will be erased.
 ### 9.1 Instance Destruction
 
 It is possible to destroy only the instances and keep the rest of the infrastructure
-like the floating ip, the volumes, the generated SSH hostkey, etc. To do so, set
+like the floating ip, the volumes, the generated SSH host key, etc. To do so, set
 the count value of the instance type you wish to destroy to 0.
 
 ### 9.2 Reset
@@ -963,7 +965,8 @@ its software configuration as you please by connecting to it and
 abusing your administrator privileges. If after modifying the
 configuration, you think it would be good for Magic Castle to
 support your new features, make sure to submit an issue on the
-git repo or fork the puppet-magic_castle repo and make a pull request.
+git repository or fork the puppet-magic_castle repository
+and make a pull request.
 
 We will list here a few common customizations that are not currently
 supported directly by Magic Castle, but that are easy to do live.
@@ -1038,7 +1041,7 @@ The project will be named `def-piname`. This step is also done automatically.
 
 #### 10.3.2 With Mokey
 
-If user signup with Mokey is enabled, users can create their own account at
+If user sign-up with Mokey is enabled, users can create their own account at
 ```
 https://mokey.yourcluster.domain.tld/auth/signup
 ```
@@ -1077,9 +1080,9 @@ we strongly recommend you to limit the access to port 22 to this range.
 
 #### 10.5.1 OpenStack
 
-You can use OpenStack webpage.
+You can use OpenStack web page.
 
-1. In OpenStack webpage, go to: **Project** → **Network** → **Security Groups**
+1. In OpenStack web page, go to: **Project** → **Network** → **Security Groups**
 2. In the Security Groups table, there should be a line named like your cluster
 with the suffix `_secgroup`. Click on the corresponding **Managed Rules** button.
 3. Find the line with **22 (SSH)** in the **Port Range** column and
