@@ -1,0 +1,13 @@
+{
+    "ignorePatterns": [
+        {
+          "pattern": "^https://dash.cloudflare.com"
+        }
+    ],
+    "replacementPatterns": [
+        {
+          "pattern": "^/",
+          "replacement": "https://github.com/ComputeCanada/magic_castle/tree/main/"
+        }
+      ]
+}
