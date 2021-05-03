@@ -151,7 +151,7 @@ $ terraform init
 
 The initialization is specific to the folder where you are currently located.
 The initialization process looks at all `.tf` files and fetches the plugins required
-to build the resources defined in theses files. If you replace some or all
+to build the resources defined in these files. If you replace some or all
 `.tf` files inside a folder that has already been initialized, just call the command
 again to make sure you have all plugins.
 

@@ -19,7 +19,7 @@ the changes introduced in this release.
 
 ### Changed
 - Changed `instances` variable structure to add tags
-- Updated developper documentation
+- Updated developer documentation
 - Updated main documentation
 - Merged puppet agent and puppet server cloud-init YAML file in a single file
 - Combined some of the DNS module inputs to in a single variable
@@ -85,7 +85,7 @@ for providers that are currently not supported by MC.
 - Renamed `puppetenv_git` to `config_git_url`
 - Renamed `puppetenv_rev` to `config_version`
 - Made `config_git_url` and `config_version` mandatory.
-- Improved documenation
+- Improved documentation
 - [puppet] Reverted "Remove export of security labels in nfs"
 - [puppet] Fixed label issues with home, project and scratch root folder ([puppet-magic_castle issue #96](https://github.com/ComputeCanada/puppet-magic_castle/issues/96))
 - [puppet] Generalized VGPU driver installation to support other clouds
@@ -175,11 +175,11 @@ home, scratch and project directory plus Slurm account automatically
 - [puppet] Added SELinux policy to allow fail2ban to ban using route (issue #65)
 
 ### Changed
-- Fixed AWS, Azure, GCP and OVH examples that were incorrectly refering to openstack module
+- Fixed AWS, Azure, GCP and OVH examples that were incorrectly referring to openstack module
 - [cloud-init] Bumped puppetserver to 6.13.0 and puppetagent to 6.18.0
 - [puppet] Replaced homemade template of squid.conf by usage of puppet-squid module
 - [puppet] Bumped puppet-jupyterhub to v3.4.1
-- [puppet] Fixed slurmctld dependency to cluster registeration in slurmdbd
+- [puppet] Fixed slurmctld dependency to cluster registration in slurmdbd
 - [puppet] Fixed ipa_create_user password configuration
 
 ## [8.1] 2020-07-29
@@ -247,7 +247,7 @@ an official CentOS 8 image with cloud-init support at the moment of this release
 - [puppet] Changed logic of `nvidia_grid_vgpu` fact to just check if the instance flavor includes `vgpu` in its name
 - [puppet] CentOS 8 support: Moved default loaded CVMFS modules to hieradata. Module list now depends on CentOS version
 - [puppet] CentOS 8 support: Fixed nfs clean rbind execstop warning
-- [puppet] Replaced tcp_con_validator to check if slurmdbd is running by a wait_for ressource on slurmdbd.log regex
+- [puppet] Replaced tcp_con_validator to check if slurmdbd is running by a wait_for resource on slurmdbd.log regex
 - [puppet] CentOS 8 support: Fixed package name in nvidia-driver-version fact.
 - [cloud-init] Replaced `reboot -n` in `runcmd` by `power_state` with reboot now. This makes sure final stage of cloud-init is applied before reboot.
 - [gcp] CentOS 8 support: rewrote `install_cloudinit.sh` to avoid network issue at boot and install cloud-init only for the time needed. (issue #85)
@@ -326,7 +326,7 @@ an official CentOS 8 image with cloud-init support at the moment of this release
 ### Added
 - [Azure] Added variable to allow usage of an existing resource group based on its name (issue #72)
 - [cloud-init] Enabled puppet agent postrun command in cloud-init
-- [puppet] mgmt1 volumes formating is now handled by `profile::nfs::server` class
+- [puppet] mgmt1 volumes formatting is now handled by `profile::nfs::server` class
 - [puppet] Added logic to define, mount and format nfs shared volumes with lvm
 - [puppet] Added README.md
 - [puppet] Fixed regression introduced in 630a04
@@ -339,7 +339,7 @@ an official CentOS 8 image with cloud-init support at the moment of this release
 - [puppet] Added class `profile::base::azure` for logic specific to Azure
 
 ### Removed
-- [cloud-init] Removed volumes formating, partitioning and mounting from mgmt cloud-init
+- [cloud-init] Removed volumes formatting, partitioning and mounting from mgmt cloud-init
 - [puppet] Removed condition on gpu count in nvidia_driver_vers
 - [puppet] Removed mkhomedir from FreeIPA client installation parameters
 
@@ -364,7 +364,7 @@ service is halted. For example, if a compute node is shutdown or remove, it will
 ### Changed
 - [cloud-init] Turned off puppet agent reporting in cloud-init
 - [cloud-init] [puppet] Renamed user_hieradata as user_data
-- [cloud-init] Volume formating and mounting is now conditional on the hostname being `mgmt1`
+- [cloud-init] Volume formatting and mounting is now conditional on the hostname being `mgmt1`
 - [OpenStack] Fixed port_node resource name template
 - [puppet] Updated puppet-jupyterhub version to v1.8.1
 - [puppet] Consul and consul-template version are now defined in hieradata
@@ -524,8 +524,8 @@ instruction extensions available amongst all CVMFS clients using consul.
 - Travis CI automated testing for Terraform and Puppet files
 - Travis CI build status is now at the beginning of README.md
 - [docs] Added contribution section to README.md
-- [OVH] Added a Terraform file for network related ressources
-- [OpenStack] Added a Terraform file for network related ressources
+- [OVH] Added a Terraform file for network related resources
+- [OpenStack] Added a Terraform file for network related resources
 - [cloud-init] Added removal of firewalld package in mgmt.yaml
 - [docs] Added docs on building SELinux enabled image for OVH cloud
 - [OpenStack] Added the definition of a root disk block device with condition on flavor choice and root disk size
@@ -539,7 +539,7 @@ instruction extensions available amongst all CVMFS clients using consul.
 - Release script now takes only one version number
 - Release script now fixes the Terraform providers' version
 - [docs] Updated globus documentation
-- [docs] Renamed developpers docs
+- [docs] Renamed developers docs
 - [OVH] OVH infrastructure file is now a symlink to the OpenStack infrastructure file
 - [puppet] Globus is now installed only if globus_user/password is defined in the hieradata
 - [puppet] Globus endpoint name is now set based on the domain name instead of the instance hostname

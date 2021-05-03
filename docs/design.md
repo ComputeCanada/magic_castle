@@ -272,7 +272,7 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
   cd magic_castle
   mkdir alicloud
   cd aliclcoud
-  ln -s ../commmon/{variables,outputs}.tf .
+  ln -s ../common/{variables,outputs}.tf .
   ```
 
 4. **Define cloud provider specifics variables**. Add the following to a new file `alicloud.tf`:

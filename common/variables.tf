@@ -140,7 +140,7 @@ variable "firewall_rules" {
 variable "generate_ssh_key" {
   type        = bool
   default     = false
-  description = "If set to true, Terraform will generate an ssh keypair to connect to the cluster. Default: false"
+  description = "If set to true, Terraform will generate an ssh key pair to connect to the cluster. Default: false"
 }
 
 variable "software_stack" {

@@ -37,7 +37,7 @@ List of changes:
 of tags instead of using its hostname. The role of each tag is
 documented [here](README.md). The hostname of the instances is
 therefore no longer limited to `mgmt`, `login` or `node`.
-2. To define heterogenous compute nodes, `prefix` is no longer used.
+2. To define heterogeneous compute nodes, `prefix` is no longer used.
 Instead, a new entry with a distinct hostname prefix is defined.
 3. The count parameter is now optional and has a default value of 1.
 Instance hostnames still include the index number, even when count
@@ -94,7 +94,7 @@ while setting the `mgmt` count at 0.
 ### main.tf: Other changes
 
 - `root_disk_size` variable has been removed. You can define the root
-disk size of each instance type independtly by defining `disk_size`
+disk size of each instance type independently by defining `disk_size`
 in the instance attributes' map.
 - Azure `managed_disk_type` has been removed. The disk type can be
 defined for instances using the `disk_type` attribute in the instance
