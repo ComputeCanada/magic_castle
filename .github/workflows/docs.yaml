@@ -20,4 +20,4 @@ jobs:
         use-quiet-mode: 'yes'
         use-verbose-mode: 'yes'
         folder-path: '.'
-        file-path: './README.md, ./CHANGELOG, './LICENSE'
+        file-path: './README.md, ./CHANGELOG, ./LICENSE'
