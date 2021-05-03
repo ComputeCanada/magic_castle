@@ -17,12 +17,13 @@ Users can use their own fork. See the [developer documentation](/docs/developers
 ### References
 
 - [`magic_castle:/common/design/main.tf`](/common/design/main.tf)
-- [`magic_castle:/openstack/infrastructure.tf`](/openstack/network.tf)
+- [`magic_castle:/openstack/network-1.tf`](/openstack/network-1.tf)
+- [`magic_castle:/openstack/network-2.tf`](/openstack/network-2.tf)
 - [`magic_castle:/common/instance_config/main.tf`](/common/instance_config/main.tf)
 - [`magic_castle:/openstack/infrastructure.tf`](/openstack/infrastructure.tf)
 - [`magic_castle:/common/cluster_config/main.tf`](/common/cluster_config/main.tf)
-- [`magic_castle:/dns/cloudflare/dns.tf`](/dns/cloudflare/dns.tf)
-- [`magic_castle:/dns/acme/acme.tf`](/dns/acme/acme.tf)
+- [`magic_castle:/dns/cloudflare/main.tf`](/dns/cloudflare/main.tf)
+- [`magic_castle:/dns/acme/main.tf`](/dns/acme/main.tf)
 
 ## 2. Configuration with cloud-init
 
@@ -43,7 +44,7 @@ is the puppet certificate generation.
 
 ## 3. Configuration with Puppet
 
-![Provisioning with Puppet](./diagrams/cluster_provisioning_puppet_sequence.svg)
+<!-- ![Provisioning with Puppet](./diagrams/cluster_provisioning_puppet_sequence.svg) -->
 
 ### References
 
@@ -54,7 +55,7 @@ is the puppet certificate generation.
 
 ## 4. Configuration with Consul and Consul Template
 
-![Provisioning with Consul](./diagrams/cluster_provisioning_consul_sequence.svg)
+<!-- ![Provisioning with Consul](./diagrams/cluster_provisioning_consul_sequence.svg) -->
 
 ### References
 
