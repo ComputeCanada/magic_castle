@@ -1,0 +1,19 @@
+name: Check spelling
+
+on: 
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+codespell:
+  runs-on: ubuntu-latest
+  steps:
+  - uses: actions/checkout@master
+  - uses: codespell-project/actions-codespell@master
+    with:
+      check_filenames: true
+      ignore_words_list: keypair
+      only_warn: 1
