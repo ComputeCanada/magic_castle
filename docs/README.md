@@ -180,9 +180,9 @@ but the following sections are ordered as the variables appear in the examples.
 ### 4.1 source
 
 The first line of the module block indicates to Terraform where it can find
-the HCL files that defines the resources that will constitute your future
-cluster. In the releases, this variable is a relative path to the cloud
-provider folder (i.e.: `./openstack`).
+the files that define the resources that will compose your cluster.
+In the releases, this variable is a relative path to the cloud
+provider folder (i.e.: `./aws`).
 
 **Requirement**: Must be a path to a local folder containing the Magic Castle
 Terraform files for the cloud provider of your choice. It can also be a git
