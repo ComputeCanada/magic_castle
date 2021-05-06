@@ -274,9 +274,25 @@ instances will ignore the change and future instances will use the new value.
 
 #### 4.6.1 AWS
 
-The image field needs to correspond to the Amazon Machine Image id or AMI.
-The AMI is specific to each region, so make sure to use the right AMI for
-the region you chose.
+The image field needs to correspond to the Amazon Machine Image (AMI) ID.
+AMI IDs are specific to regions and architectures. Make sure to use the
+right ID for the region and CPU architecture you are using (i.e: x86_64).
+Refer to
+[CentOS list of official images available on the AWS Marketplace](https://wiki.centos.org/Cloud/AWS#Official_and_current_CentOS_Public_Images) to find out which AMI ID
+you need to use.
+
+**Note**: Before you can use the AMI, you will need accept the usage terms
+and subscribe to the image on AWS Marketplace. On your first deployment,
+you will be presented an error similar to this one:
+```
+│ Error: Error launching source instance: OptInRequired: In order to use this AWS Marketplace product you need to accept terms and subscribe. To do so please visit https://aws.amazon.com/marketplace/pp?sku=cvugziknvmxgqna9noibqnnsy
+│ 	status code: 401, request id: 1f04a85a-f16a-41c6-82b5-342dc3dd6a3d
+│
+│   on aws/infrastructure.tf line 67, in resource "aws_instance" "instances":
+│   67: resource "aws_instance" "instances" {
+```
+To accept the terms and fix the error, visit the link provided in the error output,
+then click on the `Click to Subscribe` yellow button. CentOS images are free to use.
 
 #### 4.6.2 Microsoft Azure
 
