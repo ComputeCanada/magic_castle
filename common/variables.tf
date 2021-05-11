@@ -39,7 +39,7 @@ variable "filesystems" {
   description = "Map of cloud provider filesystems to create (i.e: AWS EFS)"
   default     = {}
   validation {
-    condition     = alltrue(concat([for key, values in var.filesystems: [contains(keys(values), "type")]]...))
+    condition     = alltrue([for key, values in var.filesystems: contains(keys(values), "type")]...)
     error_message = "Each entry in var.filesystems needs to have at least a type."
   }
 }
