@@ -446,7 +446,7 @@ Modifying any part of the map after the cluster is built will only affect
 the type of instances associated with what was modified at the
 next `terraform apply`.
 
-### 4.8 Volumes
+### 4.8 volumes
 
 The `volumes` variable is a map that defines the block devices that should be attached
 to instances that have the corresponding key in their list of tags. To each instance
@@ -465,10 +465,10 @@ Volumes with a tag that have no corresponding instance will not be created.
 
 In the following example:
 ```hcl
-instances{ 
+instances = { 
   server = { type = "p4-6gb", tags = ["nfs"] }
 }
-volumes {
+volumes = {
   nfs = {
     home = { size = 100 }
     project = { size = 100 }
@@ -483,6 +483,11 @@ volumes {
 
 The instance `server1` has three volumes attached to it, while the volumes tagged `mds` are
 not created since no instances have the corresponding tag.
+
+To define an infrastructure with no volumes, set the `volumes` variable to an empty map:
+``` hcl
+volumes = {}
+```
 
 **Post build modification effect**: destruction of the corresponding volumes and attachments,
 and creation of new empty volumes and attachments. If an no instance with a corresponding tag
