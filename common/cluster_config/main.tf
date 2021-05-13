@@ -43,8 +43,10 @@ locals {
   })
   facts = {
     software_stack = var.software_stack
-    cloud_provider = var.cloud_provider
-    cloud_region   = var.cloud_region
+    cloud          = {
+      provider = var.cloud_provider
+      region = var.cloud_region
+    }
   }
 }
 
