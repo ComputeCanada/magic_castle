@@ -378,7 +378,7 @@ Terraform tags:
 - `spot`: identify instances that are to be spawned as spot/preemptible instances. This tag is supported in AWS, Azure and GCP and ignored by OpenStack and OVH.
 - `ssl`: identify instances that will receive a copy of the SSL wildcard certificate for the domain
 
-Puppet tags excepted by the [puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) environment.
+Puppet tags expected by the [puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) environment.
 - `login`: identify a login instance (minimum: 2 CPUs, 2GB RAM)
 - `mgmt`: identify a management instance (minimum: 2 CPUs, 6GB RAM)
 - `nfs`: identify the instance that will act as an NFS server (minimum: 3 volumes named `home`, `project`and `scratch`)
