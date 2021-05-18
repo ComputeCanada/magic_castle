@@ -3,6 +3,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [11.1] UNRELEASED
+
+### Added
+- Support for spot instances in AWS, Azure and Google Cloud
+- GitHub actions to lint documentation
+- Advanced example demonstrating how to create an ELK cluster
+- Advanced example demonstrating how to create a kubernetes cluster
+- Advanced example demonstrating how to create an Apache Spark cluster
+- [cloud-init] Check for the presence of `bootstrap.sh` in the puppet environment
+
+### Changed
+- Fix issue with Google Cloud DNS refering to CloudFlare (PR #167 @consideratio)
+- Fix documentation (PR #169 @consideratio)
+- Fix var.volumes validation - allowing the variable to be an empty map
+- Fix terraform_facts.yaml format for cloud provider and region
+- Reintroduced nouveau driver blacklisting in cloud-init
+- Improved provider specific READMEs
+- [AWS] Updated AMI value in the example
+
 ## [11.0] 2021-04-19
 
 Refer to the [migration guide](docs/migration.md) to know how to deal with
