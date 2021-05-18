@@ -14,13 +14,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - [cloud-init] Check for the presence of `bootstrap.sh` in the puppet environment
 
 ### Changed
-- Fix issue with Google Cloud DNS refering to CloudFlare (PR #167 @consideratio)
-- Fix documentation (PR #169 @consideratio)
-- Fix var.volumes validation - allowing the variable to be an empty map
-- Fix terraform_facts.yaml format for cloud provider and region
+- Fixed issue with Google Cloud DNS refering to CloudFlare (PR #167 @consideratio)
+- Fixed documentation (PR #169 @consideratio)
+- Fixed var.volumes validation - allowing the variable to be an empty map
+- Fixed terraform_facts.yaml format for cloud provider and region
 - Reintroduced nouveau driver blacklisting in cloud-init
 - Improved provider specific READMEs
 - [AWS] Updated AMI value in the example
+- [puppet] Fixed init of /etc/cvmfs/default.local with consul-template
 
 ## [11.0] 2021-04-19
 
