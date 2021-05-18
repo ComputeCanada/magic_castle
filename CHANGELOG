@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fixed terraform_facts.yaml format for cloud provider and region
 - Reintroduced nouveau driver blacklisting in cloud-init
 - Improved provider specific READMEs
+- Reverted flavors and image in openstack example to Arbutus instead of Beluga Cloud
 - [AWS] Updated AMI value in the example
 - [puppet] Fixed init of /etc/cvmfs/default.local with consul-template
 
