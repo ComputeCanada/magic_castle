@@ -9,19 +9,19 @@ module "openstack" {
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
-  image        = "CentOS-7-x64-2020-09"
+  image        = "CentOS-7-x64-2020-03"
 
   instances = {
-    mgmt   = { type = "p4-7.5gb", tags = ["puppet", "mgmt", "nfs"], count = 1 }
-    login  = { type = "p2-3.75gb", tags = ["login", "public", "proxy"], count = 1 }
-    node   = { type = "p2-3.75gb", tags = ["node"], count = 1 }
+    mgmt   = { type = "p4-6gb", tags = ["puppet", "mgmt", "nfs"], count = 1 }
+    login  = { type = "p2-3gb", tags = ["login", "public", "proxy"], count = 1 }
+    node   = { type = "p2-3gb", tags = ["node"], count = 1 }
   }
 
   volumes = {
     nfs = {
-      home     = { size = 10, type = "volumes-ssd" }
-      project  = { size = 50, type = "volumes-ssd" }
-      scratch  = { size = 50, type = "volumes-ssd" }
+      home     = { size = 100 }
+      project  = { size = 50 }
+      scratch  = { size = 50 }
     }
   }
 
