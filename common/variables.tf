@@ -34,6 +34,16 @@ variable "volumes" {
   }
 }
 
+variable "filesystems" {
+  type        = map
+  description = "Map of cloud provider filesystems to create (i.e: AWS EFS)"
+  default     = {}
+  validation {
+    condition     = length(var.filesystems) > 0 ? alltrue([for key, values in var.filesystems: contains(keys(values), "type")]...) : true
+    error_message = "Each entry in var.filesystems needs to have at least a type."
+  }
+}
+
 variable "domain" {
   type        = string
   description = "String which when combined with cluster_name will formed the cluster FQDN"

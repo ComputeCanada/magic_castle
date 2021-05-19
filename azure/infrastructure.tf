@@ -36,6 +36,7 @@ module "cluster_config" {
   cluster_name    = var.cluster_name
   volume_devices  = local.volume_devices
   private_ssh_key = module.instance_config.private_key
+  filesystems     = local.all_filesystems
 }
 
 # Check if user provided resource group is valid
@@ -152,4 +153,5 @@ locals {
       }
     }
   }
+  all_filesystems = {}
 }

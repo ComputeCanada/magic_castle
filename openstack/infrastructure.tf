@@ -31,6 +31,7 @@ module "cluster_config" {
   cluster_name    = var.cluster_name
   volume_devices  = local.volume_devices
   private_ssh_key = module.instance_config.private_key
+  filesystems     = local.all_filesystems
 }
 
 data "openstack_images_image_v2" "image" {
@@ -128,4 +129,5 @@ locals {
       }
     }
   }
+  all_filesystems = {}
 }
