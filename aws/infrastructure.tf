@@ -228,9 +228,6 @@ locals {
       }
     }
   }
-<<<<<<< HEAD
-}
-=======
   all_filesystems = {
     nfs = {
       for key, values in var.filesystems:
@@ -246,4 +243,3 @@ locals {
     }
   }
 }
->>>>>>> 719b579 (Add filesystems variable)
