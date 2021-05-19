@@ -12,7 +12,10 @@ runs:
         id: init
       - run: terraform  -chdir=${{ inputs.provider }} validate
         shell: bash
-        id: validate
+        id:
+      - run: find examples -name ${{ inputs.provider }} -type d -not -path '*/\.*'
+        shell: bash
+        id: find-examples
       - run: sed -E -i 's;(source)\s*=.*${{ inputs.provider }}.*;\1 = "../../${{ inputs.provider }}";g' examples/${{ inputs.provider }}/main.tf;
         shell: bash
         id: sed-example
