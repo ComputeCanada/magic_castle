@@ -23,6 +23,7 @@ runcmd:
   - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]+' /etc/os-release).noarch.rpm
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
+  - yum -y install puppet-agent-6.18.0
 %{ if contains(tags, "puppet") }
   - yum -y install puppetserver-6.13.0
   - mkdir /var/autosign
@@ -54,7 +55,6 @@ runcmd:
   - test -d /etc/puppetlabs/code/environments/production/modules/consul && /opt/puppetlabs/bin/puppet apply -e 'include profile::consul::server'
   - (cd /etc/puppetlabs/code/environments/production; test -e bootstrap.sh && ./bootstrap.sh)
 %{ endif }
-  - yum -y install puppet-agent-6.18.0
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - /opt/puppetlabs/bin/puppet config set waitforcert 15s
   - /opt/puppetlabs/bin/puppet config set report false
