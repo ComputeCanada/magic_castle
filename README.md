@@ -45,7 +45,8 @@ and apply their configuration based on the tags defined in the preceding YAML fi
 
 ## Talks, slides and videos
 
-- [FOSDEM 2020 - Magic Castle: Terraforming the Cloud for HPC](https://fosdem.org/2020/schedule/event/magic_castle/)
+- [FOSDEM 2020 - Magic Castle: Terraforming the Cloud for HPC](https://fosdem.org/2020/schedule/event/magic_castle/) (2020-02-02)
+- [Campus Research Computing Consortium - Clusters in the Sky: How Canada is Building Beyond Iaas Cloud with Magic Castle](https://www.youtube.com/watch?v=jWCyUeGmm-8) (2021-05-20)
 
 ## List of other cloud HPC cluster open-source projects
 
@@ -53,6 +54,7 @@ and apply their configuration based on the tags defined in the preceding YAML fi
 - [Cluster in the cloud](https://github.com/clusterinthecloud) [AWS, GCP, Oracle]
 - [Elasticluster](https://github.com/elasticluster/elasticluster) [AWS, GCP, OpenStack]
 - [Slurm on Google Platform](https://github.com/SchedMD/slurm-gcp) [GCP]
+- [illume-v2](https://github.com/jamierajewski/illume-v2/) [OpenStack]
 - [NVIDIA DeepOps](https://github.com/NVIDIA/deepops) [Ansible playbooks only]
 - [StackHPC Ansible Role OpenHPC](https://github.com/stackhpc/ansible-role-openhpc) [Ansible Role for OpenStack]
 
