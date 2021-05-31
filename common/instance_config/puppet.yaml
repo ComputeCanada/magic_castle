@@ -50,9 +50,7 @@ runcmd:
   - ln -sf /etc/puppetlabs/facts/terraform_facts.yaml /etc/puppetlabs/code/environments/production/site/profile/facts.d
   - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
   - "(cd /etc/puppetlabs/code/environments/production/ && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
-# Bootstrap services that are essential to puppet agents
-# if the puppet module for consul is present
-  - test -d /etc/puppetlabs/code/environments/production/modules/consul && /opt/puppetlabs/bin/puppet apply -e 'include profile::consul::server'
+# Bootstrap services that are essential to the puppet repo
   - (cd /etc/puppetlabs/code/environments/production; test -e bootstrap.sh && ./bootstrap.sh)
 %{ endif }
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
