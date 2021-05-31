@@ -511,8 +511,7 @@ is deprecated.
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 The sudoer account `authorized_keys` file will be updated by each instance's Puppet agent
-in a 30 minutes window with the content of this variable. The update can be triggered
-manually by restarting the Puppet agent service `sudo systemctl restart puppet`.
+following the copy of the hieradata files.
 
 ### 4.10 nb_users (optional)
 
@@ -604,6 +603,7 @@ The file created from this string can be found on `puppet` as
 **Requirement**: The string needs to respect the [YAML syntax](https://en.wikipedia.org/wiki/YAML#Syntax).
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
+Each instance's Puppet agent will be reloaded following the copy of the hieradata files.
 
 ### 4.14 firewall_rules (optional)
 
@@ -1103,10 +1103,8 @@ simply increase the value of `nb_users`, then call :
 terraform apply
 ```
 
-To trigger the account creation before the Puppet agent 30-minute window:
-1. Connect to `mgmt1` as `centos` or as the sudoer account.
-2. Restart puppet: `sudo systemctl restart puppet`.
-The accounts will be created in the following minutes.
+Each instance's Puppet agent will be reloaded following the copy of the hieradata files,
+and the new accounts will be created.
 
 
 ### 10.5 Restrict SSH Access
@@ -1204,12 +1202,9 @@ solutions to mitigate this problem.
 #### 10.9.1 Define a list of ip addresses that can never be banned
 
 fail2ban keeps a list of ip addresses that are allowed to fail to login without risking jail
-time. To add an ip address to that list, on `puppet` add to
-```
-/etc/puppetlabs/data/user_data.yaml
-```
-the following line:
-```
+time. To add an ip address to that list,  add the following lines
+to the variable `hieradata` in `main.tf`:
+```yaml
 fail2ban::ignoreip:
   - x.x.x.x
   - y.y.y.y
@@ -1218,28 +1213,25 @@ where `x.x.x.x` and `y.y.y.y` are ip addresses you want to add to the ignore lis
 The ip addresses can be written using CIDR notations.
 The ignore ip list on Magic Castle already includes `127.0.0.1/8` and the cluster subnet CIDR.
 
-Once the line is added, restart puppet on the login node(s):
+Once the line is added, call:
 ```
-sudo systemctl restart puppet
+terraform apply
 ```
 
 #### 10.9.2 Remove fail2ban ssh-route jail
 
 fail2ban rule that banned ip addresses that failed to connect
-with SSH can be disabled. To do so, on `puppet` add to
-```
-/etc/puppetlabs/data/user_data.yaml
-```
-the following line:
-```
+with SSH can be disabled. To do so, add the following line
+to the variable `hieradata` in `main.tf`:
+```yaml
 fail2ban::jails: ['ssh-ban-root']
 ```
 This will keep the jail that automatically ban any ip that tries to
 login as root, and remove the ssh failed password jail.
 
-Once the line is added, restart puppet on the login node(s):
+Once the line is added, call:
 ```
-sudo systemctl restart puppet
+terraform apply
 ```
 
 #### 10.9.3 Unban ip addresses
@@ -1259,18 +1251,15 @@ sudo fail2ban-client set ssh-route unbanip
 
 #### 10.9.4 Disable fail2ban
 
-While this is not recommended, fail2ban can be completely disabled. To do so, on `puppet` add to
-```
-/etc/puppetlabs/data/user_data.yaml
-```
-the following line:
-```
+While this is not recommended, fail2ban can be completely disabled. To do so, add the following line
+to the variable `hieradata` in `main.tf`:
+```yaml
 fail2ban::service_ensure: 'stopped'
 ```
 
-Once the line is added, restart puppet on the login node(s):
+then call :
 ```
-sudo systemctl restart puppet
+terraform apply
 ```
 
 ## 11. Customize Magic Castle Terraform Files
