@@ -31,11 +31,12 @@ module "cluster_config" {
   cloud_provider  = local.cloud_provider
   cloud_region    = local.cloud_region
   sudoer_username = var.sudoer_username
+  public_keys     = var.public_keys
   guest_passwd    = var.guest_passwd
   domain_name     = module.design.domain_name
   cluster_name    = var.cluster_name
   volume_devices  = local.volume_devices
-  private_ssh_key = module.instance_config.private_key
+  tf_ssh_key      = module.instance_config.ssh_key
 }
 
 data "aws_availability_zones" "available" {
@@ -95,7 +96,8 @@ resource "aws_instance" "instances" {
 
   lifecycle {
     ignore_changes = [
-      ami
+      ami,
+      user_data,
     ]
   }
 

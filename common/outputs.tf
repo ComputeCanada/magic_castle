@@ -36,6 +36,6 @@ output "accounts" {
 }
 
 output "ssh_private_key" {
-  value     = module.instance_config.private_key
+  value     = module.instance_config.ssh_key.private
   sensitive = true
 }

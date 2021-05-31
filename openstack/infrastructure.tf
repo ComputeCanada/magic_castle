@@ -26,11 +26,12 @@ module "cluster_config" {
   cloud_provider  = local.cloud_provider
   cloud_region    = local.cloud_region
   sudoer_username = var.sudoer_username
+  public_keys     = var.public_keys
   guest_passwd    = var.guest_passwd
   domain_name     = module.design.domain_name
   cluster_name    = var.cluster_name
   volume_devices  = local.volume_devices
-  private_ssh_key = module.instance_config.private_key
+  tf_ssh_key      = module.instance_config.ssh_key
 }
 
 data "openstack_images_image_v2" "image" {
@@ -55,6 +56,7 @@ resource "openstack_compute_instance_v2" "instances" {
   flavor_name = each.value.type
   key_pair    = openstack_compute_keypair_v2.keypair.name
   user_data   = base64gzip(module.instance_config.user_data[each.key])
+  metadata    = {}
 
   network {
     port = openstack_networking_port_v2.nic[each.key].id
@@ -84,6 +86,7 @@ resource "openstack_compute_instance_v2" "instances" {
     ignore_changes = [
       image_id,
       block_device[0].uuid,
+      user_data,
     ]
   }
 }

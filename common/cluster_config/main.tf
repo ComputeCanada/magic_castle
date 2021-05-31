@@ -30,8 +30,9 @@ locals {
       instances = yamlencode(var.instances)
       tag_ip    = yamlencode(local.tag_ip)
       volumes   = yamlencode(var.volume_devices)
-      data = {
+      data      = yamlencode({
         sudoer_username = var.sudoer_username
+        public_keys     = var.tf_ssh_key.public == null ? var.public_keys : concat(var.public_keys, [var.tf_ssh_key.public])
         freeipa_passwd  = random_string.freeipa_passwd.result
         cluster_name    = lower(var.cluster_name)
         domain_name     = var.domain_name
@@ -39,7 +40,7 @@ locals {
         consul_token    = random_uuid.consul_token.result
         munge_key       = base64sha512(random_string.munge_key.result)
         nb_users        = var.nb_users
-      }
+      })
   })
   facts = {
     software_stack = var.software_stack
@@ -57,10 +58,10 @@ resource "null_resource" "deploy_hieradata" {
     type                = "ssh"
     bastion_host        = local.public_instances[keys(local.public_instances)[0]]["public_ip"]
     bastion_user        = var.sudoer_username
-    bastion_private_key = var.private_ssh_key
+    bastion_private_key = var.tf_ssh_key.private
     user                = var.sudoer_username
     host                = "puppet"
-    private_key         = var.private_ssh_key
+    private_key         = var.tf_ssh_key.private
   }
 
   triggers = {

@@ -31,11 +31,12 @@ module "cluster_config" {
   cloud_provider  = local.cloud_provider
   cloud_region    = local.cloud_region
   sudoer_username = var.sudoer_username
+  public_keys     = var.public_keys
   guest_passwd    = var.guest_passwd
   domain_name     = module.design.domain_name
   cluster_name    = var.cluster_name
   volume_devices  = local.volume_devices
-  private_ssh_key = module.instance_config.private_key
+  tf_ssh_key      = module.instance_config.ssh_key
 }
 
 # Check if user provided resource group is valid
@@ -102,7 +103,8 @@ resource "azurerm_linux_virtual_machine" "instances" {
   lifecycle {
     ignore_changes = [
       source_image_reference,
-      source_image_id
+      source_image_id,
+      custom_data,
     ]
   }
 }

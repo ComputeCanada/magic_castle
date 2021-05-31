@@ -209,7 +209,8 @@ customization, refer to [MC developer documentation](developers.md).
 **Requirement**: Must be valid HTTPS URL to a git repository describing a
 Puppet environment compatible with [Magic Castle](developers.md).
 
-**Post build modification effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: no effect. To change the Puppet configuration source,
+destroy the cluster or change it manually on the Puppet server.
 
 ### 4.3 config_version
 
@@ -220,7 +221,8 @@ version number of the release you have downloaded (i.e: `9.3`).
 **Requirement**: Must refer to a git commit, tag or branch existing
 in the git repository pointed by `config_git_url`.
 
-**Post build modification effect** rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: none. To change the Puppet configuration version,
+destroy the cluster or change it manually on the Puppet server.
 
 ### 4.4 cluster_name
 
@@ -230,7 +232,7 @@ the cluster in the Slurm accounting database
 
 **Requirement**: Must be lowercase alphanumeric characters and start with a letter and can include dashes. cluster_name must be 63 characters or less.
 
-**Post build modification effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: destroy and re-create all instances at next `terraform apply`.
 
 ### 4.5 domain
 
@@ -256,7 +258,7 @@ domain. You can verify no such record exist with `dig`:
     dig +short '*.${domain}'
     ```
 
-**Post build modification effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: destroy and re-create all instances at next `terraform apply`.
 
 ### 4.6 image
 
@@ -269,7 +271,7 @@ security patches and OS updates in advance.
 
 **Requirements**: the operating system on the image must be CentOS 7 or 8.
 
-**Post build modification effect**: none - if this variable is modified, existing
+**Post build modification effect**: none. If this variable is modified, existing
 instances will ignore the change and future instances will use the new value.
 
 #### 4.6.1 AWS
@@ -507,7 +509,10 @@ Magic Castle can create a key pair for unique to this cluster, see section
 including AWS and OpenStack because they do not support ed25519 and DSA
 is deprecated.
 
-**Post build modification effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
+The sudoer account `authorized_keys` file will be updated by each instance's Puppet agent
+in a 30 minutes window with the content of this variable. The update can be triggered
+manually by restarting the Puppet agent service `sudo systemctl restart puppet`.
 
 ### 4.10 nb_users (optional)
 
@@ -559,7 +564,10 @@ Defines the username of the account with sudo privileges. The account
 ssh authorized keys are configured with the SSH public keys with
 `public_keys`.
 
-**Post build modification effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**: none. To change sudoer username,
+destroy the cluster or redefine the value of
+[`profile::base::sudoer_username`](https://github.com/computecanada/puppet-magic_castle#profilebase)
+in `hieradata`.
 
 ### 4.13 hieradata (optional)
 
@@ -627,7 +635,15 @@ file-provisioner. The public key will be added to the sudoer account authorized 
 This parameter is useful when Terraform does not have access to one of the private key associated with the
 public keys provided in `public_keys`.
 
-**Post build modification effect**: rebuild of all instances at next `terraform apply`.
+**Post build modification effect**:
+- `false` -> `true`: will cause Terraform failure.
+Terraform will try to use the newly created private SSH key
+to connect to the cluster, while the corresponding public SSH
+key is yet registered with the sudoer account.
+- `true` -> `false`: will trigger a scp of terraform_data.yaml at
+next terraform apply. The Terraform public SSH key will be removed
+from the sudoer account `authorized_keys` file at next
+Puppet agent run.
 
 ### 4.16 software_stack (optional)
 

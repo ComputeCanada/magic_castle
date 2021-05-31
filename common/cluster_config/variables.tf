@@ -8,5 +8,6 @@ variable "nb_users" { }
 variable "software_stack" { }
 variable "cloud_provider" { }
 variable "cloud_region" { }
-variable "private_ssh_key" { }
+variable "tf_ssh_key" { }
 variable "hieradata" { }
+variable "public_keys" { }
