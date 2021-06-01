@@ -21,29 +21,25 @@ submodule, you are on your own.
 
 ## Setup
 
-1. Connect to the Puppet main server from within the cluster: `ssh puppet`
-2. Open the file `/etc/puppetlabs/code/environments/production/data/common.yaml` with sudo rights
-and add the following lines:
-    ```
+1. In `main.tf`, add the following lines to `hieradata`:
+    ```yaml
     profile::globus::base::globus_user: your_globus_username
     profile::globus::base::globus_password: your_globus_password
     ```
-Replace `your_globus_username` and `your_globus_password` by their respective value.
-
-On `login1`:
-1. Restart puppet : `sudo systemctl restart puppet`.
-2. Give Puppet a few minutes to setup Globus. You can confirm that
-everything was setup correctly by looking at the tail of the puppet log:
+    Replace `your_globus_username` and `your_globus_password` by their respective value.
+2. Apply the change : `terraform apply`.
+3. Give Puppet a few minutes to setup Globus. You can confirm that
+everything was setup correctly by looking at the tail of the puppet log on `login1`:
     ```
-    sudo journalctl -u puppet -f
+    journalctl -u puppet -f
     ```
-3. If everything is correct, `globus-gridftp-server` and `myproxy-server`
+4. If everything is correct, `globus-gridftp-server` and `myproxy-server`
 services should be active. To confirm:
     ```
     sudo systemctl status globus-gridftp-server
     sudo systemctl status myproxy-server
     ```
-4. If both services are active, in a browser, go to
+5. If both services are active, in a browser, go to
 https://app.globus.org/endpoints?scope=administered-by-me
 
 Your endpoint should appear in the list and you should now be able to log in
