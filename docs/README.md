@@ -1136,19 +1136,19 @@ Repeat from step 3.
 ### 10.6 Add Packages to Jupyter Default Python Kernel
 
 The default Python kernel corresponds to the Python installed in `/opt/ipython-kernel`.
-Each compute node has its own copy of the environment. To install packages in
-this environment, on a compute node call:
-
+Each compute node has its own copy of the environment. To add packages to this
+environment, add the following lines to `hieradata` in `main.tf`:
 ```
-sudo /opt/ipython-kernel/bin/pip install <package_name>
+jupyterhub::kernel::venv::packages:
+  - package_A
+  - package_B
+  - package_C
 ```
 
-This will install the package on a single compute node. To install it on every
-compute node, call the following command from the sudoer account and where `N`
-is the number of compute nodes in your cluster.
-
+and replace `package_*` by the packages you need to install.
+Then call:
 ```
-clush -w node[1-N] sudo /opt/ipython-kernel/bin/pip install <package_name>
+terraform apply
 ```
 
 ### 10.7 Activate Globus Endpoint
