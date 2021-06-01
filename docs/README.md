@@ -1138,7 +1138,7 @@ Repeat from step 3.
 The default Python kernel corresponds to the Python installed in `/opt/ipython-kernel`.
 Each compute node has its own copy of the environment. To add packages to this
 environment, add the following lines to `hieradata` in `main.tf`:
-```
+```yaml
 jupyterhub::kernel::venv::packages:
   - package_A
   - package_B
