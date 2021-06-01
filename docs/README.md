@@ -578,15 +578,15 @@ Useful to override common configuration of Puppet classes.
 List of useful examples:
 - Receive logs of Puppet runs with changes to your email, add the
 following line to the string:
-    ```
+    ```yaml
     profile::base::admin_email: "me@example.org"
     ```
 - Define ip addresses that can never be banned by fail2ban:
-    ```
+    ```yaml
     profile::fail2ban::ignore_ip: ['132.203.0.0/16', '8.8.8.8']
     ```
 - Remove one-time password field from JupyterHub login page:
-    ```
+    ```yaml
     jupyterhub::enable_otp_auth: false
     ```
 
