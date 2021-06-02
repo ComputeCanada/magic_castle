@@ -3,6 +3,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [11.2] UNRELEASED
+
+### Added
+- Added a Consul event that can trigger the reload of Puppet agent configuration
+- Added the triggering of the consul puppet event when hieradata or terraform_data.yaml
+is changed after a `terraform apply`.
+- [puppet] Added the user `sudoer_username` and its authorized_keys to profile::base.
+
+### Changed
+- SSH public keys can now be added to `public_keys` after the cluster is built,
+without rebuilding all instances.
+- [cloud-init] Changes to cloud-init file are ignored once the instances are created
+- [cloud-init] Moved installation of puppet-agent rpm before puppet-server
+- [cloud-init] Moved bootstrapping of consul server in `puppet-magic_castle`'s bootstrap.sh
+- [puppet] Bumped puppet-jupyterhub to v3.8.6
+- [puppet] Fixed workshop class for guest accounts
+
+### Removed
+- [puppet] Globus Connect Server V5 class
+
+
 ## [11.1] 2021-05-18
 
 ### Added
