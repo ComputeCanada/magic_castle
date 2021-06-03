@@ -991,7 +991,7 @@ next application of the plan.
 
 To rebuild the first login node :
 ```
-terraform taint 'module.openstack.openstack_compute_instance_v2.login[0]'
+terraform taint 'module.openstack.openstack_compute_instance_v2.instances["login1"]'
 terraform apply
 ```
 
