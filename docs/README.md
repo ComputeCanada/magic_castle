@@ -17,53 +17,22 @@
 ## 1. Setup
 
 To use Magic Castle you will need:
-* Terraform (>= 0.14.2).
-* Access to a Cloud (e.g.: Compute Canada Arbutus).
-* Ability to communicate with the cloud provider API from your computer.
-* A project with operational limits meeting the requirements described in _Quotas_ subsection.
+1. Terraform (>= 0.14.2)
+2. Authenticated access to a cloud
+3. Ability to communicate with the cloud provider API from your computer
+4. A project with operational limits meeting the requirements described in _Quotas_ subsection.
+5. ssh-agent running and tracking your SSH key (*optional*)
 
-### 1.1 Quotas
+### 1.1 Terraform
 
-#### 1.1.1 OpenStack
+To install Terraform, follow the
+[tutorial](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+or go directly on [Terraform download page](https://www.terraform.io/downloads.html).
 
-Minimum project requirements:
-* 1 floating IP
-* 1 security group
-* 1 network (see note 1)
-* 1 subnet (see note 1)
-* 1 router (see note 1)
-* 3 volumes
-* 3 instances
-* 8 VCPUs
-* 7 neutron ports
-* 12 GB of RAM
-* 11 security rules
-* 80 GB of volume storage
-
-**Note 1**: Magic Castle supposes the OpenStack project comes with a network, a subnet and a router already initialized. If any of these components is missing, you will need to create them manually before launching terraform.
-* [Create and manager networks, JUSUF user documentation](https://apps.fz-juelich.de/jsc/hps/jusuf/cloud/first_steps_cloud.html?highlight=dns#create-and-manage-networks)
-* [Create and manage network - UI, OpenStack Documentation](https://docs.openstack.org/horizon/latest/user/create-networks.html)
-* [Create and manage network - CLI, OpenStack Documentation](https://docs.openstack.org/ocata/user-guide/cli-create-and-manage-networks.html)
-
-
-#### 1.1.2 Google Cloud
-
-**Global**
-* 1 network
-* 1 subnetwork
-* 1 in-use IP address
-* 1 static IP address
-* 1 route
-* 11 firewall rules
-
-**Region**
-* 1 in-use IP addresses
-* 8 CPUs
-* 60 local SSD (GB)
-* 50 persistent Disk Standard (GB)
-
-To look and edit your GCP quota go to :
-[https://console.cloud.google.com/iam-admin/quotas](https://console.cloud.google.com/iam-admin/quotas)
+You can verify Terraform was properly installed by looking at the version in a terminal:
+```
+terraform version
+```
 
 ### 1.2 Authentication
 
@@ -108,14 +77,128 @@ source the OpenStack RC file:
     ```
 This command will ask for a password, enter your OpenStack password.
 
+### 1.3 Cloud API
 
-### 1.3 Setup check
+Once you are authenticate with your cloud provider, you should be able to
+communicate with its API. This section lists for each provider some
+instructions to test this.
 
-1. Open a terminal
-2. Verify Terraform was properly installed by looking at the version
-    ```
-    $ terraform version
-    ```
+#### 1.3.1 Amazon Web Services (AWS)
+
+1. In a dedicated temporary folder, create a file named `test_aws.tf`
+with the following content:
+  ```hcl
+  provider "aws" {
+    region = "us-east-1"
+  }
+
+  data "aws_ec2_instance_type" "example" {
+    instance_type = "t2.micro"
+  }
+  ```
+2. In a terminal, move to where the file is located, then:
+  ```shell
+  terraform init
+  ```
+3. Finally, test terraform communication with AWS:
+  ```
+  terraform plan
+  ```
+  If everything is configured properly, terraform will output:
+  ```
+  No changes. Your infrastructure matches the configuration.
+  ```
+  Otherwise, it will output:
+  ```
+  Error: error configuring Terraform AWS Provider: no valid credential sources for Terraform AWS Provider found.
+  ```
+4. You can delete the temporary folder and its content.
+
+#### 1.3.2 Google Cloud
+
+In a terminal, enter: 
+```
+gcloud projects list
+```
+It should output a table with 3 columns
+```
+PROJECT_ID NAME PROJECT_NUMBER
+```
+
+Take note of the `project_id` of the Google Cloud project you want to use,
+you will need it later.
+
+#### 1.3.3 Microsoft Azure
+
+In a terminal, enter: 
+```
+az account show
+```
+It should output a JSON dictionary similar to this:
+```json
+{
+  "environmentName": "AzureCloud",
+  "homeTenantId": "98467e3b-33c2-4a34-928b-ed254db26890",
+  "id": "4dda857e-1d61-457f-b0f0-e8c784d1fb20",
+  "isDefault": true,
+  "managedByTenants": [],
+  "name": "Pay-As-You-Go",
+  "state": "Enabled",
+  "tenantId": "495fc59f-96d9-4c3f-9c78-7a7b5f33d962",
+  "user": {
+    "name": "user@example.com",
+    "type": "user"
+  }
+}
+```
+
+#### 1.3.4 OpenStack / OVH
+
+### 1.4 Quotas
+
+#### 1.4.2 Google Cloud
+
+**Global**
+* 1 network
+* 1 subnetwork
+* 1 in-use IP address
+* 1 static IP address
+* 1 route
+* 11 firewall rules
+
+**Region**
+* 1 in-use IP addresses
+* 8 CPUs
+* 60 local SSD (GB)
+* 50 persistent Disk Standard (GB)
+
+To look and edit your GCP quota go to :
+[https://console.cloud.google.com/iam-admin/quotas](https://console.cloud.google.com/iam-admin/quotas)
+
+#### 1.4.4 OpenStack / OVH
+
+Minimum project requirements:
+* 1 floating IP
+* 1 security group
+* 1 network (see note 1)
+* 1 subnet (see note 1)
+* 1 router (see note 1)
+* 3 volumes
+* 3 instances
+* 8 VCPUs
+* 7 neutron ports
+* 12 GB of RAM
+* 11 security rules
+* 80 GB of volume storage
+
+**Note 1**: Magic Castle supposes the OpenStack project comes with a network, a subnet and a router already initialized. If any of these components is missing, you will need to create them manually before launching terraform.
+* [Create and manager networks, JUSUF user documentation](https://apps.fz-juelich.de/jsc/hps/jusuf/cloud/first_steps_cloud.html?highlight=dns#create-and-manage-networks)
+* [Create and manage network - UI, OpenStack Documentation](https://docs.openstack.org/horizon/latest/user/create-networks.html)
+* [Create and manage network - CLI, OpenStack Documentation](https://docs.openstack.org/ocata/user-guide/cli-create-and-manage-networks.html)
+
+### 1.5 ssh-agent (*optional*)
+
+
 
 ## 2. Cloud Cluster Architecture Overview
 
