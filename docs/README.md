@@ -1266,7 +1266,7 @@ terraform apply
 
 The SSL certificate configured by the dns module is valid for [90 days](https://letsencrypt.org/docs/faq/#what-is-the-lifetime-for-let-s-encrypt-certificates-for-how-long-are-they-valid).
 If you plan to use your cluster for more than 90 days, you will need to generate a
-new SSL certificate before the one installed on the cluster expired.
+new SSL certificate before the one installed on the cluster expires.
 
 To generate a new certificate, use the following command on your computer:
 ```
