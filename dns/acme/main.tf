@@ -53,7 +53,8 @@ resource "null_resource" "deploy_certs" {
   for_each = { for key, values in var.public_instances: key => values if length(setintersection(var.ssl_tags, values.tags)) > 0 }
 
   triggers = {
-    instance_id = each.value["id"]
+    instance_id    = each.value["id"]
+    certificate_id = acme_certificate.certificate.id
   }
 
   connection {
@@ -118,6 +119,7 @@ EOF
       "sudo ln -sf /etc/letsencrypt/archive/${var.name}.${var.domain}/cert1.pem /etc/letsencrypt/live/${var.name}.${var.domain}/cert.pem",
       "sudo ln -sf /etc/letsencrypt/archive/${var.name}.${var.domain}/chain1.pem /etc/letsencrypt/live/${var.name}.${var.domain}/chain.pem",
       "rm cert.pem chain.pem fullchain.pem privkey.pem renewal.conf",
+      "sudo systemctl reload httpd || true",
     ]
   }
 }

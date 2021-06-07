@@ -1262,6 +1262,25 @@ then call :
 terraform apply
 ```
 
+#### 10.9.5 Generate a new SSL certificate
+
+The SSL certificate configured by the dns module is valid for [90 days](https://letsencrypt.org/docs/faq/#what-is-the-lifetime-for-let-s-encrypt-certificates-for-how-long-are-they-valid).
+If you plan to use your cluster for more than 90 days, you will need to generate a
+new SSL certificate before the one installed on the cluster expired.
+
+To generate a new certificate, use the following command on your computer:
+```
+terraform taint 'module.dns.module.acme.acme_certificate.certificate'
+```
+
+Then apply the modification:
+```
+terraform apply
+```
+
+The apply will generate a new certificate, upload it on the nodes that need it
+and reload Apache if it is configured.
+
 ## 11. Customize Magic Castle Terraform Files
 
 You can modify the Terraform module files in the folder named after your cloud
