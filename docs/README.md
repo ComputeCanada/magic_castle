@@ -765,9 +765,84 @@ value to `eessi`.
 
 ## 5. Cloud Specific Configuration
 
-### 5.1 OpenStack and OVH
+### 5.1 Amazon Web Services
 
-#### 5.1.1 os_floating_ips (optional)
+#### 5.1.1 region
+
+Defines the label of the AWS EC2 region where the cluster will be created (i.e.: `us-east-2`).
+
+**Requirement**: Must be in the [list of available EC2 regions](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions).
+
+**Post build modification effect**: rebuild of all resources at next `terraform apply`.
+
+#### 5.1.2 availability_zone (optional)
+
+**default value**: None
+
+Defines the label of the data center inside the AWS region where the cluster will be created (i.e.: `us-east-2a`).
+If left blank, it chosen at random amongst the availability zones of the selected region.
+
+**Requirement**: Must be in a valid availability zone for the selected region. Refer to
+[AWS documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#using-regions-availability-zones-describe)
+to find out how list the availability zones.
+
+### 5.2 Microsoft Azure
+
+#### 5.2.1 location
+
+Defines the label of the Azure location where the cluster will be created (i.e.: `eastus`).
+
+**Requirement**: Must be a valid Azure location. To get the list of available location, you can
+use Azure CLI : `az account list-locations -o table`.
+
+**Post build modification effect**: rebuild of all resources at next `terraform apply`.
+
+**Post build modification effect**: rebuild of all instances and disks at next `terraform apply`.
+
+#### 5.2.2 azure_resource_group (optional)
+
+**default value**: None
+
+Defines the name of an already created resource group to use. Terraform
+will no longer attempt to manage a resource group for Magic Castle if
+this variable is defined and will instead create all resources within
+the provided resource group. Define this if you wish to use an already
+created resource group or you do not have subscription level access to
+create and destroy resource groups.
+
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
+
+### 5.3 Google Cloud
+
+#### 5.3.1 project
+
+Defines the label of the unique identifier associated with the Google Cloud project in which the resources will be created.
+It needs to corresponds to GCP project ID, which is composed of the project name and a randomly
+assigned number.
+
+**Requirement**: Must be a valid Google Cloud project ID.
+
+**Post build modification effect**: rebuild of all resources at next `terraform apply`.
+
+#### 5.3.2 region
+
+Defines the name of the specific geographical location where the cluster resources will be hosted.
+
+**Requirement**: Must be a valid Google Cloud region. Refer to [Google Cloud documentation](https://cloud.google.com/compute/docs/regions-zones#available)
+for the list of available regions and their characteristics.
+
+#### 5.3.3 zone (optional)
+
+**default value**: None
+
+Defines the name of the zone within the region where the cluster resources will be hosted.
+
+**Requirement**: Must be a valid Google Cloud zone. Refer to [Google Cloud documentation](https://cloud.google.com/compute/docs/regions-zones#available)
+for the list of available zones and their characteristics.
+
+### 5.4 OpenStack and OVH
+
+#### 5.4.1 os_floating_ips (optional)
 
 **default value**: `{}`
 
@@ -786,7 +861,7 @@ build.
 **Post build modification effect**: change the floating ips assigned
 to the public instances.
 
-#### 5.1.2 os_ext_network (optional)
+#### 5.4.2 os_ext_network (optional)
 
 **default value**: None
 
@@ -796,7 +871,7 @@ external networks, otherwise, Terraform can find it automatically.
 
 **Post build modification effect**: change the floating ips assigned to the public nodes.
 
-#### 5.1.3 os_int_network (optional)
+#### 5.4.3 os_int_network (optional)
 
 **default value**: None
 
@@ -807,7 +882,7 @@ Otherwise, Terraform can find it automatically.
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
-#### 5.1.4 os_int_subnet (optional)
+#### 5.4.4 os_int_subnet (optional)
 
 **default value**: None
 
@@ -817,82 +892,6 @@ OpenStack network. Otherwise, Terraform can find it automatically.
 Can be used to force a v4 subnet when both v4 and v6 exist.
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
-
-### 5.2 Google Cloud
-
-#### 5.2.1 project
-
-Defines the label of the unique identifier associated with the Google Cloud project in which the resources will be created.
-It needs to corresponds to GCP project ID, which is composed of the project name and a randomly
-assigned number.
-
-**Requirement**: Must be a valid Google Cloud project ID.
-
-**Post build modification effect**: rebuild of all resources at next `terraform apply`.
-
-#### 5.2.2 region
-
-Defines the name of the specific geographical location where the cluster resources will be hosted.
-
-**Requirement**: Must be a valid Google Cloud region. Refer to [Google Cloud documentation](https://cloud.google.com/compute/docs/regions-zones#available)
-for the list of available regions and their characteristics.
-
-#### 5.2.3 zone (optional)
-
-**default value**: None
-
-Defines the name of the zone within the region where the cluster resources will be hosted.
-
-**Requirement**: Must be a valid Google Cloud zone. Refer to [Google Cloud documentation](https://cloud.google.com/compute/docs/regions-zones#available)
-for the list of available zones and their characteristics.
-
-### 5.3 Amazon Web Services
-
-#### 5.3.1 region
-
-Defines the label of the AWS EC2 region where the cluster will be created (i.e.: `us-east-2`).
-
-**Requirement**: Must be in the [list of available EC2 regions](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions).
-
-**Post build modification effect**: rebuild of all resources at next `terraform apply`.
-
-#### 5.3.2 availability_zone (optional)
-
-**default value**: None
-
-Defines the label of the data center inside the AWS region where the cluster will be created (i.e.: `us-east-2a`).
-If left blank, it chosen at random amongst the availability zones of the selected region.
-
-**Requirement**: Must be in a valid availability zone for the selected region. Refer to
-[AWS documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#using-regions-availability-zones-describe)
-to find out how list the availability zones.
-
-### 5.4 Microsoft Azure
-
-#### 5.4.1 location
-
-Defines the label of the Azure location where the cluster will be created (i.e.: `eastus`).
-
-**Requirement**: Must be a valid Azure location. To get the list of available location, you can
-use Azure CLI : `az account list-locations -o table`.
-
-**Post build modification effect**: rebuild of all resources at next `terraform apply`.
-
-**Post build modification effect**: rebuild of all instances and disks at next `terraform apply`.
-
-#### 5.4.2 azure_resource_group (optional)
-
-**default value**: None
-
-Defines the name of an already created resource group to use. Terraform
-will no longer attempt to manage a resource group for Magic Castle if
-this variable is defined and will instead create all resources within
-the provided resource group. Define this if you wish to use an already
-created resource group or you do not have subscription level access to
-create and destroy resource groups.
-
-**Post build modification effect**: rebuild of all instances at next `terraform apply`.
-
 
 ## 6. DNS Configuration and SSL Certificates
 
