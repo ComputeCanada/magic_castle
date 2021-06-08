@@ -154,6 +154,39 @@ It should output a JSON dictionary similar to this:
 
 #### 1.3.4 OpenStack / OVH
 
+1. In a dedicated temporary folder, create a file named `test_os.tf`
+with the following content:
+    ```hcl
+    terraform {
+      required_providers {
+        openstack = {
+          source  = "terraform-provider-openstack/openstack"
+        }
+      }
+    }
+    data "openstack_identity_auth_scope_v3" "scope" {
+      name = "my_scope"
+    }
+    ```
+2. In a terminal, move to where the file is located, then:
+    ```shell
+    terraform init
+    ```
+3. Finally, test terraform communication with AWS:
+    ```
+    terraform plan
+    ```
+    If everything is configured properly, terraform will output:
+    ``` 
+    No changes. Your infrastructure matches the configuration.
+    ```
+    Otherwise, it will output:
+    ```
+    Error: Error creating OpenStack identity client:
+    ```
+    if the OpenStack cloud API cannot be reached.
+4. You can delete the temporary folder and its content.
+
 ### 1.4 Quotas
 
 #### 1.4.1 AWS
@@ -1172,9 +1205,9 @@ Note: this password must respect the FreeIPA password policy. To display the pol
 
 To add a user account after the cluster is built, log in `mgmt1` and call:
 ```bash
-$ kinit admin
-$ IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.py <username> --sponsor <piname>
-$ kdestroy
+kinit admin
+IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.py <username> --sponsor <piname>
+kdestroy
 ```
 
 The home folder will be created automatically in the moments following the account creation.
