@@ -252,7 +252,7 @@ ssh-agent corresponds to the public key that will be granted access to your clus
 (refer to [section 4.9 public_keys](#49-public_keys)).
 
 **Note 2**: If you have no wish to use ssh-agent, you can configure Magic Castle to
-generate a keypair specific to your cluster. The public key will be written in
+generate a key pair specific to your cluster. The public key will be written in
 the sudoer `authorized_keys` and Terraform will be able to connect the cluster
 using the corresponding private key. For more information,
 refer to [section 4.15 generate_ssh_key](#415-generate_ssh_key-optional).
