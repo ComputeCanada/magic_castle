@@ -73,7 +73,7 @@ and save the file.
 2. In a terminal located in the same folder as your OpenStack RC file,
 source the OpenStack RC file:
     ```
-    $ source *-openrc.sh
+    source *-openrc.sh
     ```
 This command will ask for a password, enter your OpenStack password.
 
@@ -212,7 +212,7 @@ To avoid providing your private key to Terraform directly, you will have to
 add it to the authentication agent, ssh-agent.
 
 To learn how to start ssh-agent and add keys, refer to
-[ssh-agent - How to configure, forwarding, protocol](https://www.ssh.com/academy/ssh/agent#starting-ssh-agent).
+[ssh-agent - How to configure, forwarding, protocol](https://www.ssh.com/academy/ssh/agent).
 
 **Note 1**: If you own more than one key pair, make sure the private key added to
 ssh-agent corresponds to the public key that will be granted access to your cluster
@@ -253,7 +253,7 @@ file. Further customization will be addressed during the second part of the work
 Terraform fetches the plugins required to interact with the cloud provider defined by
 our `main.tf` once when we initialize. To initialize, enter the following command:
 ```
-$ terraform init
+terraform init
 ```
 
 The initialization is specific to the folder where you are currently located.
@@ -995,7 +995,7 @@ described by the `main.tf` configuration file.
 Terraform should now be able to communicate with your cloud provider.
 To test your configuration file, enter the following command
 ```
-$ terraform plan
+terraform plan
 ```
 
 This command will validate the syntax of your configuration file and
@@ -1008,7 +1008,7 @@ file accordingly.
 
 To create the resources defined by your main, enter the following command
 ```
-$ terraform apply
+terraform apply
 ```
 
 The command will produce the same output as the `plan` command, but after
@@ -1050,7 +1050,7 @@ variable are detailed in the subsections of **Configuration**.
 For example, to increase the number of computes nodes by one. Open
 `main.tf`, add 1 to `node`'s `count` , save the document and call
 ```
-$ terraform apply
+terraform apply
 ```
 
 Terraform will analyze the difference between the current state and
@@ -1065,7 +1065,7 @@ You could do the opposite and reduce the number of compute nodes to 0.
 Once you're done working with your cluster and you would like to recover
 the resources, in the same folder as `main.tf`, enter:
 ```
-$ terraform destroy -refresh=false
+terraform destroy -refresh=false
 ```
 
 The `-refresh=false` flag is to avoid an issue where one or many of the data
