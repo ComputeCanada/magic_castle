@@ -79,7 +79,7 @@ This command will ask for a password, enter your OpenStack password.
 
 ### 1.3 Cloud API
 
-Once you are authenticate with your cloud provider, you should be able to
+Once you are authenticated with your cloud provider, you should be able to
 communicate with its API. This section lists for each provider some
 instructions to test this.
 
@@ -87,31 +87,31 @@ instructions to test this.
 
 1. In a dedicated temporary folder, create a file named `test_aws.tf`
 with the following content:
-  ```hcl
-  provider "aws" {
-    region = "us-east-1"
-  }
+    ```hcl
+    provider "aws" {
+      region = "us-east-1"
+    }
 
-  data "aws_ec2_instance_type" "example" {
-    instance_type = "t2.micro"
-  }
-  ```
+    data "aws_ec2_instance_type" "example" {
+      instance_type = "t2.micro"
+    }
+    ```
 2. In a terminal, move to where the file is located, then:
-  ```shell
-  terraform init
-  ```
+    ```shell
+    terraform init
+    ```
 3. Finally, test terraform communication with AWS:
-  ```
-  terraform plan
-  ```
+    ```
+    terraform plan
+    ```
   If everything is configured properly, terraform will output:
-  ```
-  No changes. Your infrastructure matches the configuration.
-  ```
+    ```
+    No changes. Your infrastructure matches the configuration.
+    ```
   Otherwise, it will output:
-  ```
-  Error: error configuring Terraform AWS Provider: no valid credential sources for Terraform AWS Provider found.
-  ```
+    ```
+    Error: error configuring Terraform AWS Provider: no valid credential sources for Terraform AWS Provider found.
+    ```
 4. You can delete the temporary folder and its content.
 
 #### 1.3.2 Google Cloud
