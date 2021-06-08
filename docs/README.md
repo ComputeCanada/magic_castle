@@ -104,11 +104,11 @@ with the following content:
     ```
     terraform plan
     ```
-  If everything is configured properly, terraform will output:
-    ```
+    If everything is configured properly, terraform will output:
+    ``` 
     No changes. Your infrastructure matches the configuration.
     ```
-  Otherwise, it will output:
+    Otherwise, it will output:
     ```
     Error: error configuring Terraform AWS Provider: no valid credential sources for Terraform AWS Provider found.
     ```
@@ -116,7 +116,7 @@ with the following content:
 
 #### 1.3.2 Google Cloud
 
-In a terminal, enter: 
+In a terminal, enter:
 ```
 gcloud projects list
 ```
@@ -130,7 +130,7 @@ you will need it later.
 
 #### 1.3.3 Microsoft Azure
 
-In a terminal, enter: 
+In a terminal, enter:
 ```
 az account show
 ```
@@ -160,21 +160,21 @@ It should output a JSON dictionary similar to this:
 
 The default quotas set by Amazon are sufficient to build the Magic Castle
 AWS examples. To increase the limits, or request access to special
-ressources like GPU or high performance network interface, refer to 
+ressources like GPUs or high performance network interface, refer to
 [Amazon EC2 service quotas](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html).
 
 #### 1.4.2 Google Cloud
 
 The default quotas set by Google Cloud are sufficient to build the Magic Castle
 GCP examples. To increase the limits, or request access to special
-ressources like GPU, refer to
+ressources like GPUs, refer to
 [Google Compute Engine Resource quotas](https://cloud.google.com/compute/quotas).
 
 #### 1.4.3 Microsoft Azure
 
 The default quotas set by Microsoft Azure are sufficient to build the Magic Castle
 Azure examples. To increase the limits, or request access to special
-ressources like GPU or high performance network interface, refer to
+ressources like GPUs or high performance network interface, refer to
 [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits).
 
 #### 1.4.4 OpenStack
@@ -202,7 +202,7 @@ Minimum project requirements:
 
 The default quotas set by OVH are sufficient to build the Magic Castle
 OVH examples. To increase the limits, or request access to special
-ressources like GPU, refer to
+ressources like GPUs, refer to
 [OVHcloud - Increasing Public Cloud quotas](https://docs.ovh.com/ca/en/public-cloud/increase-public-cloud-quota/).
 
 ### 1.5 ssh-agent (*optional*)
