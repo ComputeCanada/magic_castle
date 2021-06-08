@@ -83,7 +83,7 @@ Once you are authenticated with your cloud provider, you should be able to
 communicate with its API. This section lists for each provider some
 instructions to test this.
 
-#### 1.3.1 Amazon Web Services (AWS)
+#### 1.3.1 AWS
 
 1. In a dedicated temporary folder, create a file named `test_aws.tf`
 with the following content:
@@ -156,26 +156,28 @@ It should output a JSON dictionary similar to this:
 
 ### 1.4 Quotas
 
+#### 1.4.1 AWS
+
+The default quotas set by Amazon are sufficient to build the Magic Castle
+AWS examples. To increase the limits, or request access to special
+ressources like GPU or high performance network interface, refer to 
+[Amazon EC2 service quotas](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html).
+
 #### 1.4.2 Google Cloud
 
-**Global**
-* 1 network
-* 1 subnetwork
-* 1 in-use IP address
-* 1 static IP address
-* 1 route
-* 11 firewall rules
+The default quotas set by Google Cloud are sufficient to build the Magic Castle
+GCP examples. To increase the limits, or request access to special
+ressources like GPU, refer to
+[Google Compute Engine Resource quotas](https://cloud.google.com/compute/quotas).
 
-**Region**
-* 1 in-use IP addresses
-* 8 CPUs
-* 60 local SSD (GB)
-* 50 persistent Disk Standard (GB)
+#### 1.4.3 Microsoft Azure
 
-To look and edit your GCP quota go to :
-[https://console.cloud.google.com/iam-admin/quotas](https://console.cloud.google.com/iam-admin/quotas)
+The default quotas set by Microsoft Azure are sufficient to build the Magic Castle
+Azure examples. To increase the limits, or request access to special
+ressources like GPU or high performance network interface, refer to
+[Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits).
 
-#### 1.4.4 OpenStack / OVH
+#### 1.4.4 OpenStack
 
 Minimum project requirements:
 * 1 floating IP
@@ -195,6 +197,13 @@ Minimum project requirements:
 * [Create and manager networks, JUSUF user documentation](https://apps.fz-juelich.de/jsc/hps/jusuf/cloud/first_steps_cloud.html?highlight=dns#create-and-manage-networks)
 * [Create and manage network - UI, OpenStack Documentation](https://docs.openstack.org/horizon/latest/user/create-networks.html)
 * [Create and manage network - CLI, OpenStack Documentation](https://docs.openstack.org/ocata/user-guide/cli-create-and-manage-networks.html)
+
+#### 1.4.5 OVH
+
+The default quotas set by OVH are sufficient to build the Magic Castle
+OVH examples. To increase the limits, or request access to special
+ressources like GPU, refer to
+[OVHcloud - Increasing Public Cloud quotas](https://docs.ovh.com/ca/en/public-cloud/increase-public-cloud-quota/).
 
 ### 1.5 ssh-agent (*optional*)
 
