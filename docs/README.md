@@ -1215,29 +1215,14 @@ and the new accounts will be created.
 
 ### 10.5 Restrict SSH Access
 
-By default, port 22 of the login node is accessible from the world.
+By default, port 22 of the instances tagged `public` is reachable by the world.
 If you know the range of ip addresses that will connect to your cluster,
 we strongly recommend you to limit the access to port 22 to this range.
 
-#### 10.5.1 OpenStack
-
-You can use OpenStack web page.
-
-1. In OpenStack web page, go to: **Project** → **Network** → **Security Groups**
-2. In the Security Groups table, there should be a line named like your cluster
-with the suffix `_secgroup`. Click on the corresponding **Managed Rules** button.
-3. Find the line with **22 (SSH)** in the **Port Range** column and
-click on the **Delete Rule** button.
-Click **Delete Rule** in the following message box.
-4. Click on the **Add Rule** button.
-5. Select **SSH** in Rule dropping list
-6. Define the range of ip addresses in the CIDR box.
-7. Click on Add
-8. Repeat 3 to 6 if you have multiple ip ranges.
-
-Try to SSH in your cluster. If the connection times out, your ip address is out
-of the range of you entered or you made a mistake when defining the range.
-Repeat from step 3.
+To limit the access to port 22, refer to
+[section 4.14 firewall_rules](#414-firewall_rules-optional), and replace
+the `cidr` of the `SSH` rule to match the range of ip addresses that
+have be the allowed to connect to the cluster.
 
 ### 10.6 Add Packages to Jupyter Default Python Kernel
 
