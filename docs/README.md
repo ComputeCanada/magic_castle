@@ -172,7 +172,7 @@ with the following content:
     ```shell
     terraform init
     ```
-3. Finally, test terraform communication with AWS:
+3. Finally, test terraform communication with OpenStack:
     ```
     terraform plan
     ```
