@@ -193,21 +193,21 @@ with the following content:
 
 The default quotas set by Amazon are sufficient to build the Magic Castle
 AWS examples. To increase the limits, or request access to special
-ressources like GPUs or high performance network interface, refer to
+resources like GPUs or high performance network interface, refer to
 [Amazon EC2 service quotas](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html).
 
 #### 1.4.2 Google Cloud
 
 The default quotas set by Google Cloud are sufficient to build the Magic Castle
 GCP examples. To increase the limits, or request access to special
-ressources like GPUs, refer to
+resources like GPUs, refer to
 [Google Compute Engine Resource quotas](https://cloud.google.com/compute/quotas).
 
 #### 1.4.3 Microsoft Azure
 
 The default quotas set by Microsoft Azure are sufficient to build the Magic Castle
 Azure examples. To increase the limits, or request access to special
-ressources like GPUs or high performance network interface, refer to
+resources like GPUs or high performance network interface, refer to
 [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits).
 
 #### 1.4.4 OpenStack
