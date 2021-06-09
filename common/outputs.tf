@@ -3,7 +3,10 @@ output "public_instances" {
 }
 
 output "public_ip" {
-  value = [for key, values in module.cluster_config.public_instances: values["public_ip"] if values["public_ip"] != ""]
+  value = {
+    for key, values in module.cluster_config.public_instances: key => values["public_ip"]
+    if values["public_ip"] != ""
+  }
 }
 
 output "cluster_name" {
