@@ -1193,7 +1193,7 @@ In case the guest account password needs to be replaced, follow these steps:
 Note: this password must respect the FreeIPA password policy. To display the policy, run the following four commands:
     ```bash
     TF_DATA_YAML=/etc/puppetlabs/code/environments/production/data/terraform_data.yaml
-    echo -e "$(ssh puppet sudo grep admin_passwd $TF_DATA_YAML | cut -d'"' -f2)" | kinit admin
+    echo -e "$(ssh puppet sudo grep freeipa_passwd $TF_DATA_YAML | cut -d'"' -f4)" | kinit admin
     ipa pwpolicy-show
     kdestroy
     ```
@@ -1236,6 +1236,14 @@ https://ipa.yourcluster.domain.tld/
 ```
 
 The FreeIPA administrator credentials are available in the cluster Terraform output.
+
+If you no longer have the Terraform output, or if you did not display the password in the Terraform output, the 
+password can be retrieved these commands from the management node. Note that the username for the administrator
+of FreeIPA is always `admin`. 
+```
+    TF_DATA_YAML=/etc/puppetlabs/code/environments/production/data/terraform_data.yaml
+    ssh puppet sudo grep freeipa_passwd $TF_DATA_YAML | cut -d'"' -f4
+``` 
 
 User created with Mokey do not have a project nor a Slurm account. To add a user to a project and a Slurm account,
 add the user to a group with one of these prefixes : `ctb-`, `def-`, `rpp-` or `rrg-`. You can create new groups
