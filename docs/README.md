@@ -879,15 +879,22 @@ for the list of available zones and their characteristics.
 
 **default value**: `{}`
 
-Defines a map of hostnames to preallocated floating ip addresses.
-If this variable is not set the instances tagged as public will be
-assigned a floating ip managed by Terraform. Instances that are
-tagged a public but do not have an entry in this map will also be
-assigned a floating ip managed by Terraform. Instances in this
-map that are not tagged as public will not be assigned a floating
-ip.
+Defines a map as an association of instance names (key) to
+preallocated floating ip addresses (value). Example:
+```
+  os_floating_ips = {
+    login1 = 132.213.13.59
+    login2 = 132.213.13.25
+  }
+```
+- instances tagged as public that have an entry in this map will be assigned
+the corresponding ip address;
+- instances tagged as public that do not have an entry in this map will be assigned
+a floating ip managed by Terraform.
+- instances not tagged as public that have an entry in this mapp will
+not be assigned a floating ip.
 
-This variable can be useful if you administer your DNS manually and
+This variable can be useful if you manage your DNS manually and
 you would like the keep the same domain name for your cluster at each
 build.
 
