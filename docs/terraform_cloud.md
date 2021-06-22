@@ -12,8 +12,6 @@ by a team and the state is stored in the cloud instead of a local machine.
 When provisioning in commercial cloud, Terraform Cloud can also
 provide a cost estimate of the resources.
 
-##
-
 ## Getting started with Terraform Cloud
 
 1. Create a [Terraform Cloud account](https://app.terraform.io/signup/account)
@@ -109,3 +107,80 @@ you need to define these variables instead:
 - `OS_APPLICATION_CREDENTIAL_SECRET`
 The values for these variables are available in OpenStack RC file provided
 when creating the application credentials.
+
+### Providing DNS provider credentials to Terraform Cloud
+
+Terraform Cloud will invoke Terraform command-line in a remote virtual environment.
+For the CLI to be able to communicate with your DNS provider API, we need to define
+environment variables that Terraform will use to authenticate. The next sections
+explain which environment variables to define for each DNS provider and how to retrieve
+the values of the variable from the provider.
+
+#### CloudFlare
+
+You need to define these environment variables:
+- `CLOUDFLARE_EMAIL`
+- `CLOUDFLARE_API_KEY` (sensitive)
+
+If you prefer using an API token instead of the global API key, you
+need to define these environment variables instead:
+- `CLOUDFLARE_ZONE_API_TOKEN` (sensitive)
+- `CLOUDFLARE_ZONE_DNS_TOKEN` (sensitive)
+
+#### Google Cloud DNS
+
+Refer to [Google Cloud](#google-cloud) section under
+Providing cloud provider credentials to Terraform Cloud. Make sure the
+Google Cloud service account can modify your DNS zone.
+
+### Managing Magic Castle variables with Terraform Cloud UI
+
+It is possible to use Terraform Cloud web interface to define variable
+values in your `main.tf`. For example, you could want to define a guest
+password without writing it directly in `main.tf` to avoid displaying
+publically.
+
+To manage a variable with Terraform Cloud:
+1. edit your `main.tf`
+to define the variables you want to manage. In the following example,
+we want to manage the number of nodes and the guest password.
+
+    Add the variables at the beginning of the `main.tf`:
+      ```hcl
+      variable "nb_nodes" {}
+      variable "password" {}
+      ```
+
+    Then replace the static value by the variable in our `main.tf`,
+
+    compute node count
+      ```hcl
+      node = { type = "p2-3gb", tags = ["node"], count = var.nb_nodes }
+      ```
+    guest password
+      ```hcl
+      guest_passwd = var.password
+      ```
+2. Commit and push this changes to your git repository.
+3. In Terraform Cloud workspace associated with that repository, go in "Variables.
+4. Under "Terraform Variables", click the "Add variable" button and create a variable for each one defined previously in the `main.tf`. Check "Sensitive" if the variable content should not never be shown in the UI or the API.
+
+You may edit the variables at any point of your cluster lifetime.
+
+### Applying changes
+
+To create your cluster, apply changes made to your `main.tf` or the variables,
+you will need to queue a plan. When you push to the default branch of the linked
+git repository, a plan will be automatically created. You can also create a
+plan manually. To do so, click on the "Queue plan manually"
+button inside your workspace, then "Queue plan".
+
+Once the plan has been successfully created, you can apply it using the "Runs"
+section. Click on the latest queued plan, then on the "Apply plan" button at
+the bottom of the plan page.
+
+#### Auto apply
+
+It is possible to apply automatically a successful plan. Go in the "Settings"
+section, and under "Apply method" select "Auto apply". Any following successful
+plan will then be automatically applied.
