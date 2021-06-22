@@ -36,7 +36,7 @@ available for the cloud of your choice
 
 You will be redirected automatically to your new workspace
 
-#### Providing cloud provider credentials to Terraform Cloud
+### Providing cloud provider credentials to Terraform Cloud
 
 Terraform Cloud will invoke Terraform command-line in a remote virtual environment.
 For the CLI to be able to communicate with your cloud provider API, we need to define
@@ -84,3 +84,28 @@ jq . -c project-name-123456-abcdefjg.json
 ```
 
 #### OpenStack / OVH
+
+You need to define these environment variables:
+- `OS_AUTH_URL`
+- `OS_PROJECT_ID`
+- `OS_REGION_NAME`
+- `OS_INTERFACE`
+- `OS_IDENTITY_API_VERSION`
+- `OS_USER_DOMAIN_NAME`
+- `OS_USERNAME`
+- `OS_PASSWORD` (sensitive)
+
+Apart from `OS_PASSWORD`, the values for these variables are available in
+OpenStack RC file provided for your project.
+
+If you prefer to use [OpenStack application credentials](https://docs.openstack.org/keystone/queens/user/application_credentials.html),
+you need to define these variables instead:
+- `OS_AUTH_TYPE` 
+- `OS_AUTH_URL`
+- `OS_IDENTITY_API_VERSION` 
+- `OS_REGION_NAME`
+- `OS_INTERFACE`
+- `OS_APPLICATION_CREDENTIAL_ID`
+- `OS_APPLICATION_CREDENTIAL_SECRET`
+The values for these variables are available in OpenStack RC file provided
+when creating the application credentials.
