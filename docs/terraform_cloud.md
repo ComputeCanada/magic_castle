@@ -5,14 +5,14 @@ This document explains how to use Magic Castle with Terraform Cloud.
 ## What is Terraform Cloud?
 
 Terraform Cloud is HashiCorp’s managed service that allows to provision
-infrastructure using a web browser or a REST API instead of the command-line. 
+infrastructure using a web browser or a REST API instead of the command-line.
 This also means that the provisioned infrastructure parameters can be modified
 by a team and the state is stored in the cloud instead of a local machine.
 
-When provisioning in commercial cloud, Terraform Cloud can also 
+When provisioning in commercial cloud, Terraform Cloud can also
 provide a cost estimate of the resources.
 
-## 
+##
 
 ## Getting started with Terraform Cloud
 
@@ -22,7 +22,7 @@ provide a cost estimate of the resources.
 ## Managing a Magic Castle cluster with Terraform Cloud
 
 ### Creating the workspace
-1. Create a git repository in [GitHub](https://www.github.com/), [GitLab](https://www.gitlab.com/), 
+1. Create a git repository in [GitHub](https://www.github.com/), [GitLab](https://www.gitlab.com/),
 or any of the [version control system provider supported by Terraform Cloud](https://www.terraform.io/docs/cloud/vcs/index.html)
 2. In this git repository, add a copy of the Magic Castle example `main.tf`
 available for the cloud of your choice
@@ -77,7 +77,8 @@ JSON key file expressed a single line string. Example:
 {"type": "service_account","project_id": "project-id-1234","private_key_id": "abcd1234",...}
 ```
 
-You can use [`jq`]() to format the string from the JSON file provided by Google:
+You can use [`jq`](https://stedolan.github.io/jq/) to format the string from the JSON
+file provided by Google:
 ```bash
 jq . -c project-name-123456-abcdefjg.json
 ```
