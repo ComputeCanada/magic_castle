@@ -521,6 +521,7 @@ Terraform tags:
 - `public`: identify instances that need to have a public ip address and be accessible from Internet
 - `puppet`: identify the instance that will be configured as the main Puppet server
 - `spot`: identify instances that are to be spawned as spot/preemptible instances. This tag is supported in AWS, Azure and GCP and ignored by OpenStack and OVH.
+- `efa`: attach an Elastic Fabric Adapter network interface to the instance. This tag is supported in AWS.
 - `ssl`: identify instances that will receive a copy of the SSL wildcard certificate for the domain
 
 Puppet tags expected by the [puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) environment.

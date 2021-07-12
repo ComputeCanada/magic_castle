@@ -79,6 +79,7 @@ resource "aws_security_group" "allow_any_inside_vpc" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["10.0.0.0/16"]
+    self        = true
   }
 
   ingress {
@@ -86,6 +87,7 @@ resource "aws_security_group" "allow_any_inside_vpc" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["10.0.0.0/16"]
+    self        = true
   }
 
   tags = {
@@ -96,6 +98,8 @@ resource "aws_security_group" "allow_any_inside_vpc" {
 resource "aws_network_interface" "nic" {
   for_each        = module.design.instances
   subnet_id       = aws_subnet.subnet.id
+  interface_type  = contains(each.value["tags"], "efa") ? "efa" : null
+
   security_groups = concat(
     [
       aws_security_group.allow_any_inside_vpc.id,

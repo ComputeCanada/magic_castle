@@ -59,6 +59,11 @@ locals {
   )
 }
 
+resource "aws_placement_group" "efa_group" {
+  name     = "${var.cluster_name}-efa-placement_group"
+  strategy = "cluster"
+}
+
 resource "aws_key_pair" "key" {
   key_name   = "${var.cluster_name}-key"
   public_key = var.public_keys[0]
@@ -76,8 +81,11 @@ resource "aws_instance" "instances" {
   ami               = var.image
   user_data         = base64gzip(module.instance_config.user_data[each.key])
   availability_zone = local.availability_zone
+  placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null
 
   key_name          = aws_key_pair.key.key_name
+
+
 
   network_interface {
     network_interface_id = aws_network_interface.nic[each.key].id
@@ -110,6 +118,7 @@ resource "aws_spot_instance_request" "spot_instances" {
   ami               = var.image
   user_data         = base64gzip(module.instance_config.user_data[each.key])
   availability_zone = local.availability_zone
+  placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null
 
   key_name          = aws_key_pair.key.key_name
 
