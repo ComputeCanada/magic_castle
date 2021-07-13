@@ -17,10 +17,12 @@ users:
 
 runcmd:
   - restorecon -R /${sudoer_username}
-  - "(echo -e '\nHostKeyAlgorithms ssh-rsa\n' >> /etc/ssh/sshd_config && systemctl restart sshd)"
+  - sed -i '/HostKey \/etc\/ssh\/ssh_host_ed25519_key/ s/^#*/#/' /etc/ssh/sshd_config
+  - sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
+  - systemctl restart sshd
   - yum remove -y firewalld
   - yum upgrade -y
-  - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]+' /etc/os-release).noarch.rpm
+  - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
   - yum -y install puppet-agent-6.18.0
