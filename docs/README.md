@@ -235,7 +235,7 @@ Minimum project requirements:
 
 The default quotas set by OVH are sufficient to build the Magic Castle
 OVH examples. To increase the limits, or request access to special
-ressources like GPUs, refer to
+resources like GPUs, refer to
 [OVHcloud - Increasing Public Cloud quotas](https://docs.ovh.com/ca/en/public-cloud/increase-public-cloud-quota/).
 
 ### 1.5 ssh-agent
