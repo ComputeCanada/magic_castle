@@ -891,7 +891,7 @@ preallocated floating ip addresses (value). Example:
 the corresponding ip address;
 - instances tagged as public that do not have an entry in this map will be assigned
 a floating ip managed by Terraform.
-- instances not tagged as public that have an entry in this mapp will
+- instances not tagged as public that have an entry in this map will
 not be assigned a floating ip.
 
 This variable can be useful if you manage your DNS manually and
@@ -1237,7 +1237,7 @@ https://ipa.yourcluster.domain.tld/
 
 The FreeIPA administrator credentials are available in the cluster Terraform output.
 If you no longer have the Terraform output, or if you did not display the
-password in the Terraform output, the password can be retrieved wih these commands.
+password in the Terraform output, the password can be retrieved with these commands.
 ```bash
 TF_DATA_YAML="/etc/puppetlabs/data/terraform_data.yaml"
 ssh puppet sudo grep freeipa_passwd $TF_DATA_YAML | cut -d'"' -f4

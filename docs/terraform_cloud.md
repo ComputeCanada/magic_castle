@@ -138,7 +138,7 @@ Google Cloud service account can modify your DNS zone.
 It is possible to use Terraform Cloud web interface to define variable
 values in your `main.tf`. For example, you could want to define a guest
 password without writing it directly in `main.tf` to avoid displaying
-publically.
+publicly.
 
 To manage a variable with Terraform Cloud:
 1. edit your `main.tf`

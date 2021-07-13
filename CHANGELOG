@@ -35,7 +35,7 @@ without rebuilding all instances.
 - [cloud-init] Check for the presence of `bootstrap.sh` in the puppet environment
 
 ### Changed
-- Fixed issue with Google Cloud DNS refering to CloudFlare (PR #167 @consideratio)
+- Fixed issue with Google Cloud DNS referring to CloudFlare (PR #167 @consideratio)
 - Fixed documentation (PR #169 @consideratio)
 - Fixed var.volumes validation - allowing the variable to be an empty map
 - Fixed terraform_facts.yaml format for cloud provider and region
