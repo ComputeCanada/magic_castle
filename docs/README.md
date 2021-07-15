@@ -409,7 +409,8 @@ should be mainly done through Puppet. Image customization is mostly
 envisioned as a way to accelerate the provisioning process by applying the
 security patches and OS updates in advance.
 
-**Requirements**: the operating system on the image must be CentOS 7 or 8.
+**Requirements**: the operating system on the image must be from the RedHat family.
+This includes CentOS (7, 8), Rocky Linux (8), and AlmaLinux (8).
 
 **Post build modification effect**: none. If this variable is modified, existing
 instances will ignore the change and future instances will use the new value.
