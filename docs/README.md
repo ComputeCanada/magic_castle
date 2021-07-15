@@ -420,9 +420,11 @@ instances will ignore the change and future instances will use the new value.
 The image field needs to correspond to the Amazon Machine Image (AMI) ID.
 AMI IDs are specific to regions and architectures. Make sure to use the
 right ID for the region and CPU architecture you are using (i.e: x86_64).
-Refer to
-[CentOS list of official images available on the AWS Marketplace](https://wiki.centos.org/Cloud/AWS#Official_and_current_CentOS_Public_Images) to find out which AMI ID
-you need to use.
+
+To find out which AMI ID you need to use, refer to
+- [AlmaLinux OS Amazon Web Services AMIs](https://wiki.almalinux.org/cloud/AWS.html#community-amis)
+- [CentOS list of official images available on the AWS Marketplace](https://wiki.centos.org/Cloud/AWS#Official_and_current_CentOS_Public_Images)
+- [Rocky Linux]()
 
 **Note**: Before you can use the AMI, you will need accept the usage terms
 and subscribe to the image on AWS Marketplace. On your first deployment,
@@ -435,7 +437,7 @@ you will be presented an error similar to this one:
 │   67: resource "aws_instance" "instances" {
 ```
 To accept the terms and fix the error, visit the link provided in the error output,
-then click on the `Click to Subscribe` yellow button. CentOS images are free to use.
+then click on the `Click to Subscribe` yellow button.
 
 #### 4.6.2 Microsoft Azure
 
