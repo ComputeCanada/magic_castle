@@ -3,6 +3,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [11.3] UNRELEASED
+
+### Added
+- Added documentation on how to use Terraform Cloud
+- Added a trigger when uploading SSL certificates
+- Added documentation on how to regenerate SSL certificates
+- Added support for Rocky Linux and AlmaLinux
+- [puppet] Added X11 forwarding enabling in Slurm config
+
+
+### Changed
+- Improved various sections of the documentation
+- Updated puppet-agent to 6.16.0
+- Updated puppet-server to 6.23.0
+- [puppet] Updated puppet-jupyterhub to v3.8.8
+- [cloud-init] Replaced deprecated ssh config algorithm selection parameter
+- [puppet] Replaced network-scripts by NetworkManager
+- [puppet] Fixed fail2ban config when not using CentOS
+- [puppet] Fixed powertools enabling when not using CentOS
+
+### Removed
+- [puppet] Removed dhclient package when os major release is 8
+
 ## [11.2] 2021-06-02
 
 ### Added
