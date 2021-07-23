@@ -68,6 +68,12 @@ runcmd:
   - grub2-mkconfig -o /boot/grub2/grub.cfg
 # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
   - for i in /etc/sysconfig/network-scripts/ifcfg-*; do if ! ip link show | grep -q "$${i##*-}:"; then rm -f $i; fi; done
+# AWS EFA driver installation
+%{ if contains(tags, "efa") }
+  - curl -O https://efa-installer.amazonaws.com/aws-efa-installer-latest.tar.gz
+  - "(tar xf aws-efa-installer-latest.tar.gz && cd aws-efa-installer && ./efa_installer.sh --yes --minimal)"
+  - rm -fr aws-efa-installer aws-efa-installer-latest.tar.gz
+%{ endif }
 
 write_files:
   - content: |
