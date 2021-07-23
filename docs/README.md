@@ -426,7 +426,7 @@ To find out which AMI ID you need to use, refer to
 - [CentOS list of official images available on the AWS Marketplace](https://wiki.centos.org/Cloud/AWS#Official_and_current_CentOS_Public_Images)
 - [Rocky Linux]()
 
-**Note**: Before you can use the AMI, you will need accept the usage terms
+**Note**: Before you can use the AMI, you will need to accept the usage terms
 and subscribe to the image on AWS Marketplace. On your first deployment,
 you will be presented an error similar to this one:
 ```
@@ -518,7 +518,7 @@ instance, while in Puppet code tags are used to identify roles of the instances.
 Terraform tags:
 - `login`: identify instances that will be pointed by the domain name A record
 - `proxy`: identify instances that will be pointed by the vhost A records
-- `public`: identify instances that need to have a public ip address and be accessible from Internet
+- `public`: identify instances that need to have a public ip address and be accessible from the Internet
 - `puppet`: identify the instance that will be configured as the main Puppet server
 - `spot`: identify instances that are to be spawned as spot/preemptible instances. This tag is supported in AWS, Azure and GCP and ignored by OpenStack and OVH.
 - `efa`: attach an Elastic Fabric Adapter network interface to the instance. This tag is supported in AWS.
@@ -527,7 +527,7 @@ Terraform tags:
 Puppet tags expected by the [puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) environment.
 - `login`: identify a login instance (minimum: 2 CPUs, 2GB RAM)
 - `mgmt`: identify a management instance (minimum: 2 CPUs, 6GB RAM)
-- `nfs`: identify the instance that will act as an NFS server (minimum: 3 volumes named `home`, `project`and `scratch`)
+- `nfs`: identify the instance that will act as an NFS server (minimum: 3 volumes named `home`, `project` and `scratch`)
 - `node`: identify a compute node instance (minimum: 1 CPUs, 2GB RAM)
 
 You are free to define your own additional tags.
@@ -536,10 +536,10 @@ You are free to define your own additional tags.
 
 Three optional attributes can be defined:
 1. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create (default: 1).
-2. `disk_size`: size in gibibyte (GiB) of the instance's root disk containing
-the operating system and services software
-(default: see next table).
-3. `disk_type`: type of the instance's root disk (default: see next table).
+2. `disk_size`: size in gibibytes (GiB) of the instance's root disk containing
+the operating system and service software
+(default: see the next table).
+3. `disk_type`: type of the instance's root disk (default: see the next table).
 
 Default root disk's attribute value per provider:
 | Provider | `disk_type` | `disk_size` (GiB) |
@@ -844,7 +844,7 @@ Defines the name of an already created resource group to use. Terraform
 will no longer attempt to manage a resource group for Magic Castle if
 this variable is defined and will instead create all resources within
 the provided resource group. Define this if you wish to use an already
-created resource group or you do not have subscription level access to
+created resource group or you do not have a subscription-level access to
 create and destroy resource groups.
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
@@ -884,7 +884,7 @@ for the list of available zones and their characteristics.
 **default value**: `{}`
 
 Defines a map as an association of instance names (key) to
-preallocated floating ip addresses (value). Example:
+pre-allocated floating ip addresses (value). Example:
 ```
   os_floating_ips = {
     login1 = 132.213.13.59
@@ -1270,7 +1270,7 @@ and the new accounts will be created.
 
 By default, port 22 of the instances tagged `public` is reachable by the world.
 If you know the range of ip addresses that will connect to your cluster,
-we strongly recommend you to limit the access to port 22 to this range.
+we strongly recommend that you limit the access to port 22 to this range.
 
 To limit the access to port 22, refer to
 [section 4.14 firewall_rules](#414-firewall_rules-optional), and replace
@@ -1339,7 +1339,7 @@ to ban ip addresses that attempted to login 20 times and failed in a window of 6
 ban time is 24 hours.
 
 
-In the context of a workshop with SSH novices, the 20-attempts rule might be triggered,
+In the context of a workshop with SSH novices, the 20-attempt rule might be triggered,
 resulting in participants banned and puzzled, which is a bad start for a workshop. There are
 solutions to mitigate this problem.
 
