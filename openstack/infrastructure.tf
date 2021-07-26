@@ -49,8 +49,15 @@ resource "openstack_compute_keypair_v2" "keypair" {
   public_key = var.public_keys[0]
 }
 
+locals {
+  to_build_instances = {
+    for key, values in module.design.instances: key => values
+    if ! contains(values.tags, "draft") || contains(var.draft_exclusion, key)
+   }
+}
+
 resource "openstack_compute_instance_v2" "instances" {
-  for_each = module.design.instances
+  for_each = local.to_build_instances
   name     = format("%s-%s", var.cluster_name, each.key)
   image_id = lookup(each.value, "disk_size", 10) > data.openstack_compute_flavor_v2.flavors[each.key].disk ? null : data.openstack_images_image_v2.image[each.key].id
 
@@ -126,10 +133,14 @@ locals {
       public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
       local_ip  = openstack_networking_port_v2.nic[x].all_fixed_ips[0]
       tags      = values["tags"]
-      id        = openstack_compute_instance_v2.instances[x].id
+      id        = ! contains(values["tags"], "draft") || contains(var.draft_exclusion, x) ? openstack_compute_instance_v2.instances[x].id : ""
       hostkeys = {
         rsa = module.instance_config.rsa_hostkeys[x]
         ed25519 = module.instance_config.ed25519_hostkeys[x]
+      }
+      specs = {
+        cpus = data.openstack_compute_flavor_v2.flavors[x].vcpus
+        ram  = data.openstack_compute_flavor_v2.flavors[x].ram
       }
     }
   }
