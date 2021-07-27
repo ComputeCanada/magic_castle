@@ -141,6 +141,7 @@ locals {
       specs = {
         cpus = data.openstack_compute_flavor_v2.flavors[x].vcpus
         ram  = data.openstack_compute_flavor_v2.flavors[x].ram
+        gpu  = parseint(lookup(data.openstack_compute_flavor_v2.flavors[x].extra_specs, "resources:VGPU", "0"), 10)
       }
     }
   }
