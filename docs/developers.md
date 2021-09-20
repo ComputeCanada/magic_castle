@@ -60,8 +60,8 @@ config_git_repo
 ```
 
 - [`Puppetfile`](https://puppet.com/docs/pe/2019.8/puppetfile.html) specifies the Puppet modules that need to be installed in the environment.
-- [`environment.conf`](https://puppet.com/docs/puppet/7.5/config_file_environment.html) overrides the primary server default settings for the environment.
-- [`hiera.yaml`](https://puppet.com/docs/puppet/7.5/hiera_config_yaml_5.html) configures an ordered list of YAML file data sources.
+- [`environment.conf`](https://puppet.com/docs/puppet/6/config_file_environment.html) overrides the primary server default settings for the environment.
+- [`hiera.yaml`](https://puppet.com/docs/puppet/6/hiera_config_yaml_5.html) configures an ordered list of YAML file data sources.
 - `data/common.yaml` is common data source for the instances part of hierarchy defined by `hiera.yaml`.
 - `manifests/site.pp` defines how each instance will be configured based on their hostname and/or tags.
 
@@ -138,7 +138,7 @@ node default {
 }
 ```
 
-It is possible to define [Puppet resource](https://puppet.com/docs/puppet/7.5/type.html) directly
+It is possible to define [Puppet resource](https://puppet.com/docs/puppet/6/type.html) directly
 in `site.pp`. However, above a certain level of complexity, which can be reach fairly quickly, it
 is preferable to define classes and include these classes in `site.pp` based on the node hostname
 or tags.
