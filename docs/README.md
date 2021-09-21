@@ -527,7 +527,7 @@ Terraform tags:
 Puppet tags expected by the [puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) environment.
 - `login`: identify a login instance (minimum: 2 CPUs, 2GB RAM)
 - `mgmt`: identify a management instance (minimum: 2 CPUs, 6GB RAM)
-- `nfs`: identify the instance that will act as an NFS server (minimum: 3 volumes named `home`, `project` and `scratch`)
+- `nfs`: identify the instance that will act as an NFS server.
 - `node`: identify a compute node instance (minimum: 1 CPUs, 2GB RAM)
 
 You are free to define your own additional tags.
@@ -627,7 +627,7 @@ volumes = {
 }
 ```
 
-The instance `server1` has three volumes attached to it, while the volumes tagged `mds` are
+The instance `server1` will have three volumes attached to it. The volumes tagged `mds` are
 not created since no instances have the corresponding tag.
 
 To define an infrastructure with no volumes, set the `volumes` variable to an empty map:
@@ -666,8 +666,8 @@ FreeIPA. Each user account shares the same randomly generated password.
 The usernames are defined as `userX` where `X` is a number between 1 and
 the value of `nb_users` (zero-padded, i.e.: `user01 if X < 100`, `user1 if X < 10`).
 
-Each user has a home folder on a shared NFS storage hosted by the management
-node.
+If an NFS NFS `home` volume is defined, each user will have a home folder
+on a shared NFS storage hosted on the NFS server node.
 
 User accounts do not have sudoer privileges. If you wish to use `sudo`,
 you will have to login using the sudoer account and the SSH keys listed
