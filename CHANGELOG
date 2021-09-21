@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added Elastic Fabric Adapter support for AWS
 - Generalized NFS volumes exportation to support more than home, project and scratch
 - [puppet] Added epel as requirement for gpu passthrough packages
+- [puppet] Added Slurm 21.08 to the list of versions that can be installed
 
 ### Changed
 - Fixed puppet launch event in `cluster_config`
