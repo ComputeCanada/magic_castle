@@ -20,7 +20,14 @@ resource "cloudflare_record" "records" {
   name    = module.record_generator.records[count.index].name
   value   = module.record_generator.records[count.index].value
   type    = module.record_generator.records[count.index].type
-  data    = module.record_generator.records[count.index].data
+  dynamic "data" {
+    for_each = module.record_generator.records[count.index].data != null ? [module.record_generator.records[count.index].data] : []
+    content {
+      algorithm   = data.value["algorithm"]
+      fingerprint = data.value["fingerprint"]
+      type        = data.value["type"]
+    }
+  }
 }
 
 module "acme" {
