@@ -3,6 +3,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [11.4] UNRELEASED
+
+### Added
+- Added Elastic Fabric Adapter support for AWS
+- Generalized NFS volumes exportation to support more than home, project and scratch
+- [puppet] Added epel as requirement for gpu passthrough packages
+
+### Changed
+- Fixed puppet launch event in `cluster_config`
+- Updated `cloudflare_record` usage to support CloudFlare 3.0 Terraform module.
+- Users have to use a valid project name when submitting jobs.
+- `centos` can no longer submitted jobs.
+- [puppet] Disabled resource limit propagation in Slurm
+- [puppet] Configured ipa admin account passwd to never expire
+
 ## [11.3] 2021-07-22
 
 ### Added
