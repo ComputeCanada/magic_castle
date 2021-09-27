@@ -84,6 +84,14 @@ locals {
       ]
       if contains(values["tags"], var.domain_tag)
     ]),
+    [
+        {
+            type  = "TXT"
+            name  = var.name
+            value = "v=spf1 a -all"
+            data  = null
+        },
+    ]
   )
 }
 
