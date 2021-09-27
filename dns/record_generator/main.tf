@@ -95,7 +95,13 @@ locals {
                 type        = 2
                 fingerprint = try(coalesce([for key, values in var.public_instances: data.external.key2fp[key].result["ed25519_sha256"] if contains(values["tags"], var.domain_tag)]...), 0)
             }
-        }
+        },
+        {
+            type  = "TXT"
+            name  = var.name
+            value = "v=spf1 a -all"
+            data  = null
+        },
     ])
 }
 
