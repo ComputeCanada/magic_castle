@@ -10,6 +10,14 @@ data "cloudflare_zones" "domain" {
   }
 }
 
+
+module "dkim" {
+  source           = "../dkim"
+  sudoer_username  = var.sudoer_username
+  public_instances = var.public_instances
+  ssh_private_key  = var.ssh_private_key
+}
+
 module "record_generator" {
   source         = "../record_generator"
   name           = lower(var.name)
@@ -17,6 +25,7 @@ module "record_generator" {
   vhosts           = var.vhosts
   domain_tag       = var.domain_tag
   vhost_tag        = var.vhost_tag
+  dkim_public_key  = module.dkim.public_key
 }
 
 resource "cloudflare_record" "records" {
