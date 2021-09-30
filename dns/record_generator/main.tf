@@ -9,6 +9,8 @@ variable "public_instances" {}
 variable "domain_tag" {}
 variable "vhost_tag" {}
 
+variable "dkim_public_key" {}
+
 data "external" "key2fp" {
   for_each = var.public_instances
   program  = ["bash", "${path.module}/key2fp.sh"]
@@ -84,17 +86,23 @@ locals {
       ]
       if contains(values["tags"], var.domain_tag)
     ]),
-    [
-        {
-            type  = "TXT"
-            name  = var.name
-            value = "v=spf1 a -all"
-            data  = null
-        },
-    ]
   )
+  mail_records = [
+    {
+      type  = "TXT"
+      name  = var.name
+      value = "v=spf1 a -all"
+      data  = null
+    },
+    {
+      type  = "TXT"
+      name  = var.dkim_public_key != "" ? "default._domainkey.${var.name}" : var.name
+      value = var.dkim_public_key != "" ? "v=DKIM1; k=rsa; p=${var.dkim_public_key}" : "No DKIM public key define for this domain"
+      data  = null
+    },
+  ]
 }
 
 output "records" {
-  value = local.records
+  value = concat(local.records, local.mail_records)
 }
