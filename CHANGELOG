@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [11.6] 2021-10-12
+
+### Changed
+- [puppet] Replaced resolv.conf configuration with `file_line` by config of NetworkManager.
+- [puppet] Updated puppet-mysql version to fix encoding issue.
+- [puppet] Defined the seltype of ipa-rewrite.conf.
+
 ## [11.5] 2021-10-06
 
 ### Changed
