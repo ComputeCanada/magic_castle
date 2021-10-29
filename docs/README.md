@@ -915,25 +915,14 @@ external networks, otherwise, Terraform can find it automatically.
 
 **Post build modification effect**: change the floating ips assigned to the public nodes.
 
-#### 5.4.3 os_int_network (optional)
+#### 5.4.4 subnet_id (optional)
 
 **default value**: None
 
-Defines the name of the internal network that provides the subnet
-on which the instances are connected. Define this only if you
-have more than one network defined in your OpenStack project.
-Otherwise, Terraform can find it automatically.
-
-**Post build modification effect**: rebuild of all instances at next `terraform apply`.
-
-#### 5.4.4 os_int_subnet (optional)
-
-**default value**: None
-
-Defines the name of the internal subnet on which the instances are
-connected. Define this only if you have more than one subnet defined in your
-OpenStack network. Otherwise, Terraform can find it automatically.
-Can be used to force a v4 subnet when both v4 and v6 exist.
+Defines the ID of the internal IPV4 subnet to which the instances are
+connected. Define this if you have or intend to have more than one
+subnets defined in your OpenStack project. Otherwise, Terraform can
+find it automatically. Can be used to force a v4 subnet when both v4 and v6 exist.
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 

@@ -7,12 +7,7 @@ variable "os_ext_network" {
   default = null
 }
 
-variable "os_int_network" {
-  type    = string
-  default = null
-}
-
-variable "os_int_subnet" {
+variable "subnet_id" {
   type    = string
   default = null
 }
