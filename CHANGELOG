@@ -3,10 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-### UNRELEASED
+### [11.7] 2021-11-02
 
 ### Changed
 - [OpenStack] Replaced `var.os_int_subnet` by `var.subnet_id` as subnet can have the same name accross networks.
+- [puppet] Update puppet module `consul_template` to 2.3.3.
 
 ### Removed
 - [OpenStack] Removed `var.os_int_network`.
