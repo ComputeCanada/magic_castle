@@ -1,5 +1,6 @@
 # Magic Castle
 
+<!-- markdown-link-check-disable-next-line -->
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4895357.svg)](https://doi.org/10.5281/zenodo.4895357)
 [![Build Status](https://github.com/ComputeCanada/magic_castle/actions/workflows/test.yaml/badge.svg)](https://github.com/ComputeCanada/magic_castle/actions/workflows/test.yaml)
 
