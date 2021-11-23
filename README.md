@@ -48,6 +48,7 @@ and apply their configuration based on the tags defined in the preceding YAML fi
 ## Talks, slides and videos
 
 - [FOSDEM 2020 - Magic Castle: Terraforming the Cloud for HPC](https://fosdem.org/2020/schedule/event/magic_castle/) (2020-02-02)
+- [EasyBuild User Meeting 2021 - Magic Castle: Terraforming the Cloud for HPC](https://www.youtube.com/watch?v=54ph7f2-AL4) (2021-01-27)
 - [Campus Research Computing Consortium - Clusters in the Sky: How Canada is Building Beyond Iaas Cloud with Magic Castle](https://www.youtube.com/watch?v=jWCyUeGmm-8) (2021-05-20)
 
 ## List of other cloud HPC cluster open-source projects
