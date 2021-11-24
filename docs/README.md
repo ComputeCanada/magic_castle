@@ -558,6 +558,7 @@ The following sections present the available attributes per provider.
 For instances with the `spot` tags, these attributes can also be set:
 - `wait_for_fulfillment` (default: true)
 - `spot_type` (default: permanent)
+- `instance_interruption_behavior` (default: stop)
 - `spot_price` (default: not set)
 - `block_duration_minutes` (default: not set) [note 1]
 For more information on these attributes, refer to
