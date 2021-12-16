@@ -173,6 +173,44 @@ cloud-init clean
 ```
 Add `-r` to the previous command to reboot the instance once cloud-init has finishing cleaning.
 
+### 4.2 SELinux
+
+SELinux is enabled on every instances of a Magic Castle cluster. Some applications do not provide
+SELinux policies which can lead to their malfunctionning when SELinux is enabled. It is possible
+to track down the reasons why SELinux is preventing an application to work properly using
+the command-line tool `ausearch`.
+
+If you suspect application `app-a` to be denied by SELinux to work properly, run the following
+command as root:
+```
+ausearch -c app-a --raw | grep denied
+```
+
+To see all requests denied by SELinux:
+```
+ausearch --raw | grep denied
+```
+
+Sometime, the denials are hidden from regular logging. To display all denials, run the following
+command as root:
+```
+semodule --disable_dontaudit --build
+```
+then re-execute the application that is not working properly.
+
+Once you have found the denials that are the cause of the problem, you can create a new policy
+to allow the requests that were previously denied with the following command:
+```
+ausearch -c app-a --raw | grep denied | audit2allow -a -M app-a
+```
+
+Finally, you can install the generated policy using the command provided by `auditallow`.
+
+#### References
+- https://wiki.gentoo.org/wiki/SELinux
+- https://wiki.gentoo.org/wiki/SELinux/Tutorials/Where_to_find_SELinux_permission_denial_details
+
+
 ## 5. Release
 
 To build a release, use the script `release.sh` located at the root of Magic Castle git repo.
