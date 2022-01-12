@@ -107,8 +107,8 @@ resource "azurerm_linux_virtual_machine" "instances" {
 
   priority = contains(each.value["tags"], "spot") ? "Spot" : "Regular"
   # Spot instances specifics
-  max_bid_price   = lookup(each.value, "max_bid_price", null)
-  eviction_policy = lookup(each.value, "eviction_policy", "Deallocate")
+  max_bid_price   = contains(each.value["tags"], "spot") ? lookup(each.value, "max_bid_price", null) : null
+  eviction_policy = contains(each.value["tags"], "spot") ? lookup(each.value, "eviction_policy", "Deallocate") : null
 
   lifecycle {
     ignore_changes = [
