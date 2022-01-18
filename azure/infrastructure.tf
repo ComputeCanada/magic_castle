@@ -69,7 +69,7 @@ resource "azurerm_linux_virtual_machine" "instances" {
   }
 
   dynamic "source_image_reference" {
-    for_each = can(tomap(var.image)) ? [var.image] : []
+    for_each = can(tomap(lookup(each.value, "image", var.image))) ? [lookup(each.value, "image", var.image)] : []
     iterator = key
     content {
       publisher = key.value["publisher"]
@@ -78,7 +78,7 @@ resource "azurerm_linux_virtual_machine" "instances" {
       version   = "latest"
     }
   }
-  source_image_id = can(tomap(var.image)) ? null : tostring(var.image)
+  source_image_id = can(tomap(lookup(each.value, "image", var.image))) ? null : tostring(lookup(each.value, "image", var.image))
 
   computer_name  = each.key
   admin_username = "azure"

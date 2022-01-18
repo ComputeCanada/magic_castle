@@ -35,7 +35,8 @@ module "cluster_config" {
 }
 
 data "openstack_images_image_v2" "image" {
-  name = var.image
+  for_each = module.design.instances
+  name     = lookup(each.value, "image", var.image)
 }
 
 data "openstack_compute_flavor_v2" "flavors" {
@@ -51,7 +52,7 @@ resource "openstack_compute_keypair_v2" "keypair" {
 resource "openstack_compute_instance_v2" "instances" {
   for_each = module.design.instances
   name     = format("%s-%s", var.cluster_name, each.key)
-  image_id = lookup(each.value, "disk_size", 10) > data.openstack_compute_flavor_v2.flavors[each.key].disk ? null : data.openstack_images_image_v2.image.id
+  image_id = lookup(each.value, "disk_size", 10) > data.openstack_compute_flavor_v2.flavors[each.key].disk ? null : data.openstack_images_image_v2.image[each.key].id
 
   flavor_name = each.value.type
   key_pair    = openstack_compute_keypair_v2.keypair.name
@@ -72,7 +73,7 @@ resource "openstack_compute_instance_v2" "instances" {
   dynamic "block_device" {
     for_each = lookup(each.value, "disk_size", 10) > data.openstack_compute_flavor_v2.flavors[each.key].disk ? [{ volume_size = lookup(each.value, "disk_size", 10) }] : []
     content {
-      uuid                  = data.openstack_images_image_v2.image.id
+      uuid                  = data.openstack_images_image_v2.image[each.key].id
       source_type           = "image"
       destination_type      = "volume"
       boot_index            = 0

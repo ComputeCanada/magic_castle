@@ -78,7 +78,7 @@ locals {
 resource "aws_instance" "instances" {
   for_each          = local.regular_instances
   instance_type     = each.value.type
-  ami               = var.image
+  ami               = lookup(each.value, "image", var.image)
   user_data         = base64gzip(module.instance_config.user_data[each.key])
   availability_zone = local.availability_zone
   placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null
@@ -115,7 +115,7 @@ resource "aws_instance" "instances" {
 resource "aws_spot_instance_request" "spot_instances" {
   for_each          = local.spot_instances
   instance_type     = each.value.type
-  ami               = var.image
+  ami               = lookup(each.value, "image", var.image)
   user_data         = base64gzip(module.instance_config.user_data[each.key])
   availability_zone = local.availability_zone
   placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null
