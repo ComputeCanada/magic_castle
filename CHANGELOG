@@ -3,6 +3,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+### [11.8] UNRELEASED
+
+### Added
+- [puppet] Added missing rpm for nvidia gpu passthrough setup in CentOS 8 (issue [#159]((https://github.com/ComputeCanada/puppet-magic_castle/issues/159))
+- [puppet] Added confinement of users in Slurm's jobs when using Slurm >= 21.08 (PR [#164]((https://github.com/ComputeCanada/puppet-magic_castle/issues/164))
+- [puppet] Added configuration of NetworkManager DNS config for ipa-server (issue [#169](https://github.com/ComputeCanada/puppet-magic_castle/issues/169)
+- [puppet] Added ability to create local users with hieradata (PR [#174](https://github.com/ComputeCanada/puppet-magic_castle/issues/174)
+- [puppet] Added ability to create LDAP users with hieradata (PR [#175](https://github.com/ComputeCanada/puppet-magic_castle/issues/175)
+- [puppet] Added ssh public keys to ipa_create_user.py
+
+### Changed
+- [puppet] Updated Compute Canada software stack to versio 2020 for CentOS 7 and 8
+- [puppet] Fixed regex for EESSI repositories (issue [#161](https://github.com/ComputeCanada/puppet-magic_castle/issues/161)
+- [puppet] Fixed compatibility with Slurm 21.08 (issue [#162](https://github.com/ComputeCanada/puppet-magic_castle/issues/162)
+- [puppet] Fixed sss cache invalidation (issue [#165]((https://github.com/ComputeCanada/puppet-magic_castle/issues/165))
+- [puppet] Put lmod_default_modules in computecanada.yaml (PR [#172]((https://github.com/ComputeCanada/puppet-magic_castle/issues/172))
+- [puppet] Changed default slurm version to 21.08
+- [puppet] Refactored ipa_create_user.py arguments (PR [#173]((https://github.com/ComputeCanada/puppet-magic_castle/issues/173))
+- [puppet] Updated puppet-jupyterhub version to v4.0.0 (PR [#176](https://github.com/ComputeCanada/puppet-magic_castle/issues/176)
+
+### Removed
+- [puppet] Remove dhclient removal in centos 8 (PR [#170]((https://github.com/ComputeCanada/puppet-magic_castle/issues/170))
+
 ### [11.7] 2021-11-02
 
 ### Changed
