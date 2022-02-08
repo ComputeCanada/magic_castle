@@ -1224,7 +1224,7 @@ allocation. The regular expression can be redefined, see
 
 #### 10.3.1 hieradata
 
-Using the [hieradata variable]() in the `main.tf`, it is possible to define LDAP users.
+Using the [hieradata variable](#413-hieradata-optional) in the `main.tf`, it is possible to define LDAP users.
 
 Examples of LDAP user definition with hieradata are provided in
 [puppet-magic_castle documentation](https://github.com/computecanada/puppet-magic_castle#profileusersldapusers).
