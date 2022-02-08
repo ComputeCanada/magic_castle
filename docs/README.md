@@ -1220,7 +1220,7 @@ name, and will gain access to the corresonding project folder under `/project`.
 
 **Note**: The regular expression represents how Compute Canada names its resources
 allocation. The regular expression can be redefined, see 
-[`profile::accounts:::project_regex`](https://github.com/ComputeCanada/puppet-magic_castle/edit/main/README.md)
+[`profile::accounts:::project_regex`](https://github.com/ComputeCanada/puppet-magic_castle/#profileaccounts)
 
 #### 10.3.1 hieradata
 
