@@ -1200,23 +1200,45 @@ Note: this password must respect the FreeIPA password policy. To display the pol
     done
     ```
 
-### 10.3 Add a User Account
+### 10.3 Add LDAP Users
 
-#### 10.3.1 With the Command-Line
+Users can be added to Magic Castle LDAP database (FreeIPA) with either one of
+the following methods: hieradata, command-line, and Mokey web-portal. Each
+method is presented in the following subsections.
+
+New LDAP users are automatically assigned a home folder on NFS.
+
+Magic Castle determines if an LDAP user should be member of a Slurm account
+based on its POSIX groups. When a user is added to a POSIX group, a daemon
+try to match the group name to the following regular expression:
+```
+(ctb|def|rpp|rrg)-[a-z0-9_-]*
+```
+
+If there is a match, the user will be added to a Slurm account with the same
+name, and will gain access to the corresonding project folder under `/project`.
+
+**Note**: The regular expression represents how Compute Canada names its resources
+allocation. The regular expression can be redefined, see 
+[`profile::accounts:::project_regex`](https://github.com/ComputeCanada/puppet-magic_castle/edit/main/README.md)
+
+#### 10.3.1 hieradata
+
+Using the [hieradata variable]() in the `main.tf`, it is possible to define LDAP users.
+
+Examples of LDAP user definition with hieradata are provided in
+[puppet-magic_castle documentation](https://github.com/computecanada/puppet-magic_castle#profileusersldapusers).
+
+#### 10.3.2 Command-Line
 
 To add a user account after the cluster is built, log in `mgmt1` and call:
 ```bash
 kinit admin
-IPA_ADMIN_PASSWD=<freeipa_passwd> IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.py <username> --sponsor <piname>
+IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.py <username> [--group <group_name>]
 kdestroy
 ```
 
-The home folder will be created automatically in the moments following the account creation.
-
-The `<piname>` value will used to create a project folder in `/project` and a Slurm project.
-The project will be named `def-piname`. This step is also done automatically.
-
-#### 10.3.2 With Mokey
+#### 10.3.3 Mokey
 
 If user sign-up with Mokey is enabled, users can create their own account at
 ```
@@ -1237,12 +1259,6 @@ TF_DATA_YAML="/etc/puppetlabs/data/terraform_data.yaml"
 ssh puppet sudo grep freeipa_passwd $TF_DATA_YAML | cut -d'"' -f4
 ```
 Note that the username for the administrator of FreeIPA is always `admin`.
-
-Users created with Mokey do not have a project nor a Slurm account.
-To add a user to a project and a Slurm account,
-add the user to a group with one of these prefixes :
-`ctb-`, `def-`, `rpp-` or `rrg-`. You can create new groups
-with FreeIPA web interface or using the command-line.
 
 ### 10.4 Increase the Number of Guest Accounts
 
