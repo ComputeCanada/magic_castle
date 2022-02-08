@@ -37,7 +37,7 @@ terraform version
 ### 1.2 Authentication
 
 #### 1.2.1 Amazon Web Services (AWS)
-
+<!-- markdown-link-check-disable -->
 1. Go to [AWS - My Security Credentials](https://console.aws.amazon.com/iam/home?#/security_credentials)
 2. Create a new access key.
 3. In a terminal, export `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, environment variables, representing your AWS Access Key and AWS Secret Key:
@@ -45,6 +45,7 @@ terraform version
     export AWS_ACCESS_KEY_ID="an-access-key"
     export AWS_SECRET_ACCESS_KEY="a-secret-key"
     ```
+<!-- markdown-link-check-enable -->
 
 Reference: [AWS Provider - Environment Variables](https://www.terraform.io/docs/providers/aws/index.html#environment-variables)
 
