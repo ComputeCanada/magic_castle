@@ -410,6 +410,9 @@ should be mainly done through Puppet. Image customization is mostly
 envisioned as a way to accelerate the provisioning process by applying the
 security patches and OS updates in advance.
 
+To specify a different image for an instance type, use the
+[`image` instance attribute](#472-optional-attributes)
+
 **Requirements**: the operating system on the image must be from the RedHat family.
 This includes CentOS (7, 8), Rocky Linux (8), and AlmaLinux (8).
 
@@ -535,12 +538,13 @@ You are free to define your own additional tags.
 
 #### 4.7.2 Optional attributes
 
-Three optional attributes can be defined:
+Optional attributes can be defined:
 1. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create (default: 1).
-2. `disk_size`: size in gibibytes (GiB) of the instance's root disk containing
+2. `image`: specification of the image to use for this instance type. (default: global [`image`](#46-image) value).
+3. `disk_size`: size in gibibytes (GiB) of the instance's root disk containing
 the operating system and service software
 (default: see the next table).
-3. `disk_type`: type of the instance's root disk (default: see the next table).
+4. `disk_type`: type of the instance's root disk (default: see the next table).
 
 Default root disk's attribute value per provider:
 | Provider | `disk_type` | `disk_size` (GiB) |
