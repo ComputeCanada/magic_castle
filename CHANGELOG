@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### [11.8] UNRELEASED
 
 ### Added
+- Added `image` optional instance attribute (PR #203)
 - [puppet] Added missing rpm for nvidia gpu passthrough setup in CentOS 8 (issue [#159]((https://github.com/ComputeCanada/puppet-magic_castle/issues/159))
 - [puppet] Added confinement of users in Slurm's jobs when using Slurm >= 21.08 (PR [#164]((https://github.com/ComputeCanada/puppet-magic_castle/issues/164))
 - [puppet] Added configuration of NetworkManager DNS config for ipa-server (issue [#169](https://github.com/ComputeCanada/puppet-magic_castle/issues/169)
@@ -14,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - [puppet] Added ssh public keys to ipa_create_user.py
 
 ### Changed
+- [AWS] Ensure AWS spot instances can be persistent (PR #193)
 - [puppet] Updated Compute Canada software stack to versio 2020 for CentOS 7 and 8
 - [puppet] Fixed regex for EESSI repositories (issue [#161](https://github.com/ComputeCanada/puppet-magic_castle/issues/161)
 - [puppet] Fixed compatibility with Slurm 21.08 (issue [#162](https://github.com/ComputeCanada/puppet-magic_castle/issues/162)
