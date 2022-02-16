@@ -1246,7 +1246,7 @@ try to match the group name to the following regular expression:
 ```
 
 If there is a match, the user will be added to a Slurm account with the same
-name, and will gain access to the corresonding project folder under `/project`.
+name, and will gain access to the corresponding project folder under `/project`.
 
 **Note**: The regular expression represents how Compute Canada names its resources
 allocation. The regular expression can be redefined, see

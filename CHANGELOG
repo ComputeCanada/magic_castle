@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - [AWS] Ensure AWS spot instances can be persistent (PR #193)
-- [puppet] Updated Compute Canada software stack to versio 2020 for CentOS 7 and 8
+- [puppet] Updated Compute Canada software stack to version 2020 for CentOS 7 and 8
 - [puppet] Fixed regex for EESSI repositories (issue [#161](https://github.com/ComputeCanada/puppet-magic_castle/issues/161))
 - [puppet] Fixed compatibility with Slurm 21.08 (issue [#162](https://github.com/ComputeCanada/puppet-magic_castle/issues/162))
 - [puppet] Fixed sss cache invalidation (issue [#165](https://github.com/ComputeCanada/puppet-magic_castle/issues/165))
@@ -31,7 +31,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### [11.7] 2021-11-02
 
 ### Changed
-- [OpenStack] Replaced `var.os_int_subnet` by `var.subnet_id` as subnet can have the same name accross networks.
+- [OpenStack] Replaced `var.os_int_subnet` by `var.subnet_id` as subnet can have the same name across networks.
 - [puppet] Update puppet module `consul_template` to 2.3.3.
 
 ### Removed
