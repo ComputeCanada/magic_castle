@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - [puppet] Added ssh public keys to ipa_create_user.py
 
 ### Changed
+- Updated Terraform minimum version to 1.1.0 from 0.14.2
 - Updated image in all examples to use either Rocky or AlmaLinux 8
 - [AWS] Ensure AWS spot instances can be persistent (PR #193)
 - [Azure] Use spot specific values only when using spot instances (Issue #199)
