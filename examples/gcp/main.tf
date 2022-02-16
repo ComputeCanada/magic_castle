@@ -9,7 +9,7 @@ module "gcp" {
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
-  image        = "centos-7"
+  image        = "rocky-linux-8"
   nb_users     = 10
 
   instances = {

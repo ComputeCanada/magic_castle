@@ -9,7 +9,7 @@ module "openstack" {
 
   cluster_name = "k8s-os"
   domain       = "computecanada.dev"
-  image        = "CentOS-7-x64-2021-11"
+  image        = "Rocky-8.5-x64-2021-11"
 
   instances = {
     master   = { type = "c2-7.5gb-31", tags = ["controller", "puppet", "public"], count = 1 }
