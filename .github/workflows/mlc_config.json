@@ -9,5 +9,6 @@
           "pattern": "^/",
           "replacement": "https://github.com/ComputeCanada/magic_castle/tree/main/"
         }
-      ]
+      ],
+    "aliveStatusCodes": [200, 206, 429]
 }
