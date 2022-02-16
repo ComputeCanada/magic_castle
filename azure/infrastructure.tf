@@ -68,6 +68,16 @@ resource "azurerm_linux_virtual_machine" "instances" {
     disk_size_gb         = lookup(each.value, "disk_size", 30)
   }
 
+  dynamic "plan" {
+    for_each = var.plan["name"] != null ? [var.plan] : []
+    iterator = plan
+    content {
+      name      = plan.value["name"]
+      product   = plan.value["product"]
+      publisher = plan.value["publisher"]
+    }
+  }
+
   dynamic "source_image_reference" {
     for_each = can(tomap(lookup(each.value, "image", var.image))) ? [lookup(each.value, "image", var.image)] : []
     iterator = key
@@ -75,7 +85,7 @@ resource "azurerm_linux_virtual_machine" "instances" {
       publisher = key.value["publisher"]
       offer     = key.value["offer"]
       sku       = key.value["sku"]
-      version   = "latest"
+      version   = lookup(key.value, "version", "latest")
     }
   }
   source_image_id = can(tomap(lookup(each.value, "image", var.image))) ? null : tostring(lookup(each.value, "image", var.image))

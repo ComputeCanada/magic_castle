@@ -855,6 +855,31 @@ create and destroy resource groups.
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
+#### 5.2.3 plan (optional)
+
+**default value**:
+```hcl
+{
+  name      = null
+  product   = null
+  publisher = null
+}
+```
+
+Purchase plan information for Azure Marketplace image. Certain images from Azure Marketplace
+requires a terms acceptance or a fee to be used. When using this kind of image, you must supply
+the plan details.
+
+For example, to use the official [AlmaLinux image](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/almalinux.almalinux), you have to first add it to your
+account. Then to use it with Magic Castle, you must supply the following plan information:
+```
+plan = {
+  name      = "8_5"
+  product   = "almalinux"
+  publisher = "almalinux"
+}
+```
+
 ### 5.3 Google Cloud
 
 #### 5.3.1 project
@@ -1224,7 +1249,7 @@ If there is a match, the user will be added to a Slurm account with the same
 name, and will gain access to the corresonding project folder under `/project`.
 
 **Note**: The regular expression represents how Compute Canada names its resources
-allocation. The regular expression can be redefined, see 
+allocation. The regular expression can be redefined, see
 [`profile::accounts:::project_regex`](https://github.com/ComputeCanada/puppet-magic_castle/#profileaccounts)
 
 #### 10.3.1 hieradata
