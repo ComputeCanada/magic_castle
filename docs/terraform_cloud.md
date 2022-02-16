@@ -21,7 +21,7 @@ provide a cost estimate of the resources.
 
 ### Creating the workspace
 1. Create a git repository in [GitHub](https://www.github.com/), [GitLab](https://www.gitlab.com/),
-or any of the [version control system provider supported by Terraform Cloud](https://www.terraform.io/docs/cloud/vcs/index.html)
+or any of the [version control system provider supported by Terraform Cloud](https://www.terraform.io/cloud-docs/vcs)
 2. In this git repository, add a copy of the Magic Castle example `main.tf`
 available for the cloud of your choice
 4. Log in [Terraform Cloud account](https://app.terraform.io/signup/account)

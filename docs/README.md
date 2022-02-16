@@ -27,7 +27,7 @@ To use Magic Castle you will need:
 
 To install Terraform, follow the
 [tutorial](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-or go directly on [Terraform download page](https://www.terraform.io/downloads.html).
+or go directly on [Terraform download page](https://www.terraform.io/downloads).
 
 You can verify Terraform was properly installed by looking at the version in a terminal:
 ```
@@ -47,7 +47,7 @@ terraform version
     ```
 <!-- markdown-link-check-enable -->
 
-Reference: [AWS Provider - Environment Variables](https://www.terraform.io/docs/providers/aws/index.html#environment-variables)
+Reference: [AWS Provider - Environment Variables](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#environment-variables)
 
 #### 1.2.2 Google Cloud
 
@@ -59,7 +59,7 @@ Reference: [AWS Provider - Environment Variables](https://www.terraform.io/docs/
 1. Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 2. In a terminal, enter : `az login`
 
-Reference : [Azure Provider: Authenticating using the Azure CLI](https://www.terraform.io/docs/providers/azurerm/guides/azure_cli.html)
+Reference : [Azure Provider: Authenticating using the Azure CLI](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/azure_cli)
 
 #### 1.2.4 OpenStack / OVH
 
@@ -327,7 +327,7 @@ provider folder (i.e.: `./aws`).
 
 **Requirement**: Must be a path to a local folder containing the Magic Castle
 Terraform files for the cloud provider of your choice. It can also be a git
-repository. Refer to [Terraform documentation on module source](https://www.terraform.io/docs/language/modules/sources.html#generic-git-repository) for more information.
+repository. Refer to [Terraform documentation on module source](https://www.terraform.io/language/modules/sources#generic-git-repository) for more information.
 
 **Post build modification effect**: `terraform init` will have to be
 called again and the next `terraform apply` might propose changes if the infrastructure
