@@ -9,7 +9,9 @@ module "aws" {
 
   cluster_name = "spot-aws"
   domain       = "calculquebec.cloud"
-  image        = "ami-033e6106180a626d0" # CentOS 7 -  ca-central-1
+  # Rocky Linux 8 -  ca-central-1
+  # https://rockylinux.org/cloud-images
+  image        = "ami-09ada793eea1559e6"
 
   instances = {
     mgmt  = { type = "t3.large",  count = 1, tags = ["mgmt", "puppet", "nfs"] },

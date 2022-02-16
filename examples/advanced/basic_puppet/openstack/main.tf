@@ -9,7 +9,7 @@ module "openstack" {
 
   cluster_name = "dev-puppet"
   domain       = "calculquebec.cloud"
-  image        = "CentOS-7-x64-2020-09"
+  image        = "Rocky-8.5-x64-2021-11"
 
   instances = {
     puppet = { type = "p4-7.5gb", tags = ["puppet"] }

@@ -9,10 +9,19 @@ module "azure" {
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
+
+  # Visit https://azuremarketplace.microsoft.com/en-us/marketplace/apps/almalinux.almalinux
+  # to contract the free AlmaLinux plan and be able to use the image.
+  plan = {
+    name      = "8_5"
+    product   = "almalinux"
+    publisher = "almalinux"
+  }
   image        = {
-    publisher = "OpenLogic",
-    offer     = "CentOS-CI",
-    sku       = "7-CI"
+    publisher = "almalinux",
+    offer     = "almalinux",
+    sku       = "8_5",
+    version   = "8.5.20211118"
   }
 
   instances = {
