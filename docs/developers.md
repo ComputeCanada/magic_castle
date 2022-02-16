@@ -12,7 +12,7 @@
 ## 1. Setup
 
 To develop for Magic Castle you will need:
-* Terraform (>= 0.14.2)
+* Terraform (>= 1.1.0)
 * git
 * Access to a Cloud (e.g.: Compute Canada Arbutus)
 * Ability to communicate with the cloud provider API from your computer
