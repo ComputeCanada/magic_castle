@@ -1070,9 +1070,6 @@ terraform {
     acme = {
       source = "vancluever/acme"
     }
-    null = {
-      source = "hashicorp/null"
-    }
     tls = {
       source = "hashicorp/tls"
     }
@@ -1091,21 +1088,21 @@ resource "acme_registration" "reg" {
   account_key_pem = tls_private_key.private_key.private_key_pem
   email_address   = var.email
 }
-resource "local_file" "acme_key.pem" {
+resource "local_file" "acme_key_pem" {
     content     = tls_private_key.private_key.private_key_pem
     filename = "acme_key.pem"
 }
 ```
 
-In the same folder, enter the following commands and provide your email address when asked:
+In the same folder, enter the following commands and follow the instructions:
 ```
 terraform init
 terraform apply
 ```
 
-Once done, copy the file named `acme_key.pem` to somewhere safe and where you will be able
+Once done, copy the file named `acme_key.pem` somewhere safe, and where you will be able
 to refer to later on. Then, when the time comes to create a new cluster, add the following
-variable to the DNS module in your main.tf:
+variable to the DNS module in your `main.tf`:
 ```hcl
 acme_key_pem = file("path/to/your/acme_key.pem")
 ```
