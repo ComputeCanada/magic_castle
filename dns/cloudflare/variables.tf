@@ -30,3 +30,8 @@ variable "public_instances" { }
 variable "ssh_private_key" {
   type = string
 }
+
+variable "acme_key_pem" {
+  type = string
+  default = ""
+}

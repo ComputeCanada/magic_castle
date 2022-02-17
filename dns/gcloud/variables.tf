@@ -13,6 +13,11 @@ variable "domain" {
 variable "email" {
 }
 
+variable "acme_key_pem" {
+  type = string
+  default = ""
+}
+
 variable "sudoer_username" {
 }
 
