@@ -39,6 +39,7 @@ module "acme" {
   public_instances    = var.public_instances
   ssh_private_key     = var.ssh_private_key
   ssl_tags            = var.ssl_tags
+  acme_key_pem        = var.acme_key_pem
 }
 
 output "hostnames" {
