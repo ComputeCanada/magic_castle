@@ -206,6 +206,15 @@ ausearch -c app-a --raw | grep denied | audit2allow -a -M app-a
 
 Finally, you can install the generated policy using the command provided by `auditallow`.
 
+#### Building the policy package file (.pp) from the enforcement file (.te)
+
+If you need to tweak an existing enforcement file and you want to recompile the policy package,
+you can with the following commands:
+```
+checkmodule -M -m -o my_policy.mod my_policy.te
+semodule_package -o my_policy.pp -m my_policy.mod
+```
+
 #### References
 - https://wiki.gentoo.org/wiki/SELinux
 - https://wiki.gentoo.org/wiki/SELinux/Tutorials/Where_to_find_SELinux_permission_denial_details
