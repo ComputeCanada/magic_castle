@@ -14,7 +14,10 @@ cloudmap = { }
 if 'OS_AUTH_URL' in os.environ:
     cloudmap['auth_url'] = os.environ['OS_AUTH_URL']
 elif 'OS_CLOUD' in os.environ:
-    clouds = expanduser("~/.config/openstack/clouds.yaml")
+    clouds = os.environ.get(
+        'OS_CLIENT_CONFIG_FILE',
+        expanduser("~/.config/openstack/clouds.yaml")
+    )
     if exists(clouds):
         cloud_name = os.environ['OS_CLOUD']
         if yaml_avail:
