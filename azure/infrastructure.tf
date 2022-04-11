@@ -161,6 +161,7 @@ locals {
       id        = azurerm_linux_virtual_machine.instances[x].id
       hostkeys = {
         rsa = module.instance_config.rsa_hostkeys[x]
+        ed25519 = module.instance_config.ed25519_hostkeys[x]
       }
     }
   }

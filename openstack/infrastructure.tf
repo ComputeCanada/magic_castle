@@ -129,6 +129,7 @@ locals {
       id        = openstack_compute_instance_v2.instances[x].id
       hostkeys = {
         rsa = module.instance_config.rsa_hostkeys[x]
+        ed25519 = module.instance_config.ed25519_hostkeys[x]
       }
     }
   }

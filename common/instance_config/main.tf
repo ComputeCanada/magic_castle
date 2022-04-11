@@ -15,6 +15,11 @@ resource "tls_private_key" "rsa_hostkeys" {
   rsa_bits  = 4096
 }
 
+resource "tls_private_key" "ed25519_hostkeys" {
+  for_each  = toset([for x, values in var.instances: values["prefix"]])
+  algorithm = "ED25519"
+}
+
 locals {
   ssh_key = {
     public  = try("${chomp(tls_private_key.ssh[0].public_key_openssh)} terraform@localhost", null)
@@ -36,6 +41,10 @@ locals {
           rsa = {
             private = tls_private_key.rsa_hostkeys[values["prefix"]].private_key_pem
             public  = tls_private_key.rsa_hostkeys[values["prefix"]].public_key_openssh
+          }
+          ed25519 = {
+            private = tls_private_key.ed25519_hostkeys[values["prefix"]].private_key_openssh
+            public  = tls_private_key.ed25519_hostkeys[values["prefix"]].public_key_openssh
           }
         }
       }
