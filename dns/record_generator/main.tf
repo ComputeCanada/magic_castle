@@ -15,7 +15,8 @@ data "external" "key2fp" {
   for_each = var.public_instances
   program = ["python3", "${path.module}/key2fp.py"]
   query = {
-    ssh_key = each.value["hostkeys"]["rsa"]
+    rsa = each.value["hostkeys"]["rsa"]
+    ed25519 = each.value["hostkeys"]["ed25519"]
   }
 }
 
@@ -56,9 +57,21 @@ locals {
             name  = join(".", [key, var.name])
             value = null
             data  = {
-                algorithm   = data.external.key2fp[key].result["algorithm"]
+                algorithm   = data.external.key2fp[key].result["rsa_algorithm"]
                 type        = 2
-                fingerprint = data.external.key2fp[key].result["sha256"]
+                fingerprint = data.external.key2fp[key].result["rsa_sha256"]
+            }
+        }
+    ],
+    [
+        for key, values in var.public_instances: {
+            type  = "SSHFP"
+            name  = join(".", [key, var.name])
+            value = null
+            data  = {
+                algorithm   = data.external.key2fp[key].result["ed25519_algorithm"]
+                type        = 2
+                fingerprint = data.external.key2fp[key].result["ed25519_sha256"]
             }
         }
     ],
@@ -68,9 +81,21 @@ locals {
             name  = var.name
             value = null
             data  = {
-                algorithm   = try(coalesce([for key, values in var.public_instances: data.external.key2fp[key].result["algorithm"] if contains(values["tags"], var.domain_tag)]...), 0)
+                algorithm   = try(coalesce([for key, values in var.public_instances: data.external.key2fp[key].result["rsa_algorithm"] if contains(values["tags"], var.domain_tag)]...), 0)
                 type        = 2
-                fingerprint = try(coalesce([for key, values in var.public_instances: data.external.key2fp[key].result["sha256"] if contains(values["tags"], var.domain_tag)]...), 0)
+                fingerprint = try(coalesce([for key, values in var.public_instances: data.external.key2fp[key].result["rsa_sha256"] if contains(values["tags"], var.domain_tag)]...), 0)
+            }
+        }
+    ],
+    [
+         {
+            type  = "SSHFP"
+            name  = var.name
+            value = null
+            data  = {
+                algorithm   = try(coalesce([for key, values in var.public_instances: data.external.key2fp[key].result["ed25519_algorithm"] if contains(values["tags"], var.domain_tag)]...), 0)
+                type        = 2
+                fingerprint = try(coalesce([for key, values in var.public_instances: data.external.key2fp[key].result["ed25519_sha256"] if contains(values["tags"], var.domain_tag)]...), 0)
             }
         }
     ])
