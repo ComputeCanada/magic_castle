@@ -7,10 +7,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- Added support for OS_CLIENT_CONFIG_FILE in keystone.py
+- Added support for ed25519 hostkeys and SSH keys (issue #210)
+- [puppet] sssd can now be configured with additional LDAP domains (issue [#179](https://github.com/ComputeCanada/puppet-magic_castle/issues/179))
+- [puppet] Added class to support cephfs mount
+
 ### Changed
 
-### Removed
+- Replaced python by python3 in external data source (issue #208)
+- [puppet] Moved munge_socket selinux::module in slurm::base (issue [#178](https://github.com/ComputeCanada/puppet-magic_castle/issues/178))
+- [puppet] Set MemSpecLimit in slurm.conf and allow configuration using hieradata (issue [#181](https://github.com/ComputeCanada/puppet-magic_castle/issues/181))
+- [puppet] Hardened SSHD config for CentOS 8 (issue [#182](https://github.com/ComputeCanada/puppet-magic_castle/issues/182))
+- [puppet] Fixed issue with cat of file inside interactive Slurm jobs (issue [#183](https://github.com/ComputeCanada/puppet-magic_castle/issues/183))
+ - [puppet] NFS devices can now be an empty string (issue [#185](https://github.com/ComputeCanada/puppet-magic_castle/issues/185))
+- [puppet] Fixed notebook and terminals link in slurmformspawner hieradata (issue [#189](https://github.com/ComputeCanada/puppet-magic_castle/issues/189))
+- [puppet] Replaced workshop class by an account parameter that adds folders to /etc/skel based on archives fetched from URL provided in hieradata of profile::account (issue [#191](https://github.com/ComputeCanada/puppet-magic_castle/issues/191))
+- [puppet] Replaced Apache reverse proxy by Caddy (issue [#195](https://github.com/ComputeCanada/puppet-magic_castle/issues/195))
+- [puppet] Dropped support for Globus v4 and replaced most of profile::globus code by `treydock/globus` module to add support for Globus v5.4.
+- [puppet] Local users are now required to be created for cloud-init suoders to be removed
 
+
+### Removed
+- [puppet] Removed class `profile::workshop`
 
 ### [11.8] 2022-02-16
 
