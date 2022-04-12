@@ -5,8 +5,7 @@ resource "random_string" "puppetserver_password" {
 
 resource "tls_private_key" "ssh" {
   count     = var.generate_ssh_key ? 1 : 0
-  algorithm = "RSA"
-  rsa_bits  = 4096
+  algorithm = "ED25519"
 }
 
 resource "tls_private_key" "rsa_hostkeys" {
