@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Added support for OS_CLIENT_CONFIG_FILE in keystone.py
 - Added support for ed25519 hostkeys and SSH keys (issue #210)
+- Add acme_key_pem optional variable to DNS modules (issue #205)
 - [puppet] sssd can now be configured with additional LDAP domains (issue [#179](https://github.com/ComputeCanada/puppet-magic_castle/issues/179))
 - [puppet] Added class to support cephfs mount
 
@@ -25,7 +26,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - [puppet] Replaced Apache reverse proxy by Caddy (issue [#195](https://github.com/ComputeCanada/puppet-magic_castle/issues/195))
 - [puppet] Dropped support for Globus v4 and replaced most of profile::globus code by `treydock/globus` module to add support for Globus v5.4.
 - [puppet] Local users are now required to be created for cloud-init suoders to be removed
-
 
 ### Removed
 - [puppet] Removed class `profile::workshop`
