@@ -1045,6 +1045,65 @@ Apache configuration expects the following files to exist:
 
 Refer to the [reverse proxy configuration](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/reverse_proxy.pp) for more details.
 
+### 6.4 ACME Account Private Key
+
+To create the wildcard SSL certificate associated with the domain name, Magic Castle
+creates a private key and register a new ACME account with this key. This account
+registration process is done for each new cluster. However, ACME limits the number of
+new accounts that can be created to a maximum of 10 per IP Address per 3 hours.
+
+If you plan to create more than 10 clusters per 3 hours, we recommend registering an
+ACME account first and then provide its private key in PEM format to Magic Castle DNS
+module, using the `acme_key_pem` variable.
+
+#### 6.4.1 How to Generate an ACME Account Private Key
+
+In a separate folder, create a file with the following content
+```hcl
+terraform {
+  required_version = ">= 1.1"
+  required_providers {
+    acme = {
+      source = "vancluever/acme"
+    }
+    tls = {
+      source = "hashicorp/tls"
+    }
+  }
+}
+
+variable "email" {}
+
+provider "acme" {
+  server_url = "https://acme-v02.api.letsencrypt.org/directory"
+}
+resource "tls_private_key" "private_key" {
+  algorithm = "RSA"
+}
+resource "acme_registration" "reg" {
+  account_key_pem = tls_private_key.private_key.private_key_pem
+  email_address   = var.email
+}
+resource "local_file" "acme_key_pem" {
+    content     = tls_private_key.private_key.private_key_pem
+    filename = "acme_key.pem"
+}
+```
+
+In the same folder, enter the following commands and follow the instructions:
+```
+terraform init
+terraform apply
+```
+
+Once done, copy the file named `acme_key.pem` somewhere safe, and where you will be able
+to refer to later on. Then, when the time comes to create a new cluster, add the following
+variable to the DNS module in your `main.tf`:
+```hcl
+acme_key_pem = file("path/to/your/acme_key.pem")
+```
+
+
 ## 7. Planning
 
 Once your initial cluster configuration is done, you can initiate

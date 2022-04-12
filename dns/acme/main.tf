@@ -29,17 +29,24 @@ variable "ssh_private_key" {
   type = string
 }
 
+variable "acme_key_pem" {
+  type = string
+  default = ""
+}
+
 resource "tls_private_key" "private_key" {
+  count = var.acme_key_pem == "" ? 1 : 0
   algorithm = "RSA"
 }
 
 resource "acme_registration" "reg" {
-  account_key_pem = tls_private_key.private_key.private_key_pem
+  count           = var.acme_key_pem == "" ? 1 : 0
+  account_key_pem = tls_private_key.private_key[0].private_key_pem
   email_address   = var.email
 }
 
 resource "acme_certificate" "certificate" {
-  account_key_pem           = acme_registration.reg.account_key_pem
+  account_key_pem           = var.acme_key_pem == "" ? acme_registration.reg[0].account_key_pem : var.acme_key_pem
   common_name               = "${var.name}.${var.domain}"
   subject_alternative_names = ["*.${var.name}.${var.domain}"]
 
