@@ -655,10 +655,6 @@ use this key to copy some configuration files with scp on the cluster. Otherwise
 Magic Castle can create a key pair for unique to this cluster, see section
 [4.15 - generate_ssh_key (optional)](#415-generate_ssh_key-optional).
 
-**Note 2**: The SSH key type has to be ECDSA or RSA for some cloud providers
-including AWS and OpenStack because they do not support ed25519 and DSA
-is deprecated.
-
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 The sudoer account `authorized_keys` file will be updated by each instance's Puppet agent
 following the copy of the hieradata files.

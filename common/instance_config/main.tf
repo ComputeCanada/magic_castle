@@ -5,14 +5,18 @@ resource "random_string" "puppetserver_password" {
 
 resource "tls_private_key" "ssh" {
   count     = var.generate_ssh_key ? 1 : 0
-  algorithm = "RSA"
-  rsa_bits  = 4096
+  algorithm = "ED25519"
 }
 
 resource "tls_private_key" "rsa_hostkeys" {
   for_each  = toset([for x, values in var.instances: values["prefix"]])
   algorithm = "RSA"
   rsa_bits  = 4096
+}
+
+resource "tls_private_key" "ed25519_hostkeys" {
+  for_each  = toset([for x, values in var.instances: values["prefix"]])
+  algorithm = "ED25519"
 }
 
 locals {
@@ -36,6 +40,10 @@ locals {
           rsa = {
             private = tls_private_key.rsa_hostkeys[values["prefix"]].private_key_pem
             public  = tls_private_key.rsa_hostkeys[values["prefix"]].public_key_openssh
+          }
+          ed25519 = {
+            private = tls_private_key.ed25519_hostkeys[values["prefix"]].private_key_openssh
+            public  = tls_private_key.ed25519_hostkeys[values["prefix"]].public_key_openssh
           }
         }
       }
