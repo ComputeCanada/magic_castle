@@ -1516,6 +1516,15 @@ terraform apply
 The apply will generate a new certificate, upload it on the nodes that need it
 and reload Apache if it is configured.
 
+#### 10.9.3 Set SELinux in permissive mode
+
+SELinux can be set in permissive mode to debug new workflows that would be
+prevented by SELinux from working properly. To do so, add the following line
+to the variable `hieradata` in `main.tf`:
+```yaml
+selinux::mode: 'permissive'
+```
+
 ## 11. Customize Magic Castle Terraform Files
 
 You can modify the Terraform module files in the folder named after your cloud
