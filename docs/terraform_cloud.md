@@ -184,3 +184,47 @@ the bottom of the plan page.
 It is possible to apply automatically a successful plan. Go in the "Settings"
 section, and under "Apply method" select "Auto apply". Any following successful
 plan will then be automatically applied.
+
+## Magic Castle, Terraform Cloud and the CLI
+
+Terraform cloud only allows to apply or destroy the plan as stated in the main.tf,
+but sometimes it can be useful to run some other terraform commands that are only
+available through the command-line interface, for example `terraform taint`.
+
+It is possible to import the terraform state of a cluster on your local computer
+and then use the CLI on it.
+
+The first step is to log in Terraform cloud:
+```sh
+terraform login
+```
+
+The second step is to create a folder where the terraform state will be stored:
+```sh
+mkdir my-cluster-1
+```
+
+In that folder, create a file named `cloud.tf` with the following content:
+```hcl
+terraform {
+  cloud {
+    organization = "REPLACE-BY-YOUR-TF-CLOUD-ORG"
+    workspaces {
+      name = "REPLACE-BY-THE-NAME-OF-YOUR-WORKSPACE"
+    }
+  }
+}
+```
+replace the values of `organization` and `name` with the appropriate value
+for your cluster.
+
+Finally, you can retrieve the state by entering:
+```sh
+terraform init
+```
+
+To confirm the workspace has been properly imported locally, you can list
+the resources using:
+```sh
+terraform state list
+```
