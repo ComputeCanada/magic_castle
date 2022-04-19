@@ -16,6 +16,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - Replaced python by python3 in external data source (issue #208)
+- [puppet] SELinux mode is now configurable through hieradata.
+- [puppet] SELinux default mode is now `permissive` instead of `enforcing`.
 - [puppet] Moved munge_socket selinux::module in slurm::base (issue [#178](https://github.com/ComputeCanada/puppet-magic_castle/issues/178))
 - [puppet] Set MemSpecLimit in slurm.conf and allow configuration using hieradata (issue [#181](https://github.com/ComputeCanada/puppet-magic_castle/issues/181))
 - [puppet] Hardened SSHD config for CentOS 8 (issue [#182](https://github.com/ComputeCanada/puppet-magic_castle/issues/182))
