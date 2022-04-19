@@ -194,17 +194,17 @@ available through the command-line interface, for example `terraform taint`.
 It is possible to import the terraform state of a cluster on your local computer
 and then use the CLI on it.
 
-The first step is to log in Terraform cloud:
+1. Log in Terraform cloud:
 ```sh
 terraform login
 ```
 
-The second step is to create a folder where the terraform state will be stored:
+2. Create a folder where the terraform state will be stored:
 ```sh
 mkdir my-cluster-1
 ```
 
-In that folder, create a file named `cloud.tf` with the following content:
+3. Create a file named `cloud.tf` with the following content in your cluster folder:
 ```hcl
 terraform {
   cloud {
@@ -218,7 +218,7 @@ terraform {
 replace the values of `organization` and `name` with the appropriate value
 for your cluster.
 
-Finally, you can retrieve the state by entering:
+4. Initialize the folder and retrieve the state:
 ```sh
 terraform init
 ```
