@@ -13,7 +13,7 @@ variable "vhost_tag" {}
 
 data "external" "key2fp" {
   for_each = var.public_instances
-  program = ["sh", "${path.module}/key2fp.sh"]
+  program = ["bash", "${path.module}/key2fp.sh"]
   query = {
     rsa = each.value["hostkeys"]["rsa"]
     ed25519 = each.value["hostkeys"]["ed25519"]
