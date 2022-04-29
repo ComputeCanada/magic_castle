@@ -21,7 +21,7 @@ for alg, ssh_key in inputs.items():
     alg_index = ALGORITHMS[key_type]
     fp_sha256 = hashlib.sha256(key_bytes).hexdigest()
 
-    outputs[f'{alg}_algorithm'] = alg_index
-    outputs[f'{alg}_sha256'] = fp_sha256
+    outputs['{alg}_algorithm'.format(alg=alg)] = alg_index
+    outputs['{alg}_sha256'.format(alg=alg)] = fp_sha256
 
 print(json.dumps(outputs))
