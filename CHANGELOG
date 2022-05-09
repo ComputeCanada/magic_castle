@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [11.9.3] 2022-05-09
+
+### Changed
+- [puppet] Bumped puppet-jupyterhub to v4.3.1 to enable code-server and openrefine launchers in JupyterLab.
+
 ## [11.9.2] 2022-05-04
 
 ### Changed
