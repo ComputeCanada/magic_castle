@@ -37,7 +37,7 @@ for provider in "${CLOUD[@]}"; do
     cp -fL examples/$provider/main.tf $cur_folder
     mv $cur_folder/$provider/README.md $cur_folder
     sed_i 's;git::https://github.com/ComputeCanada/magic_castle.git//;./;g' $cur_folder/main.tf
-    sed_i "s;\"main\";\"$VERSION\";" $cur_folder/main.tf
+    sed_i "s;\"11.9.x\";\"$VERSION\";" $cur_folder/main.tf
     cp LICENSE $cur_folder
 
     ## Initialize to create .terraform.lock.hcl file
