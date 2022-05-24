@@ -1061,7 +1061,7 @@ module, using the `acme_key_pem` variable.
 In a separate folder, create a file with the following content
 ```hcl
 terraform {
-  required_version = ">= 1.1"
+  required_version = ">= 1.2.1"
   required_providers {
     acme = {
       source = "vancluever/acme"

@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [11.10.0] UNRELEASED
+
+### Changed
+
+- Updated Terraform minimum version to 1.2.1 from 1.1.0
+
 ## [11.9.3] 2022-05-09
 
 ### Changed
