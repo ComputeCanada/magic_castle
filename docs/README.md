@@ -17,7 +17,7 @@
 ## 1. Setup
 
 To use Magic Castle you will need:
-1. Terraform (>= 1.1.0)
+1. Terraform (>= 1.2.1)
 2. Authenticated access to a cloud
 3. Ability to communicate with the cloud provider API from your computer
 4. A project with operational limits meeting the requirements described in _Quotas_ subsection.
