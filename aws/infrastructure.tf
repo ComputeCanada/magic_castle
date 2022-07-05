@@ -211,7 +211,7 @@ locals {
       specs = {
         cpus = data.aws_ec2_instance_type.instance_type[x].default_vcpus
         ram  = data.aws_ec2_instance_type.instance_type[x].memory_size
-        gpu  = try(one(data.aws_ec2_instance_type.instance_type.gpus).count, 0)
+        gpu  = try(one(data.aws_ec2_instance_type.instance_type[x].gpus).count, 0)
       }
     }
   }
