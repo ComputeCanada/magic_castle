@@ -75,6 +75,11 @@ locals {
   spot_instances    = {for key, values in module.design.instances: key => values if contains(values["tags"], "spot")}
 }
 
+data "aws_ec2_instance_type" "instance_type" {
+  for_each      = module.design.instances
+  instance_type = each.value.type
+}
+
 resource "aws_instance" "instances" {
   for_each          = local.regular_instances
   instance_type     = each.value.type
@@ -84,8 +89,6 @@ resource "aws_instance" "instances" {
   placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null
 
   key_name          = aws_key_pair.key.key_name
-
-
 
   network_interface {
     network_interface_id = aws_network_interface.nic[each.key].id
@@ -204,6 +207,11 @@ locals {
       hostkeys    = {
         rsa = module.instance_config.rsa_hostkeys[x]
         ed25519 = module.instance_config.ed25519_hostkeys[x]
+      }
+      specs = {
+        cpus = data.aws_ec2_instance_type.instance_type[x].default_vcpus
+        ram  = data.aws_ec2_instance_type.instance_type[x].memory_size
+        gpu  = try(one(data.aws_ec2_instance_type.instance_type.gpus).count, 0)
       }
     }
   }
