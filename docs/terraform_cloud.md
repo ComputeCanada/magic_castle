@@ -228,3 +228,47 @@ the resources using:
 ```sh
 terraform state list
 ```
+
+# Enable Magic Castle Elastic Capabilities (experimental)
+
+Magic Castle in combination with Terraform Cloud (TFC) can be configured to give
+the Slurm scheduler the ability to create and destroy instances based on the
+job queue content.
+
+These are the steps to enable this:
+1. [Create a TFC API Token](https://app.terraform.io/app/settings/tokens) and save it somewhere safe.
+2. [Create the workspace in TFC](#creating-the-workspace)
+  2.1 Make sure the repo is private as it will contain an TFC API token
+  2.2 Set the module source to git:
+    ```hcl
+    source = git::https://github.com/ComputeCanada/magic_castle.git//openstack?ref=elastic
+    ```
+    Replace `openstack` by your cloud provider.
+  2.3 Set 
+    ```hcl
+    config_version = "elastic"
+    ```
+3. [Create the environment variables of the cloud provider credentials in TFC](#providing-cloud-provider-credentials-to-terraform-cloud)
+4. [Create a variable named `draft_exclusion` in your main.tf and in TFC](#managing-magic-castle-variables-with-terraform-cloud-ui)
+  4.1 In the cloud provider module (i.e.: under `module "openstack"` in `main.tf`),
+  add the following line:
+    ```
+    draft_exclusion = var.draft_exclusion
+    ```
+  4.2 Commit and push the ` main.tf`
+5. Add a file named `data.yaml` in your git repo with the following content:
+  ```yaml 
+  ---
+  profile::slurm::controller::tf_cloud_token: <TFC API token>
+  profile::slurm::controller::tf_cloud_workspace: <TFC workspace id>
+  profile::slurm::controller::tf_cloud_var_name: "draft_exclusion"
+  ```
+  Complete the file by replacing `<TFC API TOKEN> ` with the token generated at step 1
+  and `<TFC workspace id>` (i.e.: `ws-...`) by the id of the workspace created at step 2.
+6. In `main.tf`, under `module "openstack"`, add `hieradata = file("data.yaml")`
+7. Add `data.yaml` in git, commit all changes and push.
+8. In `main.tf`, add instances to `instances` with the tags `draft` and `node`. These are
+the nodes that Slurm will able to create and destroy. Commit and push changes in git.
+9. Go to your workspace in TFC, click on Actions -> Start a new run -> Plan and apply -> Start run.
+10. Compute nodes defined in step 8 can be modified at any point in the cluster lifetime and
+more _draft_ compute nodes can be added or removed if needed.
