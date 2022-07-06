@@ -59,8 +59,23 @@ locals {
   )
 }
 
-resource "google_compute_instance" "instances" {
+data "external" "machine_type" {
   for_each = module.design.instances
+  program  = ["bash", "${path.module}/external/machine_type.sh"]
+  query    = {
+    machine_type = each.value.type
+  }
+}
+
+locals {
+  to_build_instances = {
+    for key, values in module.design.instances: key => values
+    if ! contains(values.tags, "draft") || contains(var.draft_exclusion, key)
+   }
+}
+
+resource "google_compute_instance" "instances" {
+  for_each = local.to_build_instances
   project  = var.project
   zone     = local.zone
 
@@ -153,10 +168,15 @@ locals {
       public_ip = contains(values["tags"], "public") ? google_compute_address.public_ip[x].address : ""
       local_ip  = google_compute_address.nic[x].address
       tags      = values["tags"]
-      id        = google_compute_instance.instances[x].id
+      id        = ! contains(values["tags"], "draft") || contains(var.draft_exclusion, x) ? google_compute_instance.instances[x].id : ""
       hostkeys = {
         rsa = module.instance_config.rsa_hostkeys[x]
         ed25519 = module.instance_config.ed25519_hostkeys[x]
+      }
+      specs = {
+        cpus = data.external.machine_type[x].result["vcpus"]
+        ram  = data.external.machine_type[x].result["ram"]
+        gpu  = try(data.external.machine_type[x].result["gpus"], lookup(values, "gpu_count", 0))
       }
     }
   }
