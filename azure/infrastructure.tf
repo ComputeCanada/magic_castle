@@ -52,9 +52,16 @@ resource "azurerm_resource_group" "group" {
   location = var.location
 }
 
+locals {
+  to_build_instances = {
+    for key, values in module.design.instances: key => values
+    if ! contains(values.tags, "draft") || contains(var.draft_exclusion, key)
+   }
+}
+
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "instances" {
-  for_each              = module.design.instances
+  for_each              = local.to_build_instances
   size                  = each.value.type
   name                  = format("%s-%s", var.cluster_name, each.key)
   location              = var.location
@@ -153,15 +160,21 @@ locals {
 locals {
   resource_group_name = var.azure_resource_group == "" ? azurerm_resource_group.group[0].name : var.azure_resource_group
 
+  vmsizes = jsondecode(file("${path.module}/vmsizes.json"))
   all_instances = { for x, values in module.design.instances :
     x => {
       public_ip = azurerm_public_ip.public_ip[x].ip_address
       local_ip  = azurerm_network_interface.nic[x].private_ip_address
       tags      = values["tags"]
-      id        = azurerm_linux_virtual_machine.instances[x].id
-      hostkeys = {
+      id        = try(azurerm_linux_virtual_machine.instances[x].id, "")
+      hostkeys  = {
         rsa = module.instance_config.rsa_hostkeys[x]
         ed25519 = module.instance_config.ed25519_hostkeys[x]
+      }
+      specs = {
+        cpus = local.vmsizes[values["type"]]["vcpus"]
+        ram  = local.vmsizes[values["type"]]["ram"]
+        gpu  = local.vmsizes[values["type"]]["gpus"]
       }
     }
   }
