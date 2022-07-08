@@ -1,0 +1,787 @@
+{
+  "Standard_D1": {
+    "vcpus": 1,
+    "ram": 3500,
+    "gpus": 0
+  },
+  "Standard_D11": {
+    "vcpus": 2,
+    "ram": 14000,
+    "gpus": 0
+  },
+  "Standard_D11_v2": {
+    "vcpus": 2,
+    "ram": 14000,
+    "gpus": 0
+  },
+  "Standard_D12": {
+    "vcpus": 4,
+    "ram": 28000,
+    "gpus": 0
+  },
+  "Standard_D12_v2": {
+    "vcpus": 4,
+    "ram": 28000,
+    "gpus": 0
+  },
+  "Standard_D13": {
+    "vcpus": 8,
+    "ram": 56000,
+    "gpus": 0
+  },
+  "Standard_D13_v2": {
+    "vcpus": 8,
+    "ram": 56000,
+    "gpus": 0
+  },
+  "Standard_D14": {
+    "vcpus": 16,
+    "ram": 112000,
+    "gpus": 0
+  },
+  "Standard_D14_v2": {
+    "vcpus": 16,
+    "ram": 112000,
+    "gpus": 0
+  },
+  "Standard_D15_v2": {
+    "vcpus": 20,
+    "ram": 140000,
+    "gpus": 0
+  },
+  "Standard_D16as_v4": {
+    "vcpus": 16,
+    "ram": 64000,
+    "gpus": 0
+  },
+  "Standard_D16ds_v4": {
+    "vcpus": 16,
+    "ram": 64000,
+    "gpus": 0
+  },
+  "Standard_D16s_v3": {
+    "vcpus": 16,
+    "ram": 64000,
+    "gpus": 0
+  },
+  "Standard_D16_v3": {
+    "vcpus": 16,
+    "ram": 64000,
+    "gpus": 0
+  },
+  "Standard_D1_v2": {
+    "vcpus": 1,
+    "ram": 3500,
+    "gpus": 0
+  },
+  "Standard_D2": {
+    "vcpus": 2,
+    "ram": 7000,
+    "gpus": 0
+  },
+  "Standard_D2as_v4": {
+    "vcpus": 2,
+    "ram": 8000,
+    "gpus": 0
+  },
+  "Standard_D2ds_v4": {
+    "vcpus": 2,
+    "ram": 8000,
+    "gpus": 0
+  },
+  "Standard_D2s_v3": {
+    "vcpus": 2,
+    "ram": 8000,
+    "gpus": 0
+  },
+  "Standard_D2_v2": {
+    "vcpus": 2,
+    "ram": 7000,
+    "gpus": 0
+  },
+  "Standard_D2_v3": {
+    "vcpus": 2,
+    "ram": 8000,
+    "gpus": 0
+  },
+  "Standard_D3": {
+    "vcpus": 4,
+    "ram": 14000,
+    "gpus": 0
+  },
+  "Standard_D32as_v4": {
+    "vcpus": 32,
+    "ram": 128000,
+    "gpus": 0
+  },
+  "Standard_D32ds_v4": {
+    "vcpus": 32,
+    "ram": 128000,
+    "gpus": 0
+  },
+  "Standard_D32s_v3": {
+    "vcpus": 32,
+    "ram": 128000,
+    "gpus": 0
+  },
+  "Standard_D32_v3": {
+    "vcpus": 32,
+    "ram": 128000,
+    "gpus": 0
+  },
+  "Standard_D3_v2": {
+    "vcpus": 4,
+    "ram": 14000,
+    "gpus": 0
+  },
+  "Standard_D4": {
+    "vcpus": 8,
+    "ram": 28000,
+    "gpus": 0
+  },
+  "Standard_D48as_v4": {
+    "vcpus": 48,
+    "ram": 192000,
+    "gpus": 0
+  },
+  "Standard_D48ds_v4": {
+    "vcpus": 48,
+    "ram": 192000,
+    "gpus": 0
+  },
+  "Standard_D4as_v4": {
+    "vcpus": 4,
+    "ram": 16000,
+    "gpus": 0
+  },
+  "Standard_D4ds_v4": {
+    "vcpus": 4,
+    "ram": 16000,
+    "gpus": 0
+  },
+  "Standard_D4s_v3": {
+    "vcpus": 4,
+    "ram": 16000,
+    "gpus": 0
+  },
+  "Standard_D4_v2": {
+    "vcpus": 8,
+    "ram": 28000,
+    "gpus": 0
+  },
+  "Standard_D4_v3": {
+    "vcpus": 4,
+    "ram": 16000,
+    "gpus": 0
+  },
+  "Standard_D64as_v4": {
+    "vcpus": 64,
+    "ram": 256000,
+    "gpus": 0
+  },
+  "Standard_D64ds_v4": {
+    "vcpus": 64,
+    "ram": 256000,
+    "gpus": 0
+  },
+  "Standard_D64s_v3": {
+    "vcpus": 64,
+    "ram": 256000,
+    "gpus": 0
+  },
+  "Standard_D64_v3": {
+    "vcpus": 64,
+    "ram": 256000,
+    "gpus": 0
+  },
+  "Standard_D8as_v4": {
+    "vcpus": 8,
+    "ram": 32000,
+    "gpus": 0
+  },
+  "Standard_D8ds_v4": {
+    "vcpus": 8,
+    "ram": 32000,
+    "gpus": 0
+  },
+  "Standard_D8s_v3": {
+    "vcpus": 8,
+    "ram": 32000,
+    "gpus": 0
+  },
+  "Standard_D8_v3": {
+    "vcpus": 8,
+    "ram": 32000,
+    "gpus": 0
+  },
+  "Standard_D96as_v4": {
+    "vcpus": 96,
+    "ram": 384000,
+    "gpus": 0
+  },
+  "Standard_DS11_v2": {
+    "vcpus": 2,
+    "ram": 14000,
+    "gpus": 0
+  },
+  "Standard_DS12_v2": {
+    "vcpus": 4,
+    "ram": 28000,
+    "gpus": 0
+  },
+  "Standard_DS13_v2": {
+    "vcpus": 8,
+    "ram": 56000,
+    "gpus": 0
+  },
+  "Standard_DS14_v2": {
+    "vcpus": 16,
+    "ram": 112000,
+    "gpus": 0
+  },
+  "Standard_DS15_v2": {
+    "vcpus": 20,
+    "ram": 140000,
+    "gpus": 0
+  },
+  "Standard_DS1_v2": {
+    "vcpus": 1,
+    "ram": 3500,
+    "gpus": 0
+  },
+  "Standard_DS2_v2": {
+    "vcpus": 2,
+    "ram": 7000,
+    "gpus": 0
+  },
+  "Standard_DS3_v2": {
+    "vcpus": 4,
+    "ram": 14000,
+    "gpus": 0
+  },
+  "Standard_DS4_v2": {
+    "vcpus": 8,
+    "ram": 28000,
+    "gpus": 0
+  },
+  "Standard_DS5_v2": {
+    "vcpus": 16,
+    "ram": 56000,
+    "gpus": 0
+  },
+  "Standard_E16a_v4": {
+    "vcpus": 16,
+    "ram": 128000,
+    "gpus": 0
+  },
+  "Standard_E16s_v3": {
+    "vcpus": 16,
+    "ram": 128000,
+    "gpus": 0
+  },
+  "Standard_E16_v3": {
+    "vcpus": 16,
+    "ram": 128000,
+    "gpus": 0
+  },
+  "Standard_E2a_v4": {
+    "vcpus": 2,
+    "ram": 16000,
+    "gpus": 0
+  },
+  "Standard_E2s_v3": {
+    "vcpus": 2,
+    "ram": 16000,
+    "gpus": 0
+  },
+  "Standard_E2_v3": {
+    "vcpus": 2,
+    "ram": 16000,
+    "gpus": 0
+  },
+  "Standard_E32a_v4": {
+    "vcpus": 32,
+    "ram": 256000,
+    "gpus": 0
+  },
+  "Standard_E32s_v3": {
+    "vcpus": 32,
+    "ram": 256000,
+    "gpus": 0
+  },
+  "Standard_E32_v3": {
+    "vcpus": 32,
+    "ram": 256000,
+    "gpus": 0
+  },
+  "Standard_E48a_v4": {
+    "vcpus": 48,
+    "ram": 384000,
+    "gpus": 0
+  },
+  "Standard_E48s_v3": {
+    "vcpus": 48,
+    "ram": 384000,
+    "gpus": 0
+  },
+  "Standard_E48_v3": {
+    "vcpus": 48,
+    "ram": 384000,
+    "gpus": 0
+  },
+  "Standard_E4a_v4": {
+    "vcpus": 4,
+    "ram": 32000,
+    "gpus": 0
+  },
+  "Standard_E4s_v3": {
+    "vcpus": 4,
+    "ram": 32000,
+    "gpus": 0
+  },
+  "Standard_E4_v3": {
+    "vcpus": 4,
+    "ram": 32000,
+    "gpus": 0
+  },
+  "Standard_E64a_v4": {
+    "vcpus": 64,
+    "ram": 512000,
+    "gpus": 0
+  },
+  "Standard_E64is_v3": {
+    "vcpus": 64,
+    "ram": 432000,
+    "gpus": 0
+  },
+  "Standard_E64s_v3": {
+    "vcpus": 64,
+    "ram": 432000,
+    "gpus": 0
+  },
+  "Standard_E64_v3": {
+    "vcpus": 64,
+    "ram": 432000,
+    "gpus": 0
+  },
+  "Standard_E80is_v4": {
+    "vcpus": 80,
+    "ram": 504000,
+    "gpus": 0
+  },
+  "Standard_E8a_v4": {
+    "vcpus": 8,
+    "ram": 64000,
+    "gpus": 0
+  },
+  "Standard_E8s_v3": {
+    "vcpus": 8,
+    "ram": 64000,
+    "gpus": 0
+  },
+  "Standard_E8_v3": {
+    "vcpus": 8,
+    "ram": 64000,
+    "gpus": 0
+  },
+  "Standard_E96a_v4": {
+    "vcpus": 96,
+    "ram": 672000,
+    "gpus": 0
+  },
+  "Standard_F16s_v2": {
+    "vcpus": 16,
+    "ram": 32000,
+    "gpus": 0
+  },
+  "Standard_F2s_v2": {
+    "vcpus": 2,
+    "ram": 4000,
+    "gpus": 0
+  },
+  "Standard_F32s_v2": {
+    "vcpus": 32,
+    "ram": 64000,
+    "gpus": 0
+  },
+  "Standard_F48s_v2": {
+    "vcpus": 48,
+    "ram": 96000,
+    "gpus": 0
+  },
+  "Standard_F4s_v2": {
+    "vcpus": 4,
+    "ram": 8000,
+    "gpus": 0
+  },
+  "Standard_F64s_v2": {
+    "vcpus": 64,
+    "ram": 128000,
+    "gpus": 0
+  },
+  "Standard_F72s_v2": {
+    "vcpus": 72,
+    "ram": 144000,
+    "gpus": 0
+  },
+  "Standard_F8s_v2": {
+    "vcpus": 8,
+    "ram": 16000,
+    "gpus": 0
+  },
+  "Standard_H16": {
+    "vcpus": 16,
+    "ram": 112000,
+    "gpus": 0
+  },
+  "Standard_H16m": {
+    "vcpus": 16,
+    "ram": 224000,
+    "gpus": 0
+  },
+  "Standard_H16mr": {
+    "vcpus": 16,
+    "ram": 224000,
+    "gpus": 0
+  },
+  "Standard_H16r": {
+    "vcpus": 16,
+    "ram": 112000,
+    "gpus": 0
+  },
+  "Standard_H8": {
+    "vcpus": 8,
+    "ram": 56000,
+    "gpus": 0
+  },
+  "Standard_H8m": {
+    "vcpus": 8,
+    "ram": 112000,
+    "gpus": 0
+  },
+  "Standard_HB120rs_v2": {
+    "vcpus": 120,
+    "ram": 456000,
+    "gpus": 0
+  },
+  "Standard_M128": {
+    "vcpus": 128,
+    "ram": 2000000,
+    "gpus": 0
+  },
+  "Standard_M128m": {
+    "vcpus": 128,
+    "ram": 3800000,
+    "gpus": 0
+  },
+  "Standard_M128ms": {
+    "vcpus": 128,
+    "ram": 3800000,
+    "gpus": 0
+  },
+  "Standard_M128s": {
+    "vcpus": 128,
+    "ram": 2000000,
+    "gpus": 0
+  },
+  "Standard_M16ms": {
+    "vcpus": 16,
+    "ram": 437500,
+    "gpus": 0
+  },
+  "Standard_M32ls": {
+    "vcpus": 32,
+    "ram": 256000,
+    "gpus": 0
+  },
+  "Standard_M32ms": {
+    "vcpus": 32,
+    "ram": 875000,
+    "gpus": 0
+  },
+  "Standard_M32ts": {
+    "vcpus": 32,
+    "ram": 192000,
+    "gpus": 0
+  },
+  "Standard_M64": {
+    "vcpus": 64,
+    "ram": 1000000,
+    "gpus": 0
+  },
+  "Standard_M64ls": {
+    "vcpus": 64,
+    "ram": 512000,
+    "gpus": 0
+  },
+  "Standard_M64m": {
+    "vcpus": 64,
+    "ram": 1750000,
+    "gpus": 0
+  },
+  "Standard_M64ms": {
+    "vcpus": 64,
+    "ram": 1750000,
+    "gpus": 0
+  },
+  "Standard_M64s": {
+    "vcpus": 64,
+    "ram": 1000000,
+    "gpus": 0
+  },
+  "Standard_M8ms": {
+    "vcpus": 8,
+    "ram": 218750,
+    "gpus": 0
+  },
+  "Standard_NC12": {
+    "vcpus": 12,
+    "ram": 112000,
+    "gpus": 2
+  },
+  "Standard_NC12_Promo": {
+    "vcpus": 12,
+    "ram": 112000,
+    "gpus": 2
+  },
+  "Standard_NC16as_T4_v3": {
+    "vcpus": 16,
+    "ram": 110000,
+    "gpus": 1
+  },
+  "Standard_NC24": {
+    "vcpus": 24,
+    "ram": 224000,
+    "gpus": 4
+  },
+  "Standard_NC24r": {
+    "vcpus": 24,
+    "ram": 224000,
+    "gpus": 4
+  },
+  "Standard_NC24r_Promo": {
+    "vcpus": 24,
+    "ram": 224000,
+    "gpus": 4
+  },
+  "Standard_NC24_Promo": {
+    "vcpus": 24,
+    "ram": 224000,
+    "gpus": 4
+  },
+  "Standard_NC4as_T4_v3": {
+    "vcpus": 4,
+    "ram": 28000,
+    "gpus": 1
+  },
+  "Standard_NC6": {
+    "vcpus": 6,
+    "ram": 56000,
+    "gpus": 1
+  },
+  "Standard_NC64as_T4_v3": {
+    "vcpus": 64,
+    "ram": 440000,
+    "gpus": 4
+  },
+  "Standard_NC6_Promo": {
+    "vcpus": 6,
+    "ram": 56000,
+    "gpus": 1
+  },
+  "Standard_NC8as_T4_v3": {
+    "vcpus": 8,
+    "ram": 56000,
+    "gpus": 1
+  },
+  "Standard_NV12": {
+    "vcpus": 12,
+    "ram": 112000,
+    "gpus": 2
+  },
+  "Standard_NV24": {
+    "vcpus": 24,
+    "ram": 224000,
+    "gpus": 4
+  },
+  "Standard_NV6": {
+    "vcpus": 6,
+    "ram": 56000,
+    "gpus": 1
+  },
+  "Standard_NC12s_v3": {
+    "vcpus": 12,
+    "ram": 224000,
+    "gpus": 2
+  },
+  "Standard_NC24rs_v3": {
+    "vcpus": 24,
+    "ram": 448000,
+    "gpus": 4
+  },
+  "Standard_NC24s_v3": {
+    "vcpus": 24,
+    "ram": 448000,
+    "gpus": 4
+  },
+  "Standard_NC6s_v3": {
+    "vcpus": 6,
+    "ram": 112000,
+    "gpus": 1
+  },
+  "Standard_HC44rs": {
+    "vcpus": 44,
+    "ram": 352000,
+    "gpus": 0
+  },
+  "Standard_L16s_v2": {
+    "vcpus": 16,
+    "ram": 128000,
+    "gpus": 0
+  },
+  "Standard_L32s_v2": {
+    "vcpus": 32,
+    "ram": 256000,
+    "gpus": 0
+  },
+  "Standard_L48s_v2": {
+    "vcpus": 48,
+    "ram": 384000,
+    "gpus": 0
+  },
+  "Standard_L64s_v2": {
+    "vcpus": 64,
+    "ram": 512000,
+    "gpus": 0
+  },
+  "Standard_L80s_v2": {
+    "vcpus": 80,
+    "ram": 640000,
+    "gpus": 0
+  },
+  "Standard_L8s_v2": {
+    "vcpus": 8,
+    "ram": 64000,
+    "gpus": 0
+  },
+  "Standard_NV12s_v3": {
+    "vcpus": 12,
+    "ram": 112000,
+    "gpus": 1
+  },
+  "Standard_NV24s_v3": {
+    "vcpus": 24,
+    "ram": 224000,
+    "gpus": 2
+  },
+  "Standard_NV48s_v3": {
+    "vcpus": 48,
+    "ram": 448000,
+    "gpus": 4
+  },
+  "Standard_FX12mds": {
+    "vcpus": 12,
+    "ram": 252000,
+    "gpus": 0
+  },
+  "Standard_FX24mds": {
+    "vcpus": 24,
+    "ram": 504000,
+    "gpus": 0
+  },
+  "Standard_FX36mds": {
+    "vcpus": 36,
+    "ram": 756000,
+    "gpus": 0
+  },
+  "Standard_FX48mds": {
+    "vcpus": 48,
+    "ram": 1008000,
+    "gpus": 0
+  },
+  "Standard_FX4mds": {
+    "vcpus": 4,
+    "ram": 84000,
+    "gpus": 0
+  },
+  "Standard_HB120rs_v3": {
+    "vcpus": 120,
+    "ram": 448000,
+    "gpus": 0
+  },
+  "Standard_HB60rs": {
+    "vcpus": 60,
+    "ram": 228000,
+    "gpus": 0
+  },
+  "Standard_NC12s_v2": {
+    "vcpus": 12,
+    "ram": 224000,
+    "gpus": 2
+  },
+  "Standard_NC24ads_A100_v4": {
+    "vcpus": 24,
+    "ram": 220000,
+    "gpus": 1
+  },
+  "Standard_NC24rs_v2": {
+    "vcpus": 24,
+    "ram": 448000,
+    "gpus": 4
+  },
+  "Standard_NC24s_v2": {
+    "vcpus": 24,
+    "ram": 448000,
+    "gpus": 4
+  },
+  "Standard_NC48ads_A100_v4": {
+    "vcpus": 48,
+    "ram": 440000,
+    "gpus": 2
+  },
+  "Standard_NC6s_v2": {
+    "vcpus": 6,
+    "ram": 112000,
+    "gpus": 1
+  },
+  "Standard_NC96ads_A100_v4": {
+    "vcpus": 96,
+    "ram": 880000,
+    "gpus": 4
+  },
+  "Standard_ND12s": {
+    "vcpus": 12,
+    "ram": 224000,
+    "gpus": 2
+  },
+  "Standard_ND24rs": {
+    "vcpus": 24,
+    "ram": 448000,
+    "gpus": 4
+  },
+  "Standard_ND24s": {
+    "vcpus": 24,
+    "ram": 448000,
+    "gpus": 4
+  },
+  "Standard_ND40rs_v2": {
+    "vcpus": 40,
+    "ram": 672000,
+    "gpus": 8
+  },
+  "Standard_ND6s": {
+    "vcpus": 6,
+    "ram": 112000,
+    "gpus": 1
+  },
+  "Standard_ND96amsr_A100_v4": {
+    "vcpus": 96,
+    "ram": 1924000,
+    "gpus": 8
+  },
+  "Standard_ND96asr_v4": {
+    "vcpus": 96,
+    "ram": 900000,
+    "gpus": 8
+  }
+}
