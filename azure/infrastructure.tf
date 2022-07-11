@@ -174,7 +174,7 @@ locals {
       specs = {
         cpus = local.vmsizes[values["type"]]["vcpus"]
         ram  = local.vmsizes[values["type"]]["ram"]
-        gpu  = local.vmsizes[values["type"]]["gpus"]
+        gpus = local.vmsizes[values["type"]]["gpus"]
       }
     }
   }

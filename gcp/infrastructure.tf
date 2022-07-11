@@ -176,7 +176,7 @@ locals {
       specs = {
         cpus = data.external.machine_type[x].result["vcpus"]
         ram  = data.external.machine_type[x].result["ram"]
-        gpu  = try(data.external.machine_type[x].result["gpus"], lookup(values, "gpu_count", 0))
+        gpus = try(data.external.machine_type[x].result["gpus"], lookup(values, "gpu_count", 0))
       }
     }
   }
