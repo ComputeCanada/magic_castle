@@ -7,8 +7,23 @@ terraform {
   }
 }
 
-provider "github" {}
-provider "tfe" {}
+variable "github_token" {
+  type        = string
+  description = "GitHub token to use"
+}
+
+variable "tfe_token" {
+  type        = string
+  description = "Terraform Cloud token to use"
+}
+
+
+provider "github" {
+  token = var.github_token
+}
+provider "tfe" {
+  token = var.tfe_token
+}
 
 variable "organization" {
   type        = string
@@ -38,15 +53,6 @@ variable "dns" {
      condition     = contains(["cloudflare", "gcloud", ""], var.dns)
      error_message = "DNS provider must be one of cloudflare, gcloud or empty"
   }
-}
-variable "github_token" {
-  type        = string
-  description = "GitHub token to use"
-}
-variable "tfe_token" {
-  type        = string
-  description = "Terraform Cloud token to use"
-  default     = ""
 }
 
 locals {
