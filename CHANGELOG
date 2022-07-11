@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Updated Terraform minimum version to 1.2.1 from 1.1.0
 
+## [11.9.4] 2022-07-08
+
+### Changed
+- Fix azurerm_network_interface private_ip_address_allocation value (dynamic -> Dynamic)
+
 ## [11.9.3] 2022-05-09
 
 ### Changed
