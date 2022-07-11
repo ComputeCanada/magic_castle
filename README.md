@@ -56,6 +56,7 @@ and apply their configuration based on the tags defined in the preceding YAML fi
 - [AWS ParallelCluster](https://github.com/aws/aws-parallelcluster) [AWS]
 - [Cluster in the cloud](https://github.com/clusterinthecloud) [AWS, GCP, Oracle]
 - [Elasticluster](https://github.com/elasticluster/elasticluster) [AWS, GCP, OpenStack]
+- [Google HPC-Toolkit](https://github.com/GoogleCloudPlatform/hpc-toolkit) [GCP]
 - [Slurm on Google Platform](https://github.com/SchedMD/slurm-gcp) [GCP]
 - [illume-v2](https://github.com/jamierajewski/illume-v2/) [OpenStack]
 - [NVIDIA DeepOps](https://github.com/NVIDIA/deepops) [Ansible playbooks only]
