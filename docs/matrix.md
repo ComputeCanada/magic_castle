@@ -1,16 +1,24 @@
 # Comparison of Cloud HPC Cluster Projects
 
-| Name                         | Creator                                     | First public release date | Software license  |
-| ---------------------------- | ------------------------------------------- | ------------------------- | ----------------- |
-| AWS ParallelCluster          | AWS                                         | November 12, 2018         | Apache License v2 |
-| Azure CycleCloud             | Microsoft                                   | October 17, 2018          | MIT License       |
-| Azure HPC On-Demand Platform | Microsoft                                   | April 23, 2021            | MIT License       |
-| Cluster-in-the-Cloud         | Matt Williams  - University of Bristol      | March 27, 2019            | MIT License       |
-| ElastiCluster                | Riccardo Murri - University of Zurich       | July 17, 2013             | GPLv3             |
-| Google HPC-Toolkit           | Google                                      | May 26, 2022              | Apache License v2 |
-| Magic Castle                 | Félix-Antoine Fortin - Compute Canada       | August 26, 2019           | MIT License       |
-| Slurm on GCP                 | SchedMD                                     | March 14, 2018            | Apache License v2 |
+| Name                              | Creator                                     | First public release date | Software license  |
+| --------------------------------- | ------------------------------------------- | ------------------------- | ----------------- |
+| [AWS ParallelCluster][1]          | AWS                                         | November 12, 2018         | Apache License v2 |
+| [Azure CycleCloud][2]             | Microsoft                                   | October 17, 2018          | MIT License       |
+| [Azure HPC On-Demand Platform][3] | Microsoft                                   | April 23, 2021            | MIT License       |
+| [Cluster-in-the-Cloud][4]         | Matt Williams  - University of Bristol      | March 27, 2019            | MIT License       |
+| [ElastiCluster][5]                | Riccardo Murri - University of Zurich       | July 17, 2013             | GPLv3             |
+| [Google HPC-Toolkit][6]           | Google                                      | May 26, 2022              | Apache License v2 |
+| [Magic Castle][7]                 | Félix-Antoine Fortin - Compute Canada       | August 26, 2019           | MIT License       |
+| [Slurm on GCP][8]                 | SchedMD                                     | March 14, 2018            | Apache License v2 |
 
+[1]: https://github.com/aws/aws-parallelcluster
+[2]: https://github.com/Azure?q=cyclecloud&type=all&language=&sort=
+[3]: https://github.com/Azure/az-hop
+[4]: https://github.com/clusterinthecloud
+[5]: https://github.com/elasticluster/elasticluster
+[6]: https://github.com/GoogleCloudPlatform/hpc-toolkit
+[7]: https://github.com/ComputeCanada/magic_castle
+[8]: https://github.com/SchedMd/slurm-gcp
 
 ## Supported cloud providers
 
