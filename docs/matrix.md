@@ -42,6 +42,20 @@
 | Slurm on GCP                 | yes      | no       | no            | no          | yes       | no        | yes       | no         |
 
 
+## Supported job schedulers
+
+| Name                         | AwsBatch | Grid Engine | HTCondor | Moab | Open PBS | PBS Pro | Slurm |
+| ---------------------------- | -------- | ----------- | -------- | ---- | -------- | ------- | ----- |
+| AWS ParallelCluster          | yes      | no          | no       | no   | no       | no      | yes   |
+| Azure CycleCloud             | no       | yes         | yes      | no   | no       | yes     | yes   |
+| Azure HPC On-Demand Platform | no       | no          | no       | no   | yes      | no      | yes   |
+| Google HPC-Toolkit           | no       | no          | no       | no   | no       | no      | yes   |
+| Cluster-in-the-Cloud         | no       | no          | no       | no   | no       | no      | yes   |
+| ElastiCluster                | no       | yes         | no       | no   | no       | no      | yes   |
+| Magic Castle                 | no       | no          | no       | no   | no       | no      | yes   |
+| Slurm on GCP                 | no       | no          | no       | no   | no       | no      | yes   |
+
+
 ## Technologies
 
 | Name                         | Infrastructure configuration  | Programming languages | Configuration management | Scientific software |
