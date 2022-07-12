@@ -25,7 +25,7 @@
 | Magic Castle*                | no            | yes | yes   | yes          | no        | yes       | no           | yes |
 | Slurm on GCP                 | no            | no  | no    | yes          | no        | no        | no           | no  |
 
-* The documentation provides instructions on how to add support for other cloud providers.
+\* The documentation provides instructions on how to add support for other cloud providers.
 
 
 ## Supported operating systems
