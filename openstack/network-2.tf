@@ -35,10 +35,11 @@ resource "openstack_compute_secgroup_v2" "secgroup" {
 }
 
 resource "openstack_networking_port_v2" "nic" {
-  for_each           = module.design.instances
-  name               = format("%s-%s-port", var.cluster_name, each.key)
-  network_id         = local.network.id
-  security_group_ids = [openstack_compute_secgroup_v2.secgroup.id]
+  for_each              = module.design.instances
+  name                  = format("%s-%s-port", var.cluster_name, each.key)
+  network_id            = local.network.id
+  security_group_ids    = [openstack_compute_secgroup_v2.secgroup.id]
+  port_security_enabled = true
   fixed_ip {
     subnet_id = local.subnet.id
   }
