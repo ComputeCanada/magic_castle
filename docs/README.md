@@ -465,24 +465,6 @@ Here is an example:
 }
 ```
 
-#### 4.6.3 OVH
-
-SELinux is not enabled in OVH provided images. Since SELinux has to be
-enabled for Magic Castle to work properly, you will need to build a custom image
-with SELinux enabled.
-
-To build such image, we recommend the usage of [Packer](https://www.packer.io/).
-OVH provides a document explaining how to create a new image with Packer:
-[Create a custom OpenStack image with Packer](https://docs.ovh.com/gb/en/public-cloud/packer-openstack-builder/)
-
-Before the end of the shell script ran to configure the image, add the
-following line to activate SELinux:
-```
-sed -i s/^SELINUX=.*$/SELINUX=enforcing/ /etc/selinux/config
-```
-
-Once the image is built, make sure to use to input its name in your `main.tf` file.
-
 ### 4.7 instances
 
 The `instances` variable is a map that defines the virtual machines that will compose
