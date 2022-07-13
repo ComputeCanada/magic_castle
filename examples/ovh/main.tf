@@ -12,9 +12,9 @@ module "ovh" {
   image        = "Rocky Linux 8"
 
   instances = {
-    mgmt   = { type = "s1-2", tags = ["puppet", "mgmt", "nfs"], count = 1 }
-    login  = { type = "s1-2", tags = ["login", "public", "proxy"], count = 1 }
-    node   = { type = "s1-2", tags = ["node"], count = 1 }
+    mgmt   = { type = "b2-7", tags = ["puppet", "mgmt", "nfs"], count = 1 }
+    login  = { type = "b2-7", tags = ["login", "public", "proxy"], count = 1 }
+    node   = { type = "b2-7", tags = ["node"], count = 1 }
   }
 
   volumes = {
