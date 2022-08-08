@@ -263,16 +263,16 @@ These are the steps to enable this:
 5. Add a file named `data.yaml` in your git repo with the following content:
     ```yaml 
     ---
-    profile::slurm::controller::tf_cloud_token: <TFC API token>
-    profile::slurm::controller::tf_cloud_workspace: <TFC workspace id>
+    profile::slurm::controller::tf_cloud_token: <TFE API token>
+    profile::slurm::controller::tf_cloud_workspace: <TFE workspace id>
     profile::slurm::controller::tf_cloud_var_name: "draft_exclusion"
     ```
-    Complete the file by replacing `<TFC API TOKEN> ` with the token generated at step 1
-    and `<TFC workspace id>` (i.e.: `ws-...`) by the id of the workspace created at step 2.
+    Complete the file by replacing `<TFE API TOKEN> ` with the token generated at step 1
+    and `<TFE workspace id>` (i.e.: `ws-...`) by the id of the workspace created at step 2.
 6. In `main.tf`, under `module "openstack"`, add `hieradata = file("data.yaml")`
 7. Add `data.yaml` in git, commit all changes and push.
 8. In `main.tf`, add instances to `instances` with the tags `draft` and `node`. These are
 the nodes that Slurm will able to create and destroy. Commit and push changes in git.
-9. Go to your workspace in TFC, click on Actions -> Start a new run -> Plan and apply -> Start run.
+9. Go to your workspace in TFE, click on Actions -> Start a new run -> Plan and apply -> Start run.
 10. Compute nodes defined in step 8 can be modified at any point in the cluster lifetime and
 more _draft_ compute nodes can be added or removed if needed.
