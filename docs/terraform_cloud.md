@@ -239,11 +239,11 @@ These are the steps to enable this:
 1. [Create a TFE API Token](https://app.terraform.io/app/settings/tokens) and save it somewhere safe.
 2. [Create a workspace in TFE](#creating-the-workspace)
 
-    2.1. Make sure the repo is private as it will contain an TFE API token
+    2.1. Make sure the repo is private as it will contain a TFE API token
 
     2.2 Set the module source to git:
     ```hcl
-    source = git::https://github.com/ComputeCanada/magic_castle.git//openstack?ref=elastic
+    source = "git::https://github.com/ComputeCanada/magic_castle.git//openstack?ref=elastic"
     ```
     Replace `openstack` by your cloud provider.
 
