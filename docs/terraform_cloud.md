@@ -253,21 +253,22 @@ These are the steps to enable this:
     ```
 3. [Create the environment variables of the cloud provider credentials in TFE](#providing-cloud-provider-credentials-to-terraform-cloud)
 4. [Create a variable named `draft_exclusion` in your main.tf and in TFE](#managing-magic-castle-variables-with-terraform-cloud-ui)
-  4.1 In the cloud provider module (i.e.: under `module "openstack"` in `main.tf`),
+
+    4.1 In the cloud provider module (i.e.: under `module "openstack"` in `main.tf`),
   add the following line:
     ```
     draft_exclusion = var.draft_exclusion
     ```
-  4.2 Commit and push the ` main.tf`
+    4.2 Commit changes to the `main.tf` and push 
 5. Add a file named `data.yaml` in your git repo with the following content:
-  ```yaml 
-  ---
-  profile::slurm::controller::tf_cloud_token: <TFC API token>
-  profile::slurm::controller::tf_cloud_workspace: <TFC workspace id>
-  profile::slurm::controller::tf_cloud_var_name: "draft_exclusion"
-  ```
-  Complete the file by replacing `<TFC API TOKEN> ` with the token generated at step 1
-  and `<TFC workspace id>` (i.e.: `ws-...`) by the id of the workspace created at step 2.
+    ```yaml 
+    ---
+    profile::slurm::controller::tf_cloud_token: <TFC API token>
+    profile::slurm::controller::tf_cloud_workspace: <TFC workspace id>
+    profile::slurm::controller::tf_cloud_var_name: "draft_exclusion"
+    ```
+    Complete the file by replacing `<TFC API TOKEN> ` with the token generated at step 1
+    and `<TFC workspace id>` (i.e.: `ws-...`) by the id of the workspace created at step 2.
 6. In `main.tf`, under `module "openstack"`, add `hieradata = file("data.yaml")`
 7. Add `data.yaml` in git, commit all changes and push.
 8. In `main.tf`, add instances to `instances` with the tags `draft` and `node`. These are
