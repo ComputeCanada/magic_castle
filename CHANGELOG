@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Updated Terraform minimum version to 1.2.1 from 1.1.0
 
+## [11.9.5] 2022-08-09
+
+### Changed
+- Fixed RPM source for CVMFS yum repo (issue [#206]((https://github.com/ComputeCanada/puppet-magic_castle/issues/206)))
+
 ## [11.9.4] 2022-07-08
 
 ### Changed
