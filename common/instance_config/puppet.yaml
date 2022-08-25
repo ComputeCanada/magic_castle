@@ -1,9 +1,4 @@
 #cloud-config
-packages:
-  - git
-  - pciutils
-  - unzip
-
 users:
   - name: ${sudoer_username}
     groups: adm, wheel, systemd-journal
@@ -21,6 +16,10 @@ runcmd:
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
   - systemctl restart sshd
+  # Install required packages in runcmd instead of packages to speedup configuration
+  # of the admin user. This reduces the risk of Terraform timing out when trying to
+  # upload the terraform_data.yaml
+  - yum -y install git pciutils unzip
   - yum remove -y firewalld
   - yum upgrade -y
   - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
