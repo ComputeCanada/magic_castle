@@ -11,6 +11,11 @@ users:
 %{ endfor ~}
 
 runcmd:
+  # Verify ${sudoer_username} was created with the right homedir. If it wasn't
+  # the user with the corresponding username is entirely removed, cloud-init is
+  # cleaned and the system is rebooted. This happens when configuring from images
+  # that were customized.
+  - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
   - restorecon -R /${sudoer_username}
   - sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
