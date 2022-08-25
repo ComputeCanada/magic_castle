@@ -16,6 +16,8 @@ runcmd:
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
   - systemctl restart sshd
+  # Enable fastest mirror for distribution using dnf package manager
+  - test -f /etc/dnf/dnf.conf && echo "fastestmirror=True" >> /etc/dnf/dnf.conf
   # Install required packages in runcmd instead of packages to speedup configuration
   # of the admin user. This reduces the risk of Terraform timing out when trying to
   # upload the terraform_data.yaml
