@@ -28,7 +28,7 @@ runcmd:
   # upload the terraform_data.yaml
   - yum -y install git pciutils unzip
   - yum remove -y firewalld
-  - yum upgrade -y
+  - yum -y upgrade -x puppet*
   - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
   - yum -y install puppet-agent-6.23.0
 %{ if contains(tags, "puppet") }
