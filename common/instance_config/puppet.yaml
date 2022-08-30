@@ -23,14 +23,26 @@ runcmd:
   - systemctl restart sshd
   # Enable fastest mirror for distribution using dnf package manager
   - test -f /etc/dnf/dnf.conf && grep -qxF "fastestmirror=True" /etc/dnf/dnf.conf || echo "fastestmirror=True" >> /etc/dnf/dnf.conf
-  # Install required packages in runcmd instead of packages to speedup configuration
-  # of the admin user. This reduces the risk of Terraform timing out when trying to
-  # upload the terraform_data.yaml
-  - yum -y install git pciutils unzip
-  - yum remove -y firewalld
-  - yum -y upgrade -x puppet*
-  - yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
-  - yum -y install puppet-agent-6.23.0
+  # Install package and configure kernel only if building from a "vanilla" linux image
+  - |
+    if ! test -f /etc/magic-castle-release; then
+      # Install required packages in runcmd instead of packages to speedup configuration
+      # of the admin user. This reduces the risk of Terraform timing out when trying to
+      # upload the terraform_data.yaml
+      yum -y install git pciutils unzip
+      yum remove -y firewalld
+      # Upgrade all packages except Puppet if already installed
+      yum -y upgrade -x puppet*
+      # Puppet agent configuration and install
+      yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
+      yum -y install puppet-agent-6.23.0
+      install -m 700 /dev/null /opt/puppetlabs/bin/postrun
+      # kernel configuration
+      systemctl disable kdump
+      sed -i 's/crashkernel=auto/crashkernel=no/' /etc/default/grub
+      sed -i 's/GRUB_CMDLINE_LINUX="[^"]*/& nouveau.modeset=0 rd.driver.blacklist=nouveau/' /etc/default/grub
+      grub2-mkconfig -o /boot/grub2/grub.cfg
+    fi
 %{ if contains(tags, "puppet") }
   - yum -y install puppetserver-6.16.0
   - mkdir /var/autosign
@@ -64,13 +76,7 @@ runcmd:
   - /opt/puppetlabs/bin/puppet config set waitforcert 15s
   - /opt/puppetlabs/bin/puppet config set report false
   - /opt/puppetlabs/bin/puppet config set postrun_command /opt/puppetlabs/bin/postrun
-  - install -m 700 /dev/null /opt/puppetlabs/bin/postrun
   - systemctl enable puppet
-# Kernel configuration
-  - systemctl disable kdump
-  - sed -i 's/crashkernel=auto/crashkernel=no/' /etc/default/grub
-  - sed -i 's/GRUB_CMDLINE_LINUX="[^"]*/& nouveau.modeset=0 rd.driver.blacklist=nouveau/' /etc/default/grub
-  - grub2-mkconfig -o /boot/grub2/grub.cfg
 # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
   - for i in /etc/sysconfig/network-scripts/ifcfg-*; do if ! ip link show | grep -q "$${i##*-}:"; then rm -f $i; fi; done
 # AWS EFA driver installation
