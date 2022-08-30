@@ -81,7 +81,7 @@ runcmd:
 %{ endif }
   # If the current image has already been configured with Magic Castle Puppet environment,
   # we can start puppet and skip reboot, reducing the delay for bringing the node up.
-  - test -f /etc/magic-castle-release && systemctl start pupppet
+  - test -f /etc/magic-castle-release && systemctl start puppet
 
 write_files:
   - content: |
