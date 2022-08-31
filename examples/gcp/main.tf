@@ -13,9 +13,9 @@ module "gcp" {
   nb_users     = 10
 
   instances = {
-    mgmt   = { type = "n1-standard-2", tags = ["puppet", "mgmt", "nfs"], count = 1 }
-    login  = { type = "n1-standard-2", tags = ["login", "public", "proxy"], count = 1 }
-    node   = { type = "n1-standard-2", tags = ["node"], count = 1 }
+    mgmt   = { type = "n2-standard-2", tags = ["puppet", "mgmt", "nfs"], count = 1 }
+    login  = { type = "n2-standard-2", tags = ["login", "public", "proxy"], count = 1 }
+    node   = { type = "n2-standard-2", tags = ["node"], count = 1 }
     gpu    = {
       type = "n1-standard-2",
       tags = ["node"],
