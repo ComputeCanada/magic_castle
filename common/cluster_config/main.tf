@@ -97,7 +97,7 @@ resource "null_resource" "deploy_hieradata" {
       "sudo chgrp puppet /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/data/user_data.yaml &> /dev/null || true",
       "sudo chgrp puppet /etc/puppetlabs/facts/terraform_facts.yaml &> /dev/null || true",
       "rm -f terraform_data.yaml user_data.yaml terraform_facts.yaml",
-      "[ -f /usr/local/bin/consul ] && [ -f /usr/bin/jq ] && consul event -token=$(sudo jq -r .acl_agent_token /etc/consul/config.json) -name=puppet || true",
+      "[ -f /usr/local/bin/consul ] && [ -f /usr/bin/jq ] && consul event -token=$(sudo jq -r .acl_agent_token /etc/consul/config.json) -name=puppet $(date +%s) || true",
     ]
   }
 }
