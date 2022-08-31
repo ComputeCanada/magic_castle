@@ -14,7 +14,8 @@ def get_vcpus_ram(machine_type):
     if machine_type in MACHINE_TYPES:
         output = MACHINE_TYPES[machine_type]
     else:
-        machine_type = machine_type.removesuffix('-ext')
+        if machine_type[-4:] == '-ext':
+            machine_type = machine_type[:-4]
         pre, mid, suf = machine_type.split('-')
         if pre == 'custom':
             # custom-NUMBER_OF_CPUS-AMOUNT_OF_MEMORY_MB
