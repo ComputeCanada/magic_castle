@@ -30,7 +30,7 @@ runcmd:
       # of the admin user. This reduces the risk of Terraform timing out when trying to
       # upload the terraform_data.yaml
       yum -y install git pciutils unzip
-      yum remove -y firewalld
+      yum remove -y firewalld --exclude=iptables
       # Upgrade all packages except Puppet if already installed
       yum -y upgrade -x puppet*
       # Puppet agent configuration and install
