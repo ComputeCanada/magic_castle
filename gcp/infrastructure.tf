@@ -129,6 +129,7 @@ resource "google_compute_instance" "instances" {
       attached_disk,
       boot_disk[0].initialize_params[0].image,
       metadata,
+      metadata_startup_script,
     ]
   }
 }
