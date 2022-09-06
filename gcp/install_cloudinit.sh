@@ -12,6 +12,7 @@ if [ ! -f /etc/cloud/cloud-init.disabled ]; then
     if  [ -f /usr/bin/cloud-init ]; then
         systemctl disable cloud-init
         touch /etc/cloud/cloud-init.disabled
+        cloud-init clean --logs
         cloud-init init --local
         cloud-init init
         cloud-init modules --mode=config
