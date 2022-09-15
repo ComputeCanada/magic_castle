@@ -229,13 +229,13 @@ the resources using:
 terraform state list
 ```
 
-# Enable Magic Castle Elastic Capabilities (experimental)
+# Enable Magic Castle Autoscaling Feature
 
 Magic Castle in combination with Terraform Cloud (TFE) can be configured to give
-the Slurm scheduler the ability to create and destroy instances based on the
+Slurm the ability to create and destroy instances based on the
 job queue content.
 
-These are the steps to enable this:
+To enable this feature:
 1. [Create a TFE API Token](https://app.terraform.io/app/settings/tokens) and save it somewhere safe.
 2. [Create a workspace in TFE](#creating-the-workspace)
 
