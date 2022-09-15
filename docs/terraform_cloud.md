@@ -1,4 +1,4 @@
-# Terraform Cloud (draft)
+# Terraform Cloud
 
 This document explains how to use Magic Castle with Terraform Cloud.
 
@@ -229,7 +229,7 @@ the resources using:
 terraform state list
 ```
 
-# Enable Magic Castle Autoscaling Feature
+## Enable Magic Castle Autoscaling
 
 Magic Castle in combination with Terraform Cloud (TFE) can be configured to give
 Slurm the ability to create and destroy instances based on the
