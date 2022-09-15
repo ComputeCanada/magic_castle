@@ -86,7 +86,7 @@ locals {
     if ! contains(values.tags, "draft") || contains(var.draft_exclusion, key)
    }
   to_build_spot_instances = {
-    for key, values in local.regular_instances: key => values
+    for key, values in local.spot_instances: key => values
     if ! contains(values.tags, "draft") || contains(var.draft_exclusion, key)
    }
 }
