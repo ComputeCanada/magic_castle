@@ -2,7 +2,7 @@ terraform {
   required_version = ">= 1.2.1"
 }
 
-variable "${varname}" {}
+variable "pool" {}
 
 module "openstack" {
   source         = "git::https://github.com/ComputeCanada/magic_castle.git//openstack?ref=elastic"
@@ -16,7 +16,7 @@ module "openstack" {
   instances = {
     mgmt   = { type = "p4-6gb", tags = ["puppet", "mgmt", "nfs"], count = 1 }
     login  = { type = "p2-3gb", tags = ["login", "public", "proxy"], count = 1 }
-    node   = { type = "p2-3gb", tags = ["node", "draft"], count = 10 }
+    node   = { type = "p2-3gb", tags = ["node", "pool"], count = 10 }
   }
 
   volumes = {
@@ -30,7 +30,7 @@ module "openstack" {
   public_keys      = ["${sshkey}"]
   generate_ssh_key = true
   hieradata        = file("data.yaml")
-  draft_exclusion  = var.${varname}
+  pool             = var.pool
 
   nb_users = 10
 }

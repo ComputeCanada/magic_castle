@@ -252,27 +252,19 @@ To enable this feature:
     config_version = "elastic"
     ```
 3. [Create the environment variables of the cloud provider credentials in TFE](#providing-cloud-provider-credentials-to-terraform-cloud)
-4. [Create a variable named `draft_exclusion` in your main.tf and in TFE](#managing-magic-castle-variables-with-terraform-cloud-ui)
-
-    4.1 In the cloud provider module (i.e.: under `module "openstack"` in `main.tf`),
-  add the following line:
-    ```
-    draft_exclusion = var.draft_exclusion
-    ```
-    4.2 Commit changes to the `main.tf` and push 
+4. [Create a variable named `pool` in TFE](#managing-magic-castle-variables-with-terraform-cloud-ui)
 5. Add a file named `data.yaml` in your git repo with the following content:
     ```yaml 
     ---
     profile::slurm::controller::tf_cloud_token: <TFE API token>
     profile::slurm::controller::tf_cloud_workspace: <TFE workspace id>
-    profile::slurm::controller::tf_cloud_var_name: "draft_exclusion"
     ```
     Complete the file by replacing `<TFE API TOKEN> ` with the token generated at step 1
     and `<TFE workspace id>` (i.e.: `ws-...`) by the id of the workspace created at step 2.
 6. In `main.tf`, under `module "openstack"`, add `hieradata = file("data.yaml")`
 7. Add `data.yaml` in git, commit all changes and push.
-8. In `main.tf`, add instances to `instances` with the tags `draft` and `node`. These are
+8. In `main.tf`, add instances to `instances` with the tags `pool` and `node`. These are
 the nodes that Slurm will able to create and destroy. Commit and push changes in git.
 9. Go to your workspace in TFE, click on Actions -> Start a new run -> Plan and apply -> Start run.
 10. Compute nodes defined in step 8 can be modified at any point in the cluster lifetime and
-more _draft_ compute nodes can be added or removed if needed.
+more _pool_ compute nodes can be added or removed if needed.

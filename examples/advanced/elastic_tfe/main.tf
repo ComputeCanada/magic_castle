@@ -92,13 +92,13 @@ resource "tfe_workspace" "workspace" {
   }
 }
 
-resource "tfe_variable" "draft_exclusion" {
-  key          = "draft_exclusion"
+resource "tfe_variable" "pool" {
+  key          = "pool"
   value        = "[]"
   category     = "terraform"
   hcl          = true
   workspace_id = tfe_workspace.workspace.id
-  description  = "Slurm draft compute note exclusion list, control by Slurm"
+  description  = "Slurm pool of compute nodes, control by Slurm"
 }
 
 resource "github_repository_file" "main" {
@@ -110,7 +110,7 @@ resource "github_repository_file" "main" {
     domain       = local.domain
     dns_provider = var.dns
     sshkey       = var.sshkey
-    varname      = tfe_variable.draft_exclusion.key
+    varname      = tfe_variable.pool.key
   })
   commit_message      = "Add main.tf"
   overwrite_on_create = true
@@ -123,7 +123,7 @@ resource "github_repository_file" "data" {
   content             = templatefile("templates/data.yaml.tftpl", {
     tfe_token    = var.tfe_token
     workspace_id = tfe_workspace.workspace.id,
-    varname      = tfe_variable.draft_exclusion.key
+    varname      = tfe_variable.pool.key
   })
   commit_message      = "Add data.yaml"
   overwrite_on_create = true

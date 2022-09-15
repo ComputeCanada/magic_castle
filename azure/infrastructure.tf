@@ -55,7 +55,7 @@ resource "azurerm_resource_group" "group" {
 locals {
   to_build_instances = {
     for key, values in module.design.instances: key => values
-    if ! contains(values.tags, "draft") || contains(var.draft_exclusion, key)
+    if ! contains(values.tags, "pool") || contains(var.pool, key)
    }
 }
 

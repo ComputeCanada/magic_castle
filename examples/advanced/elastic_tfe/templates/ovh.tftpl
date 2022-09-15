@@ -2,7 +2,7 @@ terraform {
   required_version = ">= 1.2.1"
 }
 
-variable "${varname}" {}
+variable "pool" {}
 
 module "ovh" {
   source         = "git::https://github.com/ComputeCanada/magic_castle.git//ovh?ref=elastic"
@@ -16,7 +16,7 @@ module "ovh" {
   instances = {
     mgmt   = { type = "b2-7", tags = ["puppet", "mgmt", "nfs"], count = 1 }
     login  = { type = "b2-7", tags = ["login", "public", "proxy"], count = 1 }
-    node   = { type = "b2-7", tags = ["node", "draft"], count = 10 }
+    node   = { type = "b2-7", tags = ["node", "pool"], count = 10 }
   }
 
   volumes = {
@@ -30,7 +30,7 @@ module "ovh" {
   public_keys      = ["${sshkey}"]
   generate_ssh_key = true
   hieradata        = file("data.yaml")
-  draft_exclusion  = var.${varname}
+  pool             = var.pool
 
   nb_users     = 10
 }

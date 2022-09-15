@@ -149,6 +149,6 @@ variable "software_stack" {
   description = "Provider of research computing software stack (can be 'computecanada' or 'eessi')"
 }
 
-variable "draft_exclusion" {
+variable "pool" {
   default = []
 }

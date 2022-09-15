@@ -70,7 +70,7 @@ data "external" "machine_type" {
 locals {
   to_build_instances = {
     for key, values in module.design.instances: key => values
-    if ! contains(values.tags, "draft") || contains(var.draft_exclusion, key)
+    if ! contains(values.tags, "pool") || contains(var.pool, key)
    }
 }
 
@@ -169,7 +169,7 @@ locals {
       public_ip = contains(values["tags"], "public") ? google_compute_address.public_ip[x].address : ""
       local_ip  = google_compute_address.nic[x].address
       tags      = values["tags"]
-      id        = ! contains(values["tags"], "draft") || contains(var.draft_exclusion, x) ? google_compute_instance.instances[x].id : ""
+      id        = ! contains(values["tags"], "pool") || contains(var.pool, x) ? google_compute_instance.instances[x].id : ""
       hostkeys = {
         rsa = module.instance_config.rsa_hostkeys[x]
         ed25519 = module.instance_config.ed25519_hostkeys[x]

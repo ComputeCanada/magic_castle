@@ -52,7 +52,7 @@ resource "openstack_compute_keypair_v2" "keypair" {
 locals {
   to_build_instances = {
     for key, values in module.design.instances: key => values
-    if ! contains(values.tags, "draft") || contains(var.draft_exclusion, key)
+    if ! contains(values.tags, "pool") || contains(var.pool, key)
    }
 }
 
@@ -133,7 +133,7 @@ locals {
       public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
       local_ip  = openstack_networking_port_v2.nic[x].all_fixed_ips[0]
       tags      = values["tags"]
-      id        = ! contains(values["tags"], "draft") || contains(var.draft_exclusion, x) ? openstack_compute_instance_v2.instances[x].id : ""
+      id        = ! contains(values["tags"], "pool") || contains(var.pool, x) ? openstack_compute_instance_v2.instances[x].id : ""
       hostkeys = {
         rsa = module.instance_config.rsa_hostkeys[x]
         ed25519 = module.instance_config.ed25519_hostkeys[x]
