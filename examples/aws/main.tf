@@ -2,6 +2,11 @@ terraform {
   required_version = ">= 1.2.1"
 }
 
+variable "pool" {
+  description = "Slurm pool of compute nodes"
+  default = []
+}
+
 module "aws" {
   source         = "git::https://github.com/ComputeCanada/magic_castle.git//aws"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
@@ -18,6 +23,12 @@ module "aws" {
     login = { type = "t3.medium", count = 1, tags = ["login", "public", "proxy"] },
     node  = { type = "t3.medium", count = 1, tags = ["node"] }
   }
+
+  # var.pool is managed by Slurm through Terraform REST API.
+  # To let Slurm manage a type of nodes, add "pool" to its tag list.
+  # When using Terraform CLI, this parameter is ignored.
+  # Refer to Magic Castle Documentation - Enable Magic Castle Autoscaling
+  pool = var.pool
 
   volumes = {
     nfs = {
