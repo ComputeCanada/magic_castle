@@ -17,6 +17,12 @@ module "openstack" {
     node   = { type = "p2-3gb", tags = ["node"], count = 1 }
   }
 
+  # var.pool is managed by Slurm through Terraform REST API.
+  # To let Slurm manage a type of nodes, add "pool" to its tag list.
+  # When using Terraform CLI, this parameter is ignored.
+  # Refer to Magic Castle Documentation - Enable Magic Castle Autoscaling
+  pool = var.pool
+
   volumes = {
     nfs = {
       home     = { size = 100 }
@@ -30,14 +36,6 @@ module "openstack" {
   nb_users = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
-}
-
-output "accounts" {
-  value = module.openstack.accounts
-}
-
-output "public_ip" {
-  value = module.openstack.public_ip
 }
 
 ## Uncomment to register your domain name with CloudFlare
