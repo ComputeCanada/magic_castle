@@ -2,6 +2,11 @@ terraform {
   required_version = ">= 1.2.1"
 }
 
+variable "pool" {
+  description = "Slurm pool of compute nodes"
+  default = []
+}
+
 module "openstack" {
   source         = "git::https://github.com/ComputeCanada/magic_castle.git//openstack"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
@@ -36,6 +41,14 @@ module "openstack" {
   nb_users = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
+}
+
+output "accounts" {
+  value = module.openstack.accounts
+}
+
+output "public_ip" {
+  value = module.openstack.public_ip
 }
 
 ## Uncomment to register your domain name with CloudFlare
