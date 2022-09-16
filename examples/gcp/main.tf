@@ -2,6 +2,11 @@ terraform {
   required_version = ">= 1.2.1"
 }
 
+variable "pool" {
+  description = "Slurm pool of compute nodes"
+  default = []
+}
+
 module "gcp" {
   source         = "git::https://github.com/ComputeCanada/magic_castle.git//gcp"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
@@ -9,8 +14,7 @@ module "gcp" {
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
-  image        = "rocky-linux-8"
-  nb_users     = 10
+  image        = "rocky-linux-8-optimized-gcp"
 
   instances = {
     mgmt   = { type = "n2-standard-2", tags = ["puppet", "mgmt", "nfs"], count = 1 }
@@ -20,10 +24,16 @@ module "gcp" {
       type = "n1-standard-2",
       tags = ["node"],
       count = 1,
-      gpu_type = "nvidia-tesla-k80",
+      gpu_type = "nvidia-tesla-t4",
       gpu_count = 1
     }
   }
+
+  # var.pool is managed by Slurm through Terraform REST API.
+  # To let Slurm manage a type of nodes, add "pool" to its tag list.
+  # When using Terraform CLI, this parameter is ignored.
+  # Refer to Magic Castle Documentation - Enable Magic Castle Autoscaling
+  pool = var.pool
 
   volumes = {
     nfs = {
@@ -35,11 +45,12 @@ module "gcp" {
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
 
+  nb_users     = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
 
   # GCP specifics
-  project = "calcul-quebec-249013"
+  project = "your-project-12345"
   region  = "us-central1"
 }
 
