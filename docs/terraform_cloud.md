@@ -267,8 +267,8 @@ To enable this feature:
     ```
     Complete the file by replacing `<TFE API TOKEN> ` with the token generated at step 1
     and `<TFE workspace id>` (i.e.: `ws-...`) by the id of the workspace created at step 2.
-6. In `main.tf`, after the line `public_keys = ...`, add `hieradata = file("data.yaml")`
-7. Add `data.yaml` in git, commit all changes and push.
+6. Add `data.yaml` in git and push.
+7. In `main.tf`, after the line `public_keys = ...`, add `hieradata = file("data.yaml")`
 8. In `main.tf`, add instances to `instances` with the tags `pool` and `node`. These are
 the nodes that Slurm will able to create and destroy. Commit and push changes in git.
 9. Go to your workspace in TFE, click on Actions -> Start a new run -> Plan and apply -> Start run.
