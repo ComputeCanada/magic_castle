@@ -503,7 +503,7 @@ instance, while in Puppet code tags are used to identify roles of the instances.
 
 Terraform tags:
 - `login`: identify instances that will be pointed by the domain name A record
-- `pool`: identify instances that will be created only if their hostname appears in the `var.pool` list.
+- `pool`: identify instances that will be created only if their hostname appears in the [`var.pool`](#417-pool-optional) list.
 - `proxy`: identify instances that will be pointed by the vhost A records
 - `public`: identify instances that need to have a public ip address and be accessible from the Internet
 - `puppet`: identify the instance that will be configured as the main Puppet server
@@ -793,8 +793,6 @@ value to `eessi`.
 Defines a list of hostnames with the tag `"pool"` that have to be online. This variable is typically
 managed by the workload scheduler through Terraform API. For more information, refer to
 [Enable Magic Castle Autoscaling](terraform_cloud.md#enable-magic-castle-autoscaling)
-
-
 
 ## 5. Cloud Specific Configuration
 
