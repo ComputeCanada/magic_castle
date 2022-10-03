@@ -237,31 +237,36 @@ job queue content.
 
 To enable this feature:
 1. [Create a TFE API Token](https://app.terraform.io/app/settings/tokens) and save it somewhere safe.
+
+    1.1. If you subscribe to Terraform Cloud Team & Governance plan, you can generate
+    a [Team API Token](https://www.terraform.io/cloud-docs/users-teams-organizations/api-tokens#team-api-tokens).
+    The team associated with this token requires no access to organization and can be secret.
+    It does not have to include any member. Team API tokens can 
+
 2. [Create a workspace in TFE](#creating-the-workspace)
 
-    2.1. Make sure the repo is private as it will contain a TFE API token
+    2.1. Make sure the repo is private as it will contain the API token.
 
-    2.2 Set the module source to git:
-    ```hcl
-    source = "git::https://github.com/ComputeCanada/magic_castle.git//openstack?ref=elastic"
-    ```
-    Replace `openstack` by your cloud provider.
+    2.2. If you generated a Team API Token in 1, provide access to the workspace to the team:
 
-    2.3 Set
-    ```hcl
-    config_version = "elastic"
-    ```
+      1. Workspace Settings -> Team Access -> Add team and permissions
+      2. Select the team
+      3. Click on "Customize permissions for this team"
+      4. Under "Runs" select "Apply"
+      5. Under "Variables" select "Read and write"
+      6. Leave the rest as is and click on "Assign custom permissions"
+
 3. [Create the environment variables of the cloud provider credentials in TFE](#providing-cloud-provider-credentials-to-terraform-cloud)
 4. [Create a variable named `pool` in TFE](#managing-magic-castle-variables-with-terraform-cloud-ui)
 5. Add a file named `data.yaml` in your git repo with the following content:
     ```yaml 
     ---
-    profile::slurm::controller::tf_cloud_token: <TFE API token>
-    profile::slurm::controller::tf_cloud_workspace: <TFE workspace id>
+    profile::slurm::controller::tfe_token: <TFE API token>
+    profile::slurm::controller::tfe_workspace: <TFE workspace id>
     ```
     Complete the file by replacing `<TFE API TOKEN> ` with the token generated at step 1
     and `<TFE workspace id>` (i.e.: `ws-...`) by the id of the workspace created at step 2.
-6. In `main.tf`, under `module "openstack"`, add `hieradata = file("data.yaml")`
+6. In `main.tf`, after the line `public_ssh_keys = ...`, add `hieradata = file("data.yaml")`
 7. Add `data.yaml` in git, commit all changes and push.
 8. In `main.tf`, add instances to `instances` with the tags `pool` and `node`. These are
 the nodes that Slurm will able to create and destroy. Commit and push changes in git.
