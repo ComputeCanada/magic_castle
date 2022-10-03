@@ -75,8 +75,24 @@ locals {
   spot_instances    = {for key, values in module.design.instances: key => values if contains(values["tags"], "spot")}
 }
 
+data "aws_ec2_instance_type" "instance_type" {
+  for_each      = module.design.instances
+  instance_type = each.value.type
+}
+
+locals {
+  to_build_regular_instances = {
+    for key, values in local.regular_instances: key => values
+    if ! contains(values.tags, "pool") || contains(var.pool, key)
+   }
+  to_build_spot_instances = {
+    for key, values in local.spot_instances: key => values
+    if ! contains(values.tags, "pool") || contains(var.pool, key)
+   }
+}
+
 resource "aws_instance" "instances" {
-  for_each          = local.regular_instances
+  for_each          = local.to_build_regular_instances
   instance_type     = each.value.type
   ami               = lookup(each.value, "image", var.image)
   user_data         = base64gzip(module.instance_config.user_data[each.key])
@@ -84,8 +100,6 @@ resource "aws_instance" "instances" {
   placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null
 
   key_name          = aws_key_pair.key.key_name
-
-
 
   network_interface {
     network_interface_id = aws_network_interface.nic[each.key].id
@@ -113,7 +127,7 @@ resource "aws_instance" "instances" {
 }
 
 resource "aws_spot_instance_request" "spot_instances" {
-  for_each          = local.spot_instances
+  for_each          = local.to_build_spot_instances
   instance_type     = each.value.type
   ami               = lookup(each.value, "image", var.image)
   user_data         = base64gzip(module.instance_config.user_data[each.key])
@@ -200,10 +214,15 @@ locals {
       public_ip   = contains(values["tags"], "public") ? aws_eip.public_ip[x].public_ip : ""
       local_ip    = aws_network_interface.nic[x].private_ip
       tags        = values["tags"]
-      id          = ! contains(values["tags"], "spot") ? aws_instance.instances[x].id : aws_spot_instance_request.spot_instances[x].spot_instance_id
+      id          = try(! contains(values["tags"], "spot") ? aws_instance.instances[x].id : aws_spot_instance_request.spot_instances[x].spot_instance_id, "")
       hostkeys    = {
         rsa = module.instance_config.rsa_hostkeys[x]
         ed25519 = module.instance_config.ed25519_hostkeys[x]
+      }
+      specs = {
+        cpus = data.aws_ec2_instance_type.instance_type[x].default_vcpus
+        ram  = data.aws_ec2_instance_type.instance_type[x].memory_size
+        gpus = try(one(data.aws_ec2_instance_type.instance_type[x].gpus).count, 0)
       }
     }
   }

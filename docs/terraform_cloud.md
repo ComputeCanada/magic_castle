@@ -1,4 +1,4 @@
-# Terraform Cloud (draft)
+# Terraform Cloud
 
 This document explains how to use Magic Castle with Terraform Cloud.
 
@@ -228,3 +228,49 @@ the resources using:
 ```sh
 terraform state list
 ```
+
+## Enable Magic Castle Autoscaling
+
+Magic Castle in combination with Terraform Cloud (TFE) can be configured to give
+Slurm the ability to create and destroy instances based on the
+job queue content.
+
+To enable this feature:
+1. [Create a TFE API Token](https://app.terraform.io/app/settings/tokens) and save it somewhere safe.
+
+    1.1. If you subscribe to Terraform Cloud Team & Governance plan, you can generate
+    a [Team API Token](https://www.terraform.io/cloud-docs/users-teams-organizations/api-tokens#team-api-tokens).
+    The team associated with this token requires no access to organization and can be secret.
+    It does not have to include any member. Team API token is preferable as its permissions can be
+    restricted to the minimum required for autoscale purpose.
+
+2. [Create a workspace in TFE](#creating-the-workspace)
+
+    2.1. Make sure the repo is private as it will contain the API token.
+
+    2.2. If you generated a Team API Token in 1, provide access to the workspace to the team:
+
+      1. Workspace Settings -> Team Access -> Add team and permissions
+      2. Select the team
+      3. Click on "Customize permissions for this team"
+      4. Under "Runs" select "Apply"
+      5. Under "Variables" select "Read and write"
+      6. Leave the rest as is and click on "Assign custom permissions"
+
+3. [Create the environment variables of the cloud provider credentials in TFE](#providing-cloud-provider-credentials-to-terraform-cloud)
+4. [Create a variable named `pool` in TFE](#managing-magic-castle-variables-with-terraform-cloud-ui)
+5. Add a file named `data.yaml` in your git repo with the following content:
+    ```yaml 
+    ---
+    profile::slurm::controller::tfe_token: <TFE API token>
+    profile::slurm::controller::tfe_workspace: <TFE workspace id>
+    ```
+    Complete the file by replacing `<TFE API TOKEN> ` with the token generated at step 1
+    and `<TFE workspace id>` (i.e.: `ws-...`) by the id of the workspace created at step 2.
+6. Add `data.yaml` in git and push.
+7. In `main.tf`, after the line `public_keys = ...`, add `hieradata = file("data.yaml")`
+8. In `main.tf`, add instances to `instances` with the tags `pool` and `node`. These are
+the nodes that Slurm will able to create and destroy. Commit and push changes in git.
+9. Go to your workspace in TFE, click on Actions -> Start a new run -> Plan and apply -> Start run.
+10. Compute nodes defined in step 8 can be modified at any point in the cluster lifetime and
+more _pool_ compute nodes can be added or removed if needed.
