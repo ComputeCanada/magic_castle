@@ -503,6 +503,7 @@ instance, while in Puppet code tags are used to identify roles of the instances.
 
 Terraform tags:
 - `login`: identify instances that will be pointed by the domain name A record
+- `pool`: identify instances that will be created only if their hostname appears in the `var.pool` list.
 - `proxy`: identify instances that will be pointed by the vhost A records
 - `public`: identify instances that need to have a public ip address and be accessible from the Internet
 - `puppet`: identify the instance that will be configured as the main Puppet server
@@ -515,6 +516,7 @@ Puppet tags expected by the [puppet-magic_castle](https://www.github.com/Compute
 - `mgmt`: identify a management instance (minimum: 2 CPUs, 6GB RAM)
 - `nfs`: identify the instance that will act as an NFS server.
 - `node`: identify a compute node instance (minimum: 1 CPUs, 2GB RAM)
+- `pool`: when combined with `node`, it identifies compute nodes that Slurm can resume/suspend to meet workload demand.
 
 You are free to define your own additional tags.
 
@@ -783,6 +785,16 @@ supports the [EESSI](https://eessi.github.io/docs/) software stack (as an altern
 value to `eessi`.
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
+
+### 4.17 pool (optional)
+
+**default_value**: `[]`
+
+Defines a list of hostnames with the tag `"pool"` that have to be online. This variable is typically
+managed by the workload scheduler through Terraform API. For more information, refer to
+[Enable Magic Castle Autoscaling](terraform_cloud.md#enable-magic-castle-autoscaling)
+
+
 
 ## 5. Cloud Specific Configuration
 
