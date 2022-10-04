@@ -4,6 +4,8 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4895357.svg)](https://doi.org/10.5281/zenodo.4895357)
 [![Build Status](https://github.com/ComputeCanada/magic_castle/actions/workflows/test.yaml/badge.svg)](https://github.com/ComputeCanada/magic_castle/actions/workflows/test.yaml)
 
+<img src="https://github.com/computecanada/magic_castle/raw/assets/logo.png" width="150">
+
 [Compute Canada](https://www.computecanada.ca/) provides HPC infrastructure and support to every academic research institution in Canada. Compute Canada [uses CVMFS](https://docs.computecanada.ca/wiki/Accessing_CVMFS), a software distribution system [developed at CERN](https://cernvm.cern.ch/fs/), to make the Compute Canada research software stack available on its HPC clusters, and anywhere else with internet access. This enables replication of the Compute Canada experience outside of its physical infrastructure.
 
 From these new possibilities emerged an open-source software project named Magic Castle, which aims to recreate the Compute Canada user experience in public clouds. Magic Castle uses the open-source software [Terraform](https://www.terraform.io) and HashiCorp Language (HCL) to define the virtual machines, volumes, and networks that are required to replicate a virtual HPC infrastructure. The infrastructure definition is packaged as a Terraform module that users can customize as they require. After deployment, the user is provided with a complete HPC cluster software environment including a Slurm scheduler, a Globus Endpoint, JupyterHub, LDAP, DNS, and over 3000 research software applications compiled by experts with [EasyBuild](https://github.com/easybuilders/easybuild). Magic Castle is compatible with AWS, Microsoft Azure, Google Cloud, OpenStack, and OVH.
