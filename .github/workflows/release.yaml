@@ -29,7 +29,7 @@ jobs:
         env:
           SOURCE_TAG: ${{ steps.tag_name.outputs.SOURCE_TAG }}
         run: |
-          sed -n "/^## \[${SOURCE_TAG}\]/,/^## \[/p" CHANGELOG | sed '1d;2d;$d' | sed '$d' | sed 's/###/##/' > ${SOURCE_TAG}-CHANGELOG.txt
+          sed -n "/^## \[${SOURCE_TAG}\]/,/^## \[/p" CHANGELOG.md | sed '1d;2d;$d' | sed '$d' | sed 's/###/##/' > ${SOURCE_TAG}-CHANGELOG.txt
 
       - name: Release
         uses: softprops/action-gh-release@v1
