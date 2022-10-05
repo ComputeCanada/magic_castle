@@ -5,10 +5,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [12.0.0] UNRELEASED
 
+### Added
+- [cloud-init] Enabled fastest miror selection in dnf config
+- [cloud-init] Added logic to handle admin account being already created at first boot
+- Added a timestamp as payload to consul puppet event to avoid rebooting puppet for past events
+- Added variable `var.pool` and "pool" tag to enable Slurm autoscaling with Terraform Cloud (PR #216)
+- Added a script to build a static JSON file containing Azure instance types specification (#cpu, ram, #gpus)
+- Added a script to compute GCP instance specifications based on the instance type name
+- Added documentation on how to use Magic Castle with Terraform Cloud to enable Slurm autoscaling
+
 ### Changed
 
 - puppet-magic_castle now has its own [changelog](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/CHANGELOG.md)
 - Updated Terraform minimum version to 1.2.1 from 1.1.0
+- [cloud-init] Excluded puppet from yum upgrade
+- [cloud-init] Added a check to skip upgrade and puppet install if puppet-magic_castle has ran at least once.
+- [cloud-init] Excluded iptables from firewalld uninstall
+- Changed instance types in Google Cloud example
+- Fixed AWS spot instances data structure composition
+
+### Removed
+
+- [cloud-init] Removed `packages` section
 
 ## [11.9.5] 2022-08-09
 
