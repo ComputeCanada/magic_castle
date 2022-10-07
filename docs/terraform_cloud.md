@@ -271,13 +271,14 @@ To enable this feature:
 7. Modify `main.tf`:
 
       1. Add instances to `instances` with the tags `pool` and `node`. These are
-      the nodes that Slurm will able to create and destroy. Commit and push changes in git.
+      the nodes that Slurm will able to create and destroy.
       2. On the right-hand-side of `public_keys = `, replace `[file("~/.ssh/id_rsa.pub")]`
       by a list of SSH public keys that will have admin access to the cluster.
       3. After the line `public_keys = ...`, add `hieradata = file("data.yaml")`.
       4. After the line `hieradata = ...`, add `generate_ssh_key = true`. This will provide
       Terraform Cloud SSH admin access to the cluster and it will be used to upload configuration
       files.
+      5. Stage changes, commit and push to git repo.
 
 9. Go to your workspace in TFE, click on Actions -> Start a new run -> Plan and apply -> Start run.
 10. Compute nodes defined in step 8 can be modified at any point in the cluster lifetime and
