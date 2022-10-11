@@ -261,7 +261,7 @@ To enable this feature:
       6. Leave the rest as is and click on "Assign custom permissions"
 
 3. [Create the environment variables of the cloud provider credentials in TFE](#providing-cloud-provider-credentials-to-terraform-cloud)
-4. [Create a variable named `pool` in TFE](#managing-magic-castle-variables-with-terraform-cloud-ui)
+4. [Create a variable named `pool` in TFE](#managing-magic-castle-variables-with-terraform-cloud-ui). Set value to `[]` and check **HCL**.
 5. Add a file named `data.yaml` in your git repo with the following content:
     ```yaml 
     ---
