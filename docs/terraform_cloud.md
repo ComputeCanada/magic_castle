@@ -32,7 +32,7 @@ available for the cloud of your choice
     4. Configure settings: tweak the name and description to your liking
     5. Click on "Create workspace"
 
-You will be redirected automatically to your new workspace
+You will be redirected automatically to your new workspace.
 
 ### Providing cloud provider credentials to Terraform Cloud
 
@@ -41,6 +41,9 @@ For the CLI to be able to communicate with your cloud provider API, we need to d
 environment variables that Terraform will use to authenticate. The next sections
 explain which environment variables to define for each cloud provider and how to retrieve
 the values of the variable from the provider.
+
+If you plan on using these environment variables with multiple workspaces, it is recommended
+to [create a credential variable set](https://learn.hashicorp.com/tutorials/terraform/cloud-multiple-variable-sets?in=terraform/cloud#create-a-credentials-variable-set) in Terraform Cloud.
 
 #### AWS
 
