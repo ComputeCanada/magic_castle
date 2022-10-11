@@ -35,12 +35,12 @@ module "cluster_config" {
 }
 
 data "openstack_images_image_v2" "image" {
-  for_each = module.design.instances
+  for_each = var.instances
   name     = lookup(each.value, "image", var.image)
 }
 
 data "openstack_compute_flavor_v2" "flavors" {
-  for_each = module.design.instances
+  for_each = var.instances
   name     = each.value.type
 }
 
@@ -59,7 +59,7 @@ locals {
 resource "openstack_compute_instance_v2" "instances" {
   for_each = local.to_build_instances
   name     = format("%s-%s", var.cluster_name, each.key)
-  image_id = lookup(each.value, "disk_size", 10) > data.openstack_compute_flavor_v2.flavors[each.key].disk ? null : data.openstack_images_image_v2.image[each.key].id
+  image_id = lookup(each.value, "disk_size", 10) > data.openstack_compute_flavor_v2.flavors[each.value.prefix].disk ? null : data.openstack_images_image_v2.image[each.value.prefix].id
 
   flavor_name = each.value.type
   key_pair    = openstack_compute_keypair_v2.keypair.name
@@ -78,9 +78,9 @@ resource "openstack_compute_instance_v2" "instances" {
   }
 
   dynamic "block_device" {
-    for_each = lookup(each.value, "disk_size", 10) > data.openstack_compute_flavor_v2.flavors[each.key].disk ? [{ volume_size = lookup(each.value, "disk_size", 10) }] : []
+    for_each = lookup(each.value, "disk_size", 10) > data.openstack_compute_flavor_v2.flavors[each.value.prefix].disk ? [{ volume_size = lookup(each.value, "disk_size", 10) }] : []
     content {
-      uuid                  = data.openstack_images_image_v2.image[each.key].id
+      uuid                  = data.openstack_images_image_v2.image[each.value.prefix].id
       source_type           = "image"
       destination_type      = "volume"
       boot_index            = 0
@@ -139,9 +139,9 @@ locals {
         ed25519 = module.instance_config.ed25519_hostkeys[x]
       }
       specs = {
-        cpus = data.openstack_compute_flavor_v2.flavors[x].vcpus
-        ram  = data.openstack_compute_flavor_v2.flavors[x].ram
-        gpus = parseint(lookup(data.openstack_compute_flavor_v2.flavors[x].extra_specs, "resources:VGPU", "0"), 10)
+        cpus = data.openstack_compute_flavor_v2.flavors[values["prefix"]].vcpus
+        ram  = data.openstack_compute_flavor_v2.flavors[values["prefix"]].ram
+        gpus = parseint(lookup(data.openstack_compute_flavor_v2.flavors[values["prefix"]].extra_specs, "resources:VGPU", "0"), 10)
       }
     }
   }
