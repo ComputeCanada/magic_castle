@@ -260,6 +260,8 @@ To enable this feature:
       5. Under "Variables" select "Read and write"
       6. Leave the rest as is and click on "Assign custom permissions"
 
+    2.3 In _Configure settings_, under _Advanced options_, for _Apply method_, select _Auto apply_.
+
 3. [Create the environment variables of the cloud provider credentials in TFE](#providing-cloud-provider-credentials-to-terraform-cloud)
 4. [Create a variable named `pool` in TFE](#managing-magic-castle-variables-with-terraform-cloud-ui). Set value to `[]` and check **HCL**.
 5. Add a file named `data.yaml` in your git repo with the following content:
@@ -284,6 +286,6 @@ To enable this feature:
       5. Stage changes, commit and push to git repo.
 
 9. Go to your workspace in TFE, click on Actions -> Start a new run -> Plan and apply -> Start run.
-Then, click on "Confirm & Apply".
+Then, click on "Confirm & Apply" and "Confirm Plan".
 10. Compute nodes defined in step 8 can be modified at any point in the cluster lifetime and
 more _pool_ compute nodes can be added or removed if needed.
