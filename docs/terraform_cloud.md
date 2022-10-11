@@ -284,5 +284,6 @@ To enable this feature:
       5. Stage changes, commit and push to git repo.
 
 9. Go to your workspace in TFE, click on Actions -> Start a new run -> Plan and apply -> Start run.
+Then, click on "Confirm & Apply".
 10. Compute nodes defined in step 8 can be modified at any point in the cluster lifetime and
 more _pool_ compute nodes can be added or removed if needed.
