@@ -32,7 +32,7 @@ available for the cloud of your choice
     4. Configure settings: tweak the name and description to your liking
     5. Click on "Create workspace"
 
-You will be redirected automatically to your new workspace
+You will be redirected automatically to your new workspace.
 
 ### Providing cloud provider credentials to Terraform Cloud
 
@@ -41,6 +41,9 @@ For the CLI to be able to communicate with your cloud provider API, we need to d
 environment variables that Terraform will use to authenticate. The next sections
 explain which environment variables to define for each cloud provider and how to retrieve
 the values of the variable from the provider.
+
+If you plan on using these environment variables with multiple workspaces, it is recommended
+to [create a credential variable set](https://learn.hashicorp.com/tutorials/terraform/cloud-multiple-variable-sets?in=terraform/cloud#create-a-credentials-variable-set) in Terraform Cloud.
 
 #### AWS
 
@@ -257,8 +260,10 @@ To enable this feature:
       5. Under "Variables" select "Read and write"
       6. Leave the rest as is and click on "Assign custom permissions"
 
+    2.3 In _Configure settings_, under _Advanced options_, for _Apply method_, select _Auto apply_.
+
 3. [Create the environment variables of the cloud provider credentials in TFE](#providing-cloud-provider-credentials-to-terraform-cloud)
-4. [Create a variable named `pool` in TFE](#managing-magic-castle-variables-with-terraform-cloud-ui)
+4. [Create a variable named `pool` in TFE](#managing-magic-castle-variables-with-terraform-cloud-ui). Set value to `[]` and check **HCL**.
 5. Add a file named `data.yaml` in your git repo with the following content:
     ```yaml 
     ---
@@ -268,9 +273,19 @@ To enable this feature:
     Complete the file by replacing `<TFE API TOKEN> ` with the token generated at step 1
     and `<TFE workspace id>` (i.e.: `ws-...`) by the id of the workspace created at step 2.
 6. Add `data.yaml` in git and push.
-7. In `main.tf`, after the line `public_keys = ...`, add `hieradata = file("data.yaml")`
-8. In `main.tf`, add instances to `instances` with the tags `pool` and `node`. These are
-the nodes that Slurm will able to create and destroy. Commit and push changes in git.
+7. Modify `main.tf`:
+
+      1. Add instances to `instances` with the tags `pool` and `node`. These are
+      the nodes that Slurm will able to create and destroy.
+      2. On the right-hand-side of `public_keys = `, replace `[file("~/.ssh/id_rsa.pub")]`
+      by a list of SSH public keys that will have admin access to the cluster.
+      3. After the line `public_keys = ...`, add `hieradata = file("data.yaml")`.
+      4. After the line `hieradata = ...`, add `generate_ssh_key = true`. This will provide
+      Terraform Cloud SSH admin access to the cluster and it will be used to upload configuration
+      files.
+      5. Stage changes, commit and push to git repo.
+
 9. Go to your workspace in TFE, click on Actions -> Start a new run -> Plan and apply -> Start run.
+Then, click on "Confirm & Apply" and "Confirm Plan".
 10. Compute nodes defined in step 8 can be modified at any point in the cluster lifetime and
 more _pool_ compute nodes can be added or removed if needed.
