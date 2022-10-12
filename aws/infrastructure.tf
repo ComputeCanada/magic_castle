@@ -76,7 +76,7 @@ locals {
 }
 
 data "aws_ec2_instance_type" "instance_type" {
-  for_each      = module.design.instances
+  for_each      = var.instances
   instance_type = each.value.type
 }
 
@@ -220,9 +220,9 @@ locals {
         ed25519 = module.instance_config.ed25519_hostkeys[x]
       }
       specs = {
-        cpus = data.aws_ec2_instance_type.instance_type[x].default_vcpus
-        ram  = data.aws_ec2_instance_type.instance_type[x].memory_size
-        gpus = try(one(data.aws_ec2_instance_type.instance_type[x].gpus).count, 0)
+        cpus = data.aws_ec2_instance_type.instance_type[values["prefix"]].default_vcpus
+        ram  = data.aws_ec2_instance_type.instance_type[values["prefix"]].memory_size
+        gpus = try(one(data.aws_ec2_instance_type.instance_type[values["prefix"]].gpus).count, 0)
       }
     }
   }

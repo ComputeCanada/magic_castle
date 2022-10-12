@@ -60,7 +60,7 @@ locals {
 }
 
 data "external" "machine_type" {
-  for_each = module.design.instances
+  for_each = var.instances
   program  = ["bash", "${path.module}/external/machine_type.sh"]
   query    = {
     machine_type = each.value.type
@@ -175,9 +175,9 @@ locals {
         ed25519 = module.instance_config.ed25519_hostkeys[x]
       }
       specs = {
-        cpus = data.external.machine_type[x].result["vcpus"]
-        ram  = data.external.machine_type[x].result["ram"]
-        gpus = try(data.external.machine_type[x].result["gpus"], lookup(values, "gpu_count", 0))
+        cpus = data.external.machine_type[values["prefix"]].result["vcpus"]
+        ram  = data.external.machine_type[values["prefix"]].result["ram"]
+        gpus = try(data.external.machine_type[values["prefix"]].result["gpus"], lookup(values, "gpu_count", 0))
       }
     }
   }
