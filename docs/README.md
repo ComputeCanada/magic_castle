@@ -1518,8 +1518,8 @@ When scaling the compute node pool, either manually by changing the count or
 automatically with [Slurm autoscale](./terraform_cloud.md#enable-magic-castle-autoscaling),
 it can become beneficial to reduce the time spent configuring the machine
 when it boots for the first time, hence reducing the time requires before it becomes
-available in Slurm. One way to achieve this is to clone the fully configured
-compute node root volume and use it as the image of future compute nodes.
+available in Slurm. One way to achieve this is to clone the root disk of a fully
+configured compute node and use it as the base image of future compute nodes.
 
 This process has three steps:
 
