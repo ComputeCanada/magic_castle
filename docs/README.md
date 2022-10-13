@@ -1530,7 +1530,7 @@ This process has three steps:
 The following subsection explains how to accomplish each step.
 
 **Warning**: While it will work in most cases, avoid re-using the compute node image of a
-previous deployment with a new one. The preparation steps cleans most
+previous deployment. The preparation steps cleans most
 of the deployment specific configuration and secrets, but there is no guarantee
 that the configuration will be entirely compatible with a different deployment.
 
@@ -1569,7 +1569,7 @@ The script `prepare4image.sh` executes the following steps in order:
   9. Remove NFS directories `/etc/fstab`
   10. Stop syslog
   11. Clear `/var/log/message` content
-  12. Remove logs and artifacts so cloud-init can re-run
+  12. Remove cloud-init's logs and artifacts so it can re-run
   13. Power off the machine
 
 #### 10.12.2 Create the image
