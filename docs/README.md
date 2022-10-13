@@ -525,6 +525,8 @@ You are free to define your own additional tags.
 Optional attributes can be defined:
 1. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create (default: 1).
 2. `image`: specification of the image to use for this instance type. (default: global [`image`](#46-image) value).
+Refer to section [10.12 - Create a compute node image](#1012-Create-compute-node-image) to learn how this attribute can
+be leveraged to accelerate compute node provisioning.
 3. `disk_size`: size in gibibytes (GiB) of the instance's root disk containing
 the operating system and service software
 (default: see the next table).
@@ -793,6 +795,10 @@ value to `eessi`.
 Defines a list of hostnames with the tag `"pool"` that have to be online. This variable is typically
 managed by the workload scheduler through Terraform API. For more information, refer to
 [Enable Magic Castle Autoscaling](terraform_cloud.md#enable-magic-castle-autoscaling)
+
+**Post build modification effect**: `pool` tagged hosts with name present in the list
+will be instantiated, others will stay uninstantiated or will be destroyed
+if previously instantiated.
 
 ## 5. Cloud Specific Configuration
 
@@ -1212,20 +1218,12 @@ terraform taint 'module.openstack.openstack_compute_instance_v2.instances["login
 terraform apply
 ```
 
-## 10. Online Cluster Configuration
+## 10. Customize Cluster Software Configuration
 
-Once the cluster is online and provisioned, you are free to modify
-its software configuration as you please by connecting to it and
-abusing your administrator privileges. If after modifying the
-configuration, you think it would be good for Magic Castle to
-support your new features, make sure to submit an issue on the
-git repository or fork the puppet-magic_castle repository
-and make a pull request.
+Once the cluster is online and configured, you can modify its configuration as you see fit.
+We list here how to do most commonly asked for customizations.
 
-We will list here a few common customizations that are not currently
-supported directly by Magic Castle, but that are easy to do live.
-
-Most customizations are done from the Puppet server instance (`puppet`).
+Some customizations are done from the Puppet server instance (`puppet`).
 To connect to the puppet server, follow these steps:
 
 1. Make sure your SSH key is loaded in your ssh-agent.
@@ -1248,17 +1246,14 @@ If you plan to modify configuration files manually, you will need to disable
 Puppet. Otherwise, you might find out that your modifications have disappeared
 in a 30-minute window.
 
-puppet is executed every 30 minutes and at every reboot through the puppet agent
-service. To disable puppet:
+Puppet executes a run every 30 minutes and at reboot. To disable puppet:
 ```bash
 sudo puppet agent --disable "<MESSAGE>"
 ```
 
 ### 10.2 Replace the Guest Account Password
 
-In case the guest account password needs to be replaced, follow these steps:
-
-1. Connect to `mgmt1` as `centos` or as the sudoer account.
+1. Connect to `mgmt1`.
 2. Create a variable containing the current guest account password: `OLD_PASSWD=<current_passwd>`
 3. Create a variable containing the new guest account password: `NEW_PASSWD=<new_passwd>`.
 Note: this password must respect the FreeIPA password policy. To display the policy, run the following four commands:
@@ -1489,7 +1484,7 @@ then call :
 terraform apply
 ```
 
-#### 10.9.5 Generate a new SSL certificate
+### 10.10 Generate a new SSL certificate
 
 The SSL certificate configured by the dns module is valid for [90 days](https://letsencrypt.org/docs/faq/#what-is-the-lifetime-for-let-s-encrypt-certificates-for-how-long-are-they-valid).
 If you plan to use your cluster for more than 90 days, you will need to generate a
@@ -1508,13 +1503,115 @@ terraform apply
 The apply will generate a new certificate, upload it on the nodes that need it
 and reload Apache if it is configured.
 
-#### 10.9.3 Set SELinux in permissive mode
+### 10.11 Set SELinux in permissive mode
 
 SELinux can be set in permissive mode to debug new workflows that would be
 prevented by SELinux from working properly. To do so, add the following line
 to the variable `hieradata` in `main.tf`:
 ```yaml
 selinux::mode: 'permissive'
+```
+
+### 10.12 Create a compute node image
+
+When scaling the compute node pool, either manually by changing the count or
+automatically with [Slurm autoscale](./terraform_cloud.md#enable-magic-castle-autoscaling),
+it can become beneficial to reduce the time spent configuring the machine
+when it boots for the first time, hence reducing the time requires before it becomes
+available in Slurm. One way to achieve this is to clone the fully configured
+compute node root volume and use it as the image of future compute nodes.
+
+This process has three steps:
+
+  1. Prepare the volume for image cloning
+  2. Create the image
+  3. Configure Magic Castle Terraform code to use the new image
+
+The following subsection explains how to accomplish each step.
+
+**Warning**: While it will work in most cases, avoid re-using the compute node image of a
+previous deployment with a new one. The preparation steps cleans most
+of the deployment specific configuration and secrets, but there is no guarantee
+that the configuration will be entirely compatible with a different deployment.
+
+#### 10.12.1 Prepare the volume for cloning
+
+The environment [puppet-magic_castle](https://github.com/ComputeCanada/puppet-magic_castle/)
+installs a script that prepares the volume for cloning named
+[`prepare4image.sh`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/files/base/prepare4image.sh).
+
+
+To make sure a node is ready for cloning, open its puppet agent log and validate the
+catalog was successfully applied at least once:
+```bash
+journalctl -u puppet | grep "Applied catalog"
+```
+
+To prepare the volume for cloning, execute the following line while connected to the compute node:
+```bash 
+sudo /usr/sbin/prepare4image.sh
+```
+
+Be aware that, since it is preferable for the instance to be powered off when cloning its volume, the
+script halts the machine once it is completed. Therefore, after executing `prepare4image.sh`, you will
+be disconnected from the instance.
+
+The script `prepare4image.sh` executes the following steps in order:
+
+  1. Stop and disable puppet agent
+  2. Stop and disable slurm compute node daemon (`slurmd`)
+  3. Stop and disable consul agent daemon
+  4. Stop and disable consul-template daemon
+  5. Unenroll the host from the IPA server
+  6. Remove puppet agent configuration files in `/etc`
+  7. Remove consul agent identification files
+  8. Unmount NFS directories
+  9. Remove NFS directories `/etc/fstab`
+  10. Stop syslog
+  11. Clear `/var/log/message` content
+  12. Remove logs and artifacts so cloud-init can re-run
+  13. Power off the machine
+
+#### 10.12.2 Create the image
+
+Once the instance is powered off, access your cloud provider dashboard, find the instance
+and follow the provider's instructions to create the image.
+
+- [AWS](https://docs.aws.amazon.com/toolkit-for-visual-studio/latest/user-guide/tkv-create-ami-from-instance.html)
+- [Azure](https://learn.microsoft.com/en-us/azure/virtual-machines/capture-image-portal)
+- [GCP](https://cloud.google.com/compute/docs/machine-images/create-machine-images#create-image-from-instance)
+- [OpenStack](https://docs.openstack.org/horizon/latest/user/launch-instances.html#create-an-instance-snapshot)
+- [OVH](https://blog.ovhcloud.com/create-and-use-openstack-snapshots/)
+
+Note down the name/id of the image you created, it will be needed during the next step.
+
+#### 10.12.3 Configure Magic Castle Terraform code to use the new image
+
+Edit your `main.tf` and add `image = "name-or-id-of-your-image"` to the dictionary
+defining the instance. The instance previously powered off will be powered on and future
+non-instantiated machines will use the image at the next execution of `terraform apply`.
+
+If the cluster is composed of heterogenous compute nodes, it is possible
+to create an image for each type of compute nodes. Here is an example with Google Cloud
+```hcl
+instances = {
+  mgmt   = { type = "n2-standard-2", tags = ["puppet", "mgmt", "nfs"], count = 1 }
+  login  = { type = "n2-standard-2", tags = ["login", "public", "proxy"], count = 1 }
+  node   = {
+    type = "n2-standard-2"
+    tags = ["node", "pool"]
+    count = 10
+    image = "rocky-mc-cpu-node"
+  }
+  gpu    = {
+    type = "n1-standard-2"
+    tags = ["node", "pool"]
+    count = 10
+    gpu_type = "nvidia-tesla-t4"
+    gpu_count = 1
+    image = "rocky-mc-gpu-node"
+  }
+}
 ```
 
 ## 11. Customize Magic Castle Terraform Files

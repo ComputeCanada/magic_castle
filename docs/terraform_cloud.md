@@ -289,3 +289,6 @@ To enable this feature:
 Then, click on "Confirm & Apply" and "Confirm Plan".
 10. Compute nodes defined in step 8 can be modified at any point in the cluster lifetime and
 more _pool_ compute nodes can be added or removed if needed.
+
+To reduce the time required for compute nodes to become available in Slurm, consider
+[creating a compute node image](./README.md#1012-create-a-compute-node-image).
