@@ -11,7 +11,7 @@
 7. [Planning](#7-planning)
 8. [Deployment](#8-deployment)
 9. [Destruction](#9-destruction)
-10. [Online Cluster Configuration](#10-online-cluster-configuration)
+10. [Customize Cluster Software Configuration](#10-customize-cluster-software-configuration)
 11. [Customize Magic Castle Terraform Files](#11-customize-magic-castle-terraform-files)
 
 ## 1. Setup
