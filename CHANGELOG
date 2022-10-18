@@ -3,6 +3,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [11.9.6] 2022-10-18
+
+### Changed
+- Bumped puppet-jupyterhub to v4.3.2
+- Fixed slurmdbd wait_for regex to include patch version
+
+## [11.9.5] 2022-08-19
+
+### Changed
+- Fix source of cvmfs-repo
+
 ## [11.9.4] 2022-07-08
 
 ### Changed
