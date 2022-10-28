@@ -275,15 +275,27 @@ To enable this feature:
 6. Add `data.yaml` in git and push.
 7. Modify `main.tf`:
 
-      1. Add instances to `instances` with the tags `pool` and `node`. These are
+      1. If not already present, add the following definition of the pool variable at the beginning of your `main.tf`.
+
+      ```hcl
+      variable "pool" { description = "Slurm pool of compute nodes" }
+      ```
+
+      2. Add instances to `instances` with the tags `pool` and `node`. These are
       the nodes that Slurm will able to create and destroy.
-      2. On the right-hand-side of `public_keys = `, replace `[file("~/.ssh/id_rsa.pub")]`
+      3. If not already present, add the following line after the instances definition to pass the list of compute nodes from Terraform cloud workspace variable to the provider module:
+
+      ```hcl
+      pool = var.pool
+      ```
+
+      4. On the right-hand-side of `public_keys = `, replace `[file("~/.ssh/id_rsa.pub")]`
       by a list of SSH public keys that will have admin access to the cluster.
-      3. After the line `public_keys = ...`, add `hieradata = file("data.yaml")`.
-      4. After the line `hieradata = ...`, add `generate_ssh_key = true`. This will provide
+      5. After the line `public_keys = ...`, add `hieradata = file("data.yaml")`.
+      6. After the line `hieradata = ...`, add `generate_ssh_key = true`. This will provide
       Terraform Cloud SSH admin access to the cluster and it will be used to upload configuration
       files.
-      5. Stage changes, commit and push to git repo.
+      7. Stage changes, commit and push to git repo.
 
 9. Go to your workspace in TFE, click on Actions -> Start a new run -> Plan and apply -> Start run.
 Then, click on "Confirm & Apply" and "Confirm Plan".
