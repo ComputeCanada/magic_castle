@@ -3,7 +3,7 @@ variable "name" {
 
 variable "vhosts" {
     type    = list(string)
-    default = ["ipa", "jupyter", "mokey", "portal"]
+    default = ["ipa", "jupyter", "mokey", "explore"]
 }
 
 variable "public_instances" {}
