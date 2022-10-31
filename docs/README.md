@@ -1036,7 +1036,7 @@ You can use [certbot](https://certbot.eff.org/docs/using.html#dns-plugins) DNS c
 plugin to generate the wildcard certificate.
 
 You will then need to copy the certificate files in the proper location on each login node.
-Apache configuration expects the following files to exist:
+The reverse proxy configuration expects the following files to exist:
 - `/etc/letsencrypt/live/${domain_name}/fullchain.pem`
 - `/etc/letsencrypt/live/${domain_name}/privkey.pem`
 - `/etc/letsencrypt/live/${domain_name}/chain.pem`
@@ -1500,8 +1500,8 @@ Then apply the modification:
 terraform apply
 ```
 
-The apply will generate a new certificate, upload it on the nodes that need it
-and reload Apache if it is configured.
+The apply generates a new certificate, uploads it on the nodes that need it
+and reloads the reverse proxy if it is configured.
 
 ### 10.11 Set SELinux in permissive mode
 
