@@ -100,14 +100,17 @@ Apart from `OS_PASSWORD`, the values for these variables are available in
 OpenStack RC file provided for your project.
 
 If you prefer to use [OpenStack application credentials](https://docs.openstack.org/keystone/queens/user/application_credentials.html),
-you need to define these variables instead:
+you need to define at least these variables:
 - `OS_AUTH_TYPE` 
 - `OS_AUTH_URL`
+- `OS_APPLICATION_CREDENTIAL_ID`
+- `OS_APPLICATION_CREDENTIAL_SECRET`
+
+and potentially these too:
 - `OS_IDENTITY_API_VERSION` 
 - `OS_REGION_NAME`
 - `OS_INTERFACE`
-- `OS_APPLICATION_CREDENTIAL_ID`
-- `OS_APPLICATION_CREDENTIAL_SECRET`
+
 The values for these variables are available in OpenStack RC file provided
 when creating the application credentials.
 
