@@ -737,6 +737,34 @@ The file created from this string can be found on `puppet` as
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 Each instance's Puppet agent will be reloaded following the copy of the hieradata files.
 
+#### Encrypting hieradata secrets
+
+If you plan to track the cluster configuration files in git (i.e:`main.tf`, `user_data.yaml`),
+it would be a good idea to encrypt the sensitive property values.
+
+Magic Castle uses [Puppet hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml) to provide a
+per-value encryption of sensitive properties to be used by Puppet.
+
+To encrypt the data, you need to access the eyaml public certificate file of your cluster.
+This file is located on the Puppet server at `/opt/puppetlabs/puppet/eyaml/public_key.pkcs7.pem`.
+With the public certificate file, you can encrypt the values with eyaml:
+```sh
+eyaml encrypt -l profile::myclass::password -s 'your-secret' --pkcs7-public-key public_key.pkcs7.pem -o string
+```
+
+You can encrypt the value remotely using SSH jump host:
+```sh
+ssh -J centos@your-cluster.yourdomain.cloud centos@puppet /opt/puppetlabs/puppet/bin/eyaml encrypt  -l profile::myclass::password -s 'your-secret' --pkcs7-public-key=/etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem -o string
+```
+
+The openssl command-line can also be used to encrypt a value with the certificate file:
+```sh
+echo 'your-secret' |  openssl smime -encrypt -aes-256-cbc -outform der public_key.pkcs7.pem | base64 | xargs printf "ENC['PKCS7,%s']\n"
+```
+
+To learn more about `public_key.pkcs7.pem` and how it can be generated before the cluster creation, refer to
+section [10.x Generating and replacing Puppet encryption keys](#10.x).
+
 ### 4.14 firewall_rules (optional)
 
 **default value**:
