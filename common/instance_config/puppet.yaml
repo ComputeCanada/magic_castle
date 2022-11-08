@@ -76,8 +76,7 @@ runcmd:
   - mkdir -p /etc/puppetlabs/puppet/eyaml
   - /opt/puppetlabs/puppet/bin/eyaml createkeys --pkcs7-private-key=/etc/puppetlabs/puppet/eyaml/private_key.pkcs7.pem --pkcs7-public-key=/etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem
   - chown -R puppet:puppet /etc/puppetlabs/puppet/eyaml
-  - chmod 0500 /etc/puppetlabs/puppet/eyaml
-  - chmod 0400 /etc/puppetlabs/puppet/eyaml/*.pem
+  - chmod 0400 /etc/puppetlabs/puppet/eyaml/private_key.pkcs7.pem
 %{ endif }
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - /opt/puppetlabs/bin/puppet config set waitforcert 15s
