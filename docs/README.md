@@ -763,7 +763,7 @@ echo 'your-secret' |  openssl smime -encrypt -aes-256-cbc -outform der public_ke
 ```
 
 To learn more about `public_key.pkcs7.pem` and how it can be generated before the cluster creation, refer to
-section [10.x Generating and replacing Puppet encryption keys](#10.x).
+section [10.13 Generate and replace Puppet hieradata encryption keys](#1013-generate-and-replace-puppet-hieradata-encryption-keys).
 
 ### 4.14 firewall_rules (optional)
 
@@ -1641,6 +1641,55 @@ instances = {
   }
 }
 ```
+
+#### 10.13 Generate and replace Puppet hieradata encryption keys
+
+During the Puppet server initial boot, a pair of hiera-eyaml encryptions keys are generated in
+`/opt/puppetlabs/puppet/eyaml`:
+- `private_key.pkcs7.pem`
+- `public_key.pkcs7.pem`
+
+To encrypt the values before creating the cluster, the encryptions keys can be generated beforehand and then transfered on the Puppet server.
+
+The keys can be generated with `eyaml`:
+```
+eyaml createkeys
+```
+
+or `openssl`:
+```sh
+openssl req -x509 -nodes -days 100000 -newkey rsa:2048 -keyout private_key.pkcs7.pem -out public_key.pkcs7.pem -subj '/'
+```
+
+The resulting public key can then be used to encrypt secrets, while the private and the public keys have to be transfered on the Puppet server to allow it to decrypt the values.
+
+1. Transfer the keys on the Puppet server using SCP with SSH jumphost
+    ```sh
+    scp -J centos@cluster.yourdomain.cloud {public,private}_key.pkcs7.pem centos@puppet:~/
+    ```
+2. Replace the existing keys by the one transfered:
+    ```sh
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet sudo cp {public,private}_key.pkcs7.pem /opt/puppetlabs/puppet/eyaml
+    ```
+3. Remove the keys from the admin account home folder:
+    ```sh
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet rm {public,private}_key.pkcs7.pem
+    ```
+
+To backup the encryption keys from an existing Puppet server:
+
+1. Create a readable copy of the encryption keys in the admin home account
+    ```sh
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet 'sudo rsync --owner --group --chown=centos:centos /etc/puppetlabs/puppet/eyaml/* ~/'
+    ```
+2. Transfer the files locally:
+    ```sh
+    scp -J centos@cluster.yourdomain.cloud centos@puppet:~/{public,private}_key.pkcs7.pem .
+    ```
+3. Remove the keys from the admin account home folder:
+    ```sh
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet rm {public,private}_key.pkcs7.pem
+    ```
 
 ## 11. Customize Magic Castle Terraform Files
 
