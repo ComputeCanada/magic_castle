@@ -276,7 +276,7 @@ To enable this feature:
     Complete the file by replacing `<TFE API TOKEN> ` with the token generated at step 1
     and `<TFE workspace id>` (i.e.: `ws-...`) by the id of the workspace created at step 2.
     It is recommended to encrypt the TFE API token before commiting `data.yaml` in git. Refer
-    to section [4.13 Hieradata](./README.md#413-hieradata-optional) to know how to encrypt
+    to section [4.13 hieradata](./README.md#encrypting-hieradata-secrets) to know how to encrypt
     the token.
 6. Add `data.yaml` in git and push.
 7. Modify `main.tf`:
