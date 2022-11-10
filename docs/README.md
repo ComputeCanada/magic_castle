@@ -680,12 +680,16 @@ randomly generated one.
 
 **Requirement**: Minimum length **8 characters**.
 
+The password can be provided in a PKCS7 encrypted form. Refer to sub-section
+[4.13.1 Encrypting hieradata secrets](#4131-encrypting-hieradata-secrets)
+for instructions on how to encrypt the password.
+
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 Password of already created guest accounts will not be changed. Guest accounts created after
 the password change will have this password.
 
 To modify the password of previously created guest accounts, refer to section
-([see section 10.2](#102-replace-the-guest-account-password)).
+[10.2](#102-replace-the-guest-account-password).
 
 ### 4.12 sudoer_username (optional)
 
@@ -737,7 +741,7 @@ The file created from this string can be found on `puppet` as
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 Each instance's Puppet agent will be reloaded following the copy of the hieradata files.
 
-#### Encrypting hieradata secrets
+#### 4.13.1. Encrypting hieradata secrets
 
 If you plan to track the cluster configuration files in git (i.e:`main.tf`, `user_data.yaml`),
 it would be a good idea to encrypt the sensitive property values.
