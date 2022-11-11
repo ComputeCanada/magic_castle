@@ -1,8 +1,3 @@
-resource "random_string" "munge_key" {
-  length  = 32
-  special = false
-}
-
 resource "random_string" "freeipa_passwd" {
   length  = 16
   special = false
@@ -13,8 +8,6 @@ resource "random_pet" "guest_passwd" {
   length    = 4
   separator = "."
 }
-
-resource "random_uuid" "consul_token" {}
 
 locals {
   public_instances = { for key, values in var.instances : key => values if contains(values["tags"], "public") }
@@ -37,8 +30,6 @@ locals {
         cluster_name    = lower(var.cluster_name)
         domain_name     = var.domain_name
         guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
-        consul_token    = random_uuid.consul_token.result
-        munge_key       = base64sha512(random_string.munge_key.result)
         nb_users        = var.nb_users
       })
   })
