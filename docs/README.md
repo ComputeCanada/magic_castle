@@ -1681,7 +1681,7 @@ To backup the encryption keys from an existing Puppet server:
 
 1. Create a readable copy of the encryption keys in the sudoer home account
     ```sh
-    ssh -J centos@cluster.yourdomain.cloud centos@puppet 'sudo rsync --owner --group --chown=centos:centos /etc/puppetlabs/puppet/eyaml/* ~/'
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet 'sudo rsync --owner --group --chown=centos:centos /etc/puppetlabs/puppet/eyaml/{public,private}_key.pkcs7.pem ~/'
     ```
 2. Transfer the files locally:
     ```sh
@@ -1705,14 +1705,19 @@ by the Magic Castle Puppet environment:
 - `profile::slurm::accounting::password`
 - `profile::slurm::base::munge_key`
 
-If you need to read or edit one of these values, use `eyaml edit` command on the
-`puppet` host, like this:
+To read or change the value of one of these keys, use `eyaml edit` command
+on the `puppet` host, like this:
 ```
 sudo /opt/puppetlabs/puppet/bin/eyaml edit \
   --pkcs7-private-key /etc/puppetlabs/puppet/eyaml/boot_private_key.pkcs7.pem \
   --pkcs7-public-key /etc/puppetlabs/puppet/eyaml/boot_public_key.pkcs7.pem \
   /etc/puppetlabs/code/environments/production/data/bootstrap.yaml
 ```
+
+It also possible to redefine the values of these keys by adding the key-value pair to
+the hieradata configuration file. Refer to section [4.13 hieradata](#413-hieradata-optional).
+User defined values take precedence over boot generated values in the Magic Castle
+Puppet data hierarchy.
 
 ## 11. Customize Magic Castle Terraform Files
 
