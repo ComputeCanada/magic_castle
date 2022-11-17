@@ -1646,7 +1646,7 @@ instances = {
 }
 ```
 
-#### 10.13 Generate and replace Puppet hieradata encryption keys
+### 10.13 Generate and replace Puppet hieradata encryption keys
 
 During the Puppet server initial boot, a pair of hiera-eyaml encryptions keys are generated in
 `/opt/puppetlabs/puppet/eyaml`:
@@ -1694,6 +1694,28 @@ To backup the encryption keys from an existing Puppet server:
     ```sh
     ssh -J centos@cluster.yourdomain.cloud centos@puppet rm {public,private}_key.pkcs7.pem
     ```
+
+### 10.14 Read and edit secret values generated at boot
+
+During the cloud-init initialization phase,
+[`bootstrap.sh`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/bootstrap.sh)
+script is executed. This script generates a set of encrypted secret values that are required
+by the Magic Castle Puppet environment:
+- `profile::consul::acl_api_token`
+- `profile::freeipa::mokey::password`
+- `profile::freeipa::server::admin_password`
+- `profile::freeipa::server::ds_password`
+- `profile::slurm::accounting::password`
+- `profile::slurm::base::munge_key`
+
+If you need to read or edit one of these values, use `eyaml edit` command on the
+`puppet` host, like this:
+```
+sudo /opt/puppetlabs/puppet/bin/eyaml edit \
+  --pkcs7-private-key /etc/puppetlabs/puppet/eyaml/boot_private_key.pkcs7.pem \
+  --pkcs7-public-key /etc/puppetlabs/puppet/eyaml/boot_public_key.pkcs7.pem \
+  /etc/puppetlabs/code/environments/production/data/bootstrap.yaml
+```
 
 ## 11. Customize Magic Castle Terraform Files
 
