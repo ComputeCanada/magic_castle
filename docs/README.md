@@ -1268,7 +1268,7 @@ different.
 **Note on Google Cloud**: In GCP, [OS Login](https://cloud.google.com/compute/docs/instances/managing-instance-access)
 lets you use Compute Engine IAM roles to manage SSH access to Linux instances.
 This feature is incompatible with Magic Castle. Therefore, it is turned off in
-the instances metadata (`enable-oslogin="FALSE"`). The only account with admin rights
+the instances metadata (`enable-oslogin="FALSE"`). The only account with sudoer rights
 that can log in the cluster is configured by the variable `sudoer_username`
 (default: `centos`).
 
@@ -1288,13 +1288,6 @@ sudo puppet agent --disable "<MESSAGE>"
 1. Connect to `mgmt1`.
 2. Create a variable containing the current guest account password: `OLD_PASSWD=<current_passwd>`
 3. Create a variable containing the new guest account password: `NEW_PASSWD=<new_passwd>`.
-Note: this password must respect the FreeIPA password policy. To display the policy, run the following four commands:
-    ```bash
-    TF_DATA_YAML="/etc/puppetlabs/data/terraform_data.yaml"
-    echo -e "$(ssh puppet sudo grep freeipa_passwd $TF_DATA_YAML | cut -d'"' -f4)" | kinit admin
-    ipa pwpolicy-show
-    kdestroy
-    ```
 4. Loop on all user accounts to replace the old password by the new one:
     ```bash
     for username in $(ls /mnt/home/ | grep user); do
@@ -1303,6 +1296,15 @@ Note: this password must respect the FreeIPA password policy. To display the pol
       kdestroy
     done
     ```
+
+**Note**: the new password must respect the FreeIPA password policy.
+To display the policy, run the following commands:
+
+  ```bash
+  kinit admin
+  ipa pwpolicy-show
+  kdestroy
+  ```
 
 ### 10.3 Add LDAP Users
 
@@ -1355,14 +1357,9 @@ access the administrative panel of FreeIPA at :
 https://ipa.yourcluster.domain.tld/
 ```
 
-The FreeIPA administrator credentials are available in the cluster Terraform output.
-If you no longer have the Terraform output, or if you did not display the
-password in the Terraform output, the password can be retrieved with these commands.
-```bash
-TF_DATA_YAML="/etc/puppetlabs/data/terraform_data.yaml"
-ssh puppet sudo grep freeipa_passwd $TF_DATA_YAML | cut -d'"' -f4
-```
-Note that the username for the administrator of FreeIPA is always `admin`.
+The FreeIPA administrator credentials can be retrieved from an encrypted file
+on the Puppet server. Refer to section [10.14](#1014-read-and-edit-secret-values-generated-at-boot)
+to know how.
 
 ### 10.4 Increase the Number of Guest Accounts
 
@@ -1682,7 +1679,7 @@ The resulting public key can then be used to encrypt secrets, while the private 
 
 To backup the encryption keys from an existing Puppet server:
 
-1. Create a readable copy of the encryption keys in the admin home account
+1. Create a readable copy of the encryption keys in the sudoer home account
     ```sh
     ssh -J centos@cluster.yourdomain.cloud centos@puppet 'sudo rsync --owner --group --chown=centos:centos /etc/puppetlabs/puppet/eyaml/* ~/'
     ```
@@ -1690,7 +1687,7 @@ To backup the encryption keys from an existing Puppet server:
     ```sh
     scp -J centos@cluster.yourdomain.cloud centos@puppet:~/{public,private}_key.pkcs7.pem .
     ```
-3. Remove the keys from the admin account home folder:
+3. Remove the keys from the sudoer account home folder:
     ```sh
     ssh -J centos@cluster.yourdomain.cloud centos@puppet rm {public,private}_key.pkcs7.pem
     ```

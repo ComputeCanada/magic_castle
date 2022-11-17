@@ -1,8 +1,3 @@
-resource "random_string" "freeipa_passwd" {
-  length  = 16
-  special = false
-}
-
 resource "random_pet" "guest_passwd" {
   count     = var.guest_passwd != "" ? 0 : 1
   length    = 4
@@ -26,7 +21,6 @@ locals {
       data      = yamlencode({
         sudoer_username = var.sudoer_username
         public_keys     = var.tf_ssh_key.public == null ? var.public_keys : concat(var.public_keys, [var.tf_ssh_key.public])
-        freeipa_passwd  = random_string.freeipa_passwd.result
         cluster_name    = lower(var.cluster_name)
         domain_name     = var.domain_name
         guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
