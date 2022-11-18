@@ -685,11 +685,7 @@ The password can be provided in a PKCS7 encrypted form. Refer to sub-section
 for instructions on how to encrypt the password.
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
-Password of already created guest accounts will not be changed. Guest accounts created after
-the password change will have this password.
-
-To modify the password of previously created guest accounts, refer to section
-[10.2](#102-replace-the-guest-account-password).
+Password of all guest accounts will be changed to match the new password value.
 
 ### 4.12 sudoer_username (optional)
 
@@ -1285,26 +1281,7 @@ sudo puppet agent --disable "<MESSAGE>"
 
 ### 10.2 Replace the Guest Account Password
 
-1. Connect to `mgmt1`.
-2. Create a variable containing the current guest account password: `OLD_PASSWD=<current_passwd>`
-3. Create a variable containing the new guest account password: `NEW_PASSWD=<new_passwd>`.
-4. Loop on all user accounts to replace the old password by the new one:
-    ```bash
-    for username in $(ls /mnt/home/ | grep user); do
-      echo -e "$OLD_PASSWD" | kinit $username
-      echo -e "$NEW_PASSWD\n$NEW_PASSWD" | ipa user-mod $username --password
-      kdestroy
-    done
-    ```
-
-**Note**: the new password must respect the FreeIPA password policy.
-To display the policy, run the following commands:
-
-  ```bash
-  kinit admin
-  ipa pwpolicy-show
-  kdestroy
-  ```
+Refer to section [4.11](#411-guest_passwd-optional).
 
 ### 10.3 Add LDAP Users
 
