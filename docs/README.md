@@ -471,8 +471,8 @@ The `instances` variable is a map that defines the virtual machines that will co
 the cluster, where the keys define the hostnames and the values are the attributes
 of the virtual machines.
 
-Each instance is identified by a unique hostname. The hostname
-structure is the key followed by the (1-based) index of the instance. The following map:
+Each instance is identified by a unique hostname. An instance's hostname is composed as
+the key followed by the (1-based) its index. The following map:
 ```hcl
 instances = {
   mgmt     = { type = "p2-4gb", tags = [...] },
@@ -481,7 +481,7 @@ instances = {
   gpu-node = { type = "gpu2.large", count = 3, tags = [...] },
 }
 ```
-would spawn instances with the following hostnames:
+will spawn instances with the following hostnames:
 ```
 mgmt1
 login1
@@ -491,6 +491,10 @@ gpu-node1
 gpu-node2
 gpu-node3
 ```
+
+Hostnames must follow a set of rules, from `hostname` man page:
+> Valid characters for hostnames are ASCII letters from a to z,
+the digits from 0 to 9, and the hyphen (-). A hostname may not start with a hyphen.
 
 Two attributes are expected to be defined for each instance:
 1. `type`: cloud provider name for the combination of CPU, RAM and other features of the virtual machine;
