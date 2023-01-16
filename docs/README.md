@@ -680,12 +680,12 @@ randomly generated one.
 
 **Requirement**: Minimum length **8 characters**.
 
-**Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
-Password of already created guest accounts will not be changed. Guest accounts created after
-the password change will have this password.
+The password can be provided in a PKCS7 encrypted form. Refer to sub-section
+[4.13.1 Encrypting hieradata secrets](#4131-encrypting-hieradata-secrets)
+for instructions on how to encrypt the password.
 
-To modify the password of previously created guest accounts, refer to section
-([see section 10.2](#102-replace-the-guest-account-password)).
+**Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
+Password of all guest accounts will be changed to match the new password value.
 
 ### 4.12 sudoer_username (optional)
 
@@ -736,6 +736,34 @@ The file created from this string can be found on `puppet` as
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 Each instance's Puppet agent will be reloaded following the copy of the hieradata files.
+
+#### 4.13.1. Encrypting hieradata secrets
+
+If you plan to track the cluster configuration files in git (i.e:`main.tf`, `user_data.yaml`),
+it would be a good idea to encrypt the sensitive property values.
+
+Magic Castle uses [Puppet hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml) to provide a
+per-value encryption of sensitive properties to be used by Puppet.
+
+To encrypt the data, you need to access the eyaml public certificate file of your cluster.
+This file is located on the Puppet server at `/opt/puppetlabs/puppet/eyaml/public_key.pkcs7.pem`.
+With the public certificate file, you can encrypt the values with eyaml:
+```sh
+eyaml encrypt -l profile::myclass::password -s 'your-secret' --pkcs7-public-key public_key.pkcs7.pem -o string
+```
+
+You can encrypt the value remotely using SSH jump host:
+```sh
+ssh -J centos@your-cluster.yourdomain.cloud centos@puppet /opt/puppetlabs/puppet/bin/eyaml encrypt  -l profile::myclass::password -s 'your-secret' --pkcs7-public-key=/etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem -o string
+```
+
+The openssl command-line can also be used to encrypt a value with the certificate file:
+```sh
+echo 'your-secret' |  openssl smime -encrypt -aes-256-cbc -outform der public_key.pkcs7.pem | base64 | xargs printf "ENC['PKCS7,%s']\n"
+```
+
+To learn more about `public_key.pkcs7.pem` and how it can be generated before the cluster creation, refer to
+section [10.13 Generate and replace Puppet hieradata encryption keys](#1013-generate-and-replace-puppet-hieradata-encryption-keys).
 
 ### 4.14 firewall_rules (optional)
 
@@ -1236,7 +1264,7 @@ different.
 **Note on Google Cloud**: In GCP, [OS Login](https://cloud.google.com/compute/docs/instances/managing-instance-access)
 lets you use Compute Engine IAM roles to manage SSH access to Linux instances.
 This feature is incompatible with Magic Castle. Therefore, it is turned off in
-the instances metadata (`enable-oslogin="FALSE"`). The only account with admin rights
+the instances metadata (`enable-oslogin="FALSE"`). The only account with sudoer rights
 that can log in the cluster is configured by the variable `sudoer_username`
 (default: `centos`).
 
@@ -1253,24 +1281,7 @@ sudo puppet agent --disable "<MESSAGE>"
 
 ### 10.2 Replace the Guest Account Password
 
-1. Connect to `mgmt1`.
-2. Create a variable containing the current guest account password: `OLD_PASSWD=<current_passwd>`
-3. Create a variable containing the new guest account password: `NEW_PASSWD=<new_passwd>`.
-Note: this password must respect the FreeIPA password policy. To display the policy, run the following four commands:
-    ```bash
-    TF_DATA_YAML="/etc/puppetlabs/data/terraform_data.yaml"
-    echo -e "$(ssh puppet sudo grep freeipa_passwd $TF_DATA_YAML | cut -d'"' -f4)" | kinit admin
-    ipa pwpolicy-show
-    kdestroy
-    ```
-4. Loop on all user accounts to replace the old password by the new one:
-    ```bash
-    for username in $(ls /mnt/home/ | grep user); do
-      echo -e "$OLD_PASSWD" | kinit $username
-      echo -e "$NEW_PASSWD\n$NEW_PASSWD" | ipa user-mod $username --password
-      kdestroy
-    done
-    ```
+Refer to section [4.11](#411-guest_passwd-optional).
 
 ### 10.3 Add LDAP Users
 
@@ -1323,14 +1334,9 @@ access the administrative panel of FreeIPA at :
 https://ipa.yourcluster.domain.tld/
 ```
 
-The FreeIPA administrator credentials are available in the cluster Terraform output.
-If you no longer have the Terraform output, or if you did not display the
-password in the Terraform output, the password can be retrieved with these commands.
-```bash
-TF_DATA_YAML="/etc/puppetlabs/data/terraform_data.yaml"
-ssh puppet sudo grep freeipa_passwd $TF_DATA_YAML | cut -d'"' -f4
-```
-Note that the username for the administrator of FreeIPA is always `admin`.
+The FreeIPA administrator credentials can be retrieved from an encrypted file
+on the Puppet server. Refer to section [10.14](#1014-read-and-edit-secret-values-generated-at-boot)
+to know how.
 
 ### 10.4 Increase the Number of Guest Accounts
 
@@ -1613,6 +1619,82 @@ instances = {
   }
 }
 ```
+
+### 10.13 Generate and replace Puppet hieradata encryption keys
+
+During the Puppet server initial boot, a pair of hiera-eyaml encryptions keys are generated in
+`/opt/puppetlabs/puppet/eyaml`:
+- `private_key.pkcs7.pem`
+- `public_key.pkcs7.pem`
+
+To encrypt the values before creating the cluster, the encryptions keys can be generated beforehand and then transfered on the Puppet server.
+
+The keys can be generated with `eyaml`:
+```
+eyaml createkeys
+```
+
+or `openssl`:
+```sh
+openssl req -x509 -nodes -days 100000 -newkey rsa:2048 -keyout private_key.pkcs7.pem -out public_key.pkcs7.pem -subj '/'
+```
+
+The resulting public key can then be used to encrypt secrets, while the private and the public keys have to be transfered on the Puppet server to allow it to decrypt the values.
+
+1. Transfer the keys on the Puppet server using SCP with SSH jumphost
+    ```sh
+    scp -J centos@cluster.yourdomain.cloud {public,private}_key.pkcs7.pem centos@puppet:~/
+    ```
+2. Replace the existing keys by the one transfered:
+    ```sh
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet sudo cp {public,private}_key.pkcs7.pem /opt/puppetlabs/puppet/eyaml
+    ```
+3. Remove the keys from the admin account home folder:
+    ```sh
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet rm {public,private}_key.pkcs7.pem
+    ```
+
+To backup the encryption keys from an existing Puppet server:
+
+1. Create a readable copy of the encryption keys in the sudoer home account
+    ```sh
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet 'sudo rsync --owner --group --chown=centos:centos /etc/puppetlabs/puppet/eyaml/{public,private}_key.pkcs7.pem ~/'
+    ```
+2. Transfer the files locally:
+    ```sh
+    scp -J centos@cluster.yourdomain.cloud centos@puppet:~/{public,private}_key.pkcs7.pem .
+    ```
+3. Remove the keys from the sudoer account home folder:
+    ```sh
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet rm {public,private}_key.pkcs7.pem
+    ```
+
+### 10.14 Read and edit secret values generated at boot
+
+During the cloud-init initialization phase,
+[`bootstrap.sh`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/bootstrap.sh)
+script is executed. This script generates a set of encrypted secret values that are required
+by the Magic Castle Puppet environment:
+- `profile::consul::acl_api_token`
+- `profile::freeipa::mokey::password`
+- `profile::freeipa::server::admin_password`
+- `profile::freeipa::server::ds_password`
+- `profile::slurm::accounting::password`
+- `profile::slurm::base::munge_key`
+
+To read or change the value of one of these keys, use `eyaml edit` command
+on the `puppet` host, like this:
+```
+sudo /opt/puppetlabs/puppet/bin/eyaml edit \
+  --pkcs7-private-key /etc/puppetlabs/puppet/eyaml/boot_private_key.pkcs7.pem \
+  --pkcs7-public-key /etc/puppetlabs/puppet/eyaml/boot_public_key.pkcs7.pem \
+  /etc/puppetlabs/code/environments/production/data/bootstrap.yaml
+```
+
+It also possible to redefine the values of these keys by adding the key-value pair to
+the hieradata configuration file. Refer to section [4.13 hieradata](#413-hieradata-optional).
+User defined values take precedence over boot generated values in the Magic Castle
+Puppet data hierarchy.
 
 ## 11. Customize Magic Castle Terraform Files
 

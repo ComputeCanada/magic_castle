@@ -27,10 +27,6 @@ output "accounts" {
       ),
       password = module.cluster_config.guest_passwd
     }
-    freeipa_admin = {
-      username = "admin"
-      password = module.cluster_config.freeipa_passwd
-    }
     sudoer = {
       username = var.sudoer_username
       password = "N/A (public ssh-key auth)"

@@ -1,20 +1,8 @@
-resource "random_string" "munge_key" {
-  length  = 32
-  special = false
-}
-
-resource "random_string" "freeipa_passwd" {
-  length  = 16
-  special = false
-}
-
 resource "random_pet" "guest_passwd" {
   count     = var.guest_passwd != "" ? 0 : 1
   length    = 4
   separator = "."
 }
-
-resource "random_uuid" "consul_token" {}
 
 locals {
   public_instances = { for key, values in var.instances : key => values if contains(values["tags"], "public") }
@@ -33,12 +21,9 @@ locals {
       data      = yamlencode({
         sudoer_username = var.sudoer_username
         public_keys     = var.tf_ssh_key.public == null ? var.public_keys : concat(var.public_keys, [var.tf_ssh_key.public])
-        freeipa_passwd  = random_string.freeipa_passwd.result
         cluster_name    = lower(var.cluster_name)
         domain_name     = var.domain_name
         guest_passwd    = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
-        consul_token    = random_uuid.consul_token.result
-        munge_key       = base64sha512(random_string.munge_key.result)
         nb_users        = var.nb_users
       })
   })
