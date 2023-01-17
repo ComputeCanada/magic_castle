@@ -6,10 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [12.1.0] UNRELEASED
 
 ### Added
-
-### Changed
+- [cloud-init] Added generation of a PKCS7 encryption key for the end user to encrypt hieradata secrets
+- [cloud-init] Added generation of a PCKS7 encription key for the bootstrap script to encrypt hieradata secrets
+- Added possibility to encrypt guest password
+- Added documentation on encryption of secrets with Puppet and hieradata
+- Added documentation on hostname composition rules
 
 ### Removed
+- Removed `munge_key` and `consul_token` generation from Terraform
+- Removed `freeipa_admin` generation from Terraform
 
 ## [12.0.0] 2023-01-16
 
