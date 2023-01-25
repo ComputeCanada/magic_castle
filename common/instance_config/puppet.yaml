@@ -22,7 +22,7 @@ runcmd:
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
   - systemctl restart sshd
   # Enable fastest mirror for distribution using dnf package manager
-  - test -f /etc/dnf/dnf.conf && grep -qxF "fastestmirror=True" /etc/dnf/dnf.conf || echo "fastestmirror=True" >> /etc/dnf/dnf.conf
+  - test -f /etc/dnf/dnf.conf && (grep -qxF "fastestmirror=True" /etc/dnf/dnf.conf || echo "fastestmirror=True" >> /etc/dnf/dnf.conf)
   # Install package and configure kernel only if building from a "vanilla" linux image
   - |
     if ! test -f /etc/magic-castle-release; then
