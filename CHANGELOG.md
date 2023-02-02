@@ -3,6 +3,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [12.2.0] 2023-02-02
+
+### Added
+- Added validation on the count of _proxy_ tagged instance (max 1)
+- Added validation on the count of _login_ tagged instances (max 1 prefix)
+- Added `explore` vhost in dns
+
+### Changed
+- Fixed runcmd condition for dnf.conf
+
+
 ## [12.1.0] 2023-01-17
 
 ### Added
