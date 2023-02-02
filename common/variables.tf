@@ -19,6 +19,14 @@ variable "instances" {
     condition     = alltrue(concat([for key, values in var.instances: [contains(keys(values), "type"), contains(keys(values), "tags")]]...))
     error_message = "Each entry in var.instances needs to have at least a type and a list of tags."
   }
+  validation {
+    condition = sum([for key, values in var.instances: contains(values["tags"], "proxy") ? values["count"] : 0]) < 2
+    error_message = "At most one instance in var.instances can have the _proxy_ tag"
+  }
+  validation {
+    condition = sum([for key, values in var.instances: contains(values["tags"], "login") ? 1 : 0]) < 2
+    error_message = "At most one type of instances in var.instances can have the _login_ tag"
+  }
 }
 
 variable "image" {
