@@ -213,6 +213,7 @@ locals {
     x => {
       public_ip   = contains(values["tags"], "public") ? aws_eip.public_ip[x].public_ip : ""
       local_ip    = aws_network_interface.nic[x].private_ip
+      prefix    = values["prefix"]
       tags        = values["tags"]
       id          = try(! contains(values["tags"], "spot") ? aws_instance.instances[x].id : aws_spot_instance_request.spot_instances[x].spot_instance_id, "")
       hostkeys    = {

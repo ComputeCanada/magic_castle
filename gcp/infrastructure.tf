@@ -168,6 +168,7 @@ locals {
     x => {
       public_ip = contains(values["tags"], "public") ? google_compute_address.public_ip[x].address : ""
       local_ip  = google_compute_address.nic[x].address
+      prefix    = values["prefix"]
       tags      = values["tags"]
       id        = ! contains(values["tags"], "pool") || contains(var.pool, x) ? google_compute_instance.instances[x].id : ""
       hostkeys = {
