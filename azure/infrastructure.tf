@@ -165,6 +165,7 @@ locals {
     x => {
       public_ip = azurerm_public_ip.public_ip[x].ip_address
       local_ip  = azurerm_network_interface.nic[x].private_ip_address
+      prefix    = values["prefix"]
       tags      = values["tags"]
       id        = try(azurerm_linux_virtual_machine.instances[x].id, "")
       hostkeys  = {

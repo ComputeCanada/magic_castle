@@ -132,6 +132,7 @@ locals {
     x => {
       public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
       local_ip  = openstack_networking_port_v2.nic[x].all_fixed_ips[0]
+      prefix    = values["prefix"]
       tags      = values["tags"]
       id        = ! contains(values["tags"], "pool") || contains(var.pool, x) ? openstack_compute_instance_v2.instances[x].id : ""
       hostkeys = {
