@@ -517,10 +517,13 @@ Terraform tags:
 
 Puppet tags expected by the [puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) environment.
 - `login`: identify a login instance (minimum: 2 CPUs, 2GB RAM)
-- `mgmt`: identify a management instance (minimum: 2 CPUs, 6GB RAM)
+- `mgmt`: identify a management instance i.e: FreeIPA server, Slurm controller, Slurm DB (minimum: 2 CPUs, 6GB RAM)
 - `nfs`: identify the instance that will act as an NFS server.
 - `node`: identify a compute node instance (minimum: 1 CPUs, 2GB RAM)
 - `pool`: when combined with `node`, it identifies compute nodes that Slurm can resume/suspend to meet workload demand.
+- `proxy`: identify the instance that will run the Caddy reverse proxy and JupyterHub.
+
+In the Magic Castle Puppet environment, an instance cannot be tagged as `mgmt` and `proxy`.
 
 You are free to define your own additional tags.
 
