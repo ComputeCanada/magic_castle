@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [12.3.0] UNRELEASED
+
+### Added
+- Added the hostname prefix to instance definition in `terraform_data.yaml`.
+
+Refer to [puppet-magic_castle changelog](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/CHANGELOG.md)
+for details on change to the Puppet environment.
+
 ## [12.2.0] 2023-02-02
 
 ### Added
