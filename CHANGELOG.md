@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [12.3.0] UNRELEASED
+## [12.3.0] 2023-02-22
 
 ### Added
 - Added the hostname prefix to instance definition in `terraform_data.yaml`.
