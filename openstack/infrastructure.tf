@@ -35,8 +35,9 @@ module "cluster_config" {
 }
 
 data "openstack_images_image_v2" "image" {
-  for_each = var.instances
-  name     = lookup(each.value, "image", var.image)
+  for_each    = var.instances
+  name_regex  = lookup(each.value, "image", var.image)
+  most_recent = true
 }
 
 data "openstack_compute_flavor_v2" "flavors" {
