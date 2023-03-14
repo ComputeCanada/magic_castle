@@ -310,3 +310,30 @@ more _pool_ compute nodes can be added or removed if needed.
 
 To reduce the time required for compute nodes to become available in Slurm, consider
 [creating a compute node image](./README.md#1012-create-a-compute-node-image).
+
+### Troubleshoot autoscaling with Terraform Cloud
+
+If after enabling autoscaling with Terraform Cloud for your Magic Castle cluster,
+the number of nodes does not increase when submitting jobs, verify the following
+points:
+
+1. Go to the Terraform Cloud workspace webpage, and look for errors in the runs.
+If the runs were only triggered by changes to the git repo, it means scaling signals
+from the cluster do not reach the Terraform cloud workspace or no signals were sent at all.
+2. Make sure the Terraform Cloud workspace id matches with the value of
+`profile::slurm::controller::tfe_workspace` in `data.yaml`.
+3. Execute `squeue` on the cluster, and verify the reasons why jobs are still in the queue.
+If under the column `(Reason)`, there is the keyword `ReqNodeNotAvail`, it implies
+Slurm tried to boot the listed nodes, but they would not show up before the timeout,
+therefore Slurm marked them as down. It can happen if your cloud provider is slow to build
+the instances, or following a configuration problem like in 2. When Slurm marks a node as
+down, a trace is left in slurmctld's log - using zgrep on the slurm controller node (typically `mgmt1`):
+    ```bash
+    sudo zgrep "marking down" /var/log/slurm/slurmctld.log*
+    ```
+    To tell Slurm these nodes are available again, enter the following command:
+    ```bash
+    sudo /opt/software/slurm/bin/scontrol update nodename=node[Y-Z] state=IDLE
+    ```
+    Replace `node[Y-Z]` by the hostname range listed next to `ReqNodeNotAvail` in `squeue`.
+4. Under `mgmt1:/var/log/slurm`, look for errors in the file `slurm_resume.log`.
