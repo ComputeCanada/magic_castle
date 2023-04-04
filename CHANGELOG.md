@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [12.3.1] UNRELEASED
+
+#### Added
+- Added documentation on troubleshooting autoscaling with Terraform Cloud.
+
 ## [12.3.0] 2023-02-22
 
 ### Added
