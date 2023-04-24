@@ -468,7 +468,7 @@ Here is an example:
 ### 4.7 instances
 
 The `instances` variable is a map that defines the virtual machines that will form
-the cluster, where the keys define the hostnames and the values are the attributes
+the cluster. The map' keys define the hostnames and the values are the attributes
 of the virtual machines.
 
 Each instance is identified by a unique hostname. An instance's hostname is written as
@@ -497,7 +497,7 @@ Hostnames must follow a set of rules, from `hostname` man page:
 the digits from 0 to 9, and the hyphen (-). A hostname may not start with a hyphen.
 
 Two attributes are expected to be defined for each instance:
-1. `type`: cloud provider name for the combination of CPU, RAM and other features of the virtual machine;
+1. `type`: name for varying combinations of CPU, memory, GPU, etc. (i.e: `t2.medium`);
 2. `tags`: list of labels that defines the role of the instance.
 
 #### 4.7.1 tags

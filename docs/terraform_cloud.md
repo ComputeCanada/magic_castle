@@ -126,10 +126,11 @@ the values of the variable from the provider.
 
 You need to define these environment variables:
 - `CLOUDFLARE_EMAIL`
-- `CLOUDFLARE_API_KEY` (sensitive)
+- `CLOUDFLARE_API_KEY` (sensitive)
 
 If you prefer using an API token instead of the global API key, you
 need to define these environment variables instead:
+- `CLOUDFLARE_API_TOKEN` (sensitive)
 - `CLOUDFLARE_ZONE_API_TOKEN` (sensitive)
 - `CLOUDFLARE_ZONE_DNS_TOKEN` (sensitive)
 
