@@ -467,12 +467,12 @@ Here is an example:
 
 ### 4.7 instances
 
-The `instances` variable is a map that defines the virtual machines that will compose
+The `instances` variable is a map that defines the virtual machines that will form
 the cluster, where the keys define the hostnames and the values are the attributes
 of the virtual machines.
 
-Each instance is identified by a unique hostname. An instance's hostname is composed as
-the key followed by the (1-based) its index. The following map:
+Each instance is identified by a unique hostname. An instance's hostname is written as
+the key followed by its index (1-based). The following map:
 ```hcl
 instances = {
   mgmt     = { type = "p2-4gb", tags = [...] },
