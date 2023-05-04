@@ -3,10 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [12.3.1] UNRELEASED
+## [12.4.0] 2023-05-04
 
 #### Added
 - Added documentation on troubleshooting autoscaling with Terraform Cloud.
+- Added ability to use partially matching regular expression to define image name in OpenStack.
 
 ## [12.3.0] 2023-02-22
 
