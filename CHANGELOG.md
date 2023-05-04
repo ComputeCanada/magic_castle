@@ -31,7 +31,7 @@ for details on change to the Puppet environment.
 
 ### Added
 - [cloud-init] Added generation of a PKCS7 encryption key for the end user to encrypt hieradata secrets
-- [cloud-init] Added generation of a PCKS7 encription key for the bootstrap script to encrypt hieradata secrets
+- [cloud-init] Added generation of a PCKS7 encryption key for the bootstrap script to encrypt hieradata secrets
 - Added possibility to encrypt guest password
 - Added documentation on encryption of secrets with Puppet and hieradata
 - Added documentation on hostname composition rules
@@ -43,7 +43,7 @@ for details on change to the Puppet environment.
 ## [12.0.0] 2023-01-16
 
 ### Added
-- [cloud-init] Enabled fastest miror selection in dnf config
+- [cloud-init] Enabled fastest mirror selection in dnf config
 - [cloud-init] Added logic to handle admin account being already created at first boot
 - Added a timestamp as payload to consul puppet event to avoid rebooting puppet for past events
 - Added variable `var.pool` and "pool" tag to enable Slurm autoscaling with Terraform Cloud (PR #216)

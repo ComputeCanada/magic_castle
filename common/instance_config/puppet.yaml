@@ -57,7 +57,7 @@ runcmd:
   - sed -i 's/^\(After=.*\)$/\1 puppetserver.service/' /usr/lib/systemd/system/puppet.service
   - systemctl daemon-reload
   - systemctl enable puppetserver
-# Generate hieradata assymetric encryption key
+# Generate hieradata asymmetric encryption key
   - /opt/puppetlabs/puppet/bin/gem install hiera-eyaml
   - mkdir -p /etc/puppetlabs/puppet/eyaml
   - /opt/puppetlabs/puppet/bin/eyaml createkeys --pkcs7-private-key=/etc/puppetlabs/puppet/eyaml/private_key.pkcs7.pem --pkcs7-public-key=/etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem

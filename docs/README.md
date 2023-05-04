@@ -1604,7 +1604,7 @@ Edit your `main.tf` and add `image = "name-or-id-of-your-image"` to the dictiona
 defining the instance. The instance previously powered off will be powered on and future
 non-instantiated machines will use the image at the next execution of `terraform apply`.
 
-If the cluster is composed of heterogenous compute nodes, it is possible
+If the cluster is composed of heterogeneous compute nodes, it is possible
 to create an image for each type of compute nodes. Here is an example with Google Cloud
 ```hcl
 instances = {
@@ -1634,7 +1634,7 @@ During the Puppet server initial boot, a pair of hiera-eyaml encryptions keys ar
 - `private_key.pkcs7.pem`
 - `public_key.pkcs7.pem`
 
-To encrypt the values before creating the cluster, the encryptions keys can be generated beforehand and then transfered on the Puppet server.
+To encrypt the values before creating the cluster, the encryptions keys can be generated beforehand and then transferred on the Puppet server.
 
 The keys can be generated with `eyaml`:
 ```
@@ -1646,13 +1646,13 @@ or `openssl`:
 openssl req -x509 -nodes -days 100000 -newkey rsa:2048 -keyout private_key.pkcs7.pem -out public_key.pkcs7.pem -subj '/'
 ```
 
-The resulting public key can then be used to encrypt secrets, while the private and the public keys have to be transfered on the Puppet server to allow it to decrypt the values.
+The resulting public key can then be used to encrypt secrets, while the private and the public keys have to be transferred on the Puppet server to allow it to decrypt the values.
 
 1. Transfer the keys on the Puppet server using SCP with SSH jumphost
     ```sh
     scp -J centos@cluster.yourdomain.cloud {public,private}_key.pkcs7.pem centos@puppet:~/
     ```
-2. Replace the existing keys by the one transfered:
+2. Replace the existing keys by the one transferred:
     ```sh
     ssh -J centos@cluster.yourdomain.cloud centos@puppet sudo cp {public,private}_key.pkcs7.pem /opt/puppetlabs/puppet/eyaml
     ```
