@@ -465,6 +465,11 @@ Here is an example:
 }
 ```
 
+#### 4.6.3 OpenStack
+
+The image name can be a regular expression. If more than one image is returned by the query
+to OpenStack, the most recent is selected.
+
 ### 4.7 instances
 
 The `instances` variable is a map that defines the virtual machines that will form
