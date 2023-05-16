@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - Updated puppet-server and puppet-agent to Puppet 7.
+- Set `force_delete = true` in OpenStack to avoid soft deletion of instances.
 
 ## [12.4.0] 2023-05-04
 
