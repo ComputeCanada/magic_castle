@@ -62,10 +62,11 @@ resource "openstack_compute_instance_v2" "instances" {
   name     = format("%s-%s", var.cluster_name, each.key)
   image_id = lookup(each.value, "disk_size", 10) > data.openstack_compute_flavor_v2.flavors[each.value.prefix].disk ? null : data.openstack_images_image_v2.image[each.value.prefix].id
 
-  flavor_name = each.value.type
-  key_pair    = openstack_compute_keypair_v2.keypair.name
-  user_data   = base64gzip(module.instance_config.user_data[each.key])
-  metadata    = {}
+  flavor_name  = each.value.type
+  key_pair     = openstack_compute_keypair_v2.keypair.name
+  user_data    = base64gzip(module.instance_config.user_data[each.key])
+  metadata     = {}
+  force_delete = true
 
   network {
     port = openstack_networking_port_v2.nic[each.key].id
