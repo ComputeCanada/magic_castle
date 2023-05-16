@@ -34,8 +34,8 @@ runcmd:
       # Upgrade all packages except Puppet if already installed
       yum -y upgrade -x puppet*
       # Puppet agent configuration and install
-      yum -y install https://yum.puppet.com/puppet6-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
-      yum -y install puppet-agent-6.23.0
+      yum -y install https://yum.puppet.com/puppet7-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
+      yum -y install puppet-agent-7.24.0
       install -m 700 /dev/null /opt/puppetlabs/bin/postrun
       # kernel configuration
       systemctl disable kdump
@@ -44,7 +44,9 @@ runcmd:
       grub2-mkconfig -o /boot/grub2/grub.cfg
     fi
 %{ if contains(tags, "puppet") }
-  - yum -y install puppetserver-6.16.0
+  # Install Java 11
+  - yum -y install java-11-openjdk-headless
+  - yum -y install puppetserver-7.11.0
   - mkdir /var/autosign
   - chown puppet:puppet /var/autosign
   - chmod 750 /var/autosign
@@ -57,6 +59,8 @@ runcmd:
   - sed -i 's/^\(After=.*\)$/\1 puppetserver.service/' /usr/lib/systemd/system/puppet.service
   - systemctl daemon-reload
   - systemctl enable puppetserver
+# Configure puppetserver to use Java 11
+  - sudo sed -i 's;\(JAVA_BIN=\).*;\1"/usr/lib/jvm/jre-11/bin/java";g' /etc/sysconfig/puppetserver
 # Generate hieradata asymmetric encryption key
   - /opt/puppetlabs/puppet/bin/gem install hiera-eyaml
   - mkdir -p /etc/puppetlabs/puppet/eyaml
