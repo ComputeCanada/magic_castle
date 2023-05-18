@@ -73,14 +73,10 @@ resource "null_resource" "deploy_hieradata" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo mkdir -p /etc/puppetlabs/data",
-      "sudo mkdir -p /etc/puppetlabs/facts",
-      "sudo install -m 650 terraform_data.yaml user_data.yaml /etc/puppetlabs/data/",
-      "sudo install -m 650 terraform_facts.yaml /etc/puppetlabs/facts/",
-      # These chgrp commands do nothing if the puppet group does not yet exist
-      # so these are also handled by puppet.yaml
-      "sudo chgrp puppet /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/data/user_data.yaml &> /dev/null || true",
-      "sudo chgrp puppet /etc/puppetlabs/facts/terraform_facts.yaml &> /dev/null || true",
+      "sudo mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts",
+      # puppet user and group have been assigned the reserverd UID/GID 52
+      "sudo install -o root -g 52 -m 650 terraform_data.yaml user_data.yaml /etc/puppetlabs/data/",
+      "sudo install -o root -g 52 -m 650 terraform_facts.yaml /etc/puppetlabs/facts/",
       "rm -f terraform_data.yaml user_data.yaml terraform_facts.yaml",
       "[ -f /usr/local/bin/consul ] && [ -f /usr/bin/jq ] && consul event -token=$(sudo jq -r .acl_agent_token /etc/consul/config.json) -name=puppet $(date +%s) || true",
     ]
