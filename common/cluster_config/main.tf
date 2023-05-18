@@ -6,7 +6,6 @@ resource "random_pet" "guest_passwd" {
 
 locals {
   public_instances = { for key, values in var.instances : key => values if contains(values["tags"], "public") }
-  puppetserver_id = try(element([for key, values in var.instances: values["id"] if contains(values["tags"], "puppet")], 0), "")
   all_tags = toset(flatten([for key, values in var.instances : values["tags"]]))
 
   tag_ip = { for tag in local.all_tags :
@@ -55,7 +54,6 @@ resource "null_resource" "deploy_hieradata" {
     user_data    = md5(var.hieradata)
     hieradata    = md5(local.hieradata)
     facts        = md5(yamlencode(local.facts))
-    puppetserver = local.puppetserver_id
   }
 
   provisioner "file" {
