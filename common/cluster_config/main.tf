@@ -13,9 +13,11 @@ locals {
     tag => [for key, values in var.instances : values["local_ip"] if contains(values["tags"], tag)]
   }
 
+  instances = { for host, attr in var.instances: host => { for key, value in attr: key => value if key != "id" }}
+
   hieradata = templatefile("${path.module}/terraform_data.yaml",
     {
-      instances = yamlencode(var.instances)
+      instances = yamlencode(local.instances)
       tag_ip    = yamlencode(local.tag_ip)
       volumes   = yamlencode(var.volume_devices)
       data      = yamlencode({
