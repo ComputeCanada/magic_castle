@@ -12,6 +12,7 @@ locals {
     tag => [for key, values in var.instances : values["local_ip"] if contains(values["tags"], tag)]
   }
 
+  # We remove the instance id to avoid re-uploading each time an autoscale node is resumed or suspended
   instances = { for host, attr in var.instances: host => { for key, value in attr: key => value if key != "id" }}
 
   hieradata = templatefile("${path.module}/terraform_data.yaml",
@@ -74,7 +75,7 @@ resource "null_resource" "deploy_hieradata" {
   provisioner "remote-exec" {
     inline = [
       "sudo mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts",
-      # puppet user and group have been assigned the reserverd UID/GID 52
+      # puppet user and group have been assigned the reserved UID/GID 52
       "sudo install -o root -g 52 -m 650 terraform_data.yaml user_data.yaml /etc/puppetlabs/data/",
       "sudo install -o root -g 52 -m 650 terraform_facts.yaml /etc/puppetlabs/facts/",
       "rm -f terraform_data.yaml user_data.yaml terraform_facts.yaml",
