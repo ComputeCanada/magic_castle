@@ -47,9 +47,6 @@ runcmd:
   # Install Java 11
   - yum -y install java-11-openjdk-headless
   - yum -y install puppetserver-7.11.0
-  - mkdir /var/autosign
-  - chown puppet:puppet /var/autosign
-  - chmod 750 /var/autosign
   - /opt/puppetlabs/puppet/bin/gem install autosign
   - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section master
   - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section master
