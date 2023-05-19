@@ -47,14 +47,16 @@ runcmd:
   # Install Java 11
   - yum -y install java-11-openjdk-headless
   - yum -y install puppetserver-7.11.0
-  - /opt/puppetlabs/puppet/bin/gem install autosign
-  - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section master
-  - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section master
+# Configure puppetserver to use Java 11
+  - sudo sed -i 's;\(JAVA_BIN=\).*;\1"/usr/lib/jvm/jre-11/bin/java";g' /etc/sysconfig/puppetserver
+# Configure puppet-agent to start after puppetserver when on puppetserver
   - sed -i 's/^\(After=.*\)$/\1 puppetserver.service/' /usr/lib/systemd/system/puppet.service
   - systemctl daemon-reload
   - systemctl enable puppetserver
-# Configure puppetserver to use Java 11
-  - sudo sed -i 's;\(JAVA_BIN=\).*;\1"/usr/lib/jvm/jre-11/bin/java";g' /etc/sysconfig/puppetserver
+# Enable autosign with password
+  - /opt/puppetlabs/puppet/bin/gem install autosign
+  - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section master
+  - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section master
 # Generate hieradata asymmetric encryption key
   - /opt/puppetlabs/puppet/bin/gem install hiera-eyaml
   - mkdir -p /etc/puppetlabs/puppet/eyaml
