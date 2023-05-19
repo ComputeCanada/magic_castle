@@ -56,8 +56,8 @@ runcmd:
   - chgrp puppet /etc/autosign.conf
   - chown puppet:puppet /var/log/autosign.log
   - /opt/puppetlabs/puppet/bin/gem install autosign
-  - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section master
-  - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section master
+  - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section server
+  - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section server
 # Generate hieradata asymmetric encryption key
   - /opt/puppetlabs/puppet/bin/gem install hiera-eyaml
   - mkdir -p /etc/puppetlabs/puppet/eyaml
