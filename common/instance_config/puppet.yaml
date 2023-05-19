@@ -121,10 +121,8 @@ write_files:
       general:
         loglevel: warn
         logfile: "/var/log/autosign.log"
-      jwt_token:
-        secret: "${puppetserver_password}"
-        validity: '7200'
-        journalfile: "/root/var/autosign/autosign.journal"
+        validation_order:
+          - password_list
       password_list:
         password: "${puppetserver_password}"
     path: /etc/autosign.conf
