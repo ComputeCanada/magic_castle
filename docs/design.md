@@ -57,7 +57,7 @@ resources. The figure can be read as a flow-chart from top to bottom. Some resou
 
 3. `network.tf`: the `instances` map from `common/design` is used to generate a network interface (nic)
 for each host, and a public ip address for each host with the `public` tag. The local
-ip address retrieved from the nic of the instance tagged `puppet` is outputted as `puppetserver_ip`.
+ip address retrieved from the nic of the instance tagged `puppet` is outputted as `puppetservers`.
     ```hcl
     resource "provider_network_interface" "nic" {
       for_each = module.design.instances
@@ -66,7 +66,7 @@ ip address retrieved from the nic of the instance tagged `puppet` is outputted a
     ```
 
 4. `common/instance_config`: for each host in `instances`, a [cloud-init]() yaml config that includes
-`puppetserver_ip` is generated. These configs are outputted to a `user_data` map where the keys are
+`puppetservers` is generated. These configs are outputted to a `user_data` map where the keys are
 the hostnames.
     ```hcl
     user_data = {
@@ -317,10 +317,10 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
   resource "alicloud_eip_association" "eip_asso" { }
 
   locals {
-    puppetserver_ip = [
-        for x, values in module.design.instances : alicloud_network_interface.nic[x].private_ip
+    puppetservers = {
+        for x, values in module.design.instances : x => alicloud_network_interface.nic[x].private_ip
         if contains(values.tags, "puppet")
-    ]
+    }
   }
   ```
 
@@ -331,7 +331,7 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
     instances        = module.design.instances
     config_git_url   = var.config_git_url
     config_version   = var.config_version
-    puppetserver_ip  = local.puppetserver_ip
+    puppetservers    = local.puppetservers
     sudoer_username  = var.sudoer_username
     public_keys      = var.public_keys
     generate_ssh_key = var.generate_ssh_key

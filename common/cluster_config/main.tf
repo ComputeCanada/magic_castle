@@ -39,7 +39,7 @@ locals {
 }
 
 resource "null_resource" "deploy_hieradata" {
-  count = contains(local.all_tags, "puppet") && contains(local.all_tags, "public") ? 1 : 0
+  for_each = contains(local.all_tags, "public") ? var.puppetservers : { }
 
   connection {
     type                = "ssh"
@@ -47,7 +47,7 @@ resource "null_resource" "deploy_hieradata" {
     bastion_user        = var.sudoer_username
     bastion_private_key = var.tf_ssh_key.private
     user                = var.sudoer_username
-    host                = "puppet"
+    host                = each.value
     private_key         = var.tf_ssh_key.private
   }
 

@@ -126,8 +126,8 @@ resource "aws_eip" "public_ip" {
 }
 
 locals {
-  puppetserver_ip = [
-      for x, values in module.design.instances : aws_network_interface.nic[x].private_ip
+  puppetservers = {
+      for x, values in module.design.instances : x => aws_network_interface.nic[x].private_ip
       if contains(values.tags, "puppet")
-  ]
+  }
 }

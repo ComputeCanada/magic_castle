@@ -11,7 +11,7 @@ module "instance_config" {
   instances        = module.design.instances
   config_git_url   = var.config_git_url
   config_version   = var.config_version
-  puppetserver_ip  = local.puppetserver_ip
+  puppetservers    = local.puppetservers
   sudoer_username  = var.sudoer_username
   public_keys      = var.public_keys
   generate_ssh_key = var.generate_ssh_key
@@ -32,6 +32,7 @@ module "cluster_config" {
   cluster_name    = var.cluster_name
   volume_devices  = local.volume_devices
   tf_ssh_key      = module.instance_config.ssh_key
+  puppetservers   = local.puppetservers
 }
 
 data "openstack_images_image_v2" "image" {

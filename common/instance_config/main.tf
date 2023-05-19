@@ -32,7 +32,7 @@ locals {
         node_name             = key,
         puppetenv_git         = var.config_git_url,
         puppetenv_rev         = var.config_version,
-        puppetserver_ip       = var.puppetserver_ip,
+        puppetservers         = var.puppetservers,
         puppetserver_password = random_string.puppetserver_password.result,
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = local.ssh_key.public == null ? var.public_keys : concat(var.public_keys, [local.ssh_key.public])
