@@ -53,6 +53,8 @@ runcmd:
   - systemctl daemon-reload
   - systemctl enable puppetserver
 # Enable autosign with password
+  - chgrp puppet /etc/autosign.conf
+  - chown puppet:puppet /var/log/autosign.log
   - /opt/puppetlabs/puppet/bin/gem install autosign
   - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section master
   - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section master
@@ -125,9 +127,7 @@ write_files:
         password: "${puppetserver_password}"
     path: /etc/autosign.conf
     permissions: "0640"
-    owner: root:52
   - path: /var/log/autosign.log
-    owner: 52:52
     permissions: "0750"
 %{ endif }
 %{ if ! contains(tags, "puppet") }
