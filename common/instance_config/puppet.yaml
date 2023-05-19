@@ -80,6 +80,11 @@ runcmd:
 # Bootstrap services that are essential to the puppet repo
   - (cd /etc/puppetlabs/code/environments/production; test -e bootstrap.sh && ./bootstrap.sh)
 %{ endif }
+# Setup puppet server
+%{ for host, ip in puppetservers ~}
+  - echo "${ip} ${host}" >> /etc/hosts
+  - /opt/puppetlabs/bin/puppet config set server ${host}
+%{ endfor ~}
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - /opt/puppetlabs/bin/puppet config set waitforcert 15s
   - /opt/puppetlabs/bin/puppet config set report false
@@ -98,17 +103,6 @@ runcmd:
   - test -f /etc/magic-castle-release && systemctl start puppet
 
 write_files:
-  - content: |
-%{ if contains(tags, "puppet") }
-      127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 puppet
-%{ else }
-      127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-%{ for ip in puppetserver_ip ~}
-      ${ip} puppet
-%{ endfor ~}
-%{ endif }
-    path: /etc/hosts
-    permissions: "0644"
   - content: |
       facts : {
         blocklist : [ "EC2", "GCE" ],

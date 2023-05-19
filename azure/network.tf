@@ -68,8 +68,8 @@ resource "azurerm_network_interface_security_group_association" "public" {
 }
 
 locals {
-  puppetserver_ip = [
-      for x, values in module.design.instances : azurerm_network_interface.nic[x].private_ip_address
+  puppetservers = {
+      for x, values in module.design.instances : x => azurerm_network_interface.nic[x].private_ip_address
       if contains(values.tags, "puppet")
-  ]
+  }
 }

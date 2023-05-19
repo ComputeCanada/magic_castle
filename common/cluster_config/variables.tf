@@ -11,3 +11,4 @@ variable "cloud_region" { }
 variable "tf_ssh_key" { }
 variable "hieradata" { }
 variable "public_keys" { }
+variable "puppetservers" { }
