@@ -50,12 +50,9 @@ runcmd:
   - mkdir /var/autosign
   - chown puppet:puppet /var/autosign
   - chmod 750 /var/autosign
-  - touch /var/log/autosign.log
-  - chown puppet:puppet /var/log/autosign.log
   - /opt/puppetlabs/puppet/bin/gem install autosign
   - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section master
   - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section master
-  - chown puppet:puppet /etc/autosign.conf
   - sed -i 's/^\(After=.*\)$/\1 puppetserver.service/' /usr/lib/systemd/system/puppet.service
   - systemctl daemon-reload
   - systemctl enable puppetserver
@@ -132,6 +129,10 @@ write_files:
         password: "${puppetserver_password}"
     path: /etc/autosign.conf
     permissions: "0640"
+    owner: root:52
+  - path: /var/log/autosign.log
+    owner: 52:52
+    permissions: "0750"
 %{ endif }
 %{ if ! contains(tags, "puppet") }
   - content: |
@@ -140,6 +141,7 @@ write_files:
         1.2.840.113549.1.9.7: "${puppetserver_password}"
     path: /etc/puppetlabs/puppet/csr_attributes.yaml
     permissions: "0640"
+    owner: root:root
 %{ endif }
 
 ssh_keys:
