@@ -6,33 +6,56 @@ module "design" {
   volumes      = var.volumes
 }
 
-module "instance_config" {
-  source           = "../common/instance_config"
-  instances        = module.design.instances
-  config_git_url   = var.config_git_url
-  config_version   = var.config_version
-  puppetservers    = local.puppetservers
-  sudoer_username  = var.sudoer_username
-  public_keys      = var.public_keys
+module "keys" {
+  source           = "../common/keys"
   generate_ssh_key = var.generate_ssh_key
+  public_keys      = var.public_keys
+  instances        = module.design.instances
+}
+
+module "passwords" {
+  source = "../common/passwords"
+  guest_passwd = var.guest_passwd
+}
+
+module "terraform_data" {
+  source              = "../common/terraform_data"
+  instances           = local.all_instances
+  nb_users            = var.nb_users
+  software_stack      = var.software_stack
+  cloud_provider      = local.cloud_provider
+  cloud_region        = local.cloud_region
+  sudoer_username     = var.sudoer_username
+  ssh_authorized_keys = module.keys.ssh_authorized_keys
+  guest_passwd        = module.passwords.result["guest"]
+  domain_name         = module.design.domain_name
+  cluster_name        = var.cluster_name
+  volume_devices      = local.volume_devices
+}
+
+module "instance_config" {
+  source                = "../common/instance_config"
+  instances             = module.design.instances
+  config_git_url        = var.config_git_url
+  config_version        = var.config_version
+  puppetservers         = local.puppetservers
+  puppetserver_password = module.passwords.result["puppetserver"]
+  sudoer_username       = var.sudoer_username
+  ssh_authorized_keys   = module.keys.ssh_authorized_keys
+  hostkeys              = module.keys.hostkeys
+  terraform_data        = module.terraform_data.result["data"]
+  terraform_facts       = module.terraform_data.result["facts"]
 }
 
 module "cluster_config" {
   source          = "../common/cluster_config"
-  instances       = local.all_instances
-  nb_users        = var.nb_users
-  hieradata       = var.hieradata
-  software_stack  = var.software_stack
-  cloud_provider  = local.cloud_provider
-  cloud_region    = local.cloud_region
-  sudoer_username = var.sudoer_username
-  public_keys     = var.public_keys
-  guest_passwd    = var.guest_passwd
-  domain_name     = module.design.domain_name
-  cluster_name    = var.cluster_name
-  volume_devices  = local.volume_devices
-  tf_ssh_key      = module.instance_config.ssh_key
+  bastions        = local.public_instances
   puppetservers   = local.puppetservers
+  tf_ssh_key      = module.keys.ssh_key
+  terraform_data  = module.terraform_data.result["data"]
+  terraform_facts = module.terraform_data.result["facts"]
+  hieradata       = var.hieradata
+  sudoer_username = var.sudoer_username
 }
 
 data "openstack_images_image_v2" "image" {
@@ -137,10 +160,9 @@ locals {
       local_ip  = openstack_networking_port_v2.nic[x].all_fixed_ips[0]
       prefix    = values["prefix"]
       tags      = values["tags"]
-      id        = ! contains(values["tags"], "pool") || contains(var.pool, x) ? openstack_compute_instance_v2.instances[x].id : ""
-      hostkeys = {
-        rsa = module.instance_config.rsa_hostkeys[x]
-        ed25519 = module.instance_config.ed25519_hostkeys[x]
+      hostkeys  = {
+        ed25519 = module.keys.hostkeys["ed25519"][x].public_key_openssh
+        rsa     = module.keys.hostkeys["rsa"][x].public_key_openssh
       }
       specs = {
         cpus = data.openstack_compute_flavor_v2.flavors[values["prefix"]].vcpus
@@ -152,4 +174,7 @@ locals {
       }
     }
   }
+
+  puppetservers    = { for host, values in local.all_instances: host => values if contains(values.tags, "puppet")}
+  public_instances = { for host, values in local.all_instances: host => values if contains(values.tags, "public")}
 }

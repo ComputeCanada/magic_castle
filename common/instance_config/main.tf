@@ -1,29 +1,15 @@
-resource "random_string" "puppetserver_password" {
-  length  = 32
-  special = false
-}
-
-resource "tls_private_key" "ssh" {
-  count     = var.generate_ssh_key ? 1 : 0
-  algorithm = "ED25519"
-}
-
-resource "tls_private_key" "rsa_hostkeys" {
-  for_each  = toset([for x, values in var.instances: values["prefix"]])
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "tls_private_key" "ed25519_hostkeys" {
-  for_each  = toset([for x, values in var.instances: values["prefix"]])
-  algorithm = "ED25519"
-}
+variable "instances" { }
+variable "config_git_url" { }
+variable "config_version" { }
+variable "puppetservers" { }
+variable "puppetserver_password" { }
+variable "sudoer_username" { }
+variable "ssh_authorized_keys" { }
+variable "hostkeys" { }
+variable "terraform_data" { }
+variable "terraform_facts" { }
 
 locals {
-  ssh_key = {
-    public  = try("${chomp(tls_private_key.ssh[0].public_key_openssh)} terraform@localhost", null)
-    private = try(tls_private_key.ssh[0].private_key_pem, null)
-  }
   user_data = {
     for key, values in var.instances : key =>
     templatefile("${path.module}/puppet.yaml",
@@ -33,20 +19,27 @@ locals {
         puppetenv_git         = var.config_git_url,
         puppetenv_rev         = var.config_version,
         puppetservers         = var.puppetservers,
-        puppetserver_password = random_string.puppetserver_password.result,
+        puppetserver_password = var.puppetserver_password,
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = local.ssh_key.public == null ? var.public_keys : concat(var.public_keys, [local.ssh_key.public])
+        ssh_authorized_keys   = var.ssh_authorized_keys
+        terraform_data        = var.terraform_data
+        terraform_facts       = var.terraform_facts
         hostkeys = {
           rsa = {
-            private = tls_private_key.rsa_hostkeys[values["prefix"]].private_key_pem
-            public  = tls_private_key.rsa_hostkeys[values["prefix"]].public_key_openssh
+            private = var.hostkeys["rsa"][key].private_key_pem
+            public  = var.hostkeys["rsa"][key].public_key_openssh
           }
           ed25519 = {
-            private = tls_private_key.ed25519_hostkeys[values["prefix"]].private_key_openssh
-            public  = tls_private_key.ed25519_hostkeys[values["prefix"]].public_key_openssh
+            private = var.hostkeys["ed25519"][key].private_key_openssh
+            public  = var.hostkeys["ed25519"][key].public_key_openssh
           }
         }
       }
     )
   }
+}
+
+output "user_data" {
+  value     = local.user_data
+  sensitive = true
 }

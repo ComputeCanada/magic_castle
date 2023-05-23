@@ -130,7 +130,13 @@ write_files:
     permissions: "0640"
   - path: /var/log/autosign.log
     permissions: "0750"
-%{ endif }
+  - path: /etc/puppetlabs/data/terraform_data.yaml
+    content: |
+      ${indent(6, terraform_data)}
+  - path: /etc/puppetlabs/facts/terraform_facts.yaml
+    content: |
+      ${indent(6, terraform_facts)}
+%{ endif ~}
   - content: |
       ---
       custom_attributes:

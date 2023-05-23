@@ -44,10 +44,3 @@ resource "openstack_networking_port_v2" "nic" {
     subnet_id = local.subnet.id
   }
 }
-
-locals {
-  puppetservers = {
-    for x, values in module.design.instances : x => openstack_networking_port_v2.nic[x].all_fixed_ips[0]
-    if contains(values.tags, "puppet")
-  }
-}
