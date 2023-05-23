@@ -29,7 +29,7 @@ runcmd:
       # Install required packages in runcmd instead of packages to speedup configuration
       # of the admin user. This reduces the risk of Terraform timing out when trying to
       # upload the terraform_data.yaml
-      yum -y install git pciutils unzip
+      yum -y install git pciutils unzip iptables-services
       yum remove -y firewalld --exclude=iptables
       # Upgrade all packages except Puppet if already installed
       yum -y upgrade -x puppet*
