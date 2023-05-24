@@ -79,12 +79,16 @@ runcmd:
   - "(cd /etc/puppetlabs/code/environments/production/ && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
 # Bootstrap services that are essential to the puppet repo
   - (cd /etc/puppetlabs/code/environments/production; test -e bootstrap.sh && ./bootstrap.sh)
+%{ if node_name != keys(puppetservers)[0] }
+  - sed -e '/puppetlabs.services.ca/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
+  - sed -e '/authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
+%{ endif }
 %{ endif }
 # Setup puppet server
 %{ for host, ip in puppetservers ~}
   - echo "${ip} ${host}" >> /etc/hosts
-  - /opt/puppetlabs/bin/puppet config set server ${host}
 %{ endfor ~}
+  - /opt/puppetlabs/bin/puppet config set server ${keys(puppetservers)[0]}
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - /opt/puppetlabs/bin/puppet config set waitforcert 15s
   - /opt/puppetlabs/bin/puppet config set report false
@@ -109,7 +113,7 @@ write_files:
       }
     path: /etc/puppetlabs/facter/facter.conf
     permissions: "0644"
-%{ if contains(tags, "puppet") }
+%{ if contains(tags, "puppet") ~}
   - content: |
       ---
       general:
