@@ -83,6 +83,7 @@ runcmd:
   - sed -e '/certificate-authority-service/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
   - sed -e '/certificate-authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
 %{ endif }
+  - chgrp puppet /etc/puppetlabs/puppet/csr_attributes.yaml
 %{ endif }
 # Setup puppet server
 %{ for host, ip in puppetservers ~}
@@ -130,7 +131,6 @@ write_files:
   - path: /var/log/autosign.log
     permissions: "0750"
 %{ endif }
-%{ if ! contains(tags, "puppet") }
   - content: |
       ---
       custom_attributes:
@@ -138,7 +138,6 @@ write_files:
     path: /etc/puppetlabs/puppet/csr_attributes.yaml
     permissions: "0640"
     owner: root:root
-%{ endif }
 
 ssh_keys:
 %{ for key, values in hostkeys ~}
