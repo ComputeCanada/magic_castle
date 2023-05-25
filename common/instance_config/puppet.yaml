@@ -88,7 +88,9 @@ runcmd:
 %{ for host, ip in puppetservers ~}
   - echo "${ip} ${host}" >> /etc/hosts
 %{ endfor ~}
+%{ if length(puppetservers) > 0 ~}
   - /opt/puppetlabs/bin/puppet config set server ${keys(puppetservers)[0]}
+%{ endif ~}
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - /opt/puppetlabs/bin/puppet config set waitforcert 15s
   - /opt/puppetlabs/bin/puppet config set report false
