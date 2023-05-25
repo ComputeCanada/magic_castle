@@ -80,8 +80,8 @@ runcmd:
 # Bootstrap services that are essential to the puppet repo
   - (cd /etc/puppetlabs/code/environments/production; test -e bootstrap.sh && ./bootstrap.sh)
 %{ if node_name != keys(puppetservers)[0] }
-  - sed -e '/puppetlabs.services.ca/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
-  - sed -e '/authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
+  - sed -e '/certificate-authority-service/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
+  - sed -e '/certificate-authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
 %{ endif }
 %{ endif }
 # Setup puppet server
