@@ -124,10 +124,3 @@ resource "aws_eip" "public_ip" {
     Name = "${var.cluster_name}-${each.key}-eip"
   }
 }
-
-locals {
-  puppetservers = {
-      for x, values in module.design.instances : x => aws_network_interface.nic[x].private_ip
-      if contains(values.tags, "puppet")
-  }
-}

@@ -66,10 +66,3 @@ resource "azurerm_network_interface_security_group_association" "public" {
   network_interface_id      = azurerm_network_interface.nic[each.key].id
   network_security_group_id = azurerm_network_security_group.public.id
 }
-
-locals {
-  puppetservers = {
-      for x, values in module.design.instances : x => azurerm_network_interface.nic[x].private_ip_address
-      if contains(values.tags, "puppet")
-  }
-}
