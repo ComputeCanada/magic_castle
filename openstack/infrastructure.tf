@@ -156,26 +156,26 @@ locals {
 locals {
   inventory = { for x, values in module.design.instances :
     x => {
-      public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
+      public_ip = contains(values.tags, "public") ? local.public_ip[x] : ""
       local_ip  = openstack_networking_port_v2.nic[x].all_fixed_ips[0]
-      prefix    = values["prefix"]
-      tags      = values["tags"]
+      prefix    = values.prefix
+      tags      = values.tags
       hostkeys  = {
         ed25519 = module.keys.hostkeys["ed25519"][x].public_key_openssh
         rsa     = module.keys.hostkeys["rsa"][x].public_key_openssh
       }
       specs = {
-        cpus = data.openstack_compute_flavor_v2.flavors[values["prefix"]].vcpus
-        ram  = data.openstack_compute_flavor_v2.flavors[values["prefix"]].ram
+        cpus = data.openstack_compute_flavor_v2.flavors[values.prefix].vcpus
+        ram  = data.openstack_compute_flavor_v2.flavors[values.prefix].ram
         gpus = sum([
-          parseint(lookup(data.openstack_compute_flavor_v2.flavors[values["prefix"]].extra_specs, "resources:VGPU", "0"), 10),
-          parseint(split(":", lookup(data.openstack_compute_flavor_v2.flavors[values["prefix"]].extra_specs, "pci_passthrough:alias", "gpu:0"))[1], 10)
+          parseint(lookup(data.openstack_compute_flavor_v2.flavors[values.prefix].extra_specs, "resources:VGPU", "0"), 10),
+          parseint(split(":", lookup(data.openstack_compute_flavor_v2.flavors[values.prefix].extra_specs, "pci_passthrough:alias", "gpu:0"))[1], 10)
         ])
       }
     }
   }
 
-  online_inventory = { for host, values in local.inventory: host => merge(values, {id=openstack_compute_instance_v2.instances[host].id}) if ! contains(values.tags, "pool") || contains(var.pool, host) }
-  puppetservers    = { for host, values in local.inventory: host => values["local_ip"] if contains(values.tags, "puppet")}
+  online_inventory = { for host in keys(local.to_build_instances): host => merge(local.inventory[host], {id=openstack_compute_instance_v2.instances[host].id}) }
+  puppetservers    = { for host in keys(local.to_build_instances): host => local.inventory[host].local_ip if contains(local.inventory[host].tags, "puppet")}
   public_instances = { for host, values in local.online_inventory: host => values if contains(values.tags, "public")}
 }
