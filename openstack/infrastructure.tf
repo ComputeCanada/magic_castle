@@ -3,6 +3,7 @@ module "design" {
   cluster_name = var.cluster_name
   domain       = var.domain
   instances    = var.instances
+  pool         = var.pool
   volumes      = var.volumes
 }
 
@@ -74,15 +75,8 @@ resource "openstack_compute_keypair_v2" "keypair" {
   public_key = var.public_keys[0]
 }
 
-locals {
-  to_build_instances = {
-    for key, values in module.design.instances: key => values
-    if ! contains(values.tags, "pool") || contains(var.pool, key)
-   }
-}
-
 resource "openstack_compute_instance_v2" "instances" {
-  for_each = local.to_build_instances
+  for_each = module.design.instances_to_build
   name     = format("%s-%s", var.cluster_name, each.key)
   image_id = lookup(each.value, "disk_size", 10) > data.openstack_compute_flavor_v2.flavors[each.value.prefix].disk ? null : data.openstack_images_image_v2.image[each.value.prefix].id
 
@@ -151,9 +145,7 @@ locals {
       ]
     }
   }
-}
 
-locals {
   inventory = { for x, values in module.design.instances :
     x => {
       public_ip = contains(values.tags, "public") ? local.public_ip[x] : ""
@@ -175,7 +167,7 @@ locals {
     }
   }
 
-  online_inventory = { for host in keys(local.to_build_instances): host => merge(local.inventory[host], {id=openstack_compute_instance_v2.instances[host].id}) }
-  puppetservers    = { for host in keys(local.to_build_instances): host => local.inventory[host].local_ip if contains(local.inventory[host].tags, "puppet")}
+  online_inventory = { for host in keys(module.design.instances_to_build): host => merge(local.inventory[host], {id=openstack_compute_instance_v2.instances[host].id}) }
+  puppetservers    = { for host in keys(module.design.instances_to_build): host => local.inventory[host].local_ip if contains(local.inventory[host].tags, "puppet")}
   public_instances = { for host, values in local.online_inventory: host => values if contains(values.tags, "public")}
 }
