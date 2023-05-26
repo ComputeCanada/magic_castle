@@ -20,7 +20,7 @@ module "passwords" {
 
 module "terraform_data" {
   source              = "../common/terraform_data"
-  instances           = local.all_instances
+  instances           = local.inventory
   nb_users            = var.nb_users
   software_stack      = var.software_stack
   cloud_provider      = local.cloud_provider
@@ -154,7 +154,7 @@ locals {
 }
 
 locals {
-  all_instances = { for x, values in module.design.instances :
+  inventory = { for x, values in module.design.instances :
     x => {
       public_ip = contains(values["tags"], "public") ? local.public_ip[x] : ""
       local_ip  = openstack_networking_port_v2.nic[x].all_fixed_ips[0]
@@ -175,6 +175,7 @@ locals {
     }
   }
 
-  puppetservers    = { for host, values in local.all_instances: host => values["local_ip"] if contains(values.tags, "puppet")}
-  public_instances = { for host, values in local.all_instances: host => merge(values, {id=openstack_compute_instance_v2.instances[host].id}) if contains(values.tags, "public")}
+  online_inventory = { for host, values in local.inventory: host => merge(values, {id=openstack_compute_instance_v2.instances[host].id}) if ! contains(values.tags, "pool") || contains(var.pool, host) }
+  puppetservers    = { for host, values in local.inventory: host => values["local_ip"] if contains(values.tags, "puppet")}
+  public_instances = { for host, values in local.online_inventory: host => values if contains(values.tags, "public")}
 }
