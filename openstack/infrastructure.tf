@@ -175,6 +175,6 @@ locals {
     }
   }
 
-  puppetservers    = { for host, values in local.all_instances: host => values if contains(values.tags, "puppet")}
+  puppetservers    = { for host, values in local.all_instances: host => values["local_ip"] if contains(values.tags, "puppet")}
   public_instances = { for host, values in local.all_instances: host => values if contains(values.tags, "public")}
 }
