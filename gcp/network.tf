@@ -76,10 +76,3 @@ resource "google_compute_address" "public_ip" {
   for_each = { for x, values in module.design.instances : x => true if contains(values.tags, "public") }
   name     = format("%s-%s-public-ipv4", var.cluster_name, each.key)
 }
-
-locals {
-  puppetservers = {
-      for x, values in module.design.instances : x => google_compute_address.nic[x].address
-      if contains(values.tags, "puppet")
-  }
-}

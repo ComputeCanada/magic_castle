@@ -8,36 +8,39 @@ module "design" {
   cluster_name = var.cluster_name
   domain       = var.domain
   instances    = var.instances
+  pool         = var.pool
   volumes      = var.volumes
 }
 
-module "instance_config" {
-  source           = "../common/instance_config"
-  instances        = module.design.instances
-  config_git_url   = var.config_git_url
-  config_version   = var.config_version
-  puppetservers    = local.puppetservers
-  sudoer_username  = var.sudoer_username
-  public_keys      = var.public_keys
-  generate_ssh_key = var.generate_ssh_key
+module "configuration" {
+  source                = "../common/configuration"
+  inventory             = local.inventory
+  config_git_url        = var.config_git_url
+  config_version        = var.config_version
+  sudoer_username       = var.sudoer_username
+  generate_ssh_key      = var.generate_ssh_key
+  public_keys           = var.public_keys
+  volume_devices        = local.volume_devices
+  domain_name           = module.design.domain_name
+  cluster_name          = var.cluster_name
+  guest_passwd          = var.guest_passwd
+  nb_users              = var.nb_users
+  software_stack        = var.software_stack
+  cloud_provider        = local.cloud_provider
+  cloud_region          = local.cloud_region
 }
 
-module "cluster_config" {
-  source          = "../common/cluster_config"
-  instances       = local.all_instances
-  nb_users        = var.nb_users
+module "provision" {
+  source          = "../common/provision"
+  bastions        = local.public_instances
+  puppetservers   = module.configuration.puppetservers
+  tf_ssh_key      = module.configuration.ssh_key
+  terraform_data  = module.configuration.terraform_data
+  terraform_facts = module.configuration.terraform_facts
   hieradata       = var.hieradata
-  software_stack  = var.software_stack
-  cloud_provider  = local.cloud_provider
-  cloud_region    = local.cloud_region
   sudoer_username = var.sudoer_username
-  public_keys     = var.public_keys
-  guest_passwd    = var.guest_passwd
-  domain_name     = module.design.domain_name
-  cluster_name    = var.cluster_name
-  volume_devices  = local.volume_devices
-  tf_ssh_key      = module.instance_config.ssh_key
 }
+
 
 data "google_compute_zones" "available" {
   status = "UP"
@@ -117,7 +120,7 @@ resource "google_compute_instance" "instances" {
 
   metadata = {
     enable-oslogin     = "FALSE"
-    user-data          = base64gzip(module.instance_config.user_data[each.key])
+    user-data          = base64gzip(module.configuration.user_data[each.key])
     user-data-encoding = "base64"
     VmDnsSetting       = "ZonalOnly"
   }
@@ -161,25 +164,23 @@ locals {
       ]
     }
   }
-}
 
-locals {
-  all_instances = { for x, values in module.design.instances :
+  inventory = { for x, values in module.design.instances :
     x => {
-      public_ip = contains(values["tags"], "public") ? google_compute_address.public_ip[x].address : ""
+      public_ip = contains(values.tags, "public") ? google_compute_address.public_ip[x].address : ""
       local_ip  = google_compute_address.nic[x].address
-      prefix    = values["prefix"]
-      tags      = values["tags"]
-      id        = ! contains(values["tags"], "pool") || contains(var.pool, x) ? google_compute_instance.instances[x].id : ""
-      hostkeys = {
-        rsa = module.instance_config.rsa_hostkeys[x]
-        ed25519 = module.instance_config.ed25519_hostkeys[x]
-      }
+      prefix    = values.prefix
+      tags      = values.tags
       specs = {
         cpus = data.external.machine_type[values["prefix"]].result["vcpus"]
         ram  = data.external.machine_type[values["prefix"]].result["ram"]
         gpus = try(data.external.machine_type[values["prefix"]].result["gpus"], lookup(values, "gpu_count", 0))
       }
     }
+  }
+
+  public_instances = { for host in keys(module.design.instances_to_build):
+    host => merge(module.configuration.inventory[host], {id=google_compute_instance.instances[host].id})
+    if contains(module.configuration.inventory[host].tags, "public")
   }
 }
