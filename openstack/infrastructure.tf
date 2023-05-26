@@ -176,5 +176,5 @@ locals {
   }
 
   puppetservers    = { for host, values in local.all_instances: host => values["local_ip"] if contains(values.tags, "puppet")}
-  public_instances = { for host, values in local.all_instances: host => values if contains(values.tags, "public")}
+  public_instances = { for host, values in local.all_instances: host => merge(values, {id=openstack_compute_instance_v2.instances[host].id}) if contains(values.tags, "public")}
 }
