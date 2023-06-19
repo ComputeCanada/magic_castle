@@ -407,7 +407,7 @@ Defines the name of the image that will be used as the base image for the cluste
 
 You can use a custom image if you wish, but configuration management
 should be mainly done through Puppet. Image customization is mostly
-envisioned as a way to accelerate the provisioning process by applying the
+envisioned as a way to accelerate the configuration process by applying the
 security patches and OS updates in advance.
 
 To specify a different image for an instance type, use the
@@ -538,7 +538,7 @@ Optional attributes can be defined:
 1. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create (default: 1).
 2. `image`: specification of the image to use for this instance type. (default: global [`image`](#46-image) value).
 Refer to section [10.12 - Create a compute node image](#1012-Create-compute-node-image) to learn how this attribute can
-be leveraged to accelerate compute node provisioning.
+be leveraged to accelerate compute node configuration.
 3. `disk_size`: size in gibibytes (GiB) of the instance's root disk containing
 the operating system and service software
 (default: see the next table).
@@ -1181,18 +1181,16 @@ node.
 **Warning**: although the instance creation process is finished once Terraform
 outputs the connection information, you will not be able to
 connect and use the cluster immediately. The instance creation is only the
-first phase of the cluster-building process. The provisioning: the
+first phase of the cluster-building process. The configuration: the
 creation of the user accounts, installation of FreeIPA, Slurm, configuration
 of JupyterHub, etc.; takes around 15 minutes after the instances are created.
 
-You can follow the provisioning process on the issuance by looking at:
+Once it is booted, you can follow an instance configuration process by looking at:
 
 * `/var/log/cloud-init-output.log`
 * `journalctl -u puppet`
 
-once the instances are booted.
-
-If unexpected problems occur during provisioning, you can provide these
+If unexpected problems occur during configuration, you can provide these
 logs to the authors of Magic Castle to help you debug.
 
 ### 8.1 Deployment Customization
