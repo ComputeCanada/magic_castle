@@ -92,8 +92,7 @@ resource "openstack_compute_instance_v2" "instances" {
   dynamic "network" {
     for_each = local.ext_networks
     content {
-      access_network = network.value.access_network
-      name           = network.value.name
+      port = openstack_networking_port_v2.public_nic[each.key].id
     }
   }
 
