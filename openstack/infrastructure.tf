@@ -144,7 +144,10 @@ locals {
       specs = {
         cpus = data.openstack_compute_flavor_v2.flavors[values["prefix"]].vcpus
         ram  = data.openstack_compute_flavor_v2.flavors[values["prefix"]].ram
-        gpus = parseint(lookup(data.openstack_compute_flavor_v2.flavors[values["prefix"]].extra_specs, "resources:VGPU", "0"), 10)
+        gpus = sum([
+          parseint(lookup(data.openstack_compute_flavor_v2.flavors[values["prefix"]].extra_specs, "resources:VGPU", "0"), 10),
+          parseint(split(":", lookup(data.openstack_compute_flavor_v2.flavors[values["prefix"]].extra_specs, "pci_passthrough:alias", "gpu:0"))[1], 10)
+        ])
       }
     }
   }
