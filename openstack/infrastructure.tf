@@ -14,47 +14,31 @@ module "keys" {
   instances        = module.design.instances
 }
 
-module "passwords" {
-  source = "../common/passwords"
-  guest_passwd = var.guest_passwd
-}
-
-module "terraform_data" {
-  source              = "../common/terraform_data"
-  instances           = local.inventory
-  nb_users            = var.nb_users
-  software_stack      = var.software_stack
-  cloud_provider      = local.cloud_provider
-  cloud_region        = local.cloud_region
-  sudoer_username     = var.sudoer_username
-  ssh_authorized_keys = module.keys.ssh_authorized_keys
-  guest_passwd        = module.passwords.result["guest"]
-  domain_name         = module.design.domain_name
-  cluster_name        = var.cluster_name
-  volume_devices      = local.volume_devices
-}
-
-module "instance_config" {
-  source                = "../common/instance_config"
-  instances             = module.design.instances
+module "configuration" {
+  source                = "../common/configuration"
+  inventory             = local.inventory
   config_git_url        = var.config_git_url
   config_version        = var.config_version
-  puppetservers         = local.puppetservers
-  puppetserver_password = module.passwords.result["puppetserver"]
   sudoer_username       = var.sudoer_username
   ssh_authorized_keys   = module.keys.ssh_authorized_keys
   hostkeys              = module.keys.hostkeys
-  terraform_data        = module.terraform_data.result["data"]
-  terraform_facts       = module.terraform_data.result["facts"]
+  volume_devices        = local.volume_devices
+  domain_name           = module.design.domain_name
+  cluster_name          = var.cluster_name
+  guest_passwd          = var.guest_passwd
+  nb_users              = var.nb_users
+  software_stack        = var.software_stack
+  cloud_provider        = local.cloud_provider
+  cloud_region          = local.cloud_region
 }
 
-module "cluster_config" {
-  source          = "../common/cluster_config"
+module "provision" {
+  source          = "../common/provision"
   bastions        = local.public_instances
-  puppetservers   = local.puppetservers
+  puppetservers   = module.configuration.puppetservers
   tf_ssh_key      = module.keys.ssh_key
-  terraform_data  = module.terraform_data.result["data"]
-  terraform_facts = module.terraform_data.result["facts"]
+  terraform_data  = module.configuration.terraform_data
+  terraform_facts = module.configuration.terraform_facts
   hieradata       = var.hieradata
   sudoer_username = var.sudoer_username
 }
@@ -82,7 +66,7 @@ resource "openstack_compute_instance_v2" "instances" {
 
   flavor_name  = each.value.type
   key_pair     = openstack_compute_keypair_v2.keypair.name
-  user_data    = base64gzip(module.instance_config.user_data[each.key])
+  user_data    = base64gzip(module.configuration.user_data[each.key])
   metadata     = {}
   force_delete = true
 
@@ -167,6 +151,5 @@ locals {
   }
 
   online_inventory = { for host in keys(module.design.instances_to_build): host => merge(local.inventory[host], {id=openstack_compute_instance_v2.instances[host].id}) }
-  puppetservers    = { for host in keys(module.design.instances_to_build): host => local.inventory[host].local_ip if contains(local.inventory[host].tags, "puppet")}
   public_instances = { for host, values in local.online_inventory: host => values if contains(values.tags, "public")}
 }
