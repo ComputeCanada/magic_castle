@@ -105,7 +105,7 @@ locals {
         terraform_facts       = local.terraform_facts
         hostkeys = {
           rsa = {
-            private = tls_private_key.rsa[values.prefix].private_key_pem
+            private = tls_private_key.rsa[values.prefix].private_key_openssh
             public  = tls_private_key.rsa[values.prefix].public_key_openssh
           }
           ed25519 = {
