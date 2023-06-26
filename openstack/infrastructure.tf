@@ -7,21 +7,14 @@ module "design" {
   volumes      = var.volumes
 }
 
-module "keys" {
-  source           = "../common/keys"
-  generate_ssh_key = var.generate_ssh_key
-  public_keys      = var.public_keys
-  instances        = module.design.instances
-}
-
 module "configuration" {
   source                = "../common/configuration"
   inventory             = local.inventory
   config_git_url        = var.config_git_url
   config_version        = var.config_version
   sudoer_username       = var.sudoer_username
-  ssh_authorized_keys   = module.keys.ssh_authorized_keys
-  hostkeys              = module.keys.hostkeys
+  generate_ssh_key      = var.generate_ssh_key
+  public_keys           = var.public_keys
   volume_devices        = local.volume_devices
   domain_name           = module.design.domain_name
   cluster_name          = var.cluster_name
@@ -36,7 +29,7 @@ module "provision" {
   source          = "../common/provision"
   bastions        = local.public_instances
   puppetservers   = module.configuration.puppetservers
-  tf_ssh_key      = module.keys.ssh_key
+  tf_ssh_key      = module.configuration.ssh_key
   terraform_data  = module.configuration.terraform_data
   terraform_facts = module.configuration.terraform_facts
   hieradata       = var.hieradata
@@ -135,10 +128,6 @@ locals {
       local_ip  = openstack_networking_port_v2.nic[x].all_fixed_ips[0]
       prefix    = values.prefix
       tags      = values.tags
-      hostkeys  = {
-        ed25519 = module.keys.hostkeys["ed25519"][x].public_key_openssh
-        rsa     = module.keys.hostkeys["rsa"][x].public_key_openssh
-      }
       specs = {
         cpus = data.openstack_compute_flavor_v2.flavors[values.prefix].vcpus
         ram  = data.openstack_compute_flavor_v2.flavors[values.prefix].ram
@@ -150,6 +139,8 @@ locals {
     }
   }
 
-  online_inventory = { for host in keys(module.design.instances_to_build): host => merge(local.inventory[host], {id=openstack_compute_instance_v2.instances[host].id}) }
-  public_instances = { for host, values in local.online_inventory: host => values if contains(values.tags, "public")}
+  public_instances = { for host in keys(module.design.instances_to_build):
+    host => merge(module.configuration.inventory[host], {id=openstack_compute_instance_v2.instances[host].id})
+    if contains(module.configuration.inventory[host].tags, "public")
+  }
 }

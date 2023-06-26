@@ -3,8 +3,6 @@ variable "config_git_url" { }
 variable "config_version" { }
 
 variable "sudoer_username" { }
-variable "ssh_authorized_keys" { }
-variable "hostkeys" { }
 
 variable "nb_users" { }
 variable "software_stack" { }
@@ -14,6 +12,25 @@ variable "domain_name" { }
 variable "cluster_name" { }
 variable "volume_devices" { }
 variable "guest_passwd" { }
+
+variable "generate_ssh_key" { }
+variable "public_keys" { }
+
+resource "tls_private_key" "ssh" {
+  count     = var.generate_ssh_key ? 1 : 0
+  algorithm = "ED25519"
+}
+
+resource "tls_private_key" "rsa" {
+  for_each  = toset([for x, values in var.inventory: values.prefix])
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "tls_private_key" "ed25519" {
+  for_each  = toset([for x, values in var.inventory: values.prefix])
+  algorithm = "ED25519"
+}
 
 resource "random_string" "puppet_passwd" {
   length  = 32
@@ -29,25 +46,33 @@ resource "random_pet" "guest_passwd" {
 locals {
   puppet_passwd = random_string.puppet_passwd.result
   guest_passwd = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
-}
 
-
-
-locals {
-  puppetservers    = { for host in keys(var.inventory): host => var.inventory[host].local_ip if contains(var.inventory[host].tags, "puppet")}
-  all_tags = toset(flatten([for key, values in var.inventory : values["tags"]]))
+  puppetservers = { for host, values in var.inventory: host => values.local_ip if contains(values.tags, "puppet")}
+  all_tags = toset(flatten([for key, values in var.inventory : values.tags]))
   tag_ip = { for tag in local.all_tags :
-    tag => [for key, values in var.inventory : values["local_ip"] if contains(values["tags"], tag)]
+    tag => [for key, values in var.inventory : values.local_ip if contains(values.tags, tag)]
+  }
+
+  ssh_authorized_keys = var.generate_ssh_key ? concat(var.public_keys, ["${chomp(tls_private_key.ssh[0].public_key_openssh)} terraform@localhost"]) :  var.public_keys
+
+  # add openssh public key to inventory
+  inventory = { for host, values in var.inventory:
+    host => merge(values, {
+      hostkeys = {
+        rsa     = tls_private_key.rsa[values.prefix].public_key_openssh
+        ed25519 = tls_private_key.ed25519[values.prefix].public_key_openssh
+      }
+    })
   }
 
   terraform_data  = yamlencode({
     terraform = {
-      instances = var.inventory
+      instances = local.inventory
       tag_ip    = local.tag_ip
       volumes   = var.volume_devices
       data      = {
         sudoer_username = var.sudoer_username
-        public_keys     = var.ssh_authorized_keys
+        public_keys     = local.ssh_authorized_keys
         cluster_name    = lower(var.cluster_name)
         domain_name     = var.domain_name
         guest_passwd    = local.guest_passwd
@@ -68,24 +93,24 @@ locals {
     for key, values in var.inventory : key =>
     templatefile("${path.module}/puppet.yaml",
       {
-        tags                  = values["tags"]
+        tags                  = values.tags
         node_name             = key,
         puppetenv_git         = var.config_git_url,
         puppetenv_rev         = var.config_version,
         puppetservers         = local.puppetservers,
         puppetserver_password = local.puppet_passwd,
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = var.ssh_authorized_keys
+        ssh_authorized_keys   = local.ssh_authorized_keys
         terraform_data        = local.terraform_data
         terraform_facts       = local.terraform_facts
         hostkeys = {
           rsa = {
-            private = var.hostkeys["rsa"][key].private_key_pem
-            public  = var.hostkeys["rsa"][key].public_key_openssh
+            private = tls_private_key.rsa[values.prefix].private_key_pem
+            public  = tls_private_key.rsa[values.prefix].public_key_openssh
           }
           ed25519 = {
-            private = var.hostkeys["ed25519"][key].private_key_openssh
-            public  = var.hostkeys["ed25519"][key].public_key_openssh
+            private = tls_private_key.ed25519[values.prefix].private_key_openssh
+            public  = tls_private_key.ed25519[values.prefix].public_key_openssh
           }
         }
       }
@@ -112,4 +137,15 @@ output "puppetservers" {
 
 output "guest_passwd" {
   value = local.guest_passwd
+}
+
+output "inventory" {
+  value = local.inventory
+}
+
+output "ssh_key" {
+  value = {
+    public  = try("${chomp(tls_private_key.ssh[0].public_key_openssh)} terraform@localhost", null)
+    private = try(tls_private_key.ssh[0].private_key_pem, null)
+  }
 }

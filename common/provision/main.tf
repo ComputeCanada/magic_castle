@@ -15,7 +15,7 @@ resource "null_resource" "deploy_hieradata" {
     bastion_user        = var.sudoer_username
     bastion_private_key = var.tf_ssh_key.private
     user                = var.sudoer_username
-    host                = each.value.local_ip
+    host                = each.value
     private_key         = var.tf_ssh_key.private
   }
 

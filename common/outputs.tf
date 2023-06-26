@@ -35,6 +35,6 @@ output "accounts" {
 }
 
 output "ssh_private_key" {
-  value     = module.keys.ssh_key.private
+  value     = module.configuration.ssh_key.private
   sensitive = true
 }
