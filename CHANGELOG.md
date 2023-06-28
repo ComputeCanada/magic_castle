@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [12.6.0] - UNRELEASED
+
+#### Added
+
+- Added another source of GPU spec to OpenStack. Allow GPU support with OVH.
+
+### Changed
+- Set `manage_etc_hosts` in cloud-init explictly to false.
+- Fixed jq path to retrieve consul ACL agent token when launching the puppet event with consul.
+
 ## [12.5.0] - 2023-06-06
 
 ### Changed
