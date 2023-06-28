@@ -47,18 +47,12 @@ data "openstack_compute_flavor_v2" "flavors" {
   name     = each.value.type
 }
 
-resource "openstack_compute_keypair_v2" "keypair" {
-  name       = "${var.cluster_name}-key"
-  public_key = var.public_keys[0]
-}
-
 resource "openstack_compute_instance_v2" "instances" {
   for_each = module.design.instances_to_build
   name     = format("%s-%s", var.cluster_name, each.key)
   image_id = lookup(each.value, "disk_size", 10) > data.openstack_compute_flavor_v2.flavors[each.value.prefix].disk ? null : data.openstack_images_image_v2.image[each.value.prefix].id
 
   flavor_name  = each.value.type
-  key_pair     = openstack_compute_keypair_v2.keypair.name
   user_data    = base64gzip(module.configuration.user_data[each.key])
   metadata     = {}
   force_delete = true
