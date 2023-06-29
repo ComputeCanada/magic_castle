@@ -19,9 +19,9 @@ Users can use their own fork. See the [developer documentation](/docs/developers
 - [`magic_castle:/common/design/main.tf`](/common/design/main.tf)
 - [`magic_castle:/openstack/network-1.tf`](/openstack/network-1.tf)
 - [`magic_castle:/openstack/network-2.tf`](/openstack/network-2.tf)
-- [`magic_castle:/common/instance_config/main.tf`](/common/instance_config/main.tf)
+- [`magic_castle:/common/configuration/main.tf`](/common/configuration/main.tf)
 - [`magic_castle:/openstack/infrastructure.tf`](/openstack/infrastructure.tf)
-- [`magic_castle:/common/cluster_config/main.tf`](/common/cluster_config/main.tf)
+- [`magic_castle:/common/provision/main.tf`](/common/provision/main.tf)
 - [`magic_castle:/dns/cloudflare/main.tf`](/dns/cloudflare/main.tf)
 - [`magic_castle:/dns/acme/main.tf`](/dns/acme/main.tf)
 
@@ -39,7 +39,7 @@ is the puppet certificate generation.
 
 ### References
 
-- [`magic_castle:/common/instance_config/puppet.yaml`](/common/instance_config/puppet.yaml)
+- [`magic_castle:/common/configuration/puppet.yaml`](/common/instance_config/puppet.yaml)
 
 
 ## 3. Configuration with Puppet
