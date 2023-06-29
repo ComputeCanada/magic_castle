@@ -14,6 +14,11 @@ locals {
     ])...
   )
 
+  instances_to_build = {
+    for key, values in local.instances: key => values
+    if ! contains(values.tags, "pool") || contains(var.pool, key)
+  }
+
   instance_per_volume = merge([
     for ki, vi in var.volumes : {
       for kj, vj in vi :

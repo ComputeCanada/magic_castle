@@ -117,17 +117,10 @@ resource "aws_eip" "public_ip" {
   for_each = {
     for x, values in module.design.instances : x => true if contains(values.tags, "public")
   }
-  vpc        = true
-  instance   = aws_instance.instances[each.key].id
-  depends_on = [aws_internet_gateway.gw]
+  vpc               = true
+  network_interface = aws_network_interface.nic[each.key].id
+  depends_on        = [aws_internet_gateway.gw]
   tags = {
     Name = "${var.cluster_name}-${each.key}-eip"
   }
-}
-
-locals {
-  puppetserver_ip = [
-      for x, values in module.design.instances : aws_network_interface.nic[x].private_ip
-      if contains(values.tags, "puppet")
-  ]
 }

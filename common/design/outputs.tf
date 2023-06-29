@@ -2,6 +2,10 @@ output "instances" {
   value = local.instances
 }
 
+output "instances_to_build" {
+  value = local.instances_to_build
+}
+
 output "volumes" {
   value = local.volumes
 }

@@ -44,23 +44,20 @@ runcmd:
       grub2-mkconfig -o /boot/grub2/grub.cfg
     fi
 %{ if contains(tags, "puppet") }
-  # Install Java 11
-  - yum -y install java-11-openjdk-headless
-  - yum -y install puppetserver-7.11.0
-  - mkdir /var/autosign
-  - chown puppet:puppet /var/autosign
-  - chmod 750 /var/autosign
-  - touch /var/log/autosign.log
-  - chown puppet:puppet /var/log/autosign.log
-  - /opt/puppetlabs/puppet/bin/gem install autosign
-  - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section master
-  - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section master
-  - chown puppet:puppet /etc/autosign.conf
+  # Install Java 11 and puppetserver
+  - yum -y install java-11-openjdk-headless puppetserver-7.11.0
+# Configure puppetserver to use Java 11
+  - sudo sed -i 's;\(JAVA_BIN=\).*;\1"/usr/lib/jvm/jre-11/bin/java";g' /etc/sysconfig/puppetserver
+# Configure puppet-agent to start after puppetserver when on puppetserver
   - sed -i 's/^\(After=.*\)$/\1 puppetserver.service/' /usr/lib/systemd/system/puppet.service
   - systemctl daemon-reload
   - systemctl enable puppetserver
-# Configure puppetserver to use Java 11
-  - sudo sed -i 's;\(JAVA_BIN=\).*;\1"/usr/lib/jvm/jre-11/bin/java";g' /etc/sysconfig/puppetserver
+# Enable autosign with password
+  - chgrp puppet /etc/autosign.conf
+  - chown puppet:puppet /var/log/autosign.log
+  - /opt/puppetlabs/puppet/bin/gem install autosign
+  - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section server
+  - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section server
 # Generate hieradata asymmetric encryption key
   - /opt/puppetlabs/puppet/bin/gem install hiera-eyaml
   - mkdir -p /etc/puppetlabs/puppet/eyaml
@@ -73,10 +70,8 @@ runcmd:
   - rm -rf /etc/puppetlabs/code/environments/production
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/production
   - "(cd /etc/puppetlabs/code/environments/production; git checkout ${puppetenv_rev})"
-  - mkdir -p /etc/puppetlabs/data
-  - mkdir -p /etc/puppetlabs/facts
-  - chgrp -R puppet /etc/puppetlabs/data
-  - chgrp -R puppet /etc/puppetlabs/facts
+  - mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts
+  - chgrp puppet /etc/puppetlabs/data /etc/puppetlabs/facts
   - ln -sf /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/data/user_data.yaml /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/facts/terraform_facts.yaml /etc/puppetlabs/code/environments/production/site/profile/facts.d
@@ -84,7 +79,19 @@ runcmd:
   - "(cd /etc/puppetlabs/code/environments/production/ && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
 # Bootstrap services that are essential to the puppet repo
   - (cd /etc/puppetlabs/code/environments/production; test -e bootstrap.sh && ./bootstrap.sh)
+%{ if node_name != keys(puppetservers)[0] }
+  - sed -e '/certificate-authority-service/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
+  - sed -e '/certificate-authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
 %{ endif }
+  - chgrp puppet /etc/puppetlabs/puppet/csr_attributes.yaml
+%{ endif }
+# Setup puppet server
+%{ for host, ip in puppetservers ~}
+  - echo "${ip} ${host}" >> /etc/hosts
+%{ endfor ~}
+%{ if length(puppetservers) > 0 ~}
+  - /opt/puppetlabs/bin/puppet config set server ${keys(puppetservers)[0]}
+%{ endif ~}
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - /opt/puppetlabs/bin/puppet config set waitforcert 15s
   - /opt/puppetlabs/bin/puppet config set report false
@@ -104,45 +111,43 @@ runcmd:
 
 write_files:
   - content: |
-%{ if contains(tags, "puppet") }
-      127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4 puppet
-%{ else }
-      127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-%{ for ip in puppetserver_ip ~}
-      ${ip} puppet
-%{ endfor ~}
-%{ endif }
-    path: /etc/hosts
-    permissions: "0644"
-  - content: |
       facts : {
         blocklist : [ "EC2", "GCE" ],
       }
     path: /etc/puppetlabs/facter/facter.conf
     permissions: "0644"
-%{ if contains(tags, "puppet") }
+%{ if contains(tags, "puppet") ~}
   - content: |
       ---
       general:
         loglevel: warn
         logfile: "/var/log/autosign.log"
-      jwt_token:
-        secret: "${puppetserver_password}"
-        validity: '7200'
-        journalfile: "/root/var/autosign/autosign.journal"
+        validation_order:
+          - password_list
       password_list:
         password: "${puppetserver_password}"
     path: /etc/autosign.conf
     permissions: "0640"
-%{ endif }
-%{ if ! contains(tags, "puppet") }
+  - path: /var/log/autosign.log
+    permissions: "0640"
+%{ if include_tf_data ~}
+  - path: /etc/puppetlabs/data/terraform_data.yaml
+    content: |
+      ${indent(6, terraform_data)}
+    permissions: "0640"
+  - path: /etc/puppetlabs/facts/terraform_facts.yaml
+    content: |
+      ${indent(6, terraform_facts)}
+    permissions: "0640"
+%{ endif ~}
+%{ endif ~}
   - content: |
       ---
       custom_attributes:
         1.2.840.113549.1.9.7: "${puppetserver_password}"
     path: /etc/puppetlabs/puppet/csr_attributes.yaml
     permissions: "0640"
-%{ endif }
+    owner: root:root
 
 ssh_keys:
 %{ for key, values in hostkeys ~}

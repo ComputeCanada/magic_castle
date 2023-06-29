@@ -8,36 +8,39 @@ module "design" {
   cluster_name = var.cluster_name
   domain       = var.domain
   instances    = var.instances
+  pool         = var.pool
   volumes      = var.volumes
 }
 
-module "instance_config" {
-  source           = "../common/instance_config"
-  instances        = module.design.instances
-  config_git_url   = var.config_git_url
-  config_version   = var.config_version
-  puppetserver_ip  = local.puppetserver_ip
-  sudoer_username  = var.sudoer_username
-  public_keys      = var.public_keys
-  generate_ssh_key = var.generate_ssh_key
+module "configuration" {
+  source                = "../common/configuration"
+  inventory             = local.inventory
+  config_git_url        = var.config_git_url
+  config_version        = var.config_version
+  sudoer_username       = var.sudoer_username
+  generate_ssh_key      = var.generate_ssh_key
+  public_keys           = var.public_keys
+  volume_devices        = local.volume_devices
+  domain_name           = module.design.domain_name
+  cluster_name          = var.cluster_name
+  guest_passwd          = var.guest_passwd
+  nb_users              = var.nb_users
+  software_stack        = var.software_stack
+  cloud_provider        = local.cloud_provider
+  cloud_region          = local.cloud_region
 }
 
-module "cluster_config" {
-  source          = "../common/cluster_config"
-  instances       = local.all_instances
-  nb_users        = var.nb_users
+module "provision" {
+  source          = "../common/provision"
+  bastions        = local.public_instances
+  puppetservers   = module.configuration.puppetservers
+  tf_ssh_key      = module.configuration.ssh_key
+  terraform_data  = module.configuration.terraform_data
+  terraform_facts = module.configuration.terraform_facts
   hieradata       = var.hieradata
-  software_stack  = var.software_stack
-  cloud_provider  = local.cloud_provider
-  cloud_region    = local.cloud_region
   sudoer_username = var.sudoer_username
-  public_keys     = var.public_keys
-  guest_passwd    = var.guest_passwd
-  domain_name     = module.design.domain_name
-  cluster_name    = var.cluster_name
-  volume_devices  = local.volume_devices
-  tf_ssh_key      = module.instance_config.ssh_key
 }
+
 
 # Check if user provided resource group is valid
 data "azurerm_resource_group" "example" {
@@ -52,16 +55,9 @@ resource "azurerm_resource_group" "group" {
   location = var.location
 }
 
-locals {
-  to_build_instances = {
-    for key, values in module.design.instances: key => values
-    if ! contains(values.tags, "pool") || contains(var.pool, key)
-   }
-}
-
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "instances" {
-  for_each              = local.to_build_instances
+  for_each              = module.design.instances_to_build
   size                  = each.value.type
   name                  = format("%s-%s", var.cluster_name, each.key)
   location              = var.location
@@ -99,7 +95,7 @@ resource "azurerm_linux_virtual_machine" "instances" {
 
   computer_name  = each.key
   admin_username = "azure"
-  custom_data    = base64gzip(module.instance_config.user_data[each.key])
+  custom_data    = base64gzip(module.configuration.user_data[each.key])
 
   disable_password_authentication = true
   dynamic "admin_ssh_key" {
@@ -155,28 +151,26 @@ locals {
       ]
     }
   }
-}
 
-locals {
   resource_group_name = var.azure_resource_group == "" ? azurerm_resource_group.group[0].name : var.azure_resource_group
 
-  vmsizes = jsondecode(file("${path.module}/vmsizes.json"))
-  all_instances = { for x, values in module.design.instances :
+  vmsizes   = jsondecode(file("${path.module}/vmsizes.json"))
+  inventory = { for x, values in module.design.instances :
     x => {
       public_ip = azurerm_public_ip.public_ip[x].ip_address
       local_ip  = azurerm_network_interface.nic[x].private_ip_address
-      prefix    = values["prefix"]
-      tags      = values["tags"]
-      id        = try(azurerm_linux_virtual_machine.instances[x].id, "")
-      hostkeys  = {
-        rsa = module.instance_config.rsa_hostkeys[x]
-        ed25519 = module.instance_config.ed25519_hostkeys[x]
-      }
+      prefix    = values.prefix
+      tags      = values.tags
       specs = {
-        cpus = local.vmsizes[values["type"]]["vcpus"]
-        ram  = local.vmsizes[values["type"]]["ram"]
-        gpus = local.vmsizes[values["type"]]["gpus"]
+        cpus = local.vmsizes[values.type].vcpus
+        ram  = local.vmsizes[values.type].ram
+        gpus = local.vmsizes[values.type].gpus
       }
     }
+  }
+
+  public_instances = { for host in keys(module.design.instances_to_build):
+    host => merge(module.configuration.inventory[host], {id=try(azurerm_linux_virtual_machine.instances[host].id, "")})
+    if contains(module.configuration.inventory[host].tags, "public")
   }
 }

@@ -1,10 +1,10 @@
 output "public_instances" {
-  value = module.cluster_config.public_instances
+  value = local.public_instances
 }
 
 output "public_ip" {
   value = {
-    for key, values in module.cluster_config.public_instances: key => values["public_ip"]
+    for key, values in local.public_instances: key => values["public_ip"]
     if values["public_ip"] != ""
   }
 }
@@ -25,7 +25,7 @@ output "accounts" {
       ) : (
         "You have chosen to create user accounts yourself (`nb_users = 0`), please read the documentation on how to manage this at https://github.com/ComputeCanada/magic_castle/blob/main/docs/README.md#103-add-a-user-account"
       ),
-      password = module.cluster_config.guest_passwd
+      password = module.configuration.guest_passwd
     }
     sudoer = {
       username = var.sudoer_username
@@ -35,6 +35,6 @@ output "accounts" {
 }
 
 output "ssh_private_key" {
-  value     = module.instance_config.ssh_key.private
+  value     = module.configuration.ssh_key.private
   sensitive = true
 }

@@ -8,35 +8,37 @@ module "design" {
   cluster_name = var.cluster_name
   domain       = var.domain
   instances    = var.instances
+  pool         = var.pool
   volumes      = var.volumes
 }
 
-module "instance_config" {
-  source           = "../common/instance_config"
-  instances        = module.design.instances
-  config_git_url   = var.config_git_url
-  config_version   = var.config_version
-  puppetserver_ip  = local.puppetserver_ip
-  sudoer_username  = var.sudoer_username
-  public_keys      = var.public_keys
-  generate_ssh_key = var.generate_ssh_key
+module "configuration" {
+  source                = "../common/configuration"
+  inventory             = local.inventory
+  config_git_url        = var.config_git_url
+  config_version        = var.config_version
+  sudoer_username       = var.sudoer_username
+  generate_ssh_key      = var.generate_ssh_key
+  public_keys           = var.public_keys
+  volume_devices        = local.volume_devices
+  domain_name           = module.design.domain_name
+  cluster_name          = var.cluster_name
+  guest_passwd          = var.guest_passwd
+  nb_users              = var.nb_users
+  software_stack        = var.software_stack
+  cloud_provider        = local.cloud_provider
+  cloud_region          = local.cloud_region
 }
 
-module "cluster_config" {
-  source          = "../common/cluster_config"
-  instances       = local.all_instances
-  nb_users        = var.nb_users
+module "provision" {
+  source          = "../common/provision"
+  bastions        = local.public_instances
+  puppetservers   = module.configuration.puppetservers
+  tf_ssh_key      = module.configuration.ssh_key
+  terraform_data  = module.configuration.terraform_data
+  terraform_facts = module.configuration.terraform_facts
   hieradata       = var.hieradata
-  software_stack  = var.software_stack
-  cloud_provider  = local.cloud_provider
-  cloud_region    = local.cloud_region
   sudoer_username = var.sudoer_username
-  public_keys     = var.public_keys
-  guest_passwd    = var.guest_passwd
-  domain_name     = module.design.domain_name
-  cluster_name    = var.cluster_name
-  volume_devices  = local.volume_devices
-  tf_ssh_key      = module.instance_config.ssh_key
 }
 
 data "aws_availability_zones" "available" {
@@ -69,33 +71,16 @@ resource "aws_key_pair" "key" {
   public_key = var.public_keys[0]
 }
 
-# Instances
-locals {
-  regular_instances = {for key, values in module.design.instances: key => values if !contains(values["tags"], "spot")}
-  spot_instances    = {for key, values in module.design.instances: key => values if contains(values["tags"], "spot")}
-}
-
 data "aws_ec2_instance_type" "instance_type" {
   for_each      = var.instances
   instance_type = each.value.type
 }
 
-locals {
-  to_build_regular_instances = {
-    for key, values in local.regular_instances: key => values
-    if ! contains(values.tags, "pool") || contains(var.pool, key)
-   }
-  to_build_spot_instances = {
-    for key, values in local.spot_instances: key => values
-    if ! contains(values.tags, "pool") || contains(var.pool, key)
-   }
-}
-
 resource "aws_instance" "instances" {
-  for_each          = local.to_build_regular_instances
+  for_each          = {for key, values in module.design.instances_to_build: key => values if !contains(values["tags"], "spot")}
   instance_type     = each.value.type
   ami               = lookup(each.value, "image", var.image)
-  user_data         = base64gzip(module.instance_config.user_data[each.key])
+  user_data         = base64gzip(module.configuration.user_data[each.key])
   availability_zone = local.availability_zone
   placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null
 
@@ -127,10 +112,10 @@ resource "aws_instance" "instances" {
 }
 
 resource "aws_spot_instance_request" "spot_instances" {
-  for_each          = local.to_build_spot_instances
+  for_each          = {for key, values in module.design.instances_to_build: key => values if contains(values["tags"], "spot")}
   instance_type     = each.value.type
   ami               = lookup(each.value, "image", var.image)
-  user_data         = base64gzip(module.instance_config.user_data[each.key])
+  user_data         = base64gzip(module.configuration.user_data[each.key])
   availability_zone = local.availability_zone
   placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null
 
@@ -206,25 +191,23 @@ locals {
       ]
     }
   }
-}
 
-locals {
-  all_instances = { for x, values in module.design.instances :
+  inventory = { for x, values in module.design.instances :
     x => {
-      public_ip   = contains(values["tags"], "public") ? aws_eip.public_ip[x].public_ip : ""
+      public_ip   = contains(values.tags, "public") ? aws_eip.public_ip[x].public_ip : ""
       local_ip    = aws_network_interface.nic[x].private_ip
-      prefix    = values["prefix"]
-      tags        = values["tags"]
-      id          = try(! contains(values["tags"], "spot") ? aws_instance.instances[x].id : aws_spot_instance_request.spot_instances[x].spot_instance_id, "")
-      hostkeys    = {
-        rsa = module.instance_config.rsa_hostkeys[x]
-        ed25519 = module.instance_config.ed25519_hostkeys[x]
-      }
+      prefix      = values.prefix
+      tags        = values.tags
       specs = {
-        cpus = data.aws_ec2_instance_type.instance_type[values["prefix"]].default_vcpus
-        ram  = data.aws_ec2_instance_type.instance_type[values["prefix"]].memory_size
-        gpus = try(one(data.aws_ec2_instance_type.instance_type[values["prefix"]].gpus).count, 0)
+        cpus = data.aws_ec2_instance_type.instance_type[values.prefix].default_vcpus
+        ram  = data.aws_ec2_instance_type.instance_type[values.prefix].memory_size
+        gpus = try(one(data.aws_ec2_instance_type.instance_type[values.prefix].gpus).count, 0)
       }
     }
+  }
+
+  public_instances = { for host in keys(module.design.instances_to_build):
+    host => merge(module.configuration.inventory[host], {id=try(!contains(module.configuration.inventory[host].tags, "spot") ? aws_instance.instances[host].id : aws_spot_instance_request.spot_instances[host].spot_instance_id, "")})
+    if contains(module.configuration.inventory[host].tags, "public")
   }
 }
