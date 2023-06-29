@@ -8,10 +8,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 #### Added
 
 - Added another source of GPU spec to OpenStack. Allow GPU support with OVH.
+- Added support to have more than one puppet server.
+- Added writing of csr_attributes.yaml on all instances, including puppet servers.
+- Added writing of terraform_data.yaml and terraform_facts.yaml with cloud-init when there are no `public` instances.
+- Added `puppetservers` variable definition to `module.common.configuration`.
 
 ### Changed
 - Set `manage_etc_hosts` in cloud-init explictly to false.
 - Fixed jq path to retrieve consul ACL agent token when launching the puppet event with consul.
+- Simplified provision remote-exec command by taking advantage puppet id and gid are reserved to "52".
+- Moved definition of autosign.log in cloud-init write_files
+- Changed autosign validation order to just include password_list
+- Changed puppetserver install command to install it with Java 11 in one line.
+- Fixed puppet.conf reference to master and replace it by server.
+- Changed cloud-init to make sure only the first puppetserver is the certificate authority (CA)
+- Changed the local variable named `all_instances` to `inventory`.
+- Moved `to_build_instances` in `module.common.design`.
+- Renamed `module.common.instance_config` to `module.common.configuration`.
+- Renamed `module.common.cluster_config` to `module.common.provision`.
+
+### Removed
+
+- Removed keypair resource from OpenStack. Keypairs are written directly in cloud-init YAML.
+- Removed puppetserver id trigger for remote provisioner of terraform_data and terraform_facts
+- Removed creation of /var/autosign from cloud-init
+- Removed `puppetservers` variable from all network.tf
 
 ## [12.5.0] - 2023-06-06
 
