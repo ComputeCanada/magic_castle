@@ -39,7 +39,7 @@ is the puppet certificate generation.
 
 ### References
 
-- [`magic_castle:/common/configuration/puppet.yaml`](/common/instance_config/puppet.yaml)
+- [`magic_castle:/common/configuration/puppet.yaml`](/common/configuration/puppet.yaml)
 
 
 ## 3. Configuration with Puppet
