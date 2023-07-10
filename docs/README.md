@@ -840,6 +840,30 @@ managed by the workload scheduler through Terraform API. For more information, r
 will be instantiated, others will stay uninstantiated or will be destroyed
 if previously instantiated.
 
+### 4.18 skip_upgrade (optional)
+
+**default_value** = `false`
+
+Determines wether the base image packages will be upgraded during the first boot or not. By default,
+all packages are upgraded. If `skip_upgrade` set to `true`, no package will be upgraded on first boot.
+
+**Post build modification effect**: No effect on currently built instnaces and instances created
+after the modification will take into consideration the new value of the parameter to determine
+wether they should upgrade the base image packages or not.
+
+### 4.19 puppetfile (optional)
+
+**default_value** = `""`
+
+Defines a complement of modules to install with librarian puppet when initializing the Puppet environment
+on the first boot of the Puppet server. If the provided string include the
+[`forge` setting](https://www.puppet.com/docs/pe/2019.8/puppetfile.html#declare_puppet_forge_modules_in_the_puppetfile),
+the provided content will replace entirely the Magic Castle environment's
+[Puppetfile](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/Puppetfile).
+
+**Post build modification effect**: None. To modify the Puppetfile after the cluster is initialized, log
+on the Puppet server and modify `/etc/puppetlabs/code/environments/production/Puppetfile`.
+
 ## 5. Cloud Specific Configuration
 
 ### 5.1 Amazon Web Services
