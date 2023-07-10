@@ -17,7 +17,7 @@ To develop for Magic Castle you will need:
 * Access to a Cloud (e.g.: Compute Canada Arbutus)
 * Ability to communicate with the cloud provider API from your computer
 * A cloud project with enough room for the resource described in section [Magic Caslte Doc 1.1](README.md#11-quotas).
-* [optional] [Puppet Development Kit (PDK)](https://puppet.com/docs/pdk/1.x/pdk.html)
+* [optional] [Puppet Development Kit (PDK)](https://www.puppet.com/docs/pdk/latest/pdk.html)
 
 ## 2. Where to start
 
@@ -86,7 +86,7 @@ through the `main.tf` file. The file has the following structure:
 terraform:
   instances:
     hostname1:
-      local_ip: "10.0.0.x"
+      local_ip: "x.x.x.x"
       public_ip: ""
       tags: ["tag_1"]
       hostkeys:
@@ -99,14 +99,11 @@ terraform:
         - "/dev/disk/by-id/123-abc-*"
   tag_ip:
     tag_1:
-      - 10.0.0.x
+      - x.x.x.x
   data:
     cluster_name: ""
-    consul_token: ""
     domain_name: ""
-    freeipa_passwd: ""
     guest_passwd: ""
-    munge_key: ""
     nb_users: ""
     sudoer_username: ""
 ```
@@ -117,7 +114,7 @@ The values provided by `terraform_data.yaml` can be accessed in Puppet by using 
 lookup("terraform.instances.${::hostname}.tags")
 ```
 The data source can also be used to define a key in another data source YAML file by using the
-`alias()` function. For example, to define the number of guest accounts using the value of `nb_user`,
+`alias()` function. For example, to define the number of guest accounts using the value of `nb_users`,
 we could add this to `common.yaml`
 ```yaml
 profile::accounts::guests::nb_accounts: "%{alias('terraform.data.nb_users')}"
