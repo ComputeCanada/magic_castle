@@ -160,3 +160,15 @@ variable "software_stack" {
 variable "pool" {
   default = []
 }
+
+variable "skip_upgrade" {
+  type        = bool
+  default     = false
+  description = "If set to true, the packages already installed in the base image will not be upgraded on first boot."
+}
+
+variable "puppetfile" {
+  type        = string
+  default     = ""
+  description = "Additional content for the pupet environment Puppetfile. If the string includes a `forge` setting, the string replaces the original Puppetfile completely."
+}

@@ -16,6 +16,9 @@ variable "guest_passwd" { }
 variable "generate_ssh_key" { }
 variable "public_keys" { }
 
+variable "skip_upgrade" { }
+variable "puppetfile" { }
+
 resource "tls_private_key" "ssh" {
   count     = var.generate_ssh_key ? 1 : 0
   algorithm = "ED25519"
@@ -107,6 +110,8 @@ locals {
         include_tf_data       = ! contains(local.all_tags, "public")
         terraform_data        = local.terraform_data
         terraform_facts       = local.terraform_facts
+        skip_upgrade          = var.skip_upgrade
+        puppetfile            = var.puppetfile
         hostkeys = {
           rsa = {
             private = tls_private_key.rsa[values.prefix].private_key_openssh
