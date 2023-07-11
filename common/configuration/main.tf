@@ -98,6 +98,7 @@ locals {
       {
         tags                  = values.tags
         node_name             = key,
+        domain_name           = var.domain_name
         puppetenv_git         = var.config_git_url,
         puppetenv_rev         = var.config_version,
         puppetservers         = local.puppetservers,

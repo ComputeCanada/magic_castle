@@ -175,7 +175,7 @@ ssh_keys:
 
 disable_ec2_metadata: false
 timezone: "UTC"
-fqdn: "${node_name}"
+fqdn: "${node_name}.int.${domain_name}"
 manage_etc_hosts: false
 output: { all: "| tee -a /var/log/cloud-init-output.log" }
 power_state:
