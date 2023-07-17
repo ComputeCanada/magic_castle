@@ -21,6 +21,12 @@ variable "acme_key_pem" {
 variable "sudoer_username" {
 }
 
+variable "vhosts" {
+  description = "List of vhost records A to create."
+  type    = list(string)
+  default = ["ipa", "jupyter", "mokey", "explore"]
+}
+
 variable "domain_tag" {
   description = "Indicate which tag the instances that will be pointed by the domain name A record has to have."
   default     = "login"

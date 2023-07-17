@@ -31,8 +31,10 @@ runcmd:
       # upload the terraform_data.yaml
       yum -y install git pciutils unzip
       yum remove -y firewalld --exclude=iptables
+%{ if ! skip_upgrade ~}
       # Upgrade all packages except Puppet if already installed
       yum -y upgrade -x puppet*
+%{ endif ~}
       # Puppet agent configuration and install
       yum -y install https://yum.puppet.com/puppet7-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
       yum -y install puppet-agent-7.24.0
@@ -70,6 +72,14 @@ runcmd:
   - rm -rf /etc/puppetlabs/code/environments/production
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/production
   - "(cd /etc/puppetlabs/code/environments/production; git checkout ${puppetenv_rev})"
+%{ if puppetfile != "" ~}
+%{ if strcontains(puppetfile, "forge") ~}
+  - cat /etc/puppetlabs/Puppetfile  > /etc/puppetlabs/code/environments/production/Puppetfile
+%{ else }
+  - cat /etc/puppetlabs/Puppetfile >> /etc/puppetlabs/code/environments/production/Puppetfile
+%{ endif ~}
+  - rm /etc/puppetlabs/Puppetfile
+%{ endif ~}
   - mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts
   - chgrp puppet /etc/puppetlabs/data /etc/puppetlabs/facts
   - ln -sf /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/code/environments/production/data/
@@ -140,6 +150,12 @@ write_files:
       ${indent(6, terraform_facts)}
     permissions: "0640"
 %{ endif ~}
+%{ if puppetfile != "" ~}
+  - path: /etc/puppetlabs/Puppetfile
+    content: |
+      ${indent(6, puppetfile)}
+    permissions: "0640"
+%{ endif ~}
 %{ endif ~}
   - content: |
       ---
@@ -159,7 +175,7 @@ ssh_keys:
 
 disable_ec2_metadata: false
 timezone: "UTC"
-fqdn: "${node_name}"
+fqdn: "${node_name}.int.${domain_name}"
 manage_etc_hosts: false
 output: { all: "| tee -a /var/log/cloud-init-output.log" }
 power_state:

@@ -250,7 +250,7 @@ for the initial configuration.
 instance's id to which the volume needs to be attached.
 
 13. **Identify the public instances**. In `infrastructure.tf`, define a local variable named `public_instances`
-that contains the attributes of instances that are publically accessible from Internet and their ids.
+that contains the attributes of instances that are publicly accessible from Internet and their ids.
   ```hcl
   locals {
     public_instances = { for host in keys(module.design.instances_to_build):
@@ -430,7 +430,7 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
   ```
 
 13. **Identify the public instances**. In `infrastructure.tf`, define a local variable named `public_instances`
-that contains the attributes of instances that are publically accessible from Internet and their ids.
+that contains the attributes of instances that are publicly accessible from Internet and their ids.
   ```hcl
   locals {
     public_instances = { for host in keys(module.design.instances_to_build):

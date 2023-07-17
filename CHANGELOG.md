@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `puppetservers` variable definition to `module.common.configuration`.
 
 ### Changed
-- Set `manage_etc_hosts` in cloud-init explictly to false.
+- Set `manage_etc_hosts` in cloud-init explicitly to false.
 - Fixed jq path to retrieve consul ACL agent token when launching the puppet event with consul.
 - Simplified provision remote-exec command by taking advantage puppet id and gid are reserved to "52".
 - Moved definition of autosign.log in cloud-init write_files

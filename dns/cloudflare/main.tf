@@ -10,6 +10,7 @@ module "record_generator" {
   source         = "../record_generator"
   name           = lower(var.name)
   public_instances = var.public_instances
+  vhosts           = var.vhosts
   domain_tag       = var.domain_tag
   vhost_tag        = var.vhost_tag
 }
