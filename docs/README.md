@@ -844,12 +844,12 @@ if previously instantiated.
 
 **default_value** = `false`
 
-Determines wether the base image packages will be upgraded during the first boot or not. By default,
+Determines whether the base image packages will be upgraded during the first boot or not. By default,
 all packages are upgraded. If `skip_upgrade` set to `true`, no package will be upgraded on first boot.
 
-**Post build modification effect**: No effect on currently built instnaces and instances created
+**Post build modification effect**: No effect on currently built instances. Ones created
 after the modification will take into consideration the new value of the parameter to determine
-wether they should upgrade the base image packages or not.
+whether they should upgrade the base image packages or not.
 
 ### 4.19 puppetfile (optional)
 
