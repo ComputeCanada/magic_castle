@@ -215,7 +215,7 @@ resources like GPUs or high performance network interface, refer to
 
 Minimum project requirements:
 * 1 floating IP
-* 1 security group
+* 3 security groups
 * 1 network (see note 1)
 * 1 subnet (see note 1)
 * 1 router (see note 1)
@@ -224,7 +224,7 @@ Minimum project requirements:
 * 8 VCPUs
 * 7 neutron ports
 * 12 GB of RAM
-* 11 security rules
+* 8 security rules
 * 80 GB of volume storage
 
 **Note 1**: Magic Castle supposes the OpenStack project comes with a network, a subnet and a router already initialized. If any of these components is missing, you will need to create them manually before launching terraform.
@@ -782,18 +782,18 @@ section [10.13 Generate and replace Puppet hieradata encryption keys](#1013-gene
 **default value**:
 ```hcl
 {
-  ssh     = { "from_port" = 22,    "to_port" = 22,    "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
-  http    = { "from_port" = 80,    "to_port" = 80,    "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
-  https   = { "from_port" = 443,   "to_port" = 443,   "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
-  globus  = { "from_port" = 2811,  "to_port" = 2811,  "ip_protocol" = "tcp", "cidr" = "54.237.254.192/29" },
-  myproxy = { "from_port" = 7512,  "to_port" = 7512,  "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
-  gridftp = { "from_port" = 50000, "to_port" = 51000, "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" }
+  ssh     = { "from_port" = 22,    "to_port" = 22,    "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "public" },
+  http    = { "from_port" = 80,    "to_port" = 80,    "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "proxy" },
+  https   = { "from_port" = 443,   "to_port" = 443,   "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "proxy" },
+  globus  = { "from_port" = 2811,  "to_port" = 2811,  "ip_protocol" = "tcp", "cidr" = "54.237.254.192/29", tag = "dtn" },
+  myproxy = { "from_port" = 7512,  "to_port" = 7512,  "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "dtn" },
+  gridftp = { "from_port" = 50000, "to_port" = 51000, "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "dtn" }
 }
 ```
 
 Defines a map of firewall rules that control external traffic to the public nodes. Each rule is
-defined as a map of four key-value pairs : `from_port`, `to_port`, `ip_protocol` and
-`cidr`. To add new rules, you will have to recopy the preceding list and add rules to it.
+defined as a map of five key-value pairs : `from_port`, `to_port`, `ip_protocol`, `cidr` and `tag`.
+To add new rules, you will have to recopy the preceding list and add rules to it.
 
 **Post build modification effect**: modify the cloud provider firewall rules at next `terraform apply`.
 

@@ -20,7 +20,10 @@ resource "openstack_networking_port_v2" "public_nic" {
   for_each              = module.design.instances
   name                  = format("%s-%s-public-port", var.cluster_name, each.key)
   network_id            = data.openstack_networking_network_v2.ext_network.id
-  security_group_ids    = [openstack_compute_secgroup_v2.secgroup.id]
+  security_group_ids    = [ for tag in each.value.tags:
+    openstack_networking_secgroup_v2.external[tag].id
+    if can(openstack_networking_secgroup_v2.external[tag])
+  ]
 }
 
 locals {

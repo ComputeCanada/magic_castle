@@ -94,37 +94,43 @@ variable "firewall_rules" {
       "from_port"   = 22,
       "to_port"     = 22,
       "ip_protocol" = "tcp",
-      "cidr"        = "0.0.0.0/0"
+      "cidr"        = "0.0.0.0/0",
+      "tag"         = "public"
     },
     http = {
       "from_port"   = 80,
       "to_port"     = 80,
       "ip_protocol" = "tcp",
-      "cidr"        = "0.0.0.0/0"
+      "cidr"        = "0.0.0.0/0",
+      "tag"         = "proxy"
     },
     https = {
       "from_port"   = 443,
       "to_port"     = 443,
       "ip_protocol" = "tcp",
-      "cidr"        = "0.0.0.0/0"
+      "cidr"        = "0.0.0.0/0",
+      "tag"         = "proxy"
     },
     Globus = {
       "from_port"   = 2811,
       "to_port"     = 2811,
       "ip_protocol" = "tcp",
-      "cidr"        = "54.237.254.192/29"
+      "cidr"        = "54.237.254.192/29",
+      "tag"         = "dtn"
     },
     MyProxy = {
       "from_port"   = 7512,
       "to_port"     = 7512,
       "ip_protocol" = "tcp",
-      "cidr"        = "0.0.0.0/0"
+      "cidr"        = "0.0.0.0/0",
+      "tag"         = "dtn"
     },
     GridFTP = {
       "from_port"   = 50000,
       "to_port"     = 51000,
       "ip_protocol" = "tcp",
-      "cidr"        = "0.0.0.0/0"
+      "cidr"        = "0.0.0.0/0",
+      "tag"         = "dtn"
     }
   }
   description = "Map of external firewall rules defined where value is a map of 4 values from_port, to_port, ip_protocol and cidr"
