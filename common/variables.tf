@@ -89,60 +89,45 @@ variable "sudoer_username" {
 }
 
 variable "firewall_rules" {
-  type = list(
-    object({
-      name        = string
-      from_port   = number
-      to_port     = number
-      ip_protocol = string
-      cidr        = string
-    })
-  )
-  default = [
-    {
-      "name"        = "SSH",
+  default = {
+    ssh = {
       "from_port"   = 22,
       "to_port"     = 22,
       "ip_protocol" = "tcp",
       "cidr"        = "0.0.0.0/0"
     },
-    {
-      "name"        = "HTTP",
+    http = {
       "from_port"   = 80,
       "to_port"     = 80,
       "ip_protocol" = "tcp",
       "cidr"        = "0.0.0.0/0"
     },
-    {
-      "name"        = "HTTPS",
+    https = {
       "from_port"   = 443,
       "to_port"     = 443,
       "ip_protocol" = "tcp",
       "cidr"        = "0.0.0.0/0"
     },
-    {
-      "name"        = "Globus",
+    Globus = {
       "from_port"   = 2811,
       "to_port"     = 2811,
       "ip_protocol" = "tcp",
       "cidr"        = "54.237.254.192/29"
     },
-    {
-      "name"        = "MyProxy",
+    MyProxy = {
       "from_port"   = 7512,
       "to_port"     = 7512,
       "ip_protocol" = "tcp",
       "cidr"        = "0.0.0.0/0"
     },
-    {
-      "name"        = "GridFTP",
+    GridFTP = {
       "from_port"   = 50000,
       "to_port"     = 51000,
       "ip_protocol" = "tcp",
       "cidr"        = "0.0.0.0/0"
     }
-  ]
-  description = "List of login external firewall rules defined as map of 5 values name, from_port, to_port, ip_protocol and cidr"
+  }
+  description = "Map of external firewall rules defined where value is a map of 4 values from_port, to_port, ip_protocol and cidr"
 }
 
 variable "generate_ssh_key" {

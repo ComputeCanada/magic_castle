@@ -33,7 +33,7 @@ resource "azurerm_network_security_group" "public" {
     for_each = var.firewall_rules
     iterator = rule
     content {
-      name                       = rule.value.name
+      name                       = rule.key
       priority                   = (100 + rule.value.from_port) % 4096
       direction                  = "Inbound"
       access                     = "Allow"

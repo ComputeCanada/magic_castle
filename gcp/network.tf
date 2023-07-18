@@ -47,17 +47,17 @@ resource "google_compute_firewall" "allow_all_internal" {
 }
 
 resource "google_compute_firewall" "default" {
-  count   = length(var.firewall_rules)
-  name    = format("%s-%s", var.cluster_name, lower(var.firewall_rules[count.index].name))
-  network = google_compute_network.network.self_link
+  for_each = var.firewall_rules
+  name     = format("%s-%s", var.cluster_name, lower(each.key))
+  network  = google_compute_network.network.self_link
 
-  source_ranges = [var.firewall_rules[count.index].cidr]
+  source_ranges = [each.value.cidr]
 
   allow {
-    protocol = var.firewall_rules[count.index].ip_protocol
-    ports = [var.firewall_rules[count.index].from_port != var.firewall_rules[count.index].to_port ?
-      "${var.firewall_rules[count.index].from_port}-${var.firewall_rules[count.index].to_port}" :
-      var.firewall_rules[count.index].from_port
+    protocol = each.value.ip_protocol
+    ports = [each.value.from_port != each.value.to_port ?
+      "${each.value.from_port}-${each.value.to_port}" :
+      each.value.from_port
     ]
   }
 

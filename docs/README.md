@@ -781,18 +781,18 @@ section [10.13 Generate and replace Puppet hieradata encryption keys](#1013-gene
 
 **default value**:
 ```hcl
-[
-  { "name" = "SSH",     "from_port" = 22,    "to_port" = 22,    "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
-  { "name" = "HTTP",    "from_port" = 80,    "to_port" = 80,    "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
-  { "name" = "HTTPS",   "from_port" = 443,   "to_port" = 443,   "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
-  { "name" = "Globus",  "from_port" = 2811,  "to_port" = 2811,  "ip_protocol" = "tcp", "cidr" = "54.237.254.192/29" },
-  { "name" = "MyProxy", "from_port" = 7512,  "to_port" = 7512,  "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
-  { "name" = "GridFTP", "from_port" = 50000, "to_port" = 51000, "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" }
-]
+{
+  ssh     = { "from_port" = 22,    "to_port" = 22,    "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
+  http    = { "from_port" = 80,    "to_port" = 80,    "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
+  https   = { "from_port" = 443,   "to_port" = 443,   "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
+  globus  = { "from_port" = 2811,  "to_port" = 2811,  "ip_protocol" = "tcp", "cidr" = "54.237.254.192/29" },
+  myproxy = { "from_port" = 7512,  "to_port" = 7512,  "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" },
+  gridftp = { "from_port" = 50000, "to_port" = 51000, "ip_protocol" = "tcp", "cidr" = "0.0.0.0/0" }
+}
 ```
 
-Defines a list of firewall rules that control external traffic to the public nodes. Each rule is
-defined as a map of fives key-value pairs : `name`, `from_port`, `to_port`, `ip_protocol` and
+Defines a map of firewall rules that control external traffic to the public nodes. Each rule is
+defined as a map of four key-value pairs : `from_port`, `to_port`, `ip_protocol` and
 `cidr`. To add new rules, you will have to recopy the preceding list and add rules to it.
 
 **Post build modification effect**: modify the cloud provider firewall rules at next `terraform apply`.

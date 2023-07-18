@@ -57,6 +57,7 @@ resource "aws_security_group" "allow_in_services" {
     for_each = var.firewall_rules
     iterator = rule
     content {
+      description = rule.key
       from_port   = rule.value.from_port
       to_port     = rule.value.to_port
       protocol    = rule.value.ip_protocol
