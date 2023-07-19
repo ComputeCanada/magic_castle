@@ -1,10 +1,11 @@
 module "design" {
-  source       = "../common/design"
-  cluster_name = var.cluster_name
-  domain       = var.domain
-  instances    = var.instances
-  pool         = var.pool
-  volumes      = var.volumes
+  source         = "../common/design"
+  cluster_name   = var.cluster_name
+  domain         = var.domain
+  instances      = var.instances
+  pool           = var.pool
+  volumes        = var.volumes
+  firewall_rules = var.firewall_rules
 }
 
 module "configuration" {
@@ -29,7 +30,7 @@ module "configuration" {
 
 module "provision" {
   source          = "../common/provision"
-  bastions        = local.public_instances
+  bastions        = local.bastions
   puppetservers   = module.configuration.puppetservers
   tf_ssh_key      = module.configuration.ssh_key
   terraform_data  = module.configuration.terraform_data
@@ -138,5 +139,9 @@ locals {
   public_instances = { for host in keys(module.design.instances_to_build):
     host => merge(module.configuration.inventory[host], {id=openstack_compute_instance_v2.instances[host].id})
     if contains(module.configuration.inventory[host].tags, "public")
+  }
+  bastions = { for host in keys(module.design.instances_to_build):
+    host => merge(module.configuration.inventory[host], {id=openstack_compute_instance_v2.instances[host].id})
+    if contains(module.configuration.inventory[host].tags, module.design.bastion_tag)
   }
 }

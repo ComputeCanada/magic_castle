@@ -37,6 +37,7 @@ module "acme" {
   domain              = var.domain
   email               = var.email
   sudoer_username     = var.sudoer_username
+  bastions            = var.bastions
   public_instances    = var.public_instances
   ssh_private_key     = var.ssh_private_key
   ssl_tags            = var.ssl_tags

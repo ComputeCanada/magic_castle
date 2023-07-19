@@ -38,4 +38,6 @@ locals {
   ]...)
 
   volume_per_instance = transpose({ for key, value in local.instance_per_volume : key => value["instances"] })
+
+  bastion_tag = element([ for rule, values in var.firewall_rules: values.tag if values.from_port == 22 && values.cidr == "0.0.0.0/0" ], 0)
 }

@@ -33,6 +33,8 @@ variable "ssl_tags" {
 
 variable "public_instances" { }
 
+variable "bastions" { }
+
 variable "ssh_private_key" {
   type = string
 }

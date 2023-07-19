@@ -3,3 +3,4 @@ variable "domain" { }
 variable "instances" { }
 variable "volumes" { }
 variable "pool" { }
+variable "firewall_rules" { }

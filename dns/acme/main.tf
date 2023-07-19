@@ -23,6 +23,8 @@ variable "dns_provider_config" {
 
 variable "ssl_tags" { }
 
+variable "bastions" { }
+
 variable "public_instances" {}
 
 variable "ssh_private_key" {
@@ -57,7 +59,7 @@ resource "acme_certificate" "certificate" {
 }
 
 resource "null_resource" "deploy_certs" {
-  for_each = { for key, values in var.public_instances: key => values if length(setintersection(var.ssl_tags, values.tags)) > 0 }
+  for_each = length(var.bastions) > 0 ? { for key, values in var.public_instances: key => values if length(setintersection(var.ssl_tags, values.tags)) > 0 } : { }
 
   triggers = {
     instance_id    = each.value["id"]
@@ -66,9 +68,13 @@ resource "null_resource" "deploy_certs" {
 
   connection {
     type        = "ssh"
+  
+    bastion_host        = var.bastions[keys(var.bastions)[0]].public_ip
+    bastion_user        = var.sudoer_username
+    bastion_private_key = var.ssh_private_key
+
     user        = var.sudoer_username
-    host        = each.value["public_ip"]
-    host_key    = each.value["hostkeys"]["rsa"]
+    host        = each.value.local_ip
     private_key = var.ssh_private_key
   }
 

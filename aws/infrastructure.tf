@@ -4,12 +4,13 @@ provider "aws" {
 }
 
 module "design" {
-  source       = "../common/design"
-  cluster_name = var.cluster_name
-  domain       = var.domain
-  instances    = var.instances
-  pool         = var.pool
-  volumes      = var.volumes
+  source         = "../common/design"
+  cluster_name   = var.cluster_name
+  domain         = var.domain
+  instances      = var.instances
+  pool           = var.pool
+  volumes        = var.volumes
+  firewall_rules = var.firewall_rules
 }
 
 module "configuration" {
