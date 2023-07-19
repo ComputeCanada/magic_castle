@@ -24,12 +24,6 @@ module "openstack" {
   }
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
-
-  # Magic Castle default firewall rules are too permissive
-  # for this example. The following restricts it to SSH only.
-  firewall_rules = [
-    {"name"="SSH", "from_port"=22, "to_port"=22, "ip_protocol"="tcp", "cidr"="0.0.0.0/0"},
-  ]
 }
 
 output "public_ip" {
