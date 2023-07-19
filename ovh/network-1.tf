@@ -23,11 +23,14 @@ resource "openstack_networking_port_v2" "public_nic" {
   # We concatenate the external tag specific security groups with the
   # cluster global security group to avoid assigning the project
   # default security group when the security group ids list is empty.
-  security_group_ids    = concat([openstack_networking_secgroup_v2.global.id], [
-    for tag in each.value.tags:
-      openstack_networking_secgroup_v2.external[tag].id
-      if can(openstack_networking_secgroup_v2.external[tag])
-  ])
+  security_group_ids    = concat(
+    [
+      openstack_networking_secgroup_v2.global.id
+    ],
+    [
+      for tag, value in openstack_networking_secgroup_v2.external: value.id if contains(each.value.tags, tag)
+    ]
+  )
 }
 
 locals {

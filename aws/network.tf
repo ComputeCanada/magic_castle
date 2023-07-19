@@ -112,7 +112,7 @@ resource "aws_network_interface" "nic" {
       aws_security_group.allow_out_any.id,
     ],
     [
-      for tag in local.sec_groups: aws_security_group.external[tag].id if contains(each.value.tags, tag)
+      for tag, value in aws_security_group.external: value.id if contains(each.value.tags, tag)
     ]
   )
 

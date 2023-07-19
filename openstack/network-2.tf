@@ -59,11 +59,14 @@ resource "openstack_networking_port_v2" "nic" {
   for_each           = module.design.instances
   name               = format("%s-%s-port", var.cluster_name, each.key)
   network_id         = local.network.id
-  security_group_ids = concat([openstack_networking_secgroup_v2.global.id], [
-    for tag in each.value.tags:
-      openstack_networking_secgroup_v2.external[tag].id
-      if can(openstack_networking_secgroup_v2.external[tag])
-  ])
+  security_group_ids = concat(
+    [
+      openstack_networking_secgroup_v2.global.id
+    ],
+    [
+      for tag, value in openstack_networking_secgroup_v2.external: value.id if contains(each.value.tags, tag)
+    ]
+  )
   fixed_ip {
     subnet_id = local.subnet.id
   }
