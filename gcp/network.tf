@@ -61,7 +61,7 @@ resource "google_compute_firewall" "default" {
     ]
   }
 
-  target_tags = ["public"]
+  target_tags = [each.value.tag]
 }
 
 resource "google_compute_address" "nic" {
