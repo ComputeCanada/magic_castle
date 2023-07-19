@@ -65,7 +65,7 @@ resource "aws_security_group" "external" {
       description = rule.key
       from_port   = rule.value.from_port
       to_port     = rule.value.to_port
-      protocol    = rule.value.ip_protocol
+      protocol    = rule.value.protocol
       cidr_blocks = [rule.value.cidr]
     }
   }

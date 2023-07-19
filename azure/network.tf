@@ -48,7 +48,7 @@ resource "azurerm_network_security_group" "external" {
       priority                   = (100 + rule.value.from_port) % 4096
       direction                  = "Inbound"
       access                     = "Allow"
-      protocol                   = title(rule.value.ip_protocol)
+      protocol                   = title(rule.value.protocol)
       source_port_range          = "*"
       destination_port_range     = "${rule.value.from_port}-${rule.value.to_port}"
       source_address_prefix      = "*"

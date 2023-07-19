@@ -47,7 +47,7 @@ resource openstack_networking_secgroup_rule_v2 "rule" {
 
   direction         = "ingress"
   ethertype         = each.value.ethertype
-  protocol          = each.value.ip_protocol
+  protocol          = each.value.protocol
   port_range_min    = each.value.from_port
   port_range_max    = each.value.to_port
   remote_ip_prefix  = each.value.cidr

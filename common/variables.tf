@@ -94,7 +94,7 @@ variable "firewall_rules" {
         from_port   = number
         to_port     = number
         ethertype   = optional(string, "IPv4")
-        ip_protocol = optional(string, "tcp")
+        protocol    = optional(string, "tcp")
         cidr        = optional(string, "0.0.0.0/0")
         tag         = string
       })
@@ -133,7 +133,7 @@ variable "firewall_rules" {
       "tag"         = "dtn"
     }
   }
-  description = "Map of external firewall rules defined where value is an object of 5 values from_port, to_port, ip_protocol, cidr and tag."
+  description = "Map of external firewall rules defined where value is an object of 5 values from_port, to_port, protocol, cidr and tag."
 }
 
 variable "generate_ssh_key" {

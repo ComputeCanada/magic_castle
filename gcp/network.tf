@@ -54,7 +54,7 @@ resource "google_compute_firewall" "default" {
   source_ranges = [each.value.cidr]
 
   allow {
-    protocol = each.value.ip_protocol
+    protocol = each.value.protocol
     ports = [each.value.from_port != each.value.to_port ?
       "${each.value.from_port}-${each.value.to_port}" :
       each.value.from_port
