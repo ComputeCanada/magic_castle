@@ -1,33 +1,33 @@
-resource "openstack_networking_secgroup_v2" "internal" {
+resource "openstack_networking_secgroup_v2" "global" {
   name        = "${var.cluster_name}-secgroup"
-  description = "${var.cluster_name} internal security group"
+  description = "${var.cluster_name} global security group"
 }
 
 resource openstack_networking_secgroup_rule_v2 "icmp" {
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "icmp"
-  description       = "internal icmp"
-  security_group_id = openstack_networking_secgroup_v2.internal.id
-  remote_group_id   = openstack_networking_secgroup_v2.internal.id
+  description       = "internal allow all icmp"
+  security_group_id = openstack_networking_secgroup_v2.global.id
+  remote_group_id   = openstack_networking_secgroup_v2.global.id
 }
 
 resource openstack_networking_secgroup_rule_v2 "tcp" {
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"
-  description       = "internal tcp"
-  security_group_id = openstack_networking_secgroup_v2.internal.id
-  remote_group_id   = openstack_networking_secgroup_v2.internal.id
+  description       = "internal allow all tcp"
+  security_group_id = openstack_networking_secgroup_v2.global.id
+  remote_group_id   = openstack_networking_secgroup_v2.global.id
 }
 
 resource openstack_networking_secgroup_rule_v2 "udp" {
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "udp"
-  description       = "internal udp"
-  security_group_id = openstack_networking_secgroup_v2.internal.id
-  remote_group_id   = openstack_networking_secgroup_v2.internal.id
+  description       = "internal allow all udp"
+  security_group_id = openstack_networking_secgroup_v2.global.id
+  remote_group_id   = openstack_networking_secgroup_v2.global.id
 }
 
 locals {
@@ -59,7 +59,7 @@ resource "openstack_networking_port_v2" "nic" {
   for_each           = module.design.instances
   name               = format("%s-%s-port", var.cluster_name, each.key)
   network_id         = local.network.id
-  security_group_ids = concat([openstack_networking_secgroup_v2.internal.id], [
+  security_group_ids = concat([openstack_networking_secgroup_v2.global.id], [
     for tag in each.value.tags:
       openstack_networking_secgroup_v2.external[tag].id
       if can(openstack_networking_secgroup_v2.external[tag])

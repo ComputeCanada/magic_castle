@@ -20,10 +20,14 @@ resource "openstack_networking_port_v2" "public_nic" {
   for_each              = module.design.instances
   name                  = format("%s-%s-public-port", var.cluster_name, each.key)
   network_id            = data.openstack_networking_network_v2.ext_network.id
-  security_group_ids    = [ for tag in each.value.tags:
-    openstack_networking_secgroup_v2.external[tag].id
-    if can(openstack_networking_secgroup_v2.external[tag])
-  ]
+  # We concatenate the external tag specific security groups with the
+  # cluster global security group to avoid assigning the project
+  # default security group when the security group ids list is empty.
+  security_group_ids    = concat([openstack_networking_secgroup_v2.global.id], [
+    for tag in each.value.tags:
+      openstack_networking_secgroup_v2.external[tag].id
+      if can(openstack_networking_secgroup_v2.external[tag])
+  ])
 }
 
 locals {
