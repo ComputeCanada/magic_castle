@@ -93,47 +93,22 @@ variable "firewall_rules" {
     object({
         from_port   = number
         to_port     = number
+        tag         = string
         ethertype   = optional(string, "IPv4")
         protocol    = optional(string, "tcp")
         cidr        = optional(string, "0.0.0.0/0")
-        tag         = string
       })
   )
 
   default = {
-    ssh = {
-      "from_port"   = 22,
-      "to_port"     = 22,
-      "tag"         = "public"
-    },
-    http = {
-      "from_port"   = 80,
-      "to_port"     = 80,
-      "tag"         = "proxy"
-    },
-    https = {
-      "from_port"   = 443,
-      "to_port"     = 443,
-      "tag"         = "proxy"
-    },
-    Globus = {
-      "from_port"   = 2811,
-      "to_port"     = 2811,
-      "cidr"        = "54.237.254.192/29",
-      "tag"         = "dtn"
-    },
-    MyProxy = {
-      "from_port"   = 7512,
-      "to_port"     = 7512,
-      "tag"         = "dtn"
-    },
-    GridFTP = {
-      "from_port"   = 50000,
-      "to_port"     = 51000,
-      "tag"         = "dtn"
-    }
+    ssh = { "from_port" = 22, "to_port" = 22, "tag"= "public" }
+    http = { "from_port"= 80, "to_port" = 80, "tag" = "proxy" }
+    https = { "from_port" = 443, "to_port" = 443, "tag" = "proxy" }
+    Globus = { "from_port" = 2811, "to_port" = 2811, "cidr" = "54.237.254.192/29", "tag" = "dtn" }
+    MyProxy = { "from_port" = 7512, "to_port" = 7512, "tag" = "dtn" }
+    GridFTP = { "from_port" = 50000, "to_port" = 51000, "tag" = "dtn" }
   }
-  description = "Map of external firewall rules defined where value is an object of 5 values from_port, to_port, protocol, cidr and tag."
+  description = "Map of ingress firewall rules. Rules are defined as object({from_port, to_port, tag, cidr, ethertype, protocol})."
 }
 
 variable "generate_ssh_key" {
