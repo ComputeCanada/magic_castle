@@ -46,7 +46,7 @@ resource openstack_networking_secgroup_rule_v2 "rule" {
   for_each = { for name, rule in var.firewall_rules: name => rule if contains(local.sec_groups, rule.tag) }
 
   direction         = "ingress"
-  ethertype         = "IPv4"
+  ethertype         = each.value.ethertype
   protocol          = each.value.ip_protocol
   port_range_min    = each.value.from_port
   port_range_max    = each.value.to_port
