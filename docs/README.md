@@ -782,7 +782,7 @@ section [10.13 Generate and replace Puppet hieradata encryption keys](#1013-gene
 **default value**:
 ```hcl
 {
-  ssh     = { "from_port" = 22,    "to_port" = 22,    "protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "public" },
+  ssh     = { "from_port" = 22,    "to_port" = 22,    "protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "login" },
   http    = { "from_port" = 80,    "to_port" = 80,    "protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "proxy" },
   https   = { "from_port" = 443,   "to_port" = 443,   "protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "proxy" },
   globus  = { "from_port" = 2811,  "to_port" = 2811,  "protocol" = "tcp", "cidr" = "54.237.254.192/29", tag = "dtn" },

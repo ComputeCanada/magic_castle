@@ -18,6 +18,7 @@ module "configuration" {
   public_keys           = var.public_keys
   volume_devices        = local.volume_devices
   domain_name           = module.design.domain_name
+  bastion_tag           = module.design.bastion_tag
   cluster_name          = var.cluster_name
   guest_passwd          = var.guest_passwd
   nb_users              = var.nb_users
