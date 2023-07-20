@@ -23,6 +23,7 @@ module "configuration" {
   public_keys           = var.public_keys
   volume_devices        = local.volume_devices
   domain_name           = module.design.domain_name
+  bastion_tag           = module.design.bastion_tag
   cluster_name          = var.cluster_name
   guest_passwd          = var.guest_passwd
   nb_users              = var.nb_users
@@ -35,7 +36,7 @@ module "configuration" {
 
 module "provision" {
   source          = "../common/provision"
-  bastions        = local.public_instances
+  bastions        = local.bastions
   puppetservers   = module.configuration.puppetservers
   tf_ssh_key      = module.configuration.ssh_key
   terraform_data  = module.configuration.terraform_data
@@ -213,4 +214,5 @@ locals {
     host => merge(module.configuration.inventory[host], {id=try(!contains(module.configuration.inventory[host].tags, "spot") ? aws_instance.instances[host].id : aws_spot_instance_request.spot_instances[host].spot_instance_id, "")})
     if contains(module.configuration.inventory[host].tags, "public")
   }
+  bastions = { for host, values in local.public_instances: host => values if contains(values.tags, module.design.bastion_tag) }
 }

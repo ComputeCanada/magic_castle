@@ -141,8 +141,5 @@ locals {
     host => merge(module.configuration.inventory[host], {id=openstack_compute_instance_v2.instances[host].id})
     if contains(module.configuration.inventory[host].tags, "public")
   }
-  bastions = { for host in keys(module.design.instances_to_build):
-    host => merge(module.configuration.inventory[host], {id=openstack_compute_instance_v2.instances[host].id})
-    if contains(module.configuration.inventory[host].tags, module.design.bastion_tag)
-  }
+  bastions = { for host, values in local.public_instances: host => values if contains(values.tags, module.design.bastion_tag) }
 }

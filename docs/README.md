@@ -511,10 +511,10 @@ Tags are used in the Terraform code to identify if devices (volume, network) nee
 instance, while in Puppet code tags are used to identify roles of the instances.
 
 Terraform tags:
-- `login`: identify instances that will be pointed by the domain name A record
+- `login`: identify instances accessible with SSH from Internet and be pointed by the domain name A record
 - `pool`: identify instances that will be created only if their hostname appears in the [`var.pool`](#417-pool-optional) list.
-- `proxy`: identify instances that will be pointed by the vhost A records
-- `public`: identify instances that need to have a public ip address and be accessible from the Internet
+- `proxy`: identify instances accessible with HTTP/HTTPS and that will be pointed by the vhost A records
+- `public`: identify instances that need to have a public ip address reachable from Internet
 - `puppet`: identify the instance that will be configured as the main Puppet server
 - `spot`: identify instances that are to be spawned as spot/preemptible instances. This tag is supported in AWS, Azure and GCP and ignored by OpenStack and OVH.
 - `efa`: attach an Elastic Fabric Adapter network interface to the instance. This tag is supported in AWS.
