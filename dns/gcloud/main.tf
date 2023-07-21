@@ -1,3 +1,7 @@
+provider "acme" {
+  server_url = "https://acme-v02.api.letsencrypt.org/directory"
+}
+
 data "google_dns_managed_zone" "domain" {
   name    = var.zone_name
   project = var.project
@@ -28,6 +32,7 @@ resource "google_dns_record_set" "records" {
 }
 
 module "acme" {
+  count               = var.issue_wildcard_cert ? 1 : 0
   source              = "../acme"
   dns_provider        = "gcloud"
   dns_provider_config = {

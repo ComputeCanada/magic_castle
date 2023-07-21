@@ -1,3 +1,7 @@
+provider "acme" {
+  server_url = "https://acme-v02.api.letsencrypt.org/directory"
+}
+
 data "cloudflare_zones" "domain" {
   filter {
     name   = var.domain
@@ -32,6 +36,7 @@ resource "cloudflare_record" "records" {
 }
 
 module "acme" {
+  count            = var.issue_wildcard_cert ? 1 : 0
   source           = "../acme"
   dns_provider     = "cloudflare"
   name             = lower(var.name)
