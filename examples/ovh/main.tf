@@ -57,6 +57,7 @@ output "public_ip" {
 #   email            = "you@example.com"
 #   name             = module.ovh.cluster_name
 #   domain           = module.ovh.domain
+#   bastions         = module.ovh.bastions
 #   public_instances = module.ovh.public_instances
 #   ssh_private_key  = module.ovh.ssh_private_key
 #   sudoer_username  = module.ovh.accounts.sudoer.username
@@ -70,6 +71,7 @@ output "public_ip" {
 #   zone_name        = "you-zone-name"
 #   name             = module.ovh.cluster_name
 #   domain           = module.ovh.domain
+#   bastions         = module.ovh.bastions
 #   public_instances = module.ovh.public_instances
 #   ssh_private_key  = module.ovh.ssh_private_key
 #   sudoer_username  = module.ovh.accounts.sudoer.username
