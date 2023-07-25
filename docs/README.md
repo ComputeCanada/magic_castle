@@ -511,22 +511,23 @@ Tags are used in the Terraform code to identify if devices (volume, network) nee
 instance, while in Puppet code tags are used to identify roles of the instances.
 
 Terraform tags:
-- `login`: identify instances accessible with SSH from Internet and be pointed by the domain name A record
-- `pool`: identify instances that will be created only if their hostname appears in the [`var.pool`](#417-pool-optional) list.
-- `proxy`: identify instances accessible with HTTP/HTTPS and that will be pointed by the vhost A records
+- `login`: identify instances accessible with SSH from Internet and pointed by the domain name A records
+- `pool`: identify instances created only when their hostname appears in the [`var.pool`](#417-pool-optional) list.
+- `proxy`: identify instances accessible with HTTP/HTTPS and pointed by the vhost A records
 - `public`: identify instances that need to have a public ip address reachable from Internet
-- `puppet`: identify the instance that will be configured as the main Puppet server
-- `spot`: identify instances that are to be spawned as spot/preemptible instances. This tag is supported in AWS, Azure and GCP and ignored by OpenStack and OVH.
+- `puppet`: identify instances configured as Puppet servers
+- `spot`: identify instances that are to be spawned as spot/preemptible instances.
+This tag is supported in AWS, Azure and GCP. It is ignored by OpenStack and OVH.
 - `efa`: attach an Elastic Fabric Adapter network interface to the instance. This tag is supported in AWS.
-- `ssl`: identify instances that will receive a copy of the SSL wildcard certificate for the domain
+- `ssl`: identify instances that receive a copy of the SSL wildcard certificate for the domain
 
 Puppet tags expected by the [puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) environment.
 - `login`: identify a login instance (minimum: 2 CPUs, 2GB RAM)
 - `mgmt`: identify a management instance i.e: FreeIPA server, Slurm controller, Slurm DB (minimum: 2 CPUs, 6GB RAM)
-- `nfs`: identify the instance that will act as an NFS server.
+- `nfs`: identify the instance that acts as an NFS server.
 - `node`: identify a compute node instance (minimum: 1 CPUs, 2GB RAM)
 - `pool`: when combined with `node`, it identifies compute nodes that Slurm can resume/suspend to meet workload demand.
-- `proxy`: identify the instance that will run the Caddy reverse proxy and JupyterHub.
+- `proxy`: identify the instance that executes the Caddy reverse proxy and JupyterHub.
 
 In the Magic Castle Puppet environment, an instance cannot be tagged as `mgmt` and `proxy`.
 
@@ -635,7 +636,7 @@ The instance `server1` will have three volumes attached to it. The volumes tagge
 not created since no instances have the corresponding tag.
 
 To define an infrastructure with no volumes, set the `volumes` variable to an empty map:
-``` hcl
+```hcl
 volumes = {}
 ```
 
@@ -647,9 +648,9 @@ exist following modifications, the volumes will be deleted.
 
 List of SSH public keys that will have access to your cluster sudoer account.
 
-**Note 1**: You will need to add the private key associated with one of the public
-keys to your local authentication agent (i.e: `ssh-add`) because Terraform will
-use this key to copy some configuration files with scp on the cluster. Otherwise,
+**Note 1**: You need to add the private key associated with one of the public
+keys to your local authentication agent (i.e: `ssh-add`) for Terraform to be
+able to copy Puppet configuration files with scp on the cluster. Otherwise,
 Magic Castle can create a key pair for unique to this cluster, see section
 [4.15 - generate_ssh_key (optional)](#415-generate_ssh_key-optional).
 
@@ -782,18 +783,30 @@ section [10.13 Generate and replace Puppet hieradata encryption keys](#1013-gene
 **default value**:
 ```hcl
 {
-  ssh     = { "from_port" = 22,    "to_port" = 22,    "protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "login" },
-  http    = { "from_port" = 80,    "to_port" = 80,    "protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "proxy" },
-  https   = { "from_port" = 443,   "to_port" = 443,   "protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "proxy" },
-  globus  = { "from_port" = 2811,  "to_port" = 2811,  "protocol" = "tcp", "cidr" = "54.237.254.192/29", tag = "dtn" },
-  myproxy = { "from_port" = 7512,  "to_port" = 7512,  "protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "dtn" },
-  gridftp = { "from_port" = 50000, "to_port" = 51000, "protocol" = "tcp", "cidr" = "0.0.0.0/0", tag = "dtn" }
+  ssh     = { "from_port" = 22,    "to_port" = 22,    tag = "login", "protocol" = "tcp", "cidr" = "0.0.0.0/0" },
+  http    = { "from_port" = 80,    "to_port" = 80,    tag = "proxy", "protocol" = "tcp", "cidr" = "0.0.0.0/0" },
+  https   = { "from_port" = 443,   "to_port" = 443,   tag = "proxy", "protocol" = "tcp", "cidr" = "0.0.0.0/0" },
+  globus  = { "from_port" = 2811,  "to_port" = 2811,  tag = "dtn",   "protocol" = "tcp", "cidr" = "54.237.254.192/29" },
+  myproxy = { "from_port" = 7512,  "to_port" = 7512,  tag = "dtn",   "protocol" = "tcp", "cidr" = "0.0.0.0/0" },
+  gridftp = { "from_port" = 50000, "to_port" = 51000, tag = "dtn",   "protocol" = "tcp", "cidr" = "0.0.0.0/0" }
 }
 ```
 
 Defines a map of firewall rules that control external traffic to the public nodes. Each rule is
-defined as a map of five key-value pairs : `from_port`, `to_port`, `protocol`, `cidr` and `tag`.
-To add new rules, you will have to recopy the preceding list and add rules to it.
+defined as a map of key-value pairs and has to be assigned a unique name:
+- `from_port` (req.):  the lower part of the allowed port range, valid integer value needs to be between 1 and 65535.
+- `to_port` (req.): the higher part of the allowed port range, valid integer value needs to be between 1 and 65535.
+- `tag` (req.): instances with this tag will be assigned this firewall rule.
+- `ethertype` (opt. default: `"IPv4"`): the layer 3 protocol type (`"IPv4"` or `"IPv6"`).
+- `protocol` (opt. default: `"tcp"`): the layer 4 protocol type.
+- `cidr` (opt. default: `"0.0.0.0/0"`): the remote CIDR, the value needs to be a valid CIDR (i.e. `192.168.0.0/16`).
+
+If you would like Magic Castle to be able to transfer files and update the state of the cluster in Puppet, make
+sure there exists at least one effective firewall rule where `from_port <= 22 <= to_port` and for which the external
+IP address of the machine that executes Terraform is in the CIDR range (i.e: `cidr = "0.0.0.0/0"` being the most
+permissive). This corresponds to the `ssh` rule in the default firewall rule map.
+This guarantees that Terraform will be able to use SSH to connect to the cluster from anywhere. For more information
+about this requirement, refer to Magic Castle's [bastion tag computation code](../common/design/main.tf#L42).
 
 **Post build modification effect**: modify the cloud provider firewall rules at next `terraform apply`.
 
@@ -897,8 +910,6 @@ Defines the label of the Azure location where the cluster will be created (i.e.:
 use Azure CLI : `az account list-locations -o table`.
 
 **Post build modification effect**: rebuild of all resources at next `terraform apply`.
-
-**Post build modification effect**: rebuild of all instances and disks at next `terraform apply`.
 
 #### 5.2.2 azure_resource_group (optional)
 
@@ -1386,14 +1397,14 @@ and the new accounts will be created.
 
 ### 10.5 Restrict SSH Access
 
-By default, port 22 of the instances tagged `public` is reachable by the world.
+By default, instances tagged `login` have their port 22 opened to entire world.
 If you know the range of ip addresses that will connect to your cluster,
 we strongly recommend that you limit the access to port 22 to this range.
 
-To limit the access to port 22, refer to
-[section 4.14 firewall_rules](#414-firewall_rules-optional), and replace
-the `cidr` of the `SSH` rule to match the range of ip addresses that
-have be the allowed to connect to the cluster.
+To limit the access to port 22, refer to [section 4.14 firewall_rules](#414-firewall_rules-optional),
+and replace the `cidr` of the `ssh` rule to match the range of ip addresses that
+have be the allowed to connect to the cluster. If there are more than one range, create multiple rules
+with distinct names.
 
 ### 10.6 Add Packages to Jupyter Default Python Kernel
 
