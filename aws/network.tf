@@ -62,11 +62,12 @@ resource "aws_security_group" "external" {
     for_each = { for name, values in var.firewall_rules: name => values if values.tag == each.value }
     iterator = rule
     content {
-      description = rule.key
-      from_port   = rule.value.from_port
-      to_port     = rule.value.to_port
-      protocol    = rule.value.protocol
-      cidr_blocks = [rule.value.cidr]
+      description      = rule.key
+      from_port        = rule.value.from_port
+      to_port          = rule.value.to_port
+      protocol         = rule.value.protocol
+      cidr_blocks      = rule.value.ethertype == "IPv4" ? [rule.value.cidr] : null
+      ipv6_cidr_blocks = rule.value.ethertype == "IPv6" ? [rule.value.cidr] : null
     }
   }
 
