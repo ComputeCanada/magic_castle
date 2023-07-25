@@ -1094,7 +1094,7 @@ module "dns" {
     source           = "./dns/txt"
     name             = module.openstack.cluster_name
     domain           = module.openstack.domain
-    public_ip        = module.openstack.ip
+    public_instances = module.openstack.public_instances
 }
 ```
 
