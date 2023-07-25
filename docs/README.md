@@ -1026,32 +1026,31 @@ find it automatically. Can be used to force a v4 subnet when both v4 and v6 exis
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
-## 6. DNS Configuration and SSL Certificates
+## 6. DNS Configuration and Wildcard SSL Certificate
 
 Some functionalities in Magic Castle require the registration of DNS records under the
 [cluster name](#44-cluster_name) in the selected [domain](#45-domain). This includes
-web services like JupyterHub, Globus and FreeIPA web portal.
+web services like JupyterHub, Mokey and FreeIPA web portal.
 
 If your domain DNS records are managed by one of the supported providers,
-follow the instructions in the corresponding sections to have the DNS records and SSL
-certificates managed by Magic Castle.
+follow the instructions in the corresponding sections to have the cluster's
+DNS records created and tracked by Magic Castle.
 
-If your DNS provider is not supported, you can manually create the DNS records and
-generate the SSL certificates. Refer to the last subsection for more details.
+If your DNS provider is not supported, you can manually create the records.
+Refer to the last subsection for more details.
 
-**Requirement**: A private key associated with one of the
-[public keys](#49-public_keys) needs to be tracked (i.e: `ssh-add`) by the local
-[authentication agent](https://www.ssh.com/ssh/agent) (i.e: `ssh-agent`).
-This module uses the ssh-agent tracked SSH keys to authenticate and
-to copy SSL certificate files to the proxy nodes after their creation.
+Optionally, Magic Castle can issue with [Let's encrypt DNS-01 challenge](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge)
+a wildcard certificate of the form `*.${cluster_name}.${domain_name}`. Refer to
+the last subsection for more information. If no wildcard certificate is issued,
+the reverse proxy server Caddy will automatically issue one certificate per virtual
+host.
 
 ### 6.1 Cloudflare
 
 1. Uncomment the `dns` module for Cloudflare in your `main.tf`.
 2. Uncomment the `output "hostnames"` block.
-3. In the `dns` module, configure the variable `email` with your email address. This will be used to generate the Let's Encrypt certificate.
-4. Download and install the Cloudflare Terraform module: `terraform init`.
-5. Export the environment variables `CLOUDFLARE_EMAIL` and `CLOUDFLARE_API_KEY`, where `CLOUDFLARE_EMAIL` is your Cloudflare account email address and `CLOUDFLARE_API_KEY` is your account Global API Key available in your [Cloudflare profile](https://dash.cloudflare.com/profile/api-tokens).
+3. Download and install the Cloudflare Terraform module: `terraform init`.
+4. Export the environment variables `CLOUDFLARE_EMAIL` and `CLOUDFLARE_API_KEY`, where `CLOUDFLARE_EMAIL` is your Cloudflare account email address and `CLOUDFLARE_API_KEY` is your account Global API Key available in your [Cloudflare profile](https://dash.cloudflare.com/profile/api-tokens).
 
 #### 6.1.2 Cloudflare API Token
 
@@ -1073,17 +1072,13 @@ Instead of step 5, export only `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ZONE_API_TOKE
 1. Login to your Google account with gcloud CLI : `gcloud auth application-default login`
 2. Uncomment the `dns` module for Google Cloud in your `main.tf`.
 3. Uncomment the `output "hostnames"` block.
-4. In `main.tf`'s `dns` module, configure the variable `email` with your email address. This will be used to generate the Let's Encrypt certificate.
-5. In `main.tf`'s `dns` module, configure the variables `project` and `zone_name`
+4. In `main.tf`'s `dns` module, configure the variables `project` and `zone_name`
 with their respective values as defined by your Google Cloud project.
-6. Download and install the Google Cloud Terraform module: `terraform init`.
+5. Download and install the Google Cloud Terraform module: `terraform init`.
 
 ### 6.3 Unsupported providers
 
-If your DNS provider is not currently supported by Magic Castle, you can create the DNS records
-and the SSL certificates manually.
-
-#### 6.3.1 DNS Records
+If your DNS provider is not currently supported by Magic Castle, you can create the DNS records manually.
 
 Magic Castle provides a module that creates a text file with the DNS records that can
 then be imported manually in your DNS zone. To use this module, add the following
@@ -1104,21 +1099,20 @@ if not OpenStack (i.e: `aws`, `gcp`, etc.).
 The file will be created after the `terraform apply` in the same folder as your `main.tf`
 and will be named as `${name}.${domain}.txt`.
 
-#### 6.3.2 SSL Certificates
+### 6.4 Wildcard SSL Certificate
 
-Magic Castle generates with Let's Encrypt a wildcard certificate for `*.cluster_name.domain`.
-You can use [certbot](https://certbot.eff.org/docs/using.html#dns-plugins) DNS challenge
-plugin to generate the wildcard certificate.
+**Requirement**: A private key associated with one of the
+[public keys](#49-public_keys) needs to be tracked (i.e: `ssh-add`) by the local
+[authentication agent](https://www.ssh.com/ssh/agent) (i.e: `ssh-agent`).
+This module uses the ssh-agent tracked SSH keys to authenticate and
+to copy SSL certificate files to the proxy nodes after their creation.
 
-You will then need to copy the certificate files in the proper location on each login node.
-The reverse proxy configuration expects the following files to exist:
-- `/etc/letsencrypt/live/${domain_name}/fullchain.pem`
-- `/etc/letsencrypt/live/${domain_name}/privkey.pem`
-- `/etc/letsencrypt/live/${domain_name}/chain.pem`
+To issue a wildcard SSL certificate with Magic Castle, modify the dns module call
+in your `main.tf` like this:
+1. add the input: `issue_wildcard_cert = true`
+2. add the input: `email = "replace.by@your.email"`
 
-Refer to the [reverse proxy configuration](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/reverse_proxy.pp) for more details.
-
-### 6.4 ACME Account Private Key
+#### 6.4.1 ACME Account Private Key
 
 To create the wildcard SSL certificate associated with the domain name, Magic Castle
 creates a private key and register a new ACME account with this key. This account
@@ -1129,7 +1123,7 @@ If you plan to create more than 10 clusters per 3 hours, we recommend registerin
 ACME account first and then provide its private key in PEM format to Magic Castle DNS
 module, using the `acme_key_pem` variable.
 
-#### 6.4.1 How to Generate an ACME Account Private Key
+##### How to Generate an ACME Account Private Key
 
 In a separate folder, create a file with the following content
 ```hcl
@@ -1176,6 +1170,19 @@ variable to the DNS module in your `main.tf`:
 acme_key_pem = file("path/to/your/acme_key.pem")
 ```
 
+#### 6.4.2 Issuing the wildcard SSL certificate manually
+
+Magic Castle generates with Let's Encrypt a wildcard certificate for `*.cluster_name.domain`.
+You can use [certbot](https://certbot.eff.org/docs/using.html#dns-plugins) DNS-01 challenge
+plugin to generate the wildcard certificate.
+
+You will then need to copy the certificate files in the proper location on each proxy node.
+The reverse proxy configuration expects the following files to exist:
+- `/etc/letsencrypt/live/${domain_name}/fullchain.pem`
+- `/etc/letsencrypt/live/${domain_name}/privkey.pem`
+- `/etc/letsencrypt/live/${domain_name}/chain.pem`
+
+Refer to the [reverse proxy configuration](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/reverse_proxy.pp) for more details.
 
 ## 7. Planning
 
