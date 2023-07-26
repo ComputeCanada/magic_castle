@@ -38,6 +38,7 @@ module "provision" {
   terraform_facts = module.configuration.terraform_facts
   hieradata       = var.hieradata
   sudoer_username = var.sudoer_username
+  depends_on      = [local.network_provision_dep]
 }
 
 data "openstack_images_image_v2" "image" {

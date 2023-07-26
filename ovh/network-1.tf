@@ -45,4 +45,5 @@ locals {
     access_network = true,
     name           = data.openstack_networking_network_v2.ext_network.name
   }]
+  network_provision_dep = openstack_compute_instance_v2.instances
 }
