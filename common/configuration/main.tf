@@ -160,3 +160,10 @@ output "ssh_key" {
     private = try(tls_private_key.ssh[0].private_key_pem, null)
   }
 }
+
+output "bastions" {
+  value = {
+    for host, values in var.inventory: host => values
+    if contains(values.tags, var.bastion_tag) && contains(values.tags, "public") &&  (!contains(values.tags, "pool"))
+  }
+}

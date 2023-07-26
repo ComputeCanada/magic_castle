@@ -36,7 +36,7 @@ module "configuration" {
 
 module "provision" {
   source          = "../common/provision"
-  bastions        = local.bastions
+  bastions        = module.configuration.bastions
   puppetservers   = module.configuration.puppetservers
   tf_ssh_key      = module.configuration.ssh_key
   terraform_data  = module.configuration.terraform_data
@@ -177,5 +177,4 @@ locals {
     host => merge(module.configuration.inventory[host], {id=try(azurerm_linux_virtual_machine.instances[host].id, "")})
     if contains(module.configuration.inventory[host].tags, "public")
   }
-  bastions = { for host, values in local.public_instances: host => values if contains(values.tags, module.design.bastion_tag) }
 }

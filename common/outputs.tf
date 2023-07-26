@@ -3,7 +3,7 @@ output "public_instances" {
 }
 
 output "bastions" {
-  value = local.bastions
+  value = module.configuration.bastions
 }
 
 output "public_ip" {
