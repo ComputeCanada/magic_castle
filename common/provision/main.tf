@@ -6,7 +6,7 @@ variable "hieradata" { }
 variable "sudoer_username" { }
 variable "tf_ssh_key" { }
 
-resource "null_resource" "deploy_hieradata" {
+resource "terraform_data" "deploy_hieradata" {
   for_each = length(var.bastions) > 0  ? var.puppetservers : { }
 
   connection {
@@ -19,7 +19,7 @@ resource "null_resource" "deploy_hieradata" {
     private_key         = var.tf_ssh_key.private
   }
 
-  triggers = {
+  triggers_replace = {
     user_data      = md5(var.hieradata)
     terraform_data = md5(var.terraform_data)
     facts          = md5(var.terraform_facts)

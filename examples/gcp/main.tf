@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.2.1"
+  required_version = ">= 1.4.0"
 }
 
 variable "pool" {
@@ -68,6 +68,7 @@ output "public_ip" {
 #   email            = "you@example.com"
 #   name             = module.gcp.cluster_name
 #   domain           = module.gcp.domain
+#   bastions         = module.gcp.bastions
 #   public_instances = module.gcp.public_instances
 #   ssh_private_key  = module.gcp.ssh_private_key
 #   sudoer_username  = module.gcp.accounts.sudoer.username
@@ -81,6 +82,7 @@ output "public_ip" {
 #   zone_name        = "you-zone-name"
 #   name             = module.gcp.cluster_name
 #   domain           = module.gcp.domain
+#   bastions         = module.gcp.bastions
 #   public_instances = module.gcp.public_instances
 #   ssh_private_key  = module.gcp.ssh_private_key
 #   sudoer_username  = module.gcp.accounts.sudoer.username

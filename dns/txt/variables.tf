@@ -6,9 +6,18 @@ variable "domain" {
 
 variable "public_instances" { }
 
-variable "rsa_public_key" {
+variable "domain_tag" {
+  description = "Indicate which tag the instances that will be pointed by the domain name A record has to have."
+  default     = "login"
 }
 
-variable "domain_tag" { }
+variable "vhost_tag" {
+  description = "Indicate which tag the instances that will be pointed by the vhost A record has to have."
+  default = "proxy"
+}
 
-variable "vhost_tag" { }
+variable "vhosts" {
+  description = "List of vhost records A to create."
+  type    = list(string)
+  default = ["ipa", "jupyter", "mokey", "explore"]
+}

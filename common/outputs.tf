@@ -2,6 +2,10 @@ output "public_instances" {
   value = local.public_instances
 }
 
+output "bastions" {
+  value = module.configuration.bastions
+}
+
 output "public_ip" {
   value = {
     for key, values in local.public_instances: key => values["public_ip"]

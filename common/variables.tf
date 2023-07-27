@@ -89,60 +89,26 @@ variable "sudoer_username" {
 }
 
 variable "firewall_rules" {
-  type = list(
+  type = map(
     object({
-      name        = string
-      from_port   = number
-      to_port     = number
-      ip_protocol = string
-      cidr        = string
-    })
+        from_port   = number
+        to_port     = number
+        tag         = string
+        ethertype   = optional(string, "IPv4")
+        protocol    = optional(string, "tcp")
+        cidr        = optional(string, "0.0.0.0/0")
+      })
   )
-  default = [
-    {
-      "name"        = "SSH",
-      "from_port"   = 22,
-      "to_port"     = 22,
-      "ip_protocol" = "tcp",
-      "cidr"        = "0.0.0.0/0"
-    },
-    {
-      "name"        = "HTTP",
-      "from_port"   = 80,
-      "to_port"     = 80,
-      "ip_protocol" = "tcp",
-      "cidr"        = "0.0.0.0/0"
-    },
-    {
-      "name"        = "HTTPS",
-      "from_port"   = 443,
-      "to_port"     = 443,
-      "ip_protocol" = "tcp",
-      "cidr"        = "0.0.0.0/0"
-    },
-    {
-      "name"        = "Globus",
-      "from_port"   = 2811,
-      "to_port"     = 2811,
-      "ip_protocol" = "tcp",
-      "cidr"        = "54.237.254.192/29"
-    },
-    {
-      "name"        = "MyProxy",
-      "from_port"   = 7512,
-      "to_port"     = 7512,
-      "ip_protocol" = "tcp",
-      "cidr"        = "0.0.0.0/0"
-    },
-    {
-      "name"        = "GridFTP",
-      "from_port"   = 50000,
-      "to_port"     = 51000,
-      "ip_protocol" = "tcp",
-      "cidr"        = "0.0.0.0/0"
-    }
-  ]
-  description = "List of login external firewall rules defined as map of 5 values name, from_port, to_port, ip_protocol and cidr"
+
+  default = {
+    ssh = { "from_port" = 22, "to_port" = 22, "tag"= "login" }
+    http = { "from_port"= 80, "to_port" = 80, "tag" = "proxy" }
+    https = { "from_port" = 443, "to_port" = 443, "tag" = "proxy" }
+    Globus = { "from_port" = 2811, "to_port" = 2811, "cidr" = "54.237.254.192/29", "tag" = "dtn" }
+    MyProxy = { "from_port" = 7512, "to_port" = 7512, "tag" = "dtn" }
+    GridFTP = { "from_port" = 50000, "to_port" = 51000, "tag" = "dtn" }
+  }
+  description = "Map of ingress firewall rules. Rules are defined as object({from_port, to_port, tag, cidr, ethertype, protocol})."
 }
 
 variable "generate_ssh_key" {

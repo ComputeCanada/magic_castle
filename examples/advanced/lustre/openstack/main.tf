@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.2.1"
+  required_version = ">= 1.4.0"
 }
 
 module "openstack" {
@@ -45,6 +45,7 @@ output "sudoer" {
 #   email            = "you@example.com"
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
+#   bastions         = module.openstack.bastions
 #   public_instances = module.openstack.public_instances
 #   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.openstack.accounts.sudoer.username
@@ -58,6 +59,7 @@ output "sudoer" {
 #   zone_name        = "you-zone-name"
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
+#   bastions         = module.openstack.bastions
 #   public_instances = module.openstack.public_instances
 #   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.openstack.accounts.sudoer.username

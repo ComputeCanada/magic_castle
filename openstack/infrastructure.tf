@@ -1,10 +1,11 @@
 module "design" {
-  source       = "../common/design"
-  cluster_name = var.cluster_name
-  domain       = var.domain
-  instances    = var.instances
-  pool         = var.pool
-  volumes      = var.volumes
+  source         = "../common/design"
+  cluster_name   = var.cluster_name
+  domain         = var.domain
+  instances      = var.instances
+  pool           = var.pool
+  volumes        = var.volumes
+  firewall_rules = var.firewall_rules
 }
 
 module "configuration" {
@@ -17,6 +18,7 @@ module "configuration" {
   public_keys           = var.public_keys
   volume_devices        = local.volume_devices
   domain_name           = module.design.domain_name
+  bastion_tag           = module.design.bastion_tag
   cluster_name          = var.cluster_name
   guest_passwd          = var.guest_passwd
   nb_users              = var.nb_users
@@ -29,13 +31,14 @@ module "configuration" {
 
 module "provision" {
   source          = "../common/provision"
-  bastions        = local.public_instances
+  bastions        = module.configuration.bastions
   puppetservers   = module.configuration.puppetservers
   tf_ssh_key      = module.configuration.ssh_key
   terraform_data  = module.configuration.terraform_data
   terraform_facts = module.configuration.terraform_facts
   hieradata       = var.hieradata
   sudoer_username = var.sudoer_username
+  depends_on      = [local.network_provision_dep]
 }
 
 data "openstack_images_image_v2" "image" {

@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.2.1"
+  required_version = ">= 1.4.0"
 }
 
 module "openstack" {
@@ -24,12 +24,6 @@ module "openstack" {
   }
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
-
-  # Magic Castle default firewall rules are too permissive
-  # for this example. The following restricts it to SSH only.
-  firewall_rules = [
-    {"name"="SSH", "from_port"=22, "to_port"=22, "ip_protocol"="tcp", "cidr"="0.0.0.0/0"},
-  ]
 }
 
 output "public_ip" {
@@ -42,6 +36,7 @@ output "public_ip" {
 #   email            = "you@example.com"
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
+#   bastions         = module.openstack.bastions
 #   public_instances = module.openstack.public_instances
 #   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.openstack.accounts.sudoer.username
@@ -55,6 +50,7 @@ output "public_ip" {
 #   zone_name        = "you-zone-name"
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
+#   bastions         = module.openstack.bastions
 #   public_instances = module.openstack.public_instances
 #   ssh_private_key  = module.openstack.ssh_private_key
 #   sudoer_username  = module.openstack.accounts.sudoer.username

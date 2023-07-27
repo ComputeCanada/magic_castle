@@ -47,25 +47,32 @@ resource "aws_security_group" "allow_out_any" {
   }
 }
 
-resource "aws_security_group" "allow_in_services" {
-  name = "allow_in_services"
+locals {
+  all_tags   = toset(flatten([ for key, value in module.design.instances: value.tags ]))
+  sec_groups = toset([ for name, rule in var.firewall_rules: rule.tag if contains(local.all_tags, rule.tag) ])
+}
 
-  description = "Allows services traffic into login nodes"
+resource "aws_security_group" "external" {
+  for_each    = local.sec_groups
+  name        = "${var.cluster_name}-secgroup-${each.key}"
+  description = "${var.cluster_name} external security group for ${each.key} instances"
   vpc_id      = aws_vpc.network.id
 
   dynamic "ingress" {
-    for_each = var.firewall_rules
+    for_each = { for name, values in var.firewall_rules: name => values if values.tag == each.value }
     iterator = rule
     content {
-      from_port   = rule.value.from_port
-      to_port     = rule.value.to_port
-      protocol    = rule.value.ip_protocol
-      cidr_blocks = [rule.value.cidr]
+      description      = rule.key
+      from_port        = rule.value.from_port
+      to_port          = rule.value.to_port
+      protocol         = rule.value.protocol
+      cidr_blocks      = rule.value.ethertype == "IPv4" ? [rule.value.cidr] : null
+      ipv6_cidr_blocks = rule.value.ethertype == "IPv6" ? [rule.value.cidr] : null
     }
   }
 
   tags = {
-    Name = "${var.cluster_name}-allow_in_services"
+    Name = "${var.cluster_name}-secgroup-${each.key}"
   }
 }
 
@@ -105,7 +112,9 @@ resource "aws_network_interface" "nic" {
       aws_security_group.allow_any_inside_vpc.id,
       aws_security_group.allow_out_any.id,
     ],
-    contains(each.value["tags"], "public") ? [aws_security_group.allow_in_services.id] : []
+    [
+      for tag, value in aws_security_group.external: value.id if contains(each.value.tags, tag)
+    ]
   )
 
   tags = {

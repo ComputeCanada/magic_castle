@@ -37,4 +37,5 @@ locals {
     if contains(values.tags, "public") && !contains(keys(var.os_floating_ips), x) }
   )
   ext_networks = []
+  network_provision_dep = openstack_compute_floatingip_associate_v2.fip
 }

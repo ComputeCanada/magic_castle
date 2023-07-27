@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.2.1"
+  required_version = ">= 1.4.0"
 }
 
 module "aws" {
@@ -54,6 +54,7 @@ output "public_ip" {
 #   email            = "you@example.com"
 #   name             = module.aws.cluster_name
 #   domain           = module.aws.domain
+#   bastions         = module.aws.bastions
 #   public_instances = module.aws.public_instances
 #   ssh_private_key  = module.aws.ssh_private_key
 #   sudoer_username  = module.aws.accounts.sudoer.username
@@ -67,6 +68,7 @@ output "public_ip" {
 #   zone_name        = "you-zone-name"
 #   name             = module.aws.cluster_name
 #   domain           = module.aws.domain
+#   bastions         = module.aws.bastions
 #   public_instances = module.aws.public_instances
 #   ssh_private_key  = module.aws.ssh_private_key
 #   sudoer_username  = module.aws.accounts.sudoer.username

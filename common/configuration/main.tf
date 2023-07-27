@@ -18,6 +18,7 @@ variable "public_keys" { }
 
 variable "skip_upgrade" { }
 variable "puppetfile" { }
+variable "bastion_tag" { }
 
 resource "tls_private_key" "ssh" {
   count     = var.generate_ssh_key ? 1 : 0
@@ -108,7 +109,7 @@ locals {
         # If there is no bastion, the terraform data has to be packed with the user_data of the puppetserver.
         # We do not packed it systematically because it increases the user-data size to a value that can be
         # near or exceeds the cloud provider limit - AWS 16KB, Azure and OpenStack 64KB, GCP 256 KB.
-        include_tf_data       = ! contains(local.all_tags, "public")
+        include_tf_data       = ! contains(local.all_tags, var.bastion_tag)
         terraform_data        = local.terraform_data
         terraform_facts       = local.terraform_facts
         skip_upgrade          = var.skip_upgrade
@@ -157,5 +158,12 @@ output "ssh_key" {
   value = {
     public  = try("${chomp(tls_private_key.ssh[0].public_key_openssh)} terraform@localhost", null)
     private = try(tls_private_key.ssh[0].private_key_pem, null)
+  }
+}
+
+output "bastions" {
+  value = {
+    for host, values in var.inventory: host => values
+    if contains(values.tags, var.bastion_tag) && contains(values.tags, "public") &&  (!contains(values.tags, "pool"))
   }
 }
