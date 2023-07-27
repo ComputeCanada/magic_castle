@@ -4,9 +4,6 @@ terraform {
     acme = {
       source = "vancluever/acme"
     }
-    null = {
-      source = "hashicorp/null"
-    }
     tls = {
       source = "hashicorp/tls"
     }

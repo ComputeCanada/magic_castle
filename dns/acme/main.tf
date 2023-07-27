@@ -58,10 +58,10 @@ resource "acme_certificate" "certificate" {
   }
 }
 
-resource "null_resource" "deploy_certs" {
+resource "terraform_data" "deploy_certs" {
   for_each = length(var.bastions) > 0 ? { for key, values in var.public_instances: key => values if length(setintersection(var.ssl_tags, values.tags)) > 0 } : { }
 
-  triggers = {
+  triggers_replace = {
     instance_id    = each.value["id"]
     certificate_id = acme_certificate.certificate.id
   }
