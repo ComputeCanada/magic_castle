@@ -5,5 +5,14 @@ terraform {
     cloudflare = {
       source = "cloudflare/cloudflare"
     }
+    acme = {
+      source = "vancluever/acme"
+    }
+    null = {
+      source = "hashicorp/null"
+    }
+    tls = {
+      source = "hashicorp/tls"
+    }
   }
 }

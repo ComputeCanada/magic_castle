@@ -51,7 +51,6 @@ output "public_ip" {
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
-#   email            = "you@example.com"
 #   name             = module.gcp.cluster_name
 #   domain           = module.gcp.domain
 #   bastions         = module.gcp.bastions
@@ -63,7 +62,6 @@ output "public_ip" {
 ## Uncomment to register your domain name with Google Cloud
 # module "dns" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/gcloud"
-#   email            = "you@example.com"
 #   project          = "your-project-id"
 #   zone_name        = "you-zone-name"
 #   name             = module.gcp.cluster_name
