@@ -347,8 +347,14 @@ develop new features for Magic Castle, fork the [ComputeCanada/puppet-magic_cast
 your fork's URL. For more information on Magic Castle puppet configuration
 customization, refer to [MC developer documentation](developers.md).
 
-**Requirement**: Must be valid HTTPS URL to a git repository describing a
-Puppet environment compatible with [Magic Castle](developers.md).
+**Requirement**: Must be a valid HTTPS URL to a git repository describing a
+Puppet environment compatible with [Magic Castle](developers.md). If the repo
+is private, generate an access token with a permission to read the repo content,
+and provide the token in the `config_git_url` like this:
+```
+config_git_url = "https://oauth2:${oauth-key-goes-here}@domain.com/username/repo.git"
+```
+This works for GitHub and GitLab (including community edition).
 
 **Post build modification effect**: no effect. To change the Puppet configuration source,
 destroy the cluster or change it manually on the Puppet server.
