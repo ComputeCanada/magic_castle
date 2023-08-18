@@ -124,21 +124,13 @@ the values of the variable from the provider.
 
 #### CloudFlare
 
-You need to define these environment variables:
-- `CLOUDFLARE_EMAIL`
-- `CLOUDFLARE_API_KEY` (sensitive)
-
-If you prefer using an API token instead of the global API key, you
-need to define these environment variables instead:
-- `CLOUDFLARE_API_TOKEN` (sensitive)
-- `CLOUDFLARE_ZONE_API_TOKEN` (sensitive)
-- `CLOUDFLARE_ZONE_DNS_TOKEN` (sensitive)
+Refer to [CloudFlare](README.md#61-cloudflare) section of Magic Castle main documentation
+to determine which environment variables needs to be set.
 
 #### Google Cloud DNS
 
-Refer to [Google Cloud](#google-cloud) section under
-Providing cloud provider credentials to Terraform Cloud. Make sure the
-Google Cloud service account can modify your DNS zone.
+Refer to [CloudFlare](README.md#62-google-cloud) section of Magic Castle main documentation
+to determine which environment variables needs to be set.
 
 ### Managing Magic Castle variables with Terraform Cloud UI
 

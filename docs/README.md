@@ -7,7 +7,7 @@
 3. [Initialization](#3-initialization)
 4. [Configuration](#4-configuration)
 5. [Cloud Specific Configuration](#5-cloud-specific-configuration)
-6. [DNS Configuration and SSL Certificates](#6-dns-configuration-and-ssl-certificates)
+6. [DNS Configuration and SSL Certificates](#6-dns-configuration-and-wildcard-ssl-certificate)
 7. [Planning](#7-planning)
 8. [Deployment](#8-deployment)
 9. [Destruction](#9-destruction)
