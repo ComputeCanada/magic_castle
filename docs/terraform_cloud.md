@@ -124,12 +124,12 @@ the values of the variable from the provider.
 
 #### CloudFlare
 
-Refer to [CloudFlare](README.md#61-cloudflare) section of Magic Castle main documentation
+Refer to DNS - [CloudFlare](README.md#61-cloudflare) section of Magic Castle main documentation
 to determine which environment variables needs to be set.
 
 #### Google Cloud DNS
 
-Refer to [CloudFlare](README.md#62-google-cloud) section of Magic Castle main documentation
+Refer to DNS - [Google Cloud](README.md#62-google-cloud) section of Magic Castle main documentation
 to determine which environment variables needs to be set.
 
 ### Managing Magic Castle variables with Terraform Cloud UI
