@@ -945,11 +945,11 @@ Purchase plan information for Azure Marketplace image. Certain images from Azure
 requires a terms acceptance or a fee to be used. When using this kind of image, you must supply
 the plan details.
 
-For example, to use the official [AlmaLinux image](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/almalinux.almalinux), you have to first add it to your
+For example, to use the official [AlmaLinux image](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/almalinux.almalinux-x86_64?tab=Overview), you have to first add it to your
 account. Then to use it with Magic Castle, you must supply the following plan information:
 ```
 plan = {
-  name      = "8_5"
+  name      = "8_7"
   product   = "almalinux"
   publisher = "almalinux"
 }
