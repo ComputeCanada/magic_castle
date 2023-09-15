@@ -433,8 +433,8 @@ right ID for the region and CPU architecture you are using (i.e: x86_64).
 
 To find out which AMI ID you need to use, refer to
 - [AlmaLinux OS Amazon Web Services AMIs](https://wiki.almalinux.org/cloud/AWS.html#community-amis)
-- [CentOS list of official images available on the AWS Marketplace](https://wiki.centos.org/Cloud/AWS#Official_and_current_CentOS_Public_Images)
-- [Rocky Linux]()
+- [CentOS list of official images available on the AWS Marketplace](https://www.centos.org/download/aws-images/)
+- [Rocky Linux](https://rockylinux.org/cloud-images/)
 
 **Note**: Before you can use the AMI, you will need to accept the usage terms
 and subscribe to the image on AWS Marketplace. On your first deployment,
