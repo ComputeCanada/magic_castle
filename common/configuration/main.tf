@@ -97,6 +97,7 @@ locals {
     for key, values in var.inventory : key =>
     templatefile("${path.module}/puppet.yaml",
       {
+        cloud_provider        = var.cloud_provider
         tags                  = values.tags
         node_name             = key,
         domain_name           = var.domain_name

@@ -89,8 +89,6 @@ runcmd:
 # Wait for Terraform to scp its YAML data
   - while [ ! -e "/etc/puppetlabs/data/terraform_data.yaml" ]; do echo "$(date -I'seconds') Waiting for terraform to scp terraform_data.yaml"; sleep 5; done
   - "(cd /etc/puppetlabs/code/environments/production/ && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
-# Bootstrap services that are essential to the puppet repo
-  - (cd /etc/puppetlabs/code/environments/production; test -e bootstrap.sh && ./bootstrap.sh)
 %{ if node_name != keys(puppetservers)[0] }
   - sed -e '/certificate-authority-service/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
   - sed -e '/certificate-authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
@@ -117,6 +115,17 @@ runcmd:
   - "(tar xf aws-efa-installer-latest.tar.gz && cd aws-efa-installer && ./efa_installer.sh --yes --minimal)"
   - rm -fr aws-efa-installer aws-efa-installer-latest.tar.gz
 %{ endif }
+%{ if cloud_provider == "gcp" }
+# Google Cloud user-data fact generates a warning because its size is greater than what is allowed (<4096 bytes).
+# We have no use for it, so we remove startup-script, user-data and user-data-encoding when running in GCE.
+  - sed -i "/gce_data\['instance'\] = instance_data/i \ \ \ \ \ \ \ \ \ \ instance_data['attributes'].delete('startup-script')" /opt/puppetlabs/puppet/lib/ruby/vendor_ruby/facter/resolvers/gce.rb
+  - sed -i "/gce_data\['instance'\] = instance_data/i \ \ \ \ \ \ \ \ \ \ instance_data['attributes'].delete('user-data')" /opt/puppetlabs/puppet/lib/ruby/vendor_ruby/facter/resolvers/gce.rb
+  - sed -i "/gce_data\['instance'\] = instance_data/i \ \ \ \ \ \ \ \ \ \ instance_data['attributes'].delete('user-data-encoding')" /opt/puppetlabs/puppet/lib/ruby/vendor_ruby/facter/resolvers/gce.rb
+%{ endif }
+%{ if contains(tags, "puppet") }
+# Bootstrap services that are essential to the puppet repo
+  - (cd /etc/puppetlabs/code/environments/production; test -e bootstrap.sh && ./bootstrap.sh)
+%{ endif }
   # If the current image has already been configured with Magic Castle Puppet environment,
   # we can start puppet and skip reboot, reducing the delay for bringing the node up.
   - test -f /etc/magic-castle-release && systemctl start puppet
@@ -124,7 +133,10 @@ runcmd:
 write_files:
   - content: |
       facts : {
-        blocklist : [ "EC2", "GCE" ],
+        blocklist : [
+          "EC2",
+          %{ if cloud_provider != "gcp" } "GCE", %{ endif }
+        ],
       }
     path: /etc/puppetlabs/facter/facter.conf
     permissions: "0644"
