@@ -46,8 +46,12 @@ resource "google_compute_firewall" "allow_all_internal" {
 
 }
 
+locals {
+  all_tags = toset(flatten([ for key, value in module.design.instances: value.tags ]))
+}
+
 resource "google_compute_firewall" "default" {
-  for_each = var.firewall_rules
+  for_each = { for name, rule in var.firewall_rules: name => rule if contains(local.all_tags, rule.tag) }
   name     = format("%s-%s", var.cluster_name, lower(each.key))
   network  = google_compute_network.network.self_link
 
