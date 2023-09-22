@@ -21,7 +21,7 @@ def get_vcpus_ram(machine_type):
             # custom-NUMBER_OF_CPUS-AMOUNT_OF_MEMORY_MB
             output['vcpus'] = int(mid)
             output['ram'] = int(suf)
-        elif pre in ('e2', 'n2', 'n2d', 't2d', 'c2', 'c2d'):
+        elif pre in ('e2', 'n2', 'n2d', 't2d', 'c2', 'c2d', 't2a'):
             if mid in ('standard', 'highcpu', 'highmem'):
                 ram_per_cpus = {
                     'standard': 4000,
