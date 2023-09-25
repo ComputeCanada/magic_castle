@@ -3,6 +3,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [12.6.5] - 2023-09-22
+
+No changes to infrastructure code.
+
+Refer to [puppet-magic_castle changelog](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/CHANGELOG.md)
+
+## [12.6.4] - 2023-09-22
+
+No changes to infrastructure code.
+
+Refer to [puppet-magic_castle changelog](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/CHANGELOG.md)
+
+## [12.6.3] - 2023-09-22
+
+No changes to infrastructure code.
+
+Refer to [puppet-magic_castle changelog](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/CHANGELOG.md)
+
 ## [12.6.2] - 2023-09-21
 
 No changes to infrastructure code.
