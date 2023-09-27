@@ -146,7 +146,7 @@ behind it is explained in [Puppet documentation](https://puppet.com/docs/pe/2019
 their name has to start with the prefix `profile::`.
 
 It is also possible to include classes defined externally and installed using the `Puppetfile`.
-These classes installed by [librarian-puppet](https://github.com/voxpupuli/librarian-puppet) can be found in the `modules` folder of the
+These classes installed by [r10k](https://github.com/voxpupuli/puppet-r10k) can be found in the `modules` folder of the
 Puppet environment.
 
 ## 4. Troubleshooting
