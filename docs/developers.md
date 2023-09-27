@@ -84,28 +84,39 @@ through the `main.tf` file. The file has the following structure:
 ```yaml
 ---
 terraform:
+  data:
+    cluster_name: ""
+    domain_name: ""
+    guest_passwd: ""
+    nb_users: ""
+    public_keys: []
+    sudoer_username: ""
   instances:
-    hostname1:
-      local_ip: "x.x.x.x"
-      public_ip: ""
-      tags: ["tag_1"]
+    host1:
       hostkeys:
         rsa: ""
+        ed25519: ""
+      local_ip: "x.x.x.x"
+      prefix: "host"
+      public_ip: ""
+      specs:
+        "cpus": 0
+        "gpus": 0
+        "ram": 0
+      tags:
+        - "tag_1"
+        - "tag_2"
+  tag_ip:
+    tag_1:
+      - x.x.x.x
+    tag_2:
+      - x.x.x.x
   volumes:
     volume_tag1:
       volume_1:
         - "/dev/disk/by-id/123-*"
       volume_2:
         - "/dev/disk/by-id/123-abc-*"
-  tag_ip:
-    tag_1:
-      - x.x.x.x
-  data:
-    cluster_name: ""
-    domain_name: ""
-    guest_passwd: ""
-    nb_users: ""
-    sudoer_username: ""
 ```
 
 The values provided by `terraform_data.yaml` can be accessed in Puppet by using the
