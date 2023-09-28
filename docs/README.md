@@ -765,15 +765,15 @@ Magic Castle uses [Puppet hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml)
 per-value encryption of sensitive properties to be used by Puppet.
 
 To encrypt the data, you need to access the eyaml public certificate file of your cluster.
-This file is located on the Puppet server at `/opt/puppetlabs/puppet/eyaml/public_key.pkcs7.pem`.
+This file is located on the Puppet server at `/etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem`.
 With the public certificate file, you can encrypt the values with eyaml:
 ```sh
-eyaml encrypt -l profile::myclass::password -s 'your-secret' --pkcs7-public-key public_key.pkcs7.pem -o string
+/opt/puppetlabs/puppet/bin/eyaml encrypt -s 'your-secret' --pkcs7-public-key /etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem -o string
 ```
 
 You can encrypt the value remotely using SSH jump host:
 ```sh
-ssh -J centos@your-cluster.yourdomain.cloud centos@puppet /opt/puppetlabs/puppet/bin/eyaml encrypt  -l profile::myclass::password -s 'your-secret' --pkcs7-public-key=/etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem -o string
+ssh -J centos@your-cluster.yourdomain.cloud centos@puppet /opt/puppetlabs/puppet/bin/eyaml encrypt -s 'your-secret' --pkcs7-public-key=/etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem -o string
 ```
 
 The openssl command-line can also be used to encrypt a value with the certificate file:
