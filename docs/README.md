@@ -377,7 +377,7 @@ Defines the `ClusterName` variable in `slurm.conf` and the name of
 the cluster in the Slurm accounting database
 ([see `slurm.conf` documentation](https://slurm.schedmd.com/slurm.conf.html)).
 
-**Requirement**: Must be lowercase alphanumeric characters and start with a letter and can include dashes. cluster_name must be 63 characters or less.
+**Requirement**: Must be lowercase alphanumeric characters and start with a letter. It can include dashes. cluster_name must be 40 characters or less.
 
 **Post build modification effect**: destroy and re-create all instances at next `terraform apply`.
 

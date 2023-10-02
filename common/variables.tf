@@ -2,8 +2,8 @@ variable "cluster_name" {
   type        = string
   description = "Name by which this cluster will be known as."
   validation {
-    condition     = can(regex("^[a-z][0-9a-z-]*$", var.cluster_name))
-    error_message = "The cluster_name value must be lowercase alphanumeric characters and start with a letter. It can include dashes."
+    condition     = can(regex("^[a-z][0-9a-z-]{1,40}$", var.cluster_name))
+    error_message = "The cluster_name value must be at most 40 lowercase alphanumeric characters and start with a letter. It can include dashes."
   }
 }
 
@@ -15,6 +15,10 @@ variable "nb_users" {
 
 variable "instances" {
   description = "Map that defines the parameters for each type of instance of the cluster"
+  validation {
+    condition = alltrue([for key, values in var.instances: can(regex("^[a-z][0-9a-z-]{1,63}$", "${key}${values.count}"))])
+    error_message = "Instances' prefix plus index must be at most 63 lowercase alphanumeric characters and start with a letter. It can include dashes."
+  }
   validation {
     condition     = alltrue(concat([for key, values in var.instances: [contains(keys(values), "type"), contains(keys(values), "tags")]]...))
     error_message = "Each entry in var.instances needs to have at least a type and a list of tags."
@@ -45,6 +49,10 @@ variable "volumes" {
 variable "domain" {
   type        = string
   description = "String which when combined with cluster_name will formed the cluster FQDN"
+  validation {
+    condition     = can(regex("^[a-z][0-9a-z-.]*$", var.domain))
+    error_message = "The domain value must be lowercase alphanumeric characters and start with a letter. It can include dashes and dots."
+  }
 }
 
 variable "public_keys" {
