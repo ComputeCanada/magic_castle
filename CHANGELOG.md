@@ -3,31 +3,37 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [12.6.5] - 2023-09-22
+## [13.0.0] - 2023-10-13
 
-No changes to infrastructure code.
+#### Added
+
+- Added `skip_upgrade` variable to main module
+- Added `puppetfile` variable to main module
+- Added variable vhosts to cloudflare and gcloud dns
+- [AWS] Added ipv6 support in AWS security groups
+- Added wait loop for terraform_data.yaml in puppet.yaml
+- Added t2a machine-type to GCP machine_type.py
+- Added documentation section on volume expansion
+
+### Changed
+
+- [cloud-init] FQDN is now part of instances' hostname in cloud-init
+- [openstack] Replaced deprecated compute_secgroup by networking_secgroup
+- Firewalls rules are now defined based on tags instead global static rules
+- Port 22 for SSH connection is now open only for `login` tagged instances of all instances with public ip address
+- Replaced `null_resource` by `terraform_data`
+- Bumped terraform minimum required version to 1.4.0
+- Issuing wilcard certificate is now optional
+- Replaced librarian-puppet by r10k
+
+### Removed
+
+- Removed email variable in examples' dns module
 
 Refer to [puppet-magic_castle changelog](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/CHANGELOG.md)
+for details on change to the Puppet environment.
 
-## [12.6.4] - 2023-09-22
-
-No changes to infrastructure code.
-
-Refer to [puppet-magic_castle changelog](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/CHANGELOG.md)
-
-## [12.6.3] - 2023-09-22
-
-No changes to infrastructure code.
-
-Refer to [puppet-magic_castle changelog](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/CHANGELOG.md)
-
-## [12.6.2] - 2023-09-21
-
-No changes to infrastructure code.
-
-Refer to [puppet-magic_castle changelog](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/CHANGELOG.md)
-
-## [12.6.1] - 2023-09-11
+## [12.6.1] to [12.6.8]
 
 No changes to infrastructure code.
 
