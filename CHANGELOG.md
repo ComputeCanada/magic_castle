@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added variable vhosts to cloudflare and gcloud dns
 - [AWS] Added ipv6 support in AWS security groups
 - Added wait loop for terraform_data.yaml in puppet.yaml
-- Added t2a machine-type to GCP machine_type.py
+- [GCP] Added t2a machine-type to GCP machine_type.py
 - Added documentation section on volume expansion
 
 ### Changed
