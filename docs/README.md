@@ -546,19 +546,23 @@ Optional attributes can be defined:
 2. `image`: specification of the image to use for this instance type. (default: global [`image`](#46-image) value).
 Refer to section [10.12 - Create a compute node image](#1012-create-a-compute-node-image) to learn how this attribute can
 be leveraged to accelerate compute node configuration.
-3. `disk_size`: size in gibibytes (GiB) of the instance's root disk containing
+3. `disk_type`: type of the instance's root disk (default: see the next table).
+    | Provider | `disk_type` | `disk_size` (GiB) |
+    | -------- | :---------- | ----------------: |
+    | Azure    |`Premium_LRS`| 30                |
+    | AWS      | `gp2`       | 10                |
+    | GCP      | `pd-ssd`    | 20                |
+    | OpenStack| `null`      | 10                |
+    | OVH      | `null`      | 10                |
+4. `disk_size`: size in gibibytes (GiB) of the instance's root disk containing
 the operating system and service software
-(default: see the next table).
-4. `disk_type`: type of the instance's root disk (default: see the next table).
-
-Default root disk's attribute value per provider:
-| Provider | `disk_type` | `disk_size` (GiB) |
-| -------- | :---------- | ----------------: |
-| Azure    |`Premium_LRS`| 30                |
-| AWS      | `gp2`       | 10                |
-| GCP      | `pd-ssd`    | 20                |
-| OpenStack| `null`      | 10                |
-| OVH      | `null`      | 10                |
+(default: see the previous table).
+5. `mig`: hash map of [NVIDIA Multi-Instance GPU (MIG)](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html) short profile names and count used to partition the instances' GPU, example for an A100:
+    ```
+    mig = { 1g.5gb = 2, 2g.10gb = 1, 3g.20gb = 1 }
+    ```
+    This is only functional when the [GPU is supported](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-gpus),
+    and with x86-64 processors (see [NVIDIA/mig-parted issue #30](https://github.com/NVIDIA/mig-parted/issues/30)).
 
 For some cloud providers, it possible to define additional attributes.
 The following sections present the available attributes per provider.

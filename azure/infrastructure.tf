@@ -170,6 +170,7 @@ locals {
         cpus = local.vmsizes[values.type].vcpus
         ram  = local.vmsizes[values.type].ram
         gpus = local.vmsizes[values.type].gpus
+        mig  = lookup(values, "mig", null)
       }
     }
   }
