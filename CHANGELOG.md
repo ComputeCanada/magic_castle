@@ -3,6 +3,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [13.1.0] - 2023-10-27
+
+### Changed
+
+- [cloudflare] SSHFP fingerprints are now uppercase.
+
+Refer to [puppet-magic_castle changelog](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/CHANGELOG.md)
+for details on change to the Puppet environment.
+
 ## [13.0.0] - 2023-10-13
 
 #### Added
