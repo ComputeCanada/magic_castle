@@ -1192,17 +1192,21 @@ Refer to the [reverse proxy configuration](https://github.com/ComputeCanada/pupp
 
 ### 6.5 SSHFP records and DNSSEC
 
-Magic Castle creates SSHFP records for all instances with a public ip address.
+Magic Castle DNS module creates SSHFP records for all instances with a public ip address.
 These records can be used by SSH clients to verify the SSH host keys of the server.
 If [DNSSEC](https://www.cloudflare.com/dns/dnssec/how-dnssec-works/)
-is enabled for the domain of these records and the SSH client is correctly configured,
+is enabled for the domain and the SSH client is correctly configured,
 no host key confirmation will be prompted when connecting to the server.
 
 For more information on how to activate DNSSEC, refer to your DNS provider documentation:
 - [CloudFlare - Enable DNSSEC](https://developers.cloudflare.com/dns/dnssec/#enable-dnssec)
 - [Google Cloud - Manage DNSSEC configuration](https://cloud.google.com/dns/docs/dnssec-config#enabling)
 
-To setup an SSH client to use SSHFP record, add `VerifyHostKeyDNS yes` to its configuration.
+To setup an SSH client to use SSHFP records, add
+```
+VerifyHostKeyDNS yes
+```
+to its configuration file (i.e.: `~/.ssh/config`).
 
 ## 7. Planning
 
