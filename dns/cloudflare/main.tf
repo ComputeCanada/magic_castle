@@ -29,7 +29,7 @@ resource "cloudflare_record" "records" {
     for_each = module.record_generator.records[count.index].data != null ? [module.record_generator.records[count.index].data] : []
     content {
       algorithm   = data.value["algorithm"]
-      fingerprint = data.value["fingerprint"]
+      fingerprint = upper(data.value["fingerprint"])
       type        = data.value["type"]
     }
   }
