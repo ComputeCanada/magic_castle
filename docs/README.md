@@ -1043,11 +1043,11 @@ follow the instructions in the corresponding sections to have the cluster's
 DNS records created and tracked by Magic Castle.
 
 If your DNS provider is not supported, you can manually create the records.
-Refer to the last subsection for more details.
+Refer to the subsection [6.3](#63-unsupported-providers) for more details.
 
 Optionally, Magic Castle can issue with [Let's encrypt DNS-01 challenge](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge)
 a wildcard certificate of the form `*.${cluster_name}.${domain_name}`. Refer to
-the last subsection for more information. If no wildcard certificate is issued,
+the subsection [6.4](#64-wildcard-ssl-certificate) for more information. If no wildcard certificate is issued,
 the reverse proxy server Caddy will automatically issue one certificate per virtual
 host.
 
@@ -1189,6 +1189,20 @@ The reverse proxy configuration expects the following files to exist:
 - `/etc/letsencrypt/live/${domain_name}/chain.pem`
 
 Refer to the [reverse proxy configuration](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/reverse_proxy.pp) for more details.
+
+### 6.5 SSHFP records and DNSSEC
+
+Magic Castle creates SSHFP records for all instances with a public ip address.
+These records can be used by SSH clients to verify the SSH host keys of the server.
+If [DNSSEC](https://www.cloudflare.com/dns/dnssec/how-dnssec-works/)
+is enabled for the domain of these records and the SSH client is correctly configured,
+no host key confirmation will be prompted when connecting to the server.
+
+For more information on how to activate DNSSEC, refer to your DNS provider documentation:
+- [CloudFlare - Enable DNSSEC](https://developers.cloudflare.com/dns/dnssec/#enable-dnssec)
+- [Google Cloud - Manage DNSSEC configuration](https://cloud.google.com/dns/docs/dnssec-config#enabling)
+
+To setup an SSH client to use SSHFP record, add `VerifyHostKeyDNS yes` to its configuration.
 
 ## 7. Planning
 
