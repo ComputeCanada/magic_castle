@@ -1,5 +1,42 @@
 terraform {
   required_version = ">= 1.4.0"
+  required_providers {
+    openstack = {
+      source = "terraform-provider-openstack/openstack" # "terraform.cyverse.org/cyverse/openstack"
+    }
+  }
+
+}
+
+provider "openstack" {
+  tenant_name = var.project
+  region = var.region
+}
+
+variable "username" {
+  type = string
+  description = "username"
+}
+
+variable "region" {
+  type = string
+  description = "string, openstack region name; default = IU"
+  default = "IU"
+}
+
+variable "project" {
+  type = string
+  description = "project name"
+}
+
+variable "domain_name" {
+  description = "Name of the cluster"
+  default = "jetstream-cloud.org"
+}
+
+variable "cluster_name" {
+  description = "Name of the cluster"
+  default = "phoenix"
 }
 
 variable "pool" {
@@ -7,19 +44,79 @@ variable "pool" {
   default = []
 }
 
+variable "image_name" {
+  type = string
+  description = "string, name of image; image will have priority if both image and image name are provided"
+  default = "Featured-RockyLinux8"
+}
+
+variable "mgmt_flavor" {
+  type = string
+  description = "mgmt flavor or size of instance to launch"
+  default = "m3.medium"
+}
+
+variable "login_flavor" {
+  type = string
+  description = "login flavor or size of instance to launch"
+  default = "m3.medium"
+}
+
+variable "node_flavor" {
+  type = string
+  description = "node flavor or size of instance to launch"
+  default = "m3.medium"
+}
+
+variable "login_count" {
+  type = number
+  description = "number of login instances to launch"
+  default = 1
+}
+
+variable "mgmt_count" {
+  type = number
+  description = "number of mgmt instances to launch"
+  default = 1
+}
+
+variable "node_count" {
+  type = number
+  description = "number of node instances to launch"
+  default = 1
+}
+
+variable "guest_users_count" {
+  type = number
+  description = "number of guest users"
+  default = 10
+}
+
+variable "guest_users_password" {
+  type = string
+  description = "password to use for guest users"
+  default = ""
+}
+
+variable "keypair" {
+  type = string
+  description = "keypair to use when launching"
+  default = ""
+}
+
 module "openstack" {
   source         = "./openstack"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
   config_version = "main"
 
-  cluster_name = "phoenix"
-  domain       = "calculquebec.cloud"
-  image        = "Rocky-8"
+  cluster_name = var.cluster_name
+  domain       = "${var.project}.${var.domain_name}"
+  image        = var.image_name
 
   instances = {
-    mgmt   = { type = "p4-6gb", tags = ["puppet", "mgmt", "nfs"], count = 1 }
-    login  = { type = "p2-3gb", tags = ["login", "public", "proxy"], count = 1 }
-    node   = { type = "p2-3gb", tags = ["node"], count = 1 }
+    mgmt   = { type = var.mgmt_flavor, tags = ["puppet", "mgmt", "nfs"], count = var.mgmt_count }
+    login  = { type = var.login_flavor, tags = ["login", "public", "proxy"], count = var.login_count }
+    node   = { type = var.node_flavor, tags = ["node"], count = var.node_count }
   }
 
   # var.pool is managed by Slurm through Terraform REST API.
@@ -36,11 +133,18 @@ module "openstack" {
     }
   }
 
-  public_keys = [file("~/.ssh/id_rsa.pub")]
+  public_keys = [data.openstack_compute_keypair_v2.kp[0].public_key]
 
-  nb_users = 10
+  nb_users = var.guest_users_count
   # Shared password, randomly chosen if blank
-  guest_passwd = ""
+  guest_passwd = var.guest_users_password
+
+  sudoer_username = var.username
+}
+
+data "openstack_compute_keypair_v2" "kp" {
+  count = var.keypair == "" ? 0 : 1
+  name = var.keypair
 }
 
 output "accounts" {
@@ -49,6 +153,13 @@ output "accounts" {
 
 output "public_ip" {
   value = module.openstack.public_ip
+}
+
+module "dns" {
+    source           = "./dns/txt"
+    name             = module.openstack.cluster_name
+    domain           = module.openstack.domain
+    public_instances = module.openstack.public_instances
 }
 
 ## Uncomment to register your domain name with CloudFlare
