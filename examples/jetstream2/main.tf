@@ -151,8 +151,8 @@ module "openstack" {
     }
   }
 
-  #
-  public_keys = TF_VAR_cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : concat([data.openstack_compute_keypair_v2.kp[0].public_key], [TF_VAR_cacao_public_key])
+  # either use the keypair provided or if cacao_public_key found also add it
+  public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : concat([data.openstack_compute_keypair_v2.kp[0].public_key], [var.cacao_public_key])
 
   # does not seem to work
   # generate_ssh_key = true
