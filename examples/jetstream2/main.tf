@@ -145,9 +145,11 @@ module "openstack" {
     }
   }
 
-  generate_ssh_key = true
-  
+  # does not work
+
   public_keys = [data.openstack_compute_keypair_v2.kp[0].public_key]
+
+  generate_ssh_key = true
 
   nb_users = var.guest_users_count
   # Shared password, randomly chosen if blank
@@ -156,10 +158,25 @@ module "openstack" {
   sudoer_username = var.username
 }
 
+resource "null_resource" "ssh-agent" {
+
+    triggers = {
+        always_run = "${timestamp()}"
+    }
+
+    provisioner "local-exec" {
+        command = "`eval ssh-agent`; ssh-add"
+    }
+
+}
+
+
 data "openstack_compute_keypair_v2" "kp" {
   count = var.keypair == "" ? 0 : 1
   name = var.keypair
 }
+
+
 
 output "accounts" {
   value = module.openstack.accounts
