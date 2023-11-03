@@ -1,0 +1,117 @@
+{
+  "schema_url": "https://gitlab.com/cyverse/cacao-common/-/raw/master/template/metadata-schemas/v3/schema.json",
+  "schema_version": "3",
+  "name": "This launches Compute Canada's Magic Castle Terraform, https://github.com/ComputeCanada/magic_castle",
+  "author": "Edwin Skidmore",
+  "author_email": "edwins@arizona.edu",
+  "description": "launch Compute Canada Magic Castle (Slurm Cluster)",
+  "template_type": "openstack_terraform",
+  "purpose": "openstack_compute",
+  "cacao_pre_tasks": [],
+  "cacao_post_tasks": [
+    {
+      "type": "ansible",
+      "location": "cacao_atmosphere_legacy"
+    }
+  ],
+  "parameters": [
+    {
+      "name": "username",
+      "type": "cacao_username",
+      "default": "username",
+      "description": "CACAO username"
+    },
+    {
+      "name": "region",
+      "type": "cacao_provider_region",
+      "default": "IU",
+      "description": "Openstack region"
+    },
+    {
+      "name": "cluster_name",
+      "type": "string",
+      "description": "Cluster name",
+      "editable": true
+    },
+    {
+      "name": "image_name",
+      "type": "cacao_provider_image_name",
+      "description": "Boot image name",
+      "default": ""
+    },
+    {
+      "name": "mgmt_flavor",
+      "type": "cacao_provider_flavor",
+      "description": "Instance flavor for management node"
+    },
+    {
+      "name": "login_flavor",
+      "type": "cacao_provider_flavor",
+      "description": "Instance flavor for login node"
+    },
+    {
+      "name": "node_flavor",
+      "type": "cacao_provider_flavor",
+      "description": "Instance flavor for worker node"
+    },
+    {
+      "name": "mgmt_count",
+      "type": "integer",
+      "default": 1,
+      "description": "# of mgmt instances",
+      "editable": true
+    },
+    {
+      "name": "login_count",
+      "type": "integer",
+      "default": 1,
+      "description": "# of login instances",
+      "editable": true
+    },
+    {
+      "name": "node_count",
+      "type": "integer",
+      "default": 1,
+      "description": "# of worker node instances",
+      "editable": true
+    },
+    {
+      "name": "project",
+      "type": "cacao_provider_project",
+      "description": "OpenStack Project ID"
+    },
+    {
+      "name": "keypair",
+      "type": "cacao_provider_key_pair",
+      "default": "cacao-ssh-key",
+      "description": "Key-pair for instance access"
+    },
+    {
+      "name": "power_state",
+      "type": "string",
+      "default": "active",
+      "enum": ["active", "shutoff", "suspend", "shelved_offloaded"],
+      "description": "Power state",
+      "editable": true
+    },
+    {
+      "name": "user_data",
+      "type": "cacao_cloud_init",
+      "description": "cloud init script"
+    },
+    {
+      "name": "guest_users_count",
+      "type": "integer",
+      "default": 5,
+      "description": "Number of guest user accounts e.g. user1, user2",
+      "editable": true
+    },
+    {
+      "name": "guest_users_password",
+      "type": "string",
+      "description": "password for guest users",
+      "editable": true
+    }
+
+  ]
+}

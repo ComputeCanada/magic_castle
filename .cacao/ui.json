@@ -1,0 +1,84 @@
+{
+    "schema_url": "https://gitlab.com/cyverse/cacao-common/-/raw/master/template/ui-schemas/v1/schema.json",
+    "schema_version": "1",
+    "author": "Sean Davey",
+    "author_email": "sdavey@arizona.edu",
+    "steps": [
+        {
+            "title": "Parameters",
+            "items": [
+                {
+                    "name": "region",
+                    "ui_label": "Choose Region"
+                },
+                {
+                    "name": "cluster_name",
+                    "ui_label": "Cluster Name"
+                },
+                {
+                    "name": "power_state",
+                    "ui_label": "Power state"
+                },
+                {
+                    "name": "image_name",
+                    "ui_label": "Boot image name",
+                    "parameters": [
+                        { "key": "windows_disclaimer", "value": true }
+                    ]
+                },
+                {
+                    "type": "row",
+                    "items":[
+                        {
+                            "name": "mgmt_count",
+                            "ui_label": "# of mgmt nodes"
+                        },
+                        {
+                            "name": "mgmt_flavor",
+                            "ui_label": "Size of mgmt nodes"
+                        }
+                    ]
+                },
+                {
+                    "type": "row",
+                    "items":[
+                        {
+                            "name": "login_count",
+                            "ui_label": "# of mgmt nodes"
+                        },
+                        {
+                            "name": "login_flavor",
+                            "ui_label": "Size of login nodes"
+                        }
+                    ]
+                },
+                {
+                    "type": "row",
+                    "items":[
+                        {
+                            "name": "node_count",
+                            "ui_label": "# of worker nodes"
+                        },
+                        {
+                            "name": "node_flavor",
+                            "ui_label": "Size of worker nodes"
+                        }
+                    ]
+                },
+                {
+                    "type": "row",
+                    "items":[
+                        {
+                            "name": "guest_users_count",
+                            "ui_label": "# of guest users"
+                        },
+                        {
+                            "name": "guest_users_password",
+                            "ui_label": "Size of worker nodes"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
