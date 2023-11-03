@@ -1,8 +1,8 @@
 {
     "schema_url": "https://gitlab.com/cyverse/cacao-common/-/raw/master/template/ui-schemas/v1/schema.json",
     "schema_version": "1",
-    "author": "Sean Davey",
-    "author_email": "sdavey@arizona.edu",
+    "author": "Edwin Skidmore",
+    "author_email": "edwins@arizona.edu",
     "steps": [
         {
             "title": "Parameters",
@@ -12,7 +12,7 @@
                     "ui_label": "Choose Region"
                 },
                 {
-                    "name": "cluster_name",
+                    "name": "instance_name",
                     "ui_label": "Cluster Name"
                 },
                 {

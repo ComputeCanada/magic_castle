@@ -34,7 +34,7 @@ variable "domain_name" {
   default = "jetstream-cloud.org"
 }
 
-variable "cluster_name" {
+variable "instance_name" {
   description = "Name of the cluster"
   default = "phoenix"
 }
@@ -104,12 +104,18 @@ variable "keypair" {
   default = ""
 }
 
+variable "power_state" {
+  type = string
+  description = "power state of instance; current has no effect"
+  default = "active"
+}
+
 module "openstack" {
   source         = "./openstack"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
   config_version = "main"
 
-  cluster_name = var.cluster_name
+  cluster_name = var.instance_name
   domain       = "${var.project}.${var.domain_name}"
   image        = var.image_name
 

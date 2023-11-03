@@ -28,7 +28,7 @@
       "description": "Openstack region"
     },
     {
-      "name": "cluster_name",
+      "name": "instance_name",
       "type": "string",
       "description": "Cluster name",
       "editable": true
