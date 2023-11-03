@@ -74,7 +74,7 @@
                         },
                         {
                             "name": "guest_users_password",
-                            "ui_label": "Size of worker nodes"
+                            "ui_label": "password for guest users"
                         }
                     ]
                 }
