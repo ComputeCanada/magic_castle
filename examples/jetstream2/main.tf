@@ -145,6 +145,8 @@ module "openstack" {
     }
   }
 
+  generate_ssh_key = true
+  
   public_keys = [data.openstack_compute_keypair_v2.kp[0].public_key]
 
   nb_users = var.guest_users_count
