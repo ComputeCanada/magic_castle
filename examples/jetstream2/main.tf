@@ -126,7 +126,7 @@ module "openstack" {
   image        = var.image_name
 
   instances = {
-    mgmt   = { type = var.mgmt_flavor, tags = ["puppet", "mgmt", "nfs"], count = var.mgmt_count }
+    mgmt   = { type = var.mgmt_flavor, tags = ["puppet", "mgmt", "nfs", "public"], count = var.mgmt_count }
     login  = { type = var.login_flavor, tags = ["login", "public", "proxy"], count = var.login_count }
     node   = { type = var.node_flavor, tags = ["node"], count = var.node_count }
   }
