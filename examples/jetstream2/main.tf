@@ -110,11 +110,11 @@ variable "power_state" {
   default = "active"
 }
 
-# variable "user_data" {
-#   type = string
-#   description = "cloud init script; not currently used"
-#   default = ""
-# }
+variable "user_data" {
+  type = string
+  description = "cloud init script; not currently used"
+  default = ""
+}
 
 variable "cacao_public_key" {
   type = string
