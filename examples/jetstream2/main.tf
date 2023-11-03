@@ -116,6 +116,12 @@ variable "user_data" {
   default = ""
 }
 
+variable "cacao_public_key" {
+  type = string
+  description = "if set, will be an additional key used"
+  default = ""
+}
+
 module "openstack" {
   source         = "./openstack"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
@@ -145,11 +151,11 @@ module "openstack" {
     }
   }
 
-  # does not work
+  #
+  public_keys = TF_VAR_cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : concat([data.openstack_compute_keypair_v2.kp[0].public_key], [TF_VAR_cacao_public_key])
 
-  public_keys = [data.openstack_compute_keypair_v2.kp[0].public_key]
-
-  generate_ssh_key = true
+  # does not seem to work
+  # generate_ssh_key = true
 
   nb_users = var.guest_users_count
   # Shared password, randomly chosen if blank
@@ -162,8 +168,6 @@ data "openstack_compute_keypair_v2" "kp" {
   count = var.keypair == "" ? 0 : 1
   name = var.keypair
 }
-
-
 
 output "accounts" {
   value = module.openstack.accounts
