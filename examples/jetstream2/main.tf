@@ -110,6 +110,12 @@ variable "power_state" {
   default = "active"
 }
 
+variable "user_data" {
+  type = string
+  description = "cloud init script; not currently used"
+  default = ""
+}
+
 module "openstack" {
   source         = "./openstack"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
