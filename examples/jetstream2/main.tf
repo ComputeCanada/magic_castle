@@ -119,7 +119,7 @@ variable "power_state" {
 variable "cacao_public_key" {
   type = string
   description = "if set, will be an additional key used"
-  default = ""
+  default = "~/.ssh/id_rsa.pub"
 }
 
 module "openstack" {
@@ -153,7 +153,7 @@ module "openstack" {
 
   # either use the keypair provided or if cacao_public_key found also add it
   # public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : concat([data.openstack_compute_keypair_v2.kp[0].public_key], [var.cacao_public_key])
-  public_keys = var.cacao_public_key != "" ? concat([data.openstack_compute_keypair_v2.kp[0].public_key], [file(var.cacao_public_key)]) : [data.openstack_compute_keypair_v2.kp[0].public_key]
+  public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : [data.openstack_compute_keypair_v2.kp[0].public_key, file(var.cacao_public_key)]
   # public_keys = [file("~/.ssh/id_rsa.pub")]
 
   # does not seem to work
