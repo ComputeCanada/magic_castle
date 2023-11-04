@@ -95,11 +95,6 @@
       "editable": true
     },
     {
-      "name": "user_data",
-      "type": "cacao_cloud_init",
-      "description": "cloud init script"
-    },
-    {
       "name": "guest_users_count",
       "type": "integer",
       "default": 5,
