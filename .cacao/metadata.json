@@ -14,6 +14,11 @@
       "location": "cacao_atmosphere_legacy"
     }
   ],
+  "filters": [
+    {
+      "images_allowed": ["Featured-AlmaLinux8","Featured-AlmaLinux9","Featured-RockyLinux8","Featured-RockyLinux9"]
+    }
+  ],
   "parameters": [
     {
       "name": "username",
@@ -42,16 +47,19 @@
     {
       "name": "mgmt_flavor",
       "type": "cacao_provider_flavor",
+      "default": "m3.medium",
       "description": "Instance flavor for management node"
     },
     {
       "name": "login_flavor",
       "type": "cacao_provider_flavor",
+      "default": "m3.medium",
       "description": "Instance flavor for login node"
     },
     {
       "name": "node_flavor",
       "type": "cacao_provider_flavor",
+      "default": "m3.medium",
       "description": "Instance flavor for worker node"
     },
     {
