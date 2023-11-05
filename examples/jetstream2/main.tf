@@ -158,7 +158,7 @@ module "openstack" {
   # public_keys = [file("~/.ssh/id_rsa.pub")]
 
   # does not seem to work
-  # generate_ssh_key = true
+  generate_ssh_key = true
 
   nb_users = var.guest_users_count
   # Shared password, randomly chosen if blank
