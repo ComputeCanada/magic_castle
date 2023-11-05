@@ -158,13 +158,11 @@ module "openstack" {
   # public_keys = [file("~/.ssh/id_rsa.pub")]
 
   # does not seem to work
-  generate_ssh_key = true
+  # generate_ssh_key = true
 
   nb_users = var.guest_users_count
   # Shared password, randomly chosen if blank
   guest_passwd = var.guest_users_password
-
-  sudoer_username = var.username
 }
 
 data "openstack_compute_keypair_v2" "kp" {
