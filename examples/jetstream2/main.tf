@@ -163,6 +163,8 @@ module "openstack" {
   nb_users = var.guest_users_count
   # Shared password, randomly chosen if blank
   guest_passwd = var.guest_users_password
+
+  sudoer_username = local.system_user
 }
 
 data "openstack_compute_keypair_v2" "kp" {
@@ -183,6 +185,12 @@ module "dns" {
     name             = module.openstack.cluster_name
     domain           = module.openstack.domain
     public_instances = module.openstack.public_instances
+}
+
+locals {
+  # identify the system user
+  split_username = split("@", var.username)
+  system_user = local.split_username[0]
 }
 
 ## Uncomment to register your domain name with CloudFlare
