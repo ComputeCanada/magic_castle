@@ -122,6 +122,12 @@ variable "cacao_user_data" {
 #   default = ""
 # }
 
+variable "cacao_whitelist_ips" {
+  type = string
+  description = "comma-separated list of ips to whitelist to fail2ban"
+  default = ""
+}
+
 module "openstack" {
   source         = "./openstack"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
@@ -156,7 +162,9 @@ module "openstack" {
   # public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : [data.openstack_compute_keypair_v2.kp[0].public_key, var.cacao_public_key]
   # public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : [data.openstack_compute_keypair_v2.kp[0].public_key, file(var.cacao_public_key)]
   # public_keys = [file("~/.ssh/id_rsa.pub")]
-  public_keys = local.cacao_user_data_yaml != "" ? local.cacao_user_data_yaml.users[1].ssh_authorized_keys : [data.openstack_compute_keypair_v2.kp[0].public_key]
+  # public_keys = local.cacao_user_data_yaml != "" ? local.cacao_user_data_yaml.users[1].ssh_authorized_keys : [data.openstack_compute_keypair_v2.kp[0].public_key]
+  # public_keys = [data.openstack_compute_keypair_v2.kp[0].public_key]
+  public_keys = local.cacao_user_data_yaml.users[1].ssh_authorized_keys
 
   # does not seem to work
   # generate_ssh_key = true
@@ -166,6 +174,13 @@ module "openstack" {
   guest_passwd = var.guest_users_password
 
   sudoer_username = local.system_user
+
+  hieradata = length(local.cacao_whitelist_ips) == 0 ? "" : <<-EOT
+fail2ban::ignoreip:
+%{ for ip in local.cacao_whitelist_ips }
+  - ${ip}
+%{ endfor }
+EOT
 }
 
 data "openstack_compute_keypair_v2" "kp" {
@@ -193,8 +208,8 @@ locals {
   split_username = split("@", var.username)
   system_user = local.split_username[0]
   cacao_user_data_yaml = try(yamldecode(var.cacao_user_data), "")
+  cacao_whitelist_ips = split(",", var.cacao_whitelist_ips)
 }
-
 
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
