@@ -14,11 +14,6 @@
       "location": "cacao_atmosphere_legacy"
     }
   ],
-  "filters": [
-    {
-      "images_allowed": ["Featured-AlmaLinux8","Featured-AlmaLinux9","Featured-RockyLinux8","Featured-RockyLinux9"]
-    }
-  ],
   "parameters": [
     {
       "name": "username",
