@@ -157,17 +157,8 @@ module "openstack" {
     }
   }
 
-  # either use the keypair provided or if cacao_public_key found also add it
-  # public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : concat([data.openstack_compute_keypair_v2.kp[0].public_key], [var.cacao_public_key])
-  # public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : [data.openstack_compute_keypair_v2.kp[0].public_key, var.cacao_public_key]
-  # public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : [data.openstack_compute_keypair_v2.kp[0].public_key, file(var.cacao_public_key)]
-  # public_keys = [file("~/.ssh/id_rsa.pub")]
-  # public_keys = local.cacao_user_data_yaml != "" ? local.cacao_user_data_yaml.users[1].ssh_authorized_keys : [data.openstack_compute_keypair_v2.kp[0].public_key]
-  # public_keys = [data.openstack_compute_keypair_v2.kp[0].public_key]
-  # public_keys = local.cacao_user_data_yaml.users[1].ssh_authorized_keys
-  public_keys = ""
+  public_keys = local.cacao_user_data_yaml.users[1].ssh_authorized_keys
 
-  # does not seem to work
   # generate_ssh_key = true
 
   nb_users = var.guest_users_count
