@@ -11,3 +11,4 @@ releases/
 .terraform.lock.hcl
 terraform.tfvars
 _internal_notes.txt
+tmp*
