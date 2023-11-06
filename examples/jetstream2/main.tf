@@ -164,7 +164,8 @@ module "openstack" {
   # public_keys = [file("~/.ssh/id_rsa.pub")]
   # public_keys = local.cacao_user_data_yaml != "" ? local.cacao_user_data_yaml.users[1].ssh_authorized_keys : [data.openstack_compute_keypair_v2.kp[0].public_key]
   # public_keys = [data.openstack_compute_keypair_v2.kp[0].public_key]
-  public_keys = local.cacao_user_data_yaml.users[1].ssh_authorized_keys
+  # public_keys = local.cacao_user_data_yaml.users[1].ssh_authorized_keys
+  public_keys = ""
 
   # does not seem to work
   # generate_ssh_key = true
