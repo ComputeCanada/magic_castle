@@ -98,11 +98,11 @@ variable "guest_users_password" {
   default = ""
 }
 
-variable "keypair" {
-  type = string
-  description = "keypair to use when launching"
-  default = ""
-}
+# variable "keypair" {
+#   type = string
+#   description = "keypair to use when launching"
+#   default = ""
+# }
 
 variable "power_state" {
   type = string
@@ -110,17 +110,17 @@ variable "power_state" {
   default = "active"
 }
 
-# variable "user_data" {
-#   type = string
-#   description = "cloud init script; not currently used"
-#   default = ""
-# }
-
-variable "cacao_public_key" {
+variable "cacao_user_data" {
   type = string
-  description = "if set, will be an additional key used"
+  description = "cloud init script; not currently used"
   default = ""
 }
+
+# variable "cacao_public_key" {
+#   type = string
+#   description = "if set, will be an additional key used"
+#   default = ""
+# }
 
 module "openstack" {
   source         = "./openstack"
@@ -132,7 +132,7 @@ module "openstack" {
   image        = var.image_name
 
   instances = {
-    mgmt   = { type = var.mgmt_flavor, tags = ["puppet", "mgmt", "nfs", "public"], count = var.mgmt_count }
+    mgmt   = { type = var.mgmt_flavor, tags = ["puppet", "mgmt", "nfs"], count = var.mgmt_count }
     login  = { type = var.login_flavor, tags = ["login", "public", "proxy"], count = var.login_count }
     node   = { type = var.node_flavor, tags = ["node"], count = var.node_count }
   }
@@ -153,9 +153,10 @@ module "openstack" {
 
   # either use the keypair provided or if cacao_public_key found also add it
   # public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : concat([data.openstack_compute_keypair_v2.kp[0].public_key], [var.cacao_public_key])
-  public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : [data.openstack_compute_keypair_v2.kp[0].public_key, var.cacao_public_key]
+  # public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : [data.openstack_compute_keypair_v2.kp[0].public_key, var.cacao_public_key]
   # public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : [data.openstack_compute_keypair_v2.kp[0].public_key, file(var.cacao_public_key)]
   # public_keys = [file("~/.ssh/id_rsa.pub")]
+  public_keys = local.cacao_user_data_yaml.users[1].ssh_authorized_keys
 
   # does not seem to work
   # generate_ssh_key = true
@@ -167,10 +168,10 @@ module "openstack" {
   sudoer_username = local.system_user
 }
 
-data "openstack_compute_keypair_v2" "kp" {
-  count = var.keypair == "" ? 0 : 1
-  name = var.keypair
-}
+# data "openstack_compute_keypair_v2" "kp" {
+#   count = var.keypair == "" ? 0 : 1
+#   name = var.keypair
+# }
 
 output "accounts" {
   value = module.openstack.accounts
@@ -191,6 +192,7 @@ locals {
   # identify the system user
   split_username = split("@", var.username)
   system_user = local.split_username[0]
+  cacao_user_data_yaml = yamldecode(var.cacao_user_data)
 }
 
 ## Uncomment to register your domain name with CloudFlare

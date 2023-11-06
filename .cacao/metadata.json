@@ -114,6 +114,11 @@
       "type": "string",
       "description": "password for guest users",
       "editable": true
+    },
+    {
+      "name": "cacao_user_data",
+      "type": "cacao_cloud_init",
+      "description": "internally used, just to parse information for magic castle"
     }
 
   ]
