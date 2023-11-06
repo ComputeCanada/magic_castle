@@ -98,11 +98,11 @@ variable "guest_users_password" {
   default = ""
 }
 
-# variable "keypair" {
-#   type = string
-#   description = "keypair to use when launching"
-#   default = ""
-# }
+variable "keypair" {
+  type = string
+  description = "keypair to use when launching"
+  default = ""
+}
 
 variable "power_state" {
   type = string
@@ -156,7 +156,7 @@ module "openstack" {
   # public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : [data.openstack_compute_keypair_v2.kp[0].public_key, var.cacao_public_key]
   # public_keys = var.cacao_public_key == "" ? [data.openstack_compute_keypair_v2.kp[0].public_key] : [data.openstack_compute_keypair_v2.kp[0].public_key, file(var.cacao_public_key)]
   # public_keys = [file("~/.ssh/id_rsa.pub")]
-  public_keys = local.cacao_user_data_yaml.users[1].ssh_authorized_keys
+  public_keys = local.cacao_user_data_yaml != "" ? local.cacao_user_data_yaml.users[1].ssh_authorized_keys : [data.openstack_compute_keypair_v2.kp[0].public_key]
 
   # does not seem to work
   # generate_ssh_key = true
@@ -168,10 +168,10 @@ module "openstack" {
   sudoer_username = local.system_user
 }
 
-# data "openstack_compute_keypair_v2" "kp" {
-#   count = var.keypair == "" ? 0 : 1
-#   name = var.keypair
-# }
+data "openstack_compute_keypair_v2" "kp" {
+  count = var.keypair == "" ? 0 : 1
+  name = var.keypair
+}
 
 output "accounts" {
   value = module.openstack.accounts
@@ -192,8 +192,9 @@ locals {
   # identify the system user
   split_username = split("@", var.username)
   system_user = local.split_username[0]
-  cacao_user_data_yaml = yamldecode(var.cacao_user_data)
+  cacao_user_data_yaml = try(yamldecode(var.cacao_user_data), "")
 }
+
 
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
