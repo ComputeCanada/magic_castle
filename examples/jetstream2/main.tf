@@ -157,7 +157,8 @@ module "openstack" {
     }
   }
 
-  public_keys = local.cacao_user_data_yaml.users[1].ssh_authorized_keys
+  # public_keys = local.cacao_user_data_yaml.users[1].ssh_authorized_keys
+  public_keys = ""
 
   # generate_ssh_key = true
 
