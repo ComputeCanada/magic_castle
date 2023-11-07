@@ -108,7 +108,7 @@
       "name": "guest_users_password",
       "type": "string",
       "description": "password for guest users",
-      "editable": true
+      "default": ""
     },
     {
       "name": "cacao_user_data",
