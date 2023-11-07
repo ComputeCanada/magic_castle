@@ -241,7 +241,7 @@ echo -e "\nWelcome to the Magic Castle login node!\n" 1>&2
 if [ command -v mccheck &> /dev/null ]; then
   CURRENT_STATE="$(mccheck)"
   if [ "$CURRENT_STATE" == *"NOT READY"* ]; then
-      echo -e "Magic Castle's current state is $${magenta_bold}$CURRENT_STATE$${normal}" 1>&2
+      echo -e "Magic Castle's current state is $${yellow_bold}$CURRENT_STATE$${normal}" 1>&2
       echo -e "You may want to grab some coffee while you wait." 1>&2
       echo -e "Most recent puppet activity: $(journalctl -u puppet|tail -1)\n" 1>&2
   else
