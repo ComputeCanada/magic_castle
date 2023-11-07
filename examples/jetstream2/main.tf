@@ -203,6 +203,76 @@ locals {
   cacao_whitelist_ips = split(",", var.cacao_whitelist_ips)
 }
 
+resource "null_resource" "cacao_helper_scripts" {
+  depends_on = [
+    module.openstack.public_ip
+  ]
+  connection {
+    type        = "ssh"
+    user        = local.system_user
+    host        = module.openstack.public_ip.login1
+  }
+  provisioner "file" {
+    content = <<-EOT
+#!/bin/bash
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+magenta_bold="\e[1;35m"
+yellow_bold="\e[1;33m"
+
+# redirecting stdout to stderr to prevent file transfer problems
+echo -e "\nWelcome to the Magic Castle login node!\n" 1>&2
+CURRENT_STATE="$(mccheck)"
+echo -e "Magic Castle's current state is ${yellow_bold}$CURRENT_STATE${normal}" 1>&2
+if [ "$CURRENT_STATE" != "READY" ]; then
+    echo -e "You may want to grab some coffee while you wait." 1>&2
+    echo -e "Most recent puppet activity: $(journalctl -u puppet|tail -1)\n" 1>&2
+else
+    echo -e "" 1>&2
+fi
+echo -e "To re-check Magic Castle state: ${magenta_bold}mccheck${normal}" 1>&2
+echo -e "Account info for this cluster: ${magenta_bold}/edwin/accounts.txt${normal}\n" 1>&2
+EOT
+    destination = "/${local.system_user}/.ssh/rc"
+  }
+
+  provisioner "file" {
+    content = <<-EOT
+#!/bin/bash
+# check if magic castle has the following line
+# this simple test for now; until a better check is available, let's simply check for the final line
+# I'm sure a more robust check can be provided by more experienced MC folks :)
+journalctl -u puppet|grep -q 'Applied catalog in'
+if [ $? -ne 0 ]; then
+        echo "NOT READY"
+else
+        echo "READY"
+fi
+EOT
+    destination = "/tmp/mccheck"
+  }
+
+  provisioner "file" {
+    content = <<-EOT
+
+The following is the account information:
+
+usernames: ${module.openstack.accounts.guests.usernames}
+password: ${module.openstack.accounts.guests.password}
+
+EOT
+    destination = "/${local.system_user}/accounts.txt"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/mccheck /${local.system_user}/.ssh/rc",
+      "sudo mv /tmp/mccheck /usr/local/bin/",
+    ]
+  }
+}
+
 ## Uncomment to register your domain name with CloudFlare
 # module "dns" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
