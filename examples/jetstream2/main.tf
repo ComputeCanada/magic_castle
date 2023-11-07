@@ -235,13 +235,17 @@ yellow_bold="\e[1;33m"
 
 # redirecting stdout to stderr to prevent file transfer problems
 echo -e "\nWelcome to the Magic Castle login node!\n" 1>&2
-CURRENT_STATE="$(mccheck)"
-echo -e "Magic Castle's current state is $CURRENT_STATE" 1>&2
-if [ "$CURRENT_STATE" == *"NOT READY"* ]; then
-    echo -e "You may want to grab some coffee while you wait." 1>&2
-    echo -e "Most recent puppet activity: $(journalctl -u puppet|tail -1)\n" 1>&2
-else
-    echo -e "" 1>&2
+
+# check if mccheck was installed correctly; don't want to break things
+if [ command -v mccheck &> /dev/null ]; then
+  CURRENT_STATE="$(mccheck)"
+  echo -e "Magic Castle's current state is $CURRENT_STATE" 1>&2
+  if [ "$CURRENT_STATE" == *"NOT READY"* ]; then
+      echo -e "You may want to grab some coffee while you wait." 1>&2
+      echo -e "Most recent puppet activity: $(journalctl -u puppet|tail -1)\n" 1>&2
+  else
+      echo -e "" 1>&2
+  fi
 fi
 echo -e "To re-check Magic Castle state: $${magenta_bold}mccheck$${normal}" 1>&2
 echo -e "Account info for this cluster: $${magenta_bold}/edwin/accounts.txt$${normal}\n" 1>&2
