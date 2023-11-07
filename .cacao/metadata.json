@@ -79,6 +79,27 @@
       "editable": true
     },
     {
+      "name": "nfs_home_size",
+      "type": "integer",
+      "default": 100,
+      "description": "Size in GB for the NFS home volume",
+      "editable": true
+    },
+    {
+      "name": "nfs_project_size",
+      "type": "integer",
+      "default": 100,
+      "description": "Size in GB for the NFS project volume",
+      "editable": true
+    },
+    {
+      "name": "nfs_scratch_size",
+      "type": "integer",
+      "default": 100,
+      "description": "Size in GB for the NFS scratch volume",
+      "editable": true
+    },
+    {
       "name": "project",
       "type": "cacao_provider_project",
       "description": "OpenStack Project ID"

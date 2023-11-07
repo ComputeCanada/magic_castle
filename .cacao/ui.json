@@ -69,6 +69,23 @@
                     "type": "row",
                     "items":[
                         {
+                            "name": "nfs_home_size",
+                            "ui_label": "Size of NFS Home Volume"
+                        },
+                        {
+                            "name": "nfs_project_size",
+                            "ui_label": "Size of NFS Project Volume"
+                        },
+                        {
+                            "name": "nfs_scratch_size",
+                            "ui_label": "Size of NFS Scratch Volume"
+                        }
+                    ]
+                },
+                {
+                    "type": "row",
+                    "items":[
+                        {
                             "name": "guest_users_count",
                             "ui_label": "# of guest users"
                         },

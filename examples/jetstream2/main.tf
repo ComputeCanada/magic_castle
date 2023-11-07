@@ -86,6 +86,24 @@ variable "node_count" {
   default = 1
 }
 
+variable "nfs_home_size" {
+  type = number
+  description = "size of nfs home volume"
+  default = 100
+}
+
+variable "nfs_project_size" {
+  type = number
+  description = "size of nfs project volume"
+  default = 100
+}
+
+variable "nfs_scratch_size" {
+  type = number
+  description = "size of nfs scratch volume"
+  default = 100
+}
+
 variable "guest_users_count" {
   type = number
   description = "number of guest users"
@@ -116,12 +134,6 @@ variable "cacao_user_data" {
   default = ""
 }
 
-# variable "cacao_public_key" {
-#   type = string
-#   description = "if set, will be an additional key used"
-#   default = ""
-# }
-
 variable "cacao_whitelist_ips" {
   type = string
   description = "comma-separated list of ips to whitelist to fail2ban"
@@ -151,9 +163,9 @@ module "openstack" {
 
   volumes = {
     nfs = {
-      home     = { size = 100 }
-      project  = { size = 50 }
-      scratch  = { size = 50 }
+      home     = { size = var.nfs_home_size }
+      project  = { size = var.nfs_project_size }
+      scratch  = { size = var.nfs_home_size }
     }
   }
 
