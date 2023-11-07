@@ -224,8 +224,8 @@ yellow_bold="\e[1;33m"
 # redirecting stdout to stderr to prevent file transfer problems
 echo -e "\nWelcome to the Magic Castle login node!\n" 1>&2
 CURRENT_STATE="$(mccheck)"
-echo -e "Magic Castle's current state is $${yellow_bold}$CURRENT_STATE$${normal}" 1>&2
-if [ "$CURRENT_STATE" != "READY" ]; then
+echo -e "Magic Castle's current state is $CURRENT_STATE" 1>&2
+if [ "$CURRENT_STATE" == *"NOT READY"* ]; then
     echo -e "You may want to grab some coffee while you wait." 1>&2
     echo -e "Most recent puppet activity: $(journalctl -u puppet|tail -1)\n" 1>&2
 else
@@ -240,14 +240,17 @@ EOT
   provisioner "file" {
     content = <<-EOT
 #!/bin/bash
+yellow_bold="\e[1;33m"
+green_bold="\e[1;32m"
+normal=$(tput sgr0)
 # check if magic castle has the following line
 # this simple test for now; until a better check is available, let's simply check for the final line
 # I'm sure a more robust check can be provided by more experienced MC folks :)
 journalctl -u puppet|grep -q 'Applied catalog in'
 if [ $? -ne 0 ]; then
-        echo "NOT READY"
+        echo "$${yellow_bold}NOT READY$${normal}"
 else
-        echo "READY"
+        echo "$${green_bold}READY$${normal}"
 fi
 EOT
     destination = "/tmp/mccheck"

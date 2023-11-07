@@ -44,7 +44,7 @@
                     "items":[
                         {
                             "name": "login_count",
-                            "ui_label": "# of mgmt nodes"
+                            "ui_label": "# of login nodes"
                         },
                         {
                             "name": "login_flavor",
