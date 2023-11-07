@@ -1,10 +1,10 @@
 {
   "schema_url": "https://gitlab.com/cyverse/cacao-common/-/raw/master/template/metadata-schemas/v3/schema.json",
   "schema_version": "3",
-  "name": "This launches Compute Canada's Magic Castle Terraform, https://github.com/ComputeCanada/magic_castle",
+  "name": "This launches Magic Castle terraform, https://github.com/ComputeCanada/magic_castle, from Digital Research Alliance of Canada",
   "author": "Edwin Skidmore",
   "author_email": "edwins@arizona.edu",
-  "description": "launch Compute Canada Magic Castle (Slurm Cluster)",
+  "description": "launch Magic Castle (Slurm Cluster)",
   "template_type": "openstack_terraform",
   "purpose": "openstack_compute",
   "cacao_pre_tasks": [],
