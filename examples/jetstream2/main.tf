@@ -239,7 +239,7 @@ echo -e "\nWelcome to the Magic Castle login node!\n" 1>&2
 
 # check if mccheck was installed correctly; don't want to break things
 if [ command -v mccheck &> /dev/null ]; then
-  CURRENT_STATE="$(mccheck)"
+  CURRENT_STATE="$(mccheck -n)"
   if [ "$CURRENT_STATE" == *"NOT READY"* ]; then
       echo -e "Magic Castle's current state is $${yellow_bold}$CURRENT_STATE$${normal}" 1>&2
       echo -e "You may want to grab some coffee while you wait." 1>&2
@@ -257,14 +257,28 @@ EOT
   provisioner "file" {
     content = <<-EOT
 #!/bin/bash
+green_bold="\e[1;32m"
+yellow_bold="\e[1;33m"
+
+# if $1 = "-n", the don't print color
+[[ $1 = "-n" ]] && COLOR=false || COLOR=true
+
 # check if magic castle has the following line
 # this simple test for now; until a better check is available, let's simply check for the final line
 # I'm sure a more robust check can be provided by more experienced MC folks :)
 journalctl -u puppet|grep -q 'Applied catalog in'
 if [ $? -ne 0 ]; then
-        echo "NOT READY"
+  if [ "$COLOR" = true ]; then
+    echo -e "$${yellow_bold}NOT READY$${normal}"
+  else
+    echo "NOT READY"
+  fi
 else
-        echo "READY"
+  if [ "$COLOR" = true ]; then
+    echo -e "$${green_bold}READY$${normal}"
+  else
+    echo "READY"
+  fi
 fi
 EOT
     destination = "/tmp/mccheck"
