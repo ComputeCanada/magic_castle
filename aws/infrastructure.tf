@@ -43,7 +43,7 @@ module "provision" {
   terraform_facts = module.configuration.terraform_facts
   hieradata       = var.hieradata
   sudoer_username = var.sudoer_username
-  depends_on      = [aws_instance.instances, aws_eip.public_ip]
+  depends_on      = [aws_instance.instances]
 }
 
 data "aws_availability_zones" "available" {
@@ -199,7 +199,7 @@ locals {
 
   inventory = { for x, values in module.design.instances :
     x => {
-      public_ip   = contains(values.tags, "public") ? aws_eip.public_ip[x].public_ip : ""
+      public_ip   = ""
       local_ip    = aws_network_interface.nic[x].private_ip
       prefix      = values.prefix
       tags        = values.tags
@@ -212,7 +212,10 @@ locals {
   }
 
   public_instances = { for host in keys(module.design.instances_to_build):
-    host => merge(module.configuration.inventory[host], {id=try(!contains(module.configuration.inventory[host].tags, "spot") ? aws_instance.instances[host].id : aws_spot_instance_request.spot_instances[host].spot_instance_id, "")})
+    host => merge(module.configuration.inventory[host], {
+        id=try(!contains(module.configuration.inventory[host].tags, "spot") ? aws_instance.instances[host].id : aws_spot_instance_request.spot_instances[host].spot_instance_id, "")
+        public_ip=try(!contains(module.configuration.inventory[host].tags, "spot") ? aws_instance.instances[host].public_ip : aws_spot_instance_request.spot_instances[host].public_ip, "")
+      })
     if contains(module.configuration.inventory[host].tags, "public")
   }
 }

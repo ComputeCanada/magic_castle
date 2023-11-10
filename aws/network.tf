@@ -122,14 +122,14 @@ resource "aws_network_interface" "nic" {
   }
 }
 
-resource "aws_eip" "public_ip" {
-  for_each = {
-    for x, values in module.design.instances : x => true if contains(values.tags, "public")
-  }
-  vpc               = true
-  network_interface = aws_network_interface.nic[each.key].id
-  depends_on        = [aws_internet_gateway.gw]
-  tags = {
-    Name = "${var.cluster_name}-${each.key}-eip"
-  }
-}
+# resource "aws_eip" "public_ip" {
+#   for_each = {
+#     for x, values in module.design.instances : x => true if contains(values.tags, "public")
+#   }
+#   vpc               = true
+#   network_interface = aws_network_interface.nic[each.key].id
+#   depends_on        = [aws_internet_gateway.gw]
+#   tags = {
+#     Name = "${var.cluster_name}-${each.key}-eip"
+#   }
+# }
