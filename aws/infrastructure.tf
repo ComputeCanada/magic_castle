@@ -36,7 +36,7 @@ module "configuration" {
 
 module "provision" {
   source          = "../common/provision"
-  bastions        = module.configuration.bastions
+  bastions        = local.public_instances
   puppetservers   = module.configuration.puppetservers
   tf_ssh_key      = module.configuration.ssh_key
   terraform_data  = module.configuration.terraform_data
