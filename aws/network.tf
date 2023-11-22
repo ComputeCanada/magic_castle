@@ -1,5 +1,6 @@
 resource "aws_vpc" "network" {
   cidr_block = "10.0.0.0/16"
+  assign_generated_ipv6_cidr_block = true
 
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -14,24 +15,47 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.network.id
 }
 
+resource "aws_egress_only_internet_gateway" "ipv6_egress_igw" {
+  vpc_id = aws_vpc.network.id
+}
+
+
 # Grant the VPC internet access by creating a very generic
 # destination CIDR ("catch all" - the least specific possible)
 # such that we route traffic to outside as a last resource for
 # any route that the table doesn't know about.
 resource "aws_route" "internet_access" {
-  route_table_id         = aws_vpc.network.main_route_table_id
+  route_table_id           = aws_vpc.network.main_route_table_id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.gw.id
 }
 
-resource "aws_subnet" "subnet" {
+resource "aws_route" "internet_access_ipv6" {
+  route_table_id              = aws_vpc.network.main_route_table_id
+  destination_ipv6_cidr_block = "::/0"
+  egress_only_gateway_id      = aws_egress_only_internet_gateway.ipv6_egress_igw.id
+}
+
+resource "aws_subnet" "private_subnet" {
   vpc_id     = aws_vpc.network.id
   cidr_block = "10.0.0.0/24"
+  availability_zone = local.availability_zone
+  assign_ipv6_address_on_creation = true
+  ipv6_cidr_block = aws_vpc.network.ipv6_cidr_block
+
+  tags = {
+    Name = "${var.cluster_name}-private-subnet"
+  }
+}
+
+resource "aws_subnet" "public_subnet" {
+  vpc_id     = aws_vpc.network.id
+  cidr_block = "10.0.1.0/24"
   availability_zone = local.availability_zone
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "${var.cluster_name}-subnet"
+    Name = "${var.cluster_name}-public-subnet"
   }
 }
 
@@ -44,6 +68,13 @@ resource "aws_security_group" "allow_out_any" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    ipv6_cidr_blocks = ["::/0"]
   }
 }
 
@@ -102,9 +133,9 @@ resource "aws_security_group" "allow_any_inside_vpc" {
   }
 }
 
-resource "aws_network_interface" "nic" {
+resource "aws_network_interface" "private_nic" {
   for_each        = module.design.instances
-  subnet_id       = aws_subnet.subnet.id
+  subnet_id       = aws_subnet.private_subnet.id
   interface_type  = contains(each.value["tags"], "efa") ? "efa" : null
 
   security_groups = concat(
@@ -118,7 +149,27 @@ resource "aws_network_interface" "nic" {
   )
 
   tags = {
-    Name = "${var.cluster_name}-${each.key}-if"
+    Name = "${var.cluster_name}-${each.key}-private-if"
+  }
+}
+
+resource "aws_network_interface" "public_nic" {
+  for_each        = { for key, values in module.design.instances: key => values if contains(values.tags, "public") }
+  subnet_id       = aws_subnet.public_subnet.id
+  interface_type  = contains(each.value["tags"], "efa") ? "efa" : null
+
+  security_groups = concat(
+    [
+      aws_security_group.allow_any_inside_vpc.id,
+      aws_security_group.allow_out_any.id,
+    ],
+    [
+      for tag, value in aws_security_group.external: value.id if contains(each.value.tags, tag)
+    ]
+  )
+
+  tags = {
+    Name = "${var.cluster_name}-${each.key}-public-if"
   }
 }
 
