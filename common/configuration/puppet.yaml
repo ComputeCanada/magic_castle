@@ -26,13 +26,11 @@ runcmd:
   # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
   # Activate IPV6 config for existing links
   - for i in /etc/sysconfig/network-scripts/ifcfg-*; do
-      if ! ip link show | grep -q "$${i##*-}:"; then
-        rm -f $i;
-      else
-        sed -i 's/^IPV6INIT=no$/IPV6INIT=yes/' $i
+      if ! ip link show | grep -q "$${i##*-}:"; then rm -f $i;
+      else sed -i 's/^IPV6INIT=.*$/IPV6INIT=yes/' $i;
       fi;
     done
-  - systemctl NetworkManager restart
+  - systemctl restart NetworkManager
   # Install package and configure kernel only if building from a "vanilla" linux image
   - |
     if ! test -f /etc/magic-castle-release; then
