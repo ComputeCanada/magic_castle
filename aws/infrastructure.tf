@@ -67,6 +67,7 @@ locals {
 }
 
 resource "aws_placement_group" "efa_group" {
+  count    = contains(module.configuration.all_tags, "efa") ? 1 : 0
   name     = "${var.cluster_name}-efa-placement_group"
   strategy = "cluster"
 }
@@ -87,23 +88,13 @@ resource "aws_instance" "instances" {
   ami               = lookup(each.value, "image", var.image)
   user_data         = base64gzip(module.configuration.user_data[each.key])
   availability_zone = local.availability_zone
-  placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null
+  placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group[0].id : null
 
   key_name          = aws_key_pair.key.key_name
 
-  dynamic "network_interface" {
-    for_each = ! contains(each.value.tags, "public") ? [ { "id" : each.key } ] : []
-    content {
-      network_interface_id = aws_network_interface.private_nic[each.key].id
-      device_index         = 0
-    }
-  }
-  dynamic "network_interface" {
-    for_each = contains(each.value.tags, "public") ? [ { "id" : each.key } ] : []
-    content {
-      network_interface_id = aws_network_interface.public_nic[each.key].id
-      device_index         = 0
-    }
+ network_interface {
+    network_interface_id = aws_network_interface.nic[each.key].id
+    device_index         = 0
   }
 
   ebs_optimized = true
@@ -132,18 +123,13 @@ resource "aws_spot_instance_request" "spot_instances" {
   ami               = lookup(each.value, "image", var.image)
   user_data         = base64gzip(module.configuration.user_data[each.key])
   availability_zone = local.availability_zone
-  placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null
+  placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group[0].id : null
 
   key_name          = aws_key_pair.key.key_name
 
   network_interface {
-    network_interface_id = aws_network_interface.private_nic[each.key].id
+    network_interface_id = aws_network_interface.nic[each.key].id
     device_index         = 0
-  }
-
-  network_interface {
-    network_interface_id = contains(each.value.tags, "public") ? aws_network_interface.public_nic[each.key].id : null
-    device_index = 1
   }
 
   ebs_optimized = true
@@ -215,7 +201,7 @@ locals {
   inventory = { for x, values in module.design.instances :
     x => {
       public_ip   = ""
-      local_ip    = aws_network_interface.private_nic[x].private_ip
+      local_ip    = aws_network_interface.nic[x].private_ip
       prefix      = values.prefix
       tags        = values.tags
       specs = {

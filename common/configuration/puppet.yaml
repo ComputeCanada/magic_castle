@@ -23,6 +23,16 @@ runcmd:
   - systemctl restart sshd
   # Enable fastest mirror for distribution using dnf package manager
   - test -f /etc/dnf/dnf.conf && (grep -qxF "fastestmirror=True" /etc/dnf/dnf.conf || echo "fastestmirror=True" >> /etc/dnf/dnf.conf)
+  # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
+  # Activate IPV6 config for existing links
+  - for i in /etc/sysconfig/network-scripts/ifcfg-*; do
+      if ! ip link show | grep -q "$${i##*-}:"; then
+        rm -f $i;
+      else
+        sed -i 's/^IPV6INIT=no$/IPV6INIT=yes/' $i
+      fi;
+    done
+  - systemctl NetworkManager restart
   # Install package and configure kernel only if building from a "vanilla" linux image
   - |
     if ! test -f /etc/magic-castle-release; then
@@ -108,8 +118,6 @@ runcmd:
   - /opt/puppetlabs/bin/puppet config set report false
   - /opt/puppetlabs/bin/puppet config set postrun_command /opt/puppetlabs/bin/postrun
   - systemctl enable puppet
-# Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
-  - for i in /etc/sysconfig/network-scripts/ifcfg-*; do if ! ip link show | grep -q "$${i##*-}:"; then rm -f $i; fi; done
 # AWS EFA driver installation
 %{ if contains(tags, "efa") }
   - curl -O https://efa-installer.amazonaws.com/aws-efa-installer-latest.tar.gz

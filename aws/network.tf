@@ -38,7 +38,7 @@ resource "aws_route" "internet_access_ipv6" {
 
 resource "aws_subnet" "private_subnet" {
   vpc_id     = aws_vpc.network.id
-  cidr_block = "10.0.0.0/24"
+  cidr_block = cidrsubnet(aws_vpc.network.cidr_block, 8, 0)
   availability_zone = local.availability_zone
   assign_ipv6_address_on_creation = true
   ipv6_cidr_block = aws_vpc.network.ipv6_cidr_block
@@ -50,7 +50,7 @@ resource "aws_subnet" "private_subnet" {
 
 resource "aws_subnet" "public_subnet" {
   vpc_id     = aws_vpc.network.id
-  cidr_block = "10.0.1.0/24"
+  cidr_block = cidrsubnet(aws_vpc.network.cidr_block, 8, 1)
   availability_zone = local.availability_zone
   map_public_ip_on_launch = true
 
@@ -116,7 +116,7 @@ resource "aws_security_group" "allow_any_inside_vpc" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["10.0.0.0/16"]
+    cidr_blocks = [aws_vpc.network.cidr_block]
     self        = true
   }
 
@@ -124,7 +124,7 @@ resource "aws_security_group" "allow_any_inside_vpc" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["10.0.0.0/16"]
+    cidr_blocks = [aws_vpc.network.cidr_block]
     self        = true
   }
 
@@ -133,9 +133,16 @@ resource "aws_security_group" "allow_any_inside_vpc" {
   }
 }
 
-resource "aws_network_interface" "private_nic" {
+locals {
+  # Tags that require an IPV4 address
+  # - public: to match record A
+  # - puppet: because git clone does not work with ipv6
+  ipv4_tags = ["public", "puppet"]
+}
+
+resource "aws_network_interface" "nic" {
   for_each        = module.design.instances
-  subnet_id       = aws_subnet.private_subnet.id
+  subnet_id       = length(setintersection(each.value.tags, local.ipv4_tags)) > 0 ? aws_subnet.public_subnet.id : aws_subnet.private_subnet.id 
   interface_type  = contains(each.value["tags"], "efa") ? "efa" : null
 
   security_groups = concat(
@@ -149,38 +156,6 @@ resource "aws_network_interface" "private_nic" {
   )
 
   tags = {
-    Name = "${var.cluster_name}-${each.key}-private-if"
+    Name = "${var.cluster_name}-${each.key}-if"
   }
 }
-
-resource "aws_network_interface" "public_nic" {
-  for_each        = { for key, values in module.design.instances: key => values if contains(values.tags, "public") }
-  subnet_id       = aws_subnet.public_subnet.id
-  interface_type  = contains(each.value["tags"], "efa") ? "efa" : null
-
-  security_groups = concat(
-    [
-      aws_security_group.allow_any_inside_vpc.id,
-      aws_security_group.allow_out_any.id,
-    ],
-    [
-      for tag, value in aws_security_group.external: value.id if contains(each.value.tags, tag)
-    ]
-  )
-
-  tags = {
-    Name = "${var.cluster_name}-${each.key}-public-if"
-  }
-}
-
-# resource "aws_eip" "public_ip" {
-#   for_each = {
-#     for x, values in module.design.instances : x => true if contains(values.tags, "public")
-#   }
-#   vpc               = true
-#   network_interface = aws_network_interface.nic[each.key].id
-#   depends_on        = [aws_internet_gateway.gw]
-#   tags = {
-#     Name = "${var.cluster_name}-${each.key}-eip"
-#   }
-# }

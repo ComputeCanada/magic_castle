@@ -168,3 +168,7 @@ output "bastions" {
     if contains(values.tags, var.bastion_tag) && contains(values.tags, "public") &&  (!contains(values.tags, "pool"))
   }
 }
+
+output "all_tags" {
+  value = local.all_tags
+}
