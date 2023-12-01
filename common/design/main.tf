@@ -27,7 +27,7 @@ locals {
     for ki, vi in var.volumes : {
       for kj, vj in vi :
       "${ki}-${kj}" => merge({
-        instances = [for x, values in local.instances : x if contains(values.tags, ki)]
+        instances = [for x, values in local.instances_to_build : x if contains(values.tags, ki)]
       }, vj)
     }
   ]...)
