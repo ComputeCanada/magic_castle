@@ -3,6 +3,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [13.2.0] UNRELEASED
+
+### Added
+
+- Added validation on `cluster_name`, `domain` and instance's `prefix` (#257)
+- Added documentation on SSHFP and DNSSEC activation
+
+### Changed
+
+- Replaced `instances` by `instances_to_build` in `module.design` to allow pool node to have volumes (#272)
+
+
 ## [13.1.0] - 2023-10-27
 
 ### Changed
