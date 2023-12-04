@@ -14,6 +14,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Replaced `instances` by `instances_to_build` in `module.design` to allow pool node to have volumes (#272)
 
+Refer to [puppet-magic_castle changelog](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/CHANGELOG.md)
+for details on change to the Puppet environment.
 
 ## [13.1.0] - 2023-10-27
 
