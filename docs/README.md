@@ -611,6 +611,7 @@ with the tag, unique block devices are attached, no multi-instance attachment is
 
 Each volume in map is defined a key corresponding to its and a map of attributes:
 - `size`: size of the block device in GB.
+- `quota` (optional): maximum storage usage per user on the volume. Values in bytes and multipliers defined by XFS are supported. By default, there is no quota limit.
 - `type` (optional): type of volume to use. Default value per provider:
   - Azure: `Premium_LRS`
   - AWS: `gp2`
@@ -627,7 +628,7 @@ instances = { 
 }
 volumes = {
   nfs = {
-    home = { size = 100 }
+    home = { size = 100, quota = 10g }
     project = { size = 100 }
     scratch = { size = 100 }
   }

@@ -11,6 +11,7 @@ variable "cloud_region" { }
 variable "domain_name" { }
 variable "cluster_name" { }
 variable "volume_devices" { }
+variable "volumes" { }
 variable "guest_passwd" { }
 
 variable "generate_ssh_key" { }
@@ -69,11 +70,22 @@ locals {
     })
   }
 
+  volumes = {
+    for ki, vi in var.volume_devices :
+      ki => {
+        for kj, vj in vi :
+        kj => {
+          "devices" : vj
+          "quota" :  try(var.volumes[ki][kj]["quota"], null) # `null` is default value (no quota)
+        }
+      }
+    }
+
   terraform_data  = yamlencode({
     terraform = {
       instances = local.inventory
       tag_ip    = local.tag_ip
-      volumes   = var.volume_devices
+      volumes   = local.volumes
       data      = {
         sudoer_username = var.sudoer_username
         public_keys     = local.ssh_authorized_keys

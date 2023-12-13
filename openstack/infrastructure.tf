@@ -17,6 +17,7 @@ module "configuration" {
   generate_ssh_key      = var.generate_ssh_key
   public_keys           = var.public_keys
   volume_devices        = local.volume_devices
+  volumes               = var.volumes
   domain_name           = module.design.domain_name
   bastion_tag           = module.design.bastion_tag
   cluster_name          = var.cluster_name
