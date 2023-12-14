@@ -21,7 +21,6 @@ module "configuration" {
   sudoer_username       = var.sudoer_username
   generate_ssh_key      = var.generate_ssh_key
   public_keys           = var.public_keys
-  volume_devices        = local.volume_devices
   domain_name           = module.design.domain_name
   bastion_tag           = module.design.bastion_tag
   cluster_name          = var.cluster_name
@@ -159,17 +158,6 @@ resource "google_compute_attached_disk" "attachments" {
 }
 
 locals {
-  volume_devices = {
-    for ki, vi in var.volumes :
-    ki => {
-      for kj, vj in vi :
-      kj => [for key, volume in module.design.volumes :
-        "/dev/disk/by-id/google-${var.cluster_name}-${volume["instance"]}-${ki}-${kj}"
-        if key == "${volume["instance"]}-${ki}-${kj}"
-      ]
-    }
-  }
-
   inventory = { for x, values in module.design.instances :
     x => {
       public_ip = contains(values.tags, "public") ? google_compute_address.public_ip[x].address : ""
@@ -181,6 +169,13 @@ locals {
         ram  = data.external.machine_type[values["prefix"]].result["ram"]
         gpus = try(data.external.machine_type[values["prefix"]].result["gpus"], lookup(values, "gpu_count", 0))
       }
+      volumes = contains(keys(module.design.volume_per_instance), x) ? {
+        for pv_key, pv_values in var.volumes:
+          pv_key => {
+            for name, specs in pv_values:
+              name => ["/dev/disk/by-id/google-${var.cluster_name}-${x}-${pv_key}-${name}"]
+          } if contains(values.tags, pv_key)
+      } : {}
     }
   }
 

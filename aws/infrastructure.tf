@@ -21,7 +21,6 @@ module "configuration" {
   sudoer_username       = var.sudoer_username
   generate_ssh_key      = var.generate_ssh_key
   public_keys           = var.public_keys
-  volume_devices        = local.volume_devices
   domain_name           = module.design.domain_name
   bastion_tag           = module.design.bastion_tag
   cluster_name          = var.cluster_name
@@ -186,17 +185,6 @@ resource "aws_volume_attachment" "attachments" {
 }
 
 locals {
-  volume_devices = {
-    for ki, vi in var.volumes :
-    ki => {
-      for kj, vj in vi :
-      kj => [ for key, volume in module.design.volumes:
-        "/dev/disk/by-id/*${replace(aws_ebs_volume.volumes["${volume["instance"]}-${ki}-${kj}"].id, "-", "")}"
-        if key == "${volume["instance"]}-${ki}-${kj}"
-      ]
-    }
-  }
-
   inventory = { for x, values in module.design.instances :
     x => {
       public_ip   = contains(values.tags, "public") ? aws_eip.public_ip[x].public_ip : ""
@@ -208,6 +196,13 @@ locals {
         ram  = data.aws_ec2_instance_type.instance_type[values.prefix].memory_size
         gpus = try(one(data.aws_ec2_instance_type.instance_type[values.prefix].gpus).count, 0)
       }
+      volumes = contains(keys(module.design.volume_per_instance), x) ? {
+        for pv_key, pv_values in var.volumes:
+          pv_key => {
+            for name, specs in pv_values:
+              name => ["/dev/disk/by-id/*${replace(aws_ebs_volume.volumes["${x}-${pv_key}-${name}"].id, "-", "")}"]
+          } if contains(values.tags, pv_key)
+       } : {}
     }
   }
 

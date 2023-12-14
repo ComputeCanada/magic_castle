@@ -21,7 +21,6 @@ module "configuration" {
   sudoer_username       = var.sudoer_username
   generate_ssh_key      = var.generate_ssh_key
   public_keys           = var.public_keys
-  volume_devices        = local.volume_devices
   domain_name           = module.design.domain_name
   bastion_tag           = module.design.bastion_tag
   cluster_name          = var.cluster_name
@@ -146,17 +145,6 @@ resource "azurerm_virtual_machine_data_disk_attachment" "attachments" {
 }
 
 locals {
-  volume_devices = {
-    for ki, vi in var.volumes :
-    ki => {
-      for kj, vj in vi :
-      kj => [for key, volume in module.design.volumes :
-        "/dev/disk/azure/scsi1/lun${index(module.design.volume_per_instance[volume.instance], replace(key, "${volume.instance}-", ""))}"
-        if key == "${volume["instance"]}-${ki}-${kj}"
-      ]
-    }
-  }
-
   resource_group_name = var.azure_resource_group == "" ? azurerm_resource_group.group[0].name : var.azure_resource_group
 
   vmsizes   = jsondecode(file("${path.module}/vmsizes.json"))
@@ -171,6 +159,13 @@ locals {
         ram  = local.vmsizes[values.type].ram
         gpus = local.vmsizes[values.type].gpus
       }
+      volumes = contains(keys(module.design.volume_per_instance), x) ? {
+        for pv_key, pv_values in var.volumes:
+          pv_key => {
+            for name, specs in pv_values:
+              name => ["/dev/disk/azure/scsi1/lun${index(module.design.volume_per_instance[x], replace(pv_key, "${x}-", ""))}"]
+          } if contains(values.tags, pv_key)
+       } : {}
     }
   }
 
