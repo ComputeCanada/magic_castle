@@ -90,6 +90,7 @@ runcmd:
   - "(cd /etc/puppetlabs/code/environments/production; /opt/puppetlabs/puppet/bin/r10k puppetfile install)"
 # Wait for Terraform to scp its YAML data
   - while [ ! -e "/etc/puppetlabs/data/terraform_data.yaml" ]; do echo "$(date -I'seconds') Waiting for terraform to scp terraform_data.yaml"; sleep 5; done
+  - /etc/puppetlabs/code/environments/production/generate_terraform_self.rb
 %{ if node_name != keys(puppetservers)[0] }
   - sed -e '/certificate-authority-service/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
   - sed -e '/certificate-authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
