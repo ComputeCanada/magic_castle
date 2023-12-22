@@ -31,6 +31,7 @@ module "configuration" {
   cloud_region          = local.cloud_region
   skip_upgrade          = var.skip_upgrade
   puppetfile            = var.puppetfile
+  mount_points          = { "nfs" = { for x, y in lookup(var.filesystems, "efs", {}): x => [aws_efs_mount_target.efs_targets[x].ip_address, "/"] } }
 }
 
 module "provision" {
@@ -182,6 +183,13 @@ resource "aws_volume_attachment" "attachments" {
   volume_id    = aws_ebs_volume.volumes[each.key].id
   instance_id  = aws_instance.instances[each.value.instance].id
   skip_destroy = true
+}
+
+resource "aws_efs_mount_target" "efs_targets" {
+  for_each       = lookup(var.filesystems, "efs", {})
+  file_system_id = lookup(each.value, "id", null)
+  subnet_id      = aws_subnet.subnet.id
+  security_groups = [aws_security_group.allow_any_inside_vpc.id]
 }
 
 locals {

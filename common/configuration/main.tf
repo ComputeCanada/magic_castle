@@ -19,6 +19,8 @@ variable "skip_upgrade" { }
 variable "puppetfile" { }
 variable "bastion_tag" { }
 
+variable "mount_points" { default = { } }
+
 resource "tls_private_key" "ssh" {
   count     = var.generate_ssh_key ? 1 : 0
   algorithm = "ED25519"
@@ -70,9 +72,10 @@ locals {
 
   terraform_data  = yamlencode({
     terraform = {
-      instances = local.inventory
-      tag_ip    = local.tag_ip
-      data      = {
+      instances    = local.inventory
+      tag_ip       = local.tag_ip
+      mount_points = var.mount_points
+      data         = {
         sudoer_username = var.sudoer_username
         public_keys     = local.ssh_authorized_keys
         cluster_name    = lower(var.cluster_name)

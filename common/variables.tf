@@ -146,3 +146,7 @@ variable "puppetfile" {
   default     = ""
   description = "Additional content for the pupet environment Puppetfile. If the string includes a `forge` setting, the string replaces the original Puppetfile completely."
 }
+
+variable "filesystems" {
+  default = {}
+}
