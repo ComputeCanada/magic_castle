@@ -17,6 +17,8 @@ module "azure" {
 
   # Visit https://azuremarketplace.microsoft.com/en-us/marketplace/apps/almalinux.almalinux-x86_64
   # to contract the free AlmaLinux plan and be able to use the image.
+  # You can also do this via the Azure CLI with
+  #   az vm image terms accept --publisher almalinux --offer almalinux-x86_64 --plan 9-gen2
   plan = {
     name      = "9-gen2"
     product   = "almalinux-x86_64"
