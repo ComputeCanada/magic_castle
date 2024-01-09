@@ -55,7 +55,7 @@ runcmd:
   - systemctl daemon-reload
   - systemctl enable puppetserver
 # Install gem dependencies
-  - "/opt/puppetlabs/puppet/bin/gem install autosign:1.0.1 hiera-eyaml:3.4.0 puppet_forge:4.1.0 r10k:4.0.0"
+  - "/opt/puppetlabs/puppet/bin/gem install autosign:1.0.1 hiera-eyaml:3.4.0 faraday:2.8.1 faraday-net_http:3.0.2 puppet_forge:4.1.0 r10k:4.0.1"
 # Enable autosign with password
   - chgrp puppet /etc/autosign.conf
   - chown puppet:puppet /var/log/autosign.log
