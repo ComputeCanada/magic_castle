@@ -75,6 +75,7 @@ runcmd:
   - ln -sf /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/data/user_data.yaml /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/facts/terraform_facts.yaml /etc/puppetlabs/code/environments/production/site/profile/facts.d
+  - /opt/puppetlabs/puppet/bin/gem install autosign:1.0.1 hiera-eyaml:3.4.0 faraday:2.8.1 faraday-net_http:3.0.2 puppet_forge:4.1.0
   - /opt/puppetlabs/puppet/bin/gem install librarian-puppet
   - "(cd /etc/puppetlabs/code/environments/production/ && HOME=/root PATH=$PATH:/opt/puppetlabs/puppet/bin /opt/puppetlabs/puppet/bin/librarian-puppet install)"
 # Bootstrap services that are essential to the puppet repo
