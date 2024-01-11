@@ -301,8 +301,26 @@ Then, click on "Confirm & Apply" and "Confirm Plan".
 10. Compute nodes defined in step 8 can be modified at any point in the cluster lifetime and
 more _pool_ compute nodes can be added or removed if needed.
 
+### Considerations for autoscaling
 To reduce the time required for compute nodes to become available in Slurm, consider
 [creating a compute node image](./README.md#1012-create-a-compute-node-image).
+
+JupyterHub will time out by default after 300 seconds if a node is not spawned yet. Since it may
+take longer than this to spawn a node, even with an image created, consider increasing the timeout
+by adding the following to your YAML configuration file: 
+```
+jupyterhub::jupyterhub_config_hash:
+  SlurmFormSpawner:
+    start_timeout: 900
+```
+
+Slurm 23 adds the possibility for `sinfo` to report nodes that are not yet spawned. This is useful
+if you want JupyterHub to be aware of those nodes, for example if you want to allow to use GPU nodes
+without keeping them online at all time. To use that version of Slurm, add the following to your YAML
+configuration file:
+```
+profile::slurm::base::slurm_version: '23.02'
+``` 
 
 ### Troubleshoot autoscaling with Terraform Cloud
 
