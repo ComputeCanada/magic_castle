@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [12.6.9] - 2024-01-11
+
+### Changed
+- Explicitly set version of librarian-puppet gem dependencies to fix incompatibility with Puppet 7 bundled Ruby (v2.8).
+
 ## [12.6.8] - 2023-10-05
 
 No changes to infrastructure code.
