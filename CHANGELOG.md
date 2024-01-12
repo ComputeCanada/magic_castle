@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [13.2.1] 2024-01-12
+
+### Changed
+- Bump puppet-agent version to 7.27.0 and puppet-server version to 7.14.0
+
 ## [13.2.0] 2024-01-09
 
 ### Added

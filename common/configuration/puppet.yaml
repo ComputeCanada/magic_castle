@@ -37,7 +37,7 @@ runcmd:
 %{ endif ~}
       # Puppet agent configuration and install
       yum -y install https://yum.puppet.com/puppet7-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
-      yum -y install puppet-agent-7.26.0
+      yum -y install puppet-agent-7.27.0
       install -m 700 /dev/null /opt/puppetlabs/bin/postrun
       # kernel configuration
       systemctl disable kdump
@@ -47,7 +47,7 @@ runcmd:
     fi
 %{ if contains(tags, "puppet") }
 # Install Java 11 and puppetserver
-  - yum -y install java-11-openjdk-headless puppetserver-7.13.0
+  - yum -y install java-11-openjdk-headless puppetserver-7.14.0
 # Configure puppetserver to use Java 11
   - sudo sed -i 's;\(JAVA_BIN=\).*;\1"/usr/lib/jvm/jre-11/bin/java";g' /etc/sysconfig/puppetserver
 # Configure puppet-agent to start after puppetserver when on puppetserver
