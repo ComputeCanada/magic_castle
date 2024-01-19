@@ -844,7 +844,7 @@ Defines the scientific software environment that users have access when they log
 Possible values are:
 - **default** - `"alliance"` / `"computecanada"`: [Digital Alliance Research Alliance of Canada scientific software environment](https://docs.alliancecan.ca/wiki/Accessing_CVMFS) (previously Compute Canada environment)
 - `"eessi"`: [European Environment for Scientific Software Installation (EESSI)](https://eessi.github.io/docs/)
-- `""`: no scientific software environment
+- `null` / `""`: no scientific software environment
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 
