@@ -130,7 +130,7 @@ variable "software_stack" {
   default     = "alliance"
   description = "Provider of scientific software environment"
   validation {
-    condition     = contains(["alliance", "computecanada", "eessi", ""], var.software_stack)
+    condition     = var.software_stack == null || contains(["alliance", "computecanada", "eessi", ""], var.software_stack)
     error_message = "software_stack can be one of these value: \"alliance\", \"computecanada\", \"eessi\" or \"\""
   }
 }
