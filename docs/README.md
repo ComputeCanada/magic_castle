@@ -391,7 +391,7 @@ Defines
 Optional modules following the current module in the example `main.tf` can
 be used to register DNS records in relation to your cluster if the
 DNS zone of this domain is administered by one of the supported providers.
-Refer to section [6. DNS Configuration and SSL Certificates](#6-dns-configuration-and-ssl-certificates)
+Refer to section [6. DNS Configuration and SSL Certificates](#6-dns-configuration-and-wildcard-ssl-certificate)
 for more details.
 
 **Requirements**:
@@ -544,7 +544,7 @@ You are free to define your own additional tags.
 Optional attributes can be defined:
 1. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create (default: 1).
 2. `image`: specification of the image to use for this instance type. (default: global [`image`](#46-image) value).
-Refer to section [10.12 - Create a compute node image](#1012-Create-compute-node-image) to learn how this attribute can
+Refer to section [10.12 - Create a compute node image](#1012-create-a-compute-node-image) to learn how this attribute can
 be leveraged to accelerate compute node configuration.
 3. `disk_size`: size in gibibytes (GiB) of the instance's root disk containing
 the operating system and service software
@@ -681,7 +681,7 @@ you will have to login using the sudoer account and the SSH keys listed
 in `public_keys`.
 
 If you would like to add a user account after the cluster is built, refer to
-section [10.3](#103-add-a-user-account) and [10.4](#104-increase-the-number-of-guest-accounts).
+section [10.3](#103-add-ldap-users) and [10.4](#104-increase-the-number-of-guest-accounts).
 
 **Requirement**: Must be an integer, minimum value is 0.
 
