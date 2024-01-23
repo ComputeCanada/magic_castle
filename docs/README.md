@@ -838,12 +838,13 @@ Puppet agent run.
 
 ### 4.16 software_stack (optional)
 
-**default_value**: `computecanada`
+**default_value**: `"alliance"`
 
-Defines the research computing software stack to be provided. The default value `computecanada`
-provides the Compute Canada software stack, but Magic Castle also
-supports the [EESSI](https://eessi.github.io/docs/) software stack (as an alternative) by setting this
-value to `eessi`.
+Defines the scientific software environment that users have access when they login.
+Possible values are:
+- **default** - `"alliance"` / `"computecanada"`: [Digital Alliance Research Alliance of Canada scientific software environment](https://docs.alliancecan.ca/wiki/Accessing_CVMFS) (previously Compute Canada environment)
+- `"eessi"`: [European Environment for Scientific Software Installation (EESSI)](https://eessi.github.io/docs/)
+- `null` / `""`: no scientific software environment
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 
