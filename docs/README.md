@@ -1194,7 +1194,7 @@ Refer to the [reverse proxy configuration](https://github.com/ComputeCanada/pupp
 
 Magic Castle DNS module creates SSHFP records for all instances with a public ip address.
 These records can be used by SSH clients to verify the SSH host keys of the server.
-If [DNSSEC](https://www.cloudflare.com/dns/dnssec/how-dnssec-works/)
+If [DNSSEC](https://developers.cloudflare.com/dns/dnssec/)
 is enabled for the domain and the SSH client is correctly configured,
 no host key confirmation will be prompted when connecting to the server.
 
