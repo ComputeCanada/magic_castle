@@ -1064,11 +1064,8 @@ host.
 If you prefer using an API token instead of the global API key, you will need to configure a token with the following four permissions with the [Cloudflare API Token interface](https://dash.cloudflare.com/profile/api-tokens).
 
 | Section | Subsection | Permission|
-| ------------- |-------------:| -----:|
-| Account | Account Settings | Read|
-| Zone | Zone Settings | Read|
-| Zone | Zone | Read|
-| Zone | DNS | Edit|
+| :------ |:---------- | :-------- |
+| Zone    | DNS        | Edit      |
 
 Instead of step 5, export only `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ZONE_API_TOKEN`, and `CLOUDFLARE_DNS_API_TOKEN` equal to the API token generated previously.
 
