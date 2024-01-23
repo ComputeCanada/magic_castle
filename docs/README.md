@@ -1796,7 +1796,7 @@ on the instance to which the expanded volume is attached.
     ```
     lvextend -l '+100%FREE' -r /dev/project_vg/project
     ```
-5. Resize the XFS fileystem:
+5. Resize the XFS filesystem:
     ```
     xfs_growfs /dev/project_vg/project
     ```
