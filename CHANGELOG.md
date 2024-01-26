@@ -64,7 +64,7 @@ for details on change to the Puppet environment.
 - Port 22 for SSH connection is now open only for `login` tagged instances of all instances with public ip address
 - Replaced `null_resource` by `terraform_data`
 - Bumped terraform minimum required version to 1.4.0
-- Issuing wilcard certificate is now optional
+- Issuing wildcard certificate is now optional
 - Replaced librarian-puppet by r10k
 
 ### Removed
