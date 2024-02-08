@@ -126,6 +126,7 @@ locals {
           }
         }
         mig = lookup(values.specs, "mig", null)
+        shard = lookup(values.specs, "shard", null)
       }
     )
   }

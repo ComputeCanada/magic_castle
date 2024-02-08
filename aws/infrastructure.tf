@@ -208,6 +208,7 @@ locals {
         ram  = data.aws_ec2_instance_type.instance_type[values.prefix].memory_size
         gpus = try(one(data.aws_ec2_instance_type.instance_type[values.prefix].gpus).count, 0)
         mig  = lookup(values, "mig", null)
+        shard  = lookup(values, "shard", null)
       }
     }
   }

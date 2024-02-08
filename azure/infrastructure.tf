@@ -171,6 +171,7 @@ locals {
         ram  = local.vmsizes[values.type].ram
         gpus = local.vmsizes[values.type].gpus
         mig  = lookup(values, "mig", null)
+        shard  = lookup(values, "shard", null)
       }
     }
   }
