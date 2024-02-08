@@ -181,6 +181,7 @@ locals {
         ram  = data.external.machine_type[values["prefix"]].result["ram"]
         gpus = try(data.external.machine_type[values["prefix"]].result["gpus"], lookup(values, "gpu_count", 0))
         mig  = lookup(values, "mig", null)
+        shard  = lookup(values, "shard", null)
       }
     }
   }

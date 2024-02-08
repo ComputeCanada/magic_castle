@@ -138,6 +138,7 @@ locals {
           parseint(split(":", lookup(data.openstack_compute_flavor_v2.flavors[values.prefix].extra_specs, "pci_passthrough:alias", "gpu:0"))[1], 10)
         ])
         mig  = lookup(values, "mig", null)
+        shard  = lookup(values, "shard", null)
       }
     }
   }
