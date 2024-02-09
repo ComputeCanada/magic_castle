@@ -956,6 +956,20 @@ the provided content will replace entirely the Magic Castle environment's
 **Post build modification effect**: None. To modify the Puppetfile after the cluster is initialized, log
 on the Puppet server and modify `/etc/puppetlabs/code/environments/production/Puppetfile`.
 
+### 4.20 hieradata_folder_path (optional)
+
+**Default Value:** Empty string
+
+This parameter specifies the path to a folder containing multiple YAML files used for configuring hieradata based on instance prefixes or hostnames.
+
+**Folder Structure:**
+
+- All Instances: `*.yaml`
+- Per Instance Prefix: `<prefix>/*.yaml` and `<prefix>.yaml`
+- Per Instance Hostname: `<hostname>/*.yaml` and `<hostname>.yaml`
+
+For more information on hieradata definition, refer to section [4.13 hieradata (optional)](#413-hieradata-optional).
+
 ## 5. Cloud Specific Configuration
 
 ### 5.1 Amazon Web Services
