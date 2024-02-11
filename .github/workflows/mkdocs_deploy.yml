@@ -1,0 +1,32 @@
+# documentation: https://help.github.com/en/articles/workflow-syntax-for-github-actions
+name: deploy documentation (only on push to main branch)
+on:
+  push:
+    branches: main
+# Declare default permissions as read only.
+permissions: read-all
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      # Need to be able to write to the deploy branch
+      contents: write
+    steps:
+    - name: checkout
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      with:
+        fetch-depth: 0  # need to fetch all history to ensure correct Git revision dates in docs
+
+    - name: set up Python
+      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+      with:
+        python-version: '3.10'
+
+    - name: install mkdocs + plugins
+      run: |
+          pip install -r requirements.txt
+          pip list | grep mkdocs
+          mkdocs --version
+
+    - name: build tutorial
+      run: mkdocs build --strict && mkdocs gh-deploy --force

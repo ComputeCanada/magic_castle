@@ -1,5 +1,7 @@
 # Magic Castle Documentation
 
+<p><img src="img/logo.png" width="50%"/></p>
+
 ## Table of Content
 
 1. [Setup](#1-setup)
@@ -812,7 +814,8 @@ sure there exists at least one effective firewall rule where `from_port <= 22 <=
 IP address of the machine that executes Terraform is in the CIDR range (i.e: `cidr = "0.0.0.0/0"` being the most
 permissive). This corresponds to the `ssh` rule in the default firewall rule map.
 This guarantees that Terraform will be able to use SSH to connect to the cluster from anywhere. For more information
-about this requirement, refer to Magic Castle's [bastion tag computation code](../common/design/main.tf#L42).
+about this requirement, refer to Magic Castle's
+[bastion tag computation code](https://github.com/ComputeCanada/magic_castle/blob/main/common/design/main.tf#L58).
 
 **Post build modification effect**: modify the cloud provider firewall rules at next `terraform apply`.
 
