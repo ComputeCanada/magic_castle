@@ -54,6 +54,7 @@ and apply their configuration based on the tags defined in the preceding YAML fi
 - [Campus Research Computing Consortium - Clusters in the Sky: How Canada is Building Beyond Iaas Cloud with Magic Castle](https://www.youtube.com/watch?v=jWCyUeGmm-8) (2021-05-20)
 - [EESSI User Meeting 2022 - Magic Castle: Preview of MC 12](https://www.youtube.com/watch?v=XGnxbIHJLmw&list=PL6_PkP_6pUtb7_tovj1V__y4ii_AjhroJ&index=6) (2022-09-14)
 - [HashiTalks Québec 2022 - Magic Castle: Le CIP à l'échelle grâce à Terraform Cloud](https://www.youtube.com/watch?v=3Mg4gMmkktM) (2022-09-29)
+- [SIGHPC Education Feb. 8 2024 - Magic Castle - Terraforming the cloud to teach HPC](https://sighpceducation.acm.org/events/magic_castle/)
 
 ## List of other cloud HPC cluster open-source projects
 
