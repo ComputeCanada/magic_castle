@@ -94,6 +94,12 @@ variable "hieradata" {
   }
 }
 
+variable "hieradata_folder_path" {
+  type        = string
+  default     = ""
+  description = "Path to hieradata folder containing YAML files to be included in the puppet environment"
+}
+
 variable "sudoer_username" {
   type        = string
   default     = "centos"

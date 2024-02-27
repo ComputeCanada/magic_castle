@@ -30,15 +30,16 @@ module "configuration" {
 }
 
 module "provision" {
-  source          = "../common/provision"
-  bastions        = module.configuration.bastions
-  puppetservers   = module.configuration.puppetservers
-  tf_ssh_key      = module.configuration.ssh_key
-  terraform_data  = module.configuration.terraform_data
-  terraform_facts = module.configuration.terraform_facts
-  hieradata       = var.hieradata
-  sudoer_username = var.sudoer_username
-  depends_on      = [local.network_provision_dep]
+  source           = "../common/provision"
+  bastions         = module.configuration.bastions
+  puppetservers    = module.configuration.puppetservers
+  tf_ssh_key       = module.configuration.ssh_key
+  terraform_data   = module.configuration.terraform_data
+  terraform_facts  = module.configuration.terraform_facts
+  hieradata        = var.hieradata
+  hieradata_folder = var.hieradata_folder_path
+  sudoer_username  = var.sudoer_username
+  depends_on       = [local.network_provision_dep]
 }
 
 data "openstack_images_image_v2" "image" {
