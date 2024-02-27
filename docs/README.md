@@ -886,7 +886,17 @@ on the Puppet server and modify `/etc/puppetlabs/code/environments/production/Pu
 
 ### 4.20 hieradata_folder_path (optional)
 
-**default value**: empty string
+**Default Value:** Empty string
+
+This parameter specifies the path to a folder containing multiple YAML files used for configuring hieradata based on instance prefixes or hostnames.
+
+**Folder Structure:**
+
+- All Instances: `*.yaml`
+- Per Instance Prefix: `<prefix>/*.yaml` and `<prefix>.yaml`
+- Per Instance Hostname: `<hostname>/*.yaml` and `<hostname>.yaml`
+
+For more information on hieradata definition, refer to section [4.13 hieradata (optional)](#413-hieradata-optional).
 
 ## 5. Cloud Specific Configuration
 
