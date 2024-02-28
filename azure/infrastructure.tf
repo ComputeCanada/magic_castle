@@ -167,7 +167,10 @@ locals {
         for pv_key, pv_values in var.volumes:
           pv_key => {
             for name, specs in pv_values:
-              name => ["/dev/disk/azure/scsi1/lun${index(module.design.volume_per_instance[x], replace(pv_key, "${x}-", ""))}"]
+              name => {
+                glob = "/dev/disk/azure/scsi1/lun${index(module.design.volume_per_instance[x], replace(pv_key, "${x}-", ""))}"
+                size = specs.size
+              }
           } if contains(values.tags, pv_key)
        } : {}
     }

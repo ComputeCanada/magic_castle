@@ -177,7 +177,10 @@ locals {
         for pv_key, pv_values in var.volumes:
           pv_key => {
             for name, specs in pv_values:
-              name => ["/dev/disk/by-id/google-${var.cluster_name}-${x}-${pv_key}-${name}"]
+              name => {
+                glob = "/dev/disk/by-id/google-${var.cluster_name}-${x}-${pv_key}-${name}"
+                size = specs.size
+              }
           } if contains(values.tags, pv_key)
       } : {}
     }
