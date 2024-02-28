@@ -134,10 +134,10 @@ locals {
         for pv_key, pv_values in var.volumes:
           pv_key => {
             for name, specs in pv_values:
-              name => {
-                glob = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v3.volumes["${x}-${pv_key}-${name}"].id, 0, 20)}"
-                size = specs.size
-              }
+              name => merge(
+                { glob = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v3.volumes["${x}-${pv_key}-${name}"].id, 0, 20)}" },
+                specs,
+              )
           } if contains(values.tags, pv_key)
        } : {}
     }
