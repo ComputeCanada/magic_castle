@@ -10,7 +10,6 @@ variable "cloud_provider" { }
 variable "cloud_region" { }
 variable "domain_name" { }
 variable "cluster_name" { }
-variable "volume_devices" { }
 variable "guest_passwd" { }
 
 variable "generate_ssh_key" { }
@@ -63,8 +62,8 @@ locals {
   inventory = { for host, values in var.inventory:
     host => merge(values, {
       hostkeys = {
-        rsa     = tls_private_key.rsa[values.prefix].public_key_openssh
-        ed25519 = tls_private_key.ed25519[values.prefix].public_key_openssh
+        rsa     = chomp(tls_private_key.rsa[values.prefix].public_key_openssh)
+        ed25519 = chomp(tls_private_key.ed25519[values.prefix].public_key_openssh)
       }
     })
   }
@@ -73,7 +72,6 @@ locals {
     terraform = {
       instances = local.inventory
       tag_ip    = local.tag_ip
-      volumes   = var.volume_devices
       data      = {
         sudoer_username = var.sudoer_username
         public_keys     = local.ssh_authorized_keys
@@ -117,12 +115,12 @@ locals {
         puppetfile            = var.puppetfile
         hostkeys = {
           rsa = {
-            private = tls_private_key.rsa[values.prefix].private_key_openssh
-            public  = tls_private_key.rsa[values.prefix].public_key_openssh
+            private = chomp(tls_private_key.rsa[values.prefix].private_key_openssh)
+            public  = chomp(tls_private_key.rsa[values.prefix].public_key_openssh)
           }
           ed25519 = {
-            private = tls_private_key.ed25519[values.prefix].private_key_openssh
-            public  = tls_private_key.ed25519[values.prefix].public_key_openssh
+            private = chomp(tls_private_key.ed25519[values.prefix].private_key_openssh)
+            public  = chomp(tls_private_key.ed25519[values.prefix].public_key_openssh)
           }
         }
       }

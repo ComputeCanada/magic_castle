@@ -201,26 +201,18 @@ the `module.design.instances` map.
 7. **Create the volumes**. In `infrastructure.tf`, define the `volumes` resource using
 `module.design.volumes`.
 
-8. **Consolidate the volume device information**. In `infrastructure.tf`, define a local
-variable named `volume_devices` implementing the following logic in HCL. Replace
-the line starting by `/dev/disk/by-id` with the proper logic that would match the volume
-resource to its device path from within the instance to which it is attached.
+8. **Consolidate the instances' information**.  In `infrastructure.tf`, define a local variable named `inventory` that will be a map containing the following keys for each instance: `public_ip`, `local_ip`, `prefix`, `tags`, and `specs` (#cpu, #gpus, ram, volumes). For the volumes, you need to provide the paths under which the volumes will be found on the instances to which they are attached. This is typically derived from the volume id. Here is an example:
   ```hcl
-  volume_devices = {
-    for ki, vi in var.volumes :
-    ki => {
-      for kj, vj in vi :
-      kj => [for key, volume in module.design.volumes :
-        "/dev/disk/by-id/*${substr(provider_volume.volumes["${volume["instance"]}-${ki}-${kj}"].id, 0, 20)}"
-        if key == "${volume["instance"]}-${ki}-${kj}"
-      ]
-    }
-  }
+  volumes = contains(keys(module.design.volume_per_instance), x) ? {
+    for pv_key, pv_values in var.volumes:
+      pv_key => {
+        for name, specs in pv_values:
+          name => ["/dev/disk/by-id/*${substr(provider.volumes["${x}-${pv_key}-${name}"].id, 0, 20)}"]
+      } if contains(values.tags, pv_key)
+    } : {}
   ```
 
-9. **Consolidate the instances' information**.  In `infrastructure.tf`, define a local variable named `inventory` that will be a map containing the following keys for each instance: `public_ip`, `local_ip`, `prefix`, `tags`, and `specs` (#cpu, #gpus, ram).
-
-10. **Create the instance configurations**. In `infrastructure.tf`, include the
+9. **Create the instance configurations**. In `infrastructure.tf`, include the
 `common/configuration` module like this:
     ```hcl
     module "configuration" {
@@ -231,7 +223,6 @@ resource to its device path from within the instance to which it is attached.
       sudoer_username       = var.sudoer_username
       generate_ssh_key      = var.generate_ssh_key
       public_keys           = var.public_keys
-      volume_devices        = local.volume_devices
       domain_name           = module.design.domain_name
       cluster_name          = var.cluster_name
       guest_passwd          = var.guest_passwd
@@ -241,15 +232,15 @@ resource to its device path from within the instance to which it is attached.
       cloud_region          = local.cloud_region
     }
     ```
-11. **Create the instances**. In `infrastructure.tf`, define the `instances` resource using
+10. **Create the instances**. In `infrastructure.tf`, define the `instances` resource using
 `module.design.instances_to_build` for the instance attributes and `module.configuration.user_data`
 for the initial configuration.
 
-12. **Attach the volumes**. In `infrastructure.tf`, define the `attachments` resource using
+11. **Attach the volumes**. In `infrastructure.tf`, define the `attachments` resource using
 `module.design.volumes` and refer to the attribute `each.value.instance` to retrieve the
 instance's id to which the volume needs to be attached.
 
-13. **Identify the public instances**. In `infrastructure.tf`, define a local variable named `public_instances`
+12. **Identify the public instances**. In `infrastructure.tf`, define a local variable named `public_instances`
 that contains the attributes of instances that are publicly accessible from Internet and their ids.
   ```hcl
   locals {
@@ -260,7 +251,7 @@ that contains the attributes of instances that are publicly accessible from Inte
   }
   ```
 
-14. **Include the provision module to transmit Terraform data to the Puppet server**. In `infrastructure.tf`, include the
+13. **Include the provision module to transmit Terraform data to the Puppet server**. In `infrastructure.tf`, include the
 `common/provision` module like this
   ```hcl
   module "provision" {
@@ -360,21 +351,7 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
   }
   ```
 
-8. **Consolidate the volume devices' information**. Add the following snippet to `infrastructure.tf`:
-  ```hcl
-  volume_devices = {
-    for ki, vi in var.volumes :
-    ki => {
-      for kj, vj in vi :
-      kj => [for key, volume in module.design.volumes :
-        "/dev/disk/by-id/virtio-${replace(alicloud_disk.volumes["${volume["instance"]}-${ki}-${kj}"].id, "d-", "")}"
-        if key == "${volume["instance"]}-${ki}-${kj}"
-      ]
-    }
-  }
-  ```
-
-9. **Consolidate the instances' information**. Add the following snippet to `infrastructure.tf`:
+8. **Consolidate the instances' information**. Add the following snippet to `infrastructure.tf`:
   ```hcl
   locals {
     inventory = { for x, values in module.design.instances :
@@ -387,13 +364,20 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
           cpus = ...
           gpus = ...
           ram = ...
+          volumes = contains(keys(module.design.volume_per_instance), x) ? {
+            for pv_key, pv_values in var.volumes:
+              pv_key => {
+                for name, specs in pv_values:
+                  name => ["/dev/disk/by-id/virtio-${replace(alicloud_disk.volumes["${x}-${pv_key}-${name}"].id, "d-", "")}"]
+              } if contains(values.tags, pv_key)
+            } : {}
         }
       }
     }
   }
   ```
 
-10. **Create the instance configurations**. In `infrastructure.tf`, include the
+9. **Create the instance configurations**. In `infrastructure.tf`, include the
 `common/configuration` module like this:
     ```hcl
     module "configuration" {
@@ -404,7 +388,6 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
       sudoer_username       = var.sudoer_username
       generate_ssh_key      = var.generate_ssh_key
       public_keys           = var.public_keys
-      volume_devices        = local.volume_devices
       domain_name           = module.design.domain_name
       cluster_name          = var.cluster_name
       guest_passwd          = var.guest_passwd
@@ -415,21 +398,21 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
     }
     ```
 
-11. **Create the instances**. Add and complete the following snippet to `infrastructure.tf`:
+10. **Create the instances**. Add and complete the following snippet to `infrastructure.tf`:
   ```hcl
   resource "alicloud_instance" "instances" {
     for_each = module.design.instances
   }
   ```
 
-12. **Attach the volumes**. Add and complete the following snippet to `infrastructure.tf`:
+11. **Attach the volumes**. Add and complete the following snippet to `infrastructure.tf`:
   ```hcl
   resource "alicloud_disk_attachment" "attachments" {
     for_each = module.design.volumes
   }
   ```
 
-13. **Identify the public instances**. In `infrastructure.tf`, define a local variable named `public_instances`
+12. **Identify the public instances**. In `infrastructure.tf`, define a local variable named `public_instances`
 that contains the attributes of instances that are publicly accessible from Internet and their ids.
   ```hcl
   locals {
@@ -440,7 +423,7 @@ that contains the attributes of instances that are publicly accessible from Inte
   }
   ```
 
-14. **Include the provision module to transmit Terraform data to the Puppet server**. In `infrastructure.tf`, include the
+13. **Include the provision module to transmit Terraform data to the Puppet server**. In `infrastructure.tf`, include the
 `common/provision` module like this
   ```hcl
   module "provision" {
