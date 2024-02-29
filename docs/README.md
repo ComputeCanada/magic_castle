@@ -1817,7 +1817,7 @@ Puppet data hierarchy.
 ### 10.14 Expand a volume
 
 Volumes defined in the `volumes` map can be expanded at will. To enable online extension of
-a volume, add `autoresize = true` to its specs map. You can then increase the size at will.
+a volume, add `enable_resize = true` to its specs map. You can then increase the size at will.
 The corresponding volume will be expanded by the cloud provider and the filesystem will be
 extended by Puppet.
 
