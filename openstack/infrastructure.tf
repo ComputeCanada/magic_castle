@@ -106,6 +106,7 @@ resource "openstack_blockstorage_volume_v3" "volumes" {
   size        = each.value.size
   volume_type = lookup(each.value, "type", null)
   snapshot_id = lookup(each.value, "snapshot", null)
+  enable_online_resize = lookup(each.value, "autoresize", null)
 }
 
 resource "openstack_compute_volume_attach_v2" "attachments" {
