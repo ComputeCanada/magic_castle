@@ -1717,30 +1717,30 @@ The resulting public key can then be used to encrypt secrets, while the private 
 
 1. Transfer the keys on the Puppet server using SCP with SSH jumphost
     ```sh
-    scp -J centos@cluster.yourdomain.cloud {public,private}_key.pkcs7.pem centos@puppet:~/
+    scp -J centos@cluster.yourdomain.cloud {public,private}_key.pkcs7.pem centos@puppet1:~/
     ```
 2. Replace the existing keys by the one transferred:
     ```sh
-    ssh -J centos@cluster.yourdomain.cloud centos@puppet sudo cp {public,private}_key.pkcs7.pem /opt/puppetlabs/puppet/eyaml
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet1 sudo cp {public,private}_key.pkcs7.pem /etc/puppetlabs/puppet/eyaml
     ```
 3. Remove the keys from the admin account home folder:
     ```sh
-    ssh -J centos@cluster.yourdomain.cloud centos@puppet rm {public,private}_key.pkcs7.pem
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet1 rm {public,private}_key.pkcs7.pem
     ```
 
 To backup the encryption keys from an existing Puppet server:
 
 1. Create a readable copy of the encryption keys in the sudoer home account
     ```sh
-    ssh -J centos@cluster.yourdomain.cloud centos@puppet 'sudo rsync --owner --group --chown=centos:centos /etc/puppetlabs/puppet/eyaml/{public,private}_key.pkcs7.pem ~/'
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet1 'sudo rsync --owner --group --chown=centos:centos /etc/puppetlabs/puppet/eyaml/{public,private}_key.pkcs7.pem ~/'
     ```
 2. Transfer the files locally:
     ```sh
-    scp -J centos@cluster.yourdomain.cloud centos@puppet:~/{public,private}_key.pkcs7.pem .
+    scp -J centos@cluster.yourdomain.cloud centos@puppet1:~/{public,private}_key.pkcs7.pem .
     ```
 3. Remove the keys from the sudoer account home folder:
     ```sh
-    ssh -J centos@cluster.yourdomain.cloud centos@puppet rm {public,private}_key.pkcs7.pem
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet1 rm {public,private}_key.pkcs7.pem
     ```
 
 ### 10.14 Read and edit secret values generated at boot
