@@ -92,7 +92,6 @@ if __name__ == "__main__":
             data = dict_["value"]
             for item in data:
                 if item["resourceType"] == "virtualMachines":
-                    pprint.pprint(item)
                     key = item["name"]
                     value = {
                         "vcpus": int(extract_value("vCPUs", item["capabilities"])),
