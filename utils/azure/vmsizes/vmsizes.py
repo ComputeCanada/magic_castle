@@ -47,7 +47,7 @@ LOCATIONS = [
     "southcentralus",
 ]
 
-api_version = "2022-05-01"
+api_version = "2023-11-01"
 
 
 def get_vmsizes(subscription_id, location, token):
