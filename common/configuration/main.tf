@@ -125,7 +125,6 @@ locals {
             public  = tls_private_key.ed25519[values.prefix].public_key_openssh
           }
         }
-        mig = lookup(values.specs, "mig", null)
       }
     )
   }

@@ -122,12 +122,6 @@ runcmd:
   - "(tar xf aws-efa-installer-latest.tar.gz && cd aws-efa-installer && ./efa_installer.sh --yes --minimal)"
   - rm -fr aws-efa-installer aws-efa-installer-latest.tar.gz
 %{ endif }
-%{ if mig != null }
-# Install nvidia-mig-manager to enable MIG without NVIDIA drivers installed
-  - yum -y install https://github.com/NVIDIA/mig-parted/releases/download/v0.5.5/nvidia-mig-manager-0.5.5-1.x86_64.rpm
-# It does not matter which config is selected, the goal here is to enable MIG before reboot
-  - nvidia-mig-parted apply -f /etc/nvidia-mig-manager/config.yaml -c all-1g.5gb --mode-only
-%{ endif }
 %{ if cloud_provider == "gcp" }
 # Google Cloud user-data fact generates a warning because its size is greater than what is allowed (<4096 bytes).
 # We have no use for it, so we remove startup-script, user-data and user-data-encoding when running in GCE.
