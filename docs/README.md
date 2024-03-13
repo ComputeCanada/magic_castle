@@ -557,11 +557,11 @@ be leveraged to accelerate compute node configuration.
 4. `disk_size`: size in gibibytes (GiB) of the instance's root disk containing
 the operating system and service software
 (default: see the previous table).
-5. `mig`: hash map of [NVIDIA Multi-Instance GPU (MIG)](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html) short profile names and count used to partition the instances' GPU, example for an A100:
+5. `mig`: map of [NVIDIA Multi-Instance GPU (MIG)](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html) short profile names and count used to partition the instances' GPU, example for an A100:
     ```
-    mig = { 1g.5gb = 2, 2g.10gb = 1, 3g.20gb = 1 }
+    mig = { "1g.5gb" = 2, "2g.10gb" = 1, "3g.20gb" = 1 }
     ```
-    This is only functional when the [GPU is supported](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-gpus),
+    This is only functional with [MIG supported GPUs](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-gpus),
     and with x86-64 processors (see [NVIDIA/mig-parted issue #30](https://github.com/NVIDIA/mig-parted/issues/30)).
 
 For some cloud providers, it possible to define additional attributes.
@@ -870,12 +870,6 @@ if previously instantiated.
 
 If true, the base image packages will not be upgraded during the first boot. By default,
 all packages are upgraded.
-
-**Note 1**: Do not skip package upgrade if the infrastructure includes instances 
-with specialized hardware like a GPU or an Infiniband adapter. These devices generally
-require the compilation of dynamic kernel modules ([DKMS](https://en.wikipedia.org/wiki/Dynamic_Kernel_Module_Support)),
-with the latest kernel headers.
-
 
 **Post build modification effect**: No effect on currently built instances. Ones created
 after the modification will take into consideration the new value of the parameter to determine
