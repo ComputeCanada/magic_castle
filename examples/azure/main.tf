@@ -15,18 +15,20 @@ module "azure" {
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
 
-  # Visit https://azuremarketplace.microsoft.com/en-us/marketplace/apps/almalinux.almalinux
+  # Visit https://azuremarketplace.microsoft.com/en-us/marketplace/apps/almalinux.almalinux-x86_64
   # to contract the free AlmaLinux plan and be able to use the image.
+  # You can also do this via the Azure CLI with
+  #   az vm image terms accept --publisher almalinux --offer almalinux-x86_64 --plan 9-gen2
   plan = {
-    name      = "8_5"
-    product   = "almalinux"
+    name      = "9-gen2"
+    product   = "almalinux-x86_64"
     publisher = "almalinux"
   }
   image        = {
     publisher = "almalinux",
-    offer     = "almalinux",
-    sku       = "8_5",
-    version   = "8.5.20211118"
+    offer     = "almalinux-x86_64",
+    sku       = "9-gen2",
+    version   = "9.3.2023111602"
   }
 
   instances = {
