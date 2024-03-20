@@ -24,10 +24,10 @@ resource "openstack_networking_floatingip_v2" "fip" {
   pool = data.openstack_networking_network_v2.ext_network.name
 }
 
-resource "openstack_compute_floatingip_associate_v2" "fip" {
+resource "openstack_networking_floatingip_associate_v2" "fip" {
   for_each    = { for x, values in module.design.instances : x => true if contains(values.tags, "public") }
   floating_ip = local.public_ip[each.key]
-  instance_id = openstack_compute_instance_v2.instances[each.key].id
+  port_id     = openstack_networking_port_v2.nic[each.key].id
 }
 
 locals {
@@ -37,5 +37,5 @@ locals {
     if contains(values.tags, "public") && !contains(keys(var.os_floating_ips), x) }
   )
   ext_networks = []
-  network_provision_dep = openstack_compute_floatingip_associate_v2.fip
+  network_provision_dep = openstack_networking_floatingip_associate_v2.fip
 }
