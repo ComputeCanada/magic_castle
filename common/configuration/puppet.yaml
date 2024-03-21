@@ -1,4 +1,10 @@
 #cloud-config
+
+# mount ephemeral storage in a sub-directory of /mnt instead of
+# cloud-init default /mnt
+mounts:
+ - [ ephemeral0, /mnt/ephemeral0 ]
+
 users:
   - name: ${sudoer_username}
     groups: adm, wheel, systemd-journal
