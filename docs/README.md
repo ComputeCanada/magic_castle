@@ -228,7 +228,7 @@ Minimum project requirements:
 * 80 GB of volume storage
 
 **Note 1**: Magic Castle supposes the OpenStack project comes with a network, a subnet and a router already initialized. If any of these components is missing, you will need to create them manually before launching terraform.
-* [Create and manager networks, JUSUF user documentation](https://apps.fz-juelich.de/jsc/hps/jusuf/cloud/first_steps_cloud.html?highlight=dns#create-and-manage-networks)
+* [Create and manage networks, JUSUF user documentation](https://apps.fz-juelich.de/jsc/hps/jsccloud/usage_cloud.html#create-and-manage-networks)
 * [Create and manage network - UI, OpenStack Documentation](https://docs.openstack.org/horizon/latest/user/create-networks.html)
 * [Create and manage network - CLI, OpenStack Documentation](https://docs.openstack.org/ocata/user-guide/cli-create-and-manage-networks.html)
 
