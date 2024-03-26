@@ -1507,7 +1507,7 @@ fail2ban keeps a list of ip addresses that are allowed to fail to login without 
 time. To add an ip address to that list,  add the following lines
 to the variable `hieradata` in `main.tf`:
 ```yaml
-fail2ban::whitelist:
+profile::fail2ban::ignoreip:
   - x.x.x.x
   - y.y.y.y
 ```
