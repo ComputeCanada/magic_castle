@@ -56,24 +56,12 @@ def get_vmsizes(subscription_id, location, token):
     resp = requests.get(url, headers=headers)
     return resp
 
-
-def extract_value(key, data):
-    result_value = None
-
-    for item in data:
-        if item["name"].lower() == key.lower():
-            result_value = item["value"]
-            break
-
-    return result_value
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a list of Azure VM sizes")
     parser.add_argument(
         "--subscription_id",
         required=True,
-        help="az account get-access-token --resource https://management.azure.com",
+        help="az account show",
     )
     parser.add_argument(
         "--token",
@@ -93,15 +81,11 @@ if __name__ == "__main__":
             for item in data:
                 if item["resourceType"] == "virtualMachines":
                     key = item["name"]
+                    caps = { el["name"]:el["value"] for el in item["capabilities"] }
                     value = {
-                        "vcpus": int(extract_value("vCPUs", item["capabilities"])),
-                        "ram": int(
-                            float(extract_value("MemoryGB", item["capabilities"]))
-                            * 1000
-                        ),
-                        "gpus": int(extract_value("GPUs", item["capabilities"]))
-                        if extract_value("gpus", item["capabilities"]) is not None
-                        else 0,
+                        "vcpus": int(caps.get("vCPUsAvailable", caps["vCPUs"])),
+                        "ram":   int(float(caps.get("MemoryGB"))* 1000),
+                        "gpus":  int(caps.get("GPUs", 0))
                     }
                     if key in output and value != output[key]:
                         print(
