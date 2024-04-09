@@ -1713,6 +1713,7 @@ instances = {
 
 During the Puppet server initial boot, a pair of hiera-eyaml encryptions keys are generated in
 `/opt/puppetlabs/puppet/eyaml`:
+
 - `private_key.pkcs7.pem`
 - `public_key.pkcs7.pem`
 
