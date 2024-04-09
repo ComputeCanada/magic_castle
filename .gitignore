@@ -9,3 +9,4 @@ venv
 releases/
 *dev/
 .terraform.lock.hcl
+site/
