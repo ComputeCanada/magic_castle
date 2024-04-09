@@ -1470,7 +1470,7 @@ terraform apply
 
 ### 10.7 Activate Globus Endpoint
 
-Refer to [Magic Castle Globus Endpoint documentation](globus.md).
+No longer supported
 
 ### 10.8 Recovering from puppet rebuild
 
