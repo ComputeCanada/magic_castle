@@ -802,6 +802,7 @@ You can encrypt the value remotely using SSH jump host:
 ```sh
 ssh -J centos@your-cluster.yourdomain.cloud centos@puppet /opt/puppetlabs/puppet/bin/eyaml encrypt -s 'your-secret' --pkcs7-public-key=/etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem -o string
 ```
+In the preceding command, replace `puppet` by the hostname of your puppetserver (i.e.: `mgmt1`).
 
 The openssl command-line can also be used to encrypt a value with the certificate file:
 ```sh
@@ -1749,7 +1750,8 @@ or `openssl`:
 openssl req -x509 -nodes -days 100000 -newkey rsa:2048 -keyout private_key.pkcs7.pem -out public_key.pkcs7.pem -subj '/'
 ```
 
-The resulting public key can then be used to encrypt secrets, while the private and the public keys have to be transferred on the Puppet server to allow it to decrypt the values.
+The resulting public key can then be used to encrypt secrets, while the private and the public keys have to be transferred on the Puppet server to allow it to decrypt the values. In the following command examples, replace
+`puppet` by the hostname of your puppetserver (i.e.: `mgmt1`).
 
 1. Transfer the keys on the Puppet server using SCP with SSH jumphost
     ```sh
