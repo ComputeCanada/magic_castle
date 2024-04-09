@@ -1305,6 +1305,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#10122-create-the-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      10.12.2 Create the image
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10123-configure-magic-castle-terraform-code-to-use-the-new-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      10.12.3 Configure Magic Castle Terraform code to use the new image
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2553,6 +2571,24 @@
   <a href="#10121-prepare-the-volume-for-cloning" class="md-nav__link">
     <span class="md-ellipsis">
       10.12.1 Prepare the volume for cloning
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10122-create-the-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      10.12.2 Create the image
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10123-configure-magic-castle-terraform-code-to-use-the-new-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      10.12.3 Configure Magic Castle Terraform code to use the new image
     </span>
   </a>
   
@@ -3855,68 +3891,62 @@ catalog was successfully applied at least once:
 <div class="highlight"><pre><span></span><code>journalctl<span class="w"> </span>-u<span class="w"> </span>puppet<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;Applied catalog&quot;</span>
 </code></pre></div></p>
 <p>To prepare the volume for cloning, execute the following line while connected to the compute node:
-```bash 
-sudo /usr/sbin/prepare4image.sh
-<div class="highlight"><pre><span></span><code>Be aware that, since it is preferable for the instance to be powered off when cloning its volume, the
-script halts the machine once it is completed. Therefore, after executing `prepare4image.sh`, you will
-be disconnected from the instance.
-
-The script `prepare4image.sh` executes the following steps in order:
-
-  1. Stop and disable puppet agent
-  2. Stop and disable slurm compute node daemon (`slurmd`)
-  3. Stop and disable consul agent daemon
-  4. Stop and disable consul-template daemon
-  5. Unenroll the host from the IPA server
-  6. Remove puppet agent configuration files in `/etc`
-  7. Remove consul agent identification files
-  8. Unmount NFS directories
-  9. Remove NFS directories `/etc/fstab`
-  10. Stop syslog
-  11. Clear `/var/log/message` content
-  12. Remove cloud-init&#39;s logs and artifacts so it can re-run
-  13. Power off the machine
-
-#### 10.12.2 Create the image
-
-Once the instance is powered off, access your cloud provider dashboard, find the instance
-and follow the provider&#39;s instructions to create the image.
-
-- [AWS](https://docs.aws.amazon.com/toolkit-for-visual-studio/latest/user-guide/tkv-create-ami-from-instance.html)
-- [Azure](https://learn.microsoft.com/en-us/azure/virtual-machines/capture-image-portal)
-- [GCP](https://cloud.google.com/compute/docs/machine-images/create-machine-images#create-image-from-instance)
-- [OpenStack](https://docs.openstack.org/horizon/latest/user/launch-instances.html#create-an-instance-snapshot)
-- [OVH](https://blog.ovhcloud.com/create-and-use-openstack-snapshots/)
-
-Note down the name/id of the image you created, it will be needed during the next step.
-
-#### 10.12.3 Configure Magic Castle Terraform code to use the new image
-
-Edit your `main.tf` and add `image = &quot;name-or-id-of-your-image&quot;` to the dictionary
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>/usr/sbin/prepare4image.sh
+</code></pre></div></p>
+<p>Be aware that, since it is preferable for the instance to be powered off when cloning its volume, the
+script halts the machine once it is completed. Therefore, after executing <code>prepare4image.sh</code>, you will
+be disconnected from the instance.</p>
+<p>The script <code>prepare4image.sh</code> executes the following steps in order:</p>
+<ol>
+<li>Stop and disable puppet agent</li>
+<li>Stop and disable slurm compute node daemon (<code>slurmd</code>)</li>
+<li>Stop and disable consul agent daemon</li>
+<li>Stop and disable consul-template daemon</li>
+<li>Unenroll the host from the IPA server</li>
+<li>Remove puppet agent configuration files in <code>/etc</code></li>
+<li>Remove consul agent identification files</li>
+<li>Unmount NFS directories</li>
+<li>Remove NFS directories <code>/etc/fstab</code></li>
+<li>Stop syslog</li>
+<li>Clear <code>/var/log/message</code> content</li>
+<li>Remove cloud-init's logs and artifacts so it can re-run</li>
+<li>Power off the machine</li>
+</ol>
+<h4 id="10122-create-the-image">10.12.2 Create the image</h4>
+<p>Once the instance is powered off, access your cloud provider dashboard, find the instance
+and follow the provider's instructions to create the image.</p>
+<ul>
+<li><a href="https://docs.aws.amazon.com/toolkit-for-visual-studio/latest/user-guide/tkv-create-ami-from-instance.html">AWS</a></li>
+<li><a href="https://learn.microsoft.com/en-us/azure/virtual-machines/capture-image-portal">Azure</a></li>
+<li><a href="https://cloud.google.com/compute/docs/machine-images/create-machine-images#create-image-from-instance">GCP</a></li>
+<li><a href="https://docs.openstack.org/horizon/latest/user/launch-instances.html#create-an-instance-snapshot">OpenStack</a></li>
+<li><a href="https://blog.ovhcloud.com/create-and-use-openstack-snapshots/">OVH</a></li>
+</ul>
+<p>Note down the name/id of the image you created, it will be needed during the next step.</p>
+<h4 id="10123-configure-magic-castle-terraform-code-to-use-the-new-image">10.12.3 Configure Magic Castle Terraform code to use the new image</h4>
+<p>Edit your <code>main.tf</code> and add <code>image = "name-or-id-of-your-image"</code> to the dictionary
 defining the instance. The instance previously powered off will be powered on and future
-non-instantiated machines will use the image at the next execution of `terraform apply`.
-
-If the cluster is composed of heterogeneous compute nodes, it is possible
+non-instantiated machines will use the image at the next execution of <code>terraform apply</code>.</p>
+<p>If the cluster is composed of heterogeneous compute nodes, it is possible
 to create an image for each type of compute nodes. Here is an example with Google Cloud
-```hcl
-instances = {
-  mgmt   = { type = &quot;n2-standard-2&quot;, tags = [&quot;puppet&quot;, &quot;mgmt&quot;, &quot;nfs&quot;], count = 1 }
-  login  = { type = &quot;n2-standard-2&quot;, tags = [&quot;login&quot;, &quot;public&quot;, &quot;proxy&quot;], count = 1 }
-  node   = {
-    type = &quot;n2-standard-2&quot;
-    tags = [&quot;node&quot;, &quot;pool&quot;]
-    count = 10
-    image = &quot;rocky-mc-cpu-node&quot;
-  }
-  gpu    = {
-    type = &quot;n1-standard-2&quot;
-    tags = [&quot;node&quot;, &quot;pool&quot;]
-    count = 10
-    gpu_type = &quot;nvidia-tesla-t4&quot;
-    gpu_count = 1
-    image = &quot;rocky-mc-gpu-node&quot;
-  }
-}
+<div class="highlight"><pre><span></span><code><span class="nb">instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">mgmt</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;n2-standard-2&quot;, tags = [&quot;puppet&quot;, &quot;mgmt&quot;, &quot;nfs&quot;</span><span class="p">],</span><span class="w"> </span><span class="na">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nb">login</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;n2-standard-2&quot;, tags = [&quot;login&quot;, &quot;public&quot;, &quot;proxy&quot;</span><span class="p">],</span><span class="w"> </span><span class="na">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nb">node</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;n2-standard-2&quot;</span>
+<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;node&quot;, &quot;pool&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="na">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span>
+<span class="w">    </span><span class="na">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;rocky-mc-cpu-node&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nb">gpu</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;n1-standard-2&quot;</span>
+<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;node&quot;, &quot;pool&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="na">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span>
+<span class="w">    </span><span class="na">gpu_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;nvidia-tesla-t4&quot;</span>
+<span class="w">    </span><span class="na">gpu_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
+<span class="w">    </span><span class="na">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;rocky-mc-gpu-node&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div></p>
 <h3 id="1013-generate-and-replace-puppet-hieradata-encryption-keys">10.13 Generate and replace Puppet hieradata encryption keys</h3>
 <p>During the Puppet server initial boot, a pair of hiera-eyaml encryptions keys are generated in
