@@ -3990,13 +3990,15 @@ to create an image for each type of compute nodes. Here is an example with Googl
 <p>During the cloud-init initialization phase,
 <a href="https://github.com/ComputeCanada/puppet-magic_castle/blob/main/bootstrap.sh"><code>bootstrap.sh</code></a>
 script is executed. This script generates a set of encrypted secret values that are required
-by the Magic Castle Puppet environment:
-- <code>profile::consul::acl_api_token</code>
-- <code>profile::freeipa::mokey::password</code>
-- <code>profile::freeipa::server::admin_password</code>
-- <code>profile::freeipa::server::ds_password</code>
-- <code>profile::slurm::accounting::password</code>
-- <code>profile::slurm::base::munge_key</code></p>
+by the Magic Castle Puppet environment:</p>
+<ul>
+<li><code>profile::consul::acl_api_token</code></li>
+<li><code>profile::freeipa::mokey::password</code></li>
+<li><code>profile::freeipa::server::admin_password</code></li>
+<li><code>profile::freeipa::server::ds_password</code></li>
+<li><code>profile::slurm::accounting::password</code></li>
+<li><code>profile::slurm::base::munge_key</code></li>
+</ul>
 <p>To read or change the value of one of these keys, use <code>eyaml edit</code> command
 on the <code>puppet</code> host, like this:
 <div class="highlight"><pre><span></span><code>sudo /opt/puppetlabs/puppet/bin/eyaml edit \
