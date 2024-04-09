@@ -3394,7 +3394,8 @@ With the public certificate file, you can encrypt the values with eyaml:
 </code></pre></div></p>
 <p>You can encrypt the value remotely using SSH jump host:
 <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>-J<span class="w"> </span>centos@your-cluster.yourdomain.cloud<span class="w"> </span>centos@puppet<span class="w"> </span>/opt/puppetlabs/puppet/bin/eyaml<span class="w"> </span>encrypt<span class="w"> </span>-s<span class="w"> </span><span class="s1">&#39;your-secret&#39;</span><span class="w"> </span>--pkcs7-public-key<span class="o">=</span>/etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem<span class="w"> </span>-o<span class="w"> </span>string
-</code></pre></div></p>
+</code></pre></div>
+In the preceding command, replace <code>puppet</code> by the hostname of your puppetserver (i.e.: <code>mgmt1</code>).</p>
 <p>The openssl command-line can also be used to encrypt a value with the certificate file:
 <div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;your-secret&#39;</span><span class="w"> </span><span class="p">|</span><span class="w">  </span>openssl<span class="w"> </span>smime<span class="w"> </span>-encrypt<span class="w"> </span>-aes-256-cbc<span class="w"> </span>-outform<span class="w"> </span>der<span class="w"> </span>public_key.pkcs7.pem<span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;ENC[&#39;PKCS7,%s&#39;]\n&quot;</span>
 </code></pre></div></p>
@@ -4096,7 +4097,8 @@ to create an image for each type of compute nodes. Here is an example with Googl
 <p>or <code>openssl</code>:
 <div class="highlight"><pre><span></span><code>openssl<span class="w"> </span>req<span class="w"> </span>-x509<span class="w"> </span>-nodes<span class="w"> </span>-days<span class="w"> </span><span class="m">100000</span><span class="w"> </span>-newkey<span class="w"> </span>rsa:2048<span class="w"> </span>-keyout<span class="w"> </span>private_key.pkcs7.pem<span class="w"> </span>-out<span class="w"> </span>public_key.pkcs7.pem<span class="w"> </span>-subj<span class="w"> </span><span class="s1">&#39;/&#39;</span>
 </code></pre></div></p>
-<p>The resulting public key can then be used to encrypt secrets, while the private and the public keys have to be transferred on the Puppet server to allow it to decrypt the values.</p>
+<p>The resulting public key can then be used to encrypt secrets, while the private and the public keys have to be transferred on the Puppet server to allow it to decrypt the values. In the following command examples, replace
+<code>puppet</code> by the hostname of your puppetserver (i.e.: <code>mgmt1</code>).</p>
 <ol>
 <li>Transfer the keys on the Puppet server using SCP with SSH jumphost
     <div class="highlight"><pre><span></span><code>scp<span class="w"> </span>-J<span class="w"> </span>centos@cluster.yourdomain.cloud<span class="w"> </span><span class="o">{</span>public,private<span class="o">}</span>_key.pkcs7.pem<span class="w"> </span>centos@puppet:~/
