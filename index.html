@@ -4104,7 +4104,7 @@ to create an image for each type of compute nodes. Here is an example with Googl
     <div class="highlight"><pre><span></span><code>scp<span class="w"> </span>-J<span class="w"> </span>centos@cluster.yourdomain.cloud<span class="w"> </span><span class="o">{</span>public,private<span class="o">}</span>_key.pkcs7.pem<span class="w"> </span>centos@puppet:~/
 </code></pre></div></li>
 <li>Replace the existing keys by the one transferred:
-    <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>-J<span class="w"> </span>centos@cluster.yourdomain.cloud<span class="w"> </span>centos@puppet<span class="w"> </span>sudo<span class="w"> </span>cp<span class="w"> </span><span class="o">{</span>public,private<span class="o">}</span>_key.pkcs7.pem<span class="w"> </span>/opt/puppetlabs/puppet/eyaml
+    <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>-J<span class="w"> </span>centos@cluster.yourdomain.cloud<span class="w"> </span>centos@puppet<span class="w"> </span>sudo<span class="w"> </span>cp<span class="w"> </span><span class="o">{</span>public,private<span class="o">}</span>_key.pkcs7.pem<span class="w"> </span>/etc/puppetlabs/puppet/eyaml
 </code></pre></div></li>
 <li>Remove the keys from the admin account home folder:
     <div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>-J<span class="w"> </span>centos@cluster.yourdomain.cloud<span class="w"> </span>centos@puppet<span class="w"> </span>rm<span class="w"> </span><span class="o">{</span>public,private<span class="o">}</span>_key.pkcs7.pem
