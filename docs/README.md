@@ -825,6 +825,7 @@ section [10.13 Generate and replace Puppet hieradata encryption keys](#1013-gene
 
 Defines a map of firewall rules that control external traffic to the public nodes. Each rule is
 defined as a map of key-value pairs and has to be assigned a unique name:
+
 - `from_port` (req.):  the lower part of the allowed port range, valid integer value needs to be between 1 and 65535.
 - `to_port` (req.): the higher part of the allowed port range, valid integer value needs to be between 1 and 65535.
 - `tag` (req.): instances with this tag will be assigned this firewall rule.
@@ -853,6 +854,7 @@ This parameter is useful when Terraform does not have access to one of the priva
 public keys provided in `public_keys`.
 
 **Post build modification effect**:
+
 - `false` -> `true`: will cause Terraform failure.
 Terraform will try to use the newly created private SSH key
 to connect to the cluster, while the corresponding public SSH
@@ -868,6 +870,7 @@ Puppet agent run.
 
 Defines the scientific software environment that users have access when they login.
 Possible values are:
+
 - **default** - `"alliance"` / `"computecanada"`: [Digital Alliance Research Alliance of Canada scientific software environment](https://docs.alliancecan.ca/wiki/Accessing_CVMFS) (previously Compute Canada environment)
 - `"eessi"`: [European Environment for Scientific Software Installation (EESSI)](https://eessi.github.io/docs/)
 - `null` / `""`: no scientific software environment
@@ -1018,12 +1021,13 @@ for the list of available zones and their characteristics.
 
 Defines a map as an association of instance names (key) to
 pre-allocated floating ip addresses (value). Example:
-```
+```hcl
   os_floating_ips = {
-    login1 = 132.213.13.59
-    login2 = 132.213.13.25
+    login1 = "132.213.13.59"
+    login2 = "132.213.13.25"
   }
 ```
+
 - instances tagged as public that have an entry in this map will be assigned
 the corresponding ip address;
 - instances tagged as public that do not have an entry in this map will be assigned
@@ -1139,6 +1143,7 @@ to copy SSL certificate files to the proxy nodes after their creation.
 
 To issue a wildcard SSL certificate with Magic Castle, modify the dns module call
 in your `main.tf` like this:
+
 1. add the input: `issue_wildcard_cert = true`
 2. add the input: `email = "replace.by@your.email"`
 
@@ -1208,6 +1213,7 @@ plugin to generate the wildcard certificate.
 
 You will then need to copy the certificate files in the proper location on each proxy node.
 The reverse proxy configuration expects the following files to exist:
+
 - `/etc/letsencrypt/live/${domain_name}/fullchain.pem`
 - `/etc/letsencrypt/live/${domain_name}/privkey.pem`
 - `/etc/letsencrypt/live/${domain_name}/chain.pem`
@@ -1223,6 +1229,7 @@ is enabled for the domain and the SSH client is correctly configured,
 no host key confirmation will be prompted when connecting to the server.
 
 For more information on how to activate DNSSEC, refer to your DNS provider documentation:
+
 - [CloudFlare - Enable DNSSEC](https://developers.cloudflare.com/dns/dnssec/#enable-dnssec)
 - [Google Cloud - Manage DNSSEC configuration](https://cloud.google.com/dns/docs/dnssec-config#enabling)
 
@@ -1806,6 +1813,7 @@ device will be expanded.
 
 To benefit from the new storage, the following commands need to be ran as root
 on the instance to which the expanded volume is attached.
+
 1. Identify the physical volume path
     ```
     pvscan
