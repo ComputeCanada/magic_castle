@@ -1800,11 +1800,11 @@ on the instance to which the expanded volume is attached.
     pvscan
     ```
 2. Expand the physical volume
-    ``` 
+    ```
     pvresize /dev/vdxyz # replace vdxyz by the volume identify at step 1
     ```
 3. Identify the volume group path
-    ``` 
+    ```
     lvdisplay
     ```
 4. Expand the volume group using step volume group path identified
