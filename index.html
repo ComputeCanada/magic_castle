@@ -3160,17 +3160,50 @@ This tag is supported in AWS, Azure and GCP. It is ignored by OpenStack and OVH.
 <li><code>image</code>: specification of the image to use for this instance type. (default: global <a href="#46-image"><code>image</code></a> value).
 Refer to section <a href="#1012-create-a-compute-node-image">10.12 - Create a compute node image</a> to learn how this attribute can
 be leveraged to accelerate compute node configuration.</li>
-<li><code>disk_type</code>: type of the instance's root disk (default: see the next table).
-    | Provider | <code>disk_type</code> | <code>disk_size</code> (GiB) |
-    | -------- | :---------- | ----------------: |
-    | Azure    |<code>Premium_LRS</code>| 30                |
-    | AWS      | <code>gp2</code>       | 10                |
-    | GCP      | <code>pd-ssd</code>    | 20                |
-    | OpenStack| <code>null</code>      | 10                |
-    | OVH      | <code>null</code>      | 10                |</li>
-<li><code>disk_size</code>: size in gibibytes (GiB) of the instance's root disk containing
+<li>
+<p><code>disk_type</code>: type of the instance's root disk (default: see the next table).</p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th style="text-align: left;"><code>disk_type</code></th>
+<th style="text-align: right;"><code>disk_size</code> (GiB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Azure</td>
+<td style="text-align: left;"><code>Premium_LRS</code></td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr>
+<td>AWS</td>
+<td style="text-align: left;"><code>gp2</code></td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td>GCP</td>
+<td style="text-align: left;"><code>pd-ssd</code></td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td>OpenStack</td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td>OVH</td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: right;">10</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><code>disk_size</code>: size in gibibytes (GiB) of the instance's root disk containing
 the operating system and service software
-(default: see the previous table).</li>
+(default: see the previous table).</p>
+</li>
 <li><code>mig</code>: map of <a href="https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html">NVIDIA Multi-Instance GPU (MIG)</a> short profile names and count used to partition the instances' GPU, example for an A100:
     <div class="highlight"><pre><span></span><code>mig = { &quot;1g.5gb&quot; = 2, &quot;2g.10gb&quot; = 1, &quot;3g.20gb&quot; = 1 }
 </code></pre></div>
