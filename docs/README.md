@@ -1759,7 +1759,7 @@ The resulting public key can then be used to encrypt secrets, while the private 
     ```
 2. Replace the existing keys by the one transferred:
     ```sh
-    ssh -J centos@cluster.yourdomain.cloud centos@puppet sudo cp {public,private}_key.pkcs7.pem /opt/puppetlabs/puppet/eyaml
+    ssh -J centos@cluster.yourdomain.cloud centos@puppet sudo cp {public,private}_key.pkcs7.pem /etc/puppetlabs/puppet/eyaml
     ```
 3. Remove the keys from the admin account home folder:
     ```sh
