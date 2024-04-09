@@ -1643,7 +1643,7 @@ journalctl -u puppet | grep "Applied catalog"
 ```
 
 To prepare the volume for cloning, execute the following line while connected to the compute node:
-```bash 
+```bash
 sudo /usr/sbin/prepare4image.sh
 ```
 
