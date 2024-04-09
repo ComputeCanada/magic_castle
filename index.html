@@ -4020,9 +4020,11 @@ on the instance to which the expanded volume is attached.
     <div class="highlight"><pre><span></span><code>pvscan
 </code></pre></div>
 2. Expand the physical volume
-    <code>pvresize /dev/vdxyz # replace vdxyz by the volume identify at step 1</code>
+    <div class="highlight"><pre><span></span><code>pvresize /dev/vdxyz # replace vdxyz by the volume identify at step 1
+</code></pre></div>
 3. Identify the volume group path
-    <code>lvdisplay</code>
+    <div class="highlight"><pre><span></span><code>lvdisplay
+</code></pre></div>
 4. Expand the volume group using step volume group path identified
     <div class="highlight"><pre><span></span><code>lvextend -l &#39;+100%FREE&#39; -r /dev/project_vg/project
 </code></pre></div>
