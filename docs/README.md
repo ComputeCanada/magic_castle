@@ -542,6 +542,7 @@ Optional attributes can be defined:
 Refer to section [10.12 - Create a compute node image](#1012-create-a-compute-node-image) to learn how this attribute can
 be leveraged to accelerate compute node configuration.
 3. `disk_type`: type of the instance's root disk (default: see the next table).
+
     | Provider | `disk_type` | `disk_size` (GiB) |
     | -------- | :---------- | ----------------: |
     | Azure    |`Premium_LRS`| 30                |
@@ -549,6 +550,7 @@ be leveraged to accelerate compute node configuration.
     | GCP      | `pd-ssd`    | 20                |
     | OpenStack| `null`      | 10                |
     | OVH      | `null`      | 10                |
+
 4. `disk_size`: size in gibibytes (GiB) of the instance's root disk containing
 the operating system and service software
 (default: see the previous table).
