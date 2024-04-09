@@ -405,9 +405,6 @@ without rebuilding all instances.
 
 ## [11.0] 2021-04-19
 
-Refer to the [migration guide](docs/migration.md) to know how to deal with
-the changes introduced in this release.
-
 ### Added
 - Add `volumes` variable structure to define volumes that will be attached to instances with matching tags.
 - Reference design documentation
