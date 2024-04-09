@@ -744,10 +744,31 @@ following line to the string:
     ```yaml
     jupyterhub::enable_otp_auth: false
     ```
+- Setup AlertManager to receive Prometheus alerts on Slack:
+    ```yaml
+    prometheus::alertmanager::route:
+      group_by:
+        - 'alertname'
+        - 'cluster'
+        - 'service'
+      group_wait: '5s'
+      group_interval: '5m'
+      repeat_interval: '3h'
+      receiver: 'slack'
+
+    prometheus::alertmanager::receivers:
+      - name: 'slack'
+        slack_configs:
+          - api_url: 'https://hooks.slack.com/services/ABCDEFG123456'
+            channel: "#channel"
+            send_resolved: true
+            username: 'username'
+    ```
 
 Refer to the following Puppet modules' documentation to know more about the key-values that can be defined:
 - [puppet-magic_castle](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/README.md)
 - [puppet-jupyterhub](https://github.com/ComputeCanada/puppet-jupyterhub/blob/main/README.md#hieradata-configuration)
+- [puppet-prometheus](https://forge.puppet.com/modules/puppet/prometheus/)
 
 
 The file created from this string can be found on `puppet` as
