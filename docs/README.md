@@ -1782,7 +1782,7 @@ sudo /opt/puppetlabs/puppet/bin/eyaml edit \
   /etc/puppetlabs/code/environments/production/data/bootstrap.yaml
 ```
 
-It also possible to redefine the values of these keys by adding the key-value pair to
+It is also possible to redefine the values of these keys by adding the key-value pair to
 the hieradata configuration file. Refer to section [4.13 hieradata](#413-hieradata-optional).
 User defined values take precedence over boot generated values in the Magic Castle
 Puppet data hierarchy.
