@@ -3950,9 +3950,11 @@ to create an image for each type of compute nodes. Here is an example with Googl
 </code></pre></div></p>
 <h3 id="1013-generate-and-replace-puppet-hieradata-encryption-keys">10.13 Generate and replace Puppet hieradata encryption keys</h3>
 <p>During the Puppet server initial boot, a pair of hiera-eyaml encryptions keys are generated in
-<code>/opt/puppetlabs/puppet/eyaml</code>:
-- <code>private_key.pkcs7.pem</code>
-- <code>public_key.pkcs7.pem</code></p>
+<code>/opt/puppetlabs/puppet/eyaml</code>:</p>
+<ul>
+<li><code>private_key.pkcs7.pem</code></li>
+<li><code>public_key.pkcs7.pem</code></li>
+</ul>
 <p>To encrypt the values before creating the cluster, the encryptions keys can be generated beforehand and then transferred on the Puppet server.</p>
 <p>The keys can be generated with <code>eyaml</code>:
 <div class="highlight"><pre><span></span><code>eyaml createkeys
