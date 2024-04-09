@@ -3180,14 +3180,16 @@ the operating system and service software
 <p>For some cloud providers, it possible to define additional attributes.
 The following sections present the available attributes per provider.</p>
 <h5 id="aws">AWS</h5>
-<p>For instances with the <code>spot</code> tags, these attributes can also be set:
-- <code>wait_for_fulfillment</code> (default: true)
-- <code>spot_type</code> (default: permanent)
-- <code>instance_interruption_behavior</code> (default: stop)
-- <code>spot_price</code> (default: not set)
-- <code>block_duration_minutes</code> (default: not set) [note 1]
+<p>For instances with the <code>spot</code> tags, these attributes can also be set:</p>
+<ul>
+<li><code>wait_for_fulfillment</code> (default: true)</li>
+<li><code>spot_type</code> (default: permanent)</li>
+<li><code>instance_interruption_behavior</code> (default: stop)</li>
+<li><code>spot_price</code> (default: not set)</li>
+<li><code>block_duration_minutes</code> (default: not set) [note 1]
 For more information on these attributes, refer to
-<a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/spot_instance_request#argument-reference"><code>aws_spot_instance_request</code> argument reference</a></p>
+<a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/spot_instance_request#argument-reference"><code>aws_spot_instance_request</code> argument reference</a></li>
+</ul>
 <p><strong>Note 1</strong>: <code>block_duration_minutes</code> is not available to new AWS accounts
 or accounts without billing history -
 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-requests.html#fixed-duration-spot-instances">AWS EC2 Spot Instance requests</a>. When not available, its usage can trigger
@@ -3195,11 +3197,13 @@ quota errors like this:
 <div class="highlight"><pre><span></span><code>Error requesting spot instances: MaxSpotInstanceCountExceeded: Max spot instance count exceeded
 </code></pre></div></p>
 <h5 id="azure">Azure</h5>
-<p>For instances with the <code>spot</code> tags, these attributes can also be set:
-- <code>max_bid_price</code> (default: not set)
-- <code>eviction_policy</code> (default: <code>Deallocate</code>)
+<p>For instances with the <code>spot</code> tags, these attributes can also be set:</p>
+<ul>
+<li><code>max_bid_price</code> (default: not set)</li>
+<li><code>eviction_policy</code> (default: <code>Deallocate</code>)
 For more information on these attributes, refer to
-<a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine#argument-reference"><code>azurerm_linux_virtual_machine</code> argument reference</a></p>
+<a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine#argument-reference"><code>azurerm_linux_virtual_machine</code> argument reference</a></li>
+</ul>
 <h5 id="gcp">GCP</h5>
 <ul>
 <li><code>gpu_type</code>: name of the GPU model to attach to the instance. Refer to
@@ -3215,14 +3219,16 @@ next <code>terraform apply</code>.</p>
 <p>The <code>volumes</code> variable is a map that defines the block devices that should be attached
 to instances that have the corresponding key in their list of tags. To each instance
 with the tag, unique block devices are attached, no multi-instance attachment is supported.</p>
-<p>Each volume in map is defined a key corresponding to its and a map of attributes:
-- <code>size</code>: size of the block device in GB.
-- <code>type</code> (optional): type of volume to use. Default value per provider:
-  - Azure: <code>Premium_LRS</code>
-  - AWS: <code>gp2</code>
-  - GCP: <code>pd-ssd</code>
-  - OpenStack: <code>null</code>
-  - OVH: <code>null</code></p>
+<p>Each volume in map is defined a key corresponding to its and a map of attributes:</p>
+<ul>
+<li><code>size</code>: size of the block device in GB.</li>
+<li><code>type</code> (optional): type of volume to use. Default value per provider:</li>
+<li>Azure: <code>Premium_LRS</code></li>
+<li>AWS: <code>gp2</code></li>
+<li>GCP: <code>pd-ssd</code></li>
+<li>OpenStack: <code>null</code></li>
+<li>OVH: <code>null</code></li>
+</ul>
 <p>Volumes with a tag that have no corresponding instance will not be created.</p>
 <p>In the following example:
 <div class="highlight"><pre><span></span><code><span class="nb">instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
@@ -3299,18 +3305,19 @@ in <code>hieradata</code>.</p>
 <p><strong>default value</strong>: empty string</p>
 <p>Defines custom variable values that are injected in the Puppet hieradata file.
 Useful to override common configuration of Puppet classes.</p>
-<p>List of useful examples:
-- Receive logs of Puppet runs with changes to your email, add the
+<p>List of useful examples:</p>
+<ul>
+<li>Receive logs of Puppet runs with changes to your email, add the
 following line to the string:
     <div class="highlight"><pre><span></span><code><span class="nt">profile::base::admin_email</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;me@example.org&quot;</span>
-</code></pre></div>
-- Define ip addresses that can never be banned by fail2ban:
+</code></pre></div></li>
+<li>Define ip addresses that can never be banned by fail2ban:
     <div class="highlight"><pre><span></span><code><span class="nt">profile::fail2ban::ignore_ip</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;132.203.0.0/16&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;8.8.8.8&#39;</span><span class="p p-Indicator">]</span>
-</code></pre></div>
-- Remove one-time password field from JupyterHub login page:
+</code></pre></div></li>
+<li>Remove one-time password field from JupyterHub login page:
     <div class="highlight"><pre><span></span><code><span class="nt">jupyterhub::enable_otp_auth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-</code></pre></div>
-- Setup AlertManager to receive Prometheus alerts on Slack:
+</code></pre></div></li>
+<li>Setup AlertManager to receive Prometheus alerts on Slack:
     <div class="highlight"><pre><span></span><code><span class="nt">prometheus::alertmanager::route</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">group_by</span><span class="p">:</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;alertname&#39;</span>
@@ -3328,11 +3335,14 @@ following line to the string:
 <span class="w">        </span><span class="nt">channel</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;#channel&quot;</span>
 <span class="w">        </span><span class="nt">send_resolved</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="w">        </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;username&#39;</span>
-</code></pre></div></p>
-<p>Refer to the following Puppet modules' documentation to know more about the key-values that can be defined:
-- <a href="https://github.com/ComputeCanada/puppet-magic_castle/blob/main/README.md">puppet-magic_castle</a>
-- <a href="https://github.com/ComputeCanada/puppet-jupyterhub/blob/main/README.md#hieradata-configuration">puppet-jupyterhub</a>
-- <a href="https://forge.puppet.com/modules/puppet/prometheus/">puppet-prometheus</a></p>
+</code></pre></div></li>
+</ul>
+<p>Refer to the following Puppet modules' documentation to know more about the key-values that can be defined:</p>
+<ul>
+<li><a href="https://github.com/ComputeCanada/puppet-magic_castle/blob/main/README.md">puppet-magic_castle</a></li>
+<li><a href="https://github.com/ComputeCanada/puppet-jupyterhub/blob/main/README.md#hieradata-configuration">puppet-jupyterhub</a></li>
+<li><a href="https://forge.puppet.com/modules/puppet/prometheus/">puppet-prometheus</a></li>
+</ul>
 <p>The file created from this string can be found on <code>puppet</code> as
 <div class="highlight"><pre><span></span><code>/etc/puppetlabs/data/user_data.yaml
 </code></pre></div></p>
