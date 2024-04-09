@@ -1,0 +1,17 @@
+title Magic Castle configuration by cloud-init
+
+puppet->puppet: yum upgrade
+inst_i->inst_i: yum upgrade
+inst_j->inst_j: yum upgrade
+puppet->puppet: Install puppet
+puppet->puppet: Install puppetserver
+inst_j->inst_j: Install puppet
+inst_i->inst_i: Install puppet
+puppet->puppet: puppet config autosign
+inst_i->puppet: puppet waitforcertcert
+inst_j->puppet: puppet waitforcertcert
+puppet->config_git_url repo: git clone
+puppet->puppet: librarian-puppet install
+inst_i->inst_i: reboot
+inst_j->inst_j: reboot
+puppet->puppet: reboot

@@ -1,0 +1,955 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../design/">
+      
+      
+        <link rel="next" href="../globus/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>Magic Castle Developer Documentation - Magic Castle</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.bcfcd587.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#magic-castle-developer-documentation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Magic Castle" class="md-header__button md-logo" aria-label="Magic Castle" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Magic Castle
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Magic Castle Developer Documentation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Magic Castle" class="md-nav__button md-logo" aria-label="Magic Castle" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    Magic Castle
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Magic Castle Documentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../design/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Design
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Magic Castle Developer Documentation
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Magic Castle Developer Documentation
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table of Content
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-where-to-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Where to start
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-puppet-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Puppet environment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Puppet environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#terraform_datayaml-a-bridge-between-terraform-and-puppet" class="md-nav__link">
+    <span class="md-ellipsis">
+      terraform_data.yaml: a bridge between Terraform and Puppet
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-instances-sitepp-and-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring instances: site.pp and classes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-cloud-init" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 cloud-init
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-selinux" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 SELinux
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2 SELinux">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#building-the-policy-package-file-pp-from-the-enforcement-file-te" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building the policy package file (.pp) from the enforcement file (.te)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      References
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Release
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../globus/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Globus Endpoint in Magic Castle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../matrix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Comparison of Cloud HPC Cluster Projects
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Magic Castle Migration Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../otp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    One-time password
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sequence/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Magic Castle Sequence Diagrams
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../terraform_cloud/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Terraform Cloud
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-content" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table of Content
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-where-to-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Where to start
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-puppet-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Puppet environment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Puppet environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#terraform_datayaml-a-bridge-between-terraform-and-puppet" class="md-nav__link">
+    <span class="md-ellipsis">
+      terraform_data.yaml: a bridge between Terraform and Puppet
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-instances-sitepp-and-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring instances: site.pp and classes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-cloud-init" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.1 cloud-init
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-selinux" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.2 SELinux
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.2 SELinux">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#building-the-policy-package-file-pp-from-the-enforcement-file-te" class="md-nav__link">
+    <span class="md-ellipsis">
+      Building the policy package file (.pp) from the enforcement file (.te)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      References
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Release
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="magic-castle-developer-documentation">Magic Castle Developer Documentation</h1>
+<h2 id="table-of-content">Table of Content</h2>
+<ol>
+<li><a href="#1-setup">Setup</a></li>
+<li><a href="#2-where-to-start">Where to start</a></li>
+<li><a href="#3-puppet-environment">Puppet environment</a></li>
+<li><a href="#4-troubleshooting">Troubleshooting</a></li>
+<li><a href="#5-release">Release</a></li>
+</ol>
+<h2 id="1-setup">1. Setup</h2>
+<p>To develop for Magic Castle you will need:
+* Terraform (&gt;= 1.4.0)
+* git
+* Access to a Cloud (e.g.: Compute Canada Arbutus)
+* Ability to communicate with the cloud provider API from your computer
+* A cloud project with enough room for the resource described in section <a href="../#11-quotas">Magic Caslte Doc 1.1</a>.
+* [optional] <a href="https://www.puppet.com/docs/pdk/latest/pdk.html">Puppet Development Kit (PDK)</a></p>
+<h2 id="2-where-to-start">2. Where to start</h2>
+<p>The Magic Castle project is defined by Terraform infrastructure-as-code component that
+is responsible of generating a cluster architecture in a cloud and a Puppet environment
+component that configures the cluster instances based on their role.</p>
+<p>If you wish to add device, an instance, add a new networking interface or a filesystem,
+you will most likely need to develop some Terraform code. The project structure for
+Terraform code is described in the <a href="../design/">reference design document</a>. The document
+also describes how one could work with current Magic Castle code to add support for
+another cloud provider.</p>
+<p>If you wish to add a service to one of the Puppet environments, install a new software,
+modify an instance configuration or role, you will most likely need to develop some Puppet
+code. The following section provides more details on the Puppet environments available
+and how to develop them.</p>
+<h2 id="3-puppet-environment">3. Puppet environment</h2>
+<p>Magic Castle Terraform code initialized every instances to be a Puppet agent and an instance
+with the tag <code>puppet</code> as the Puppet main server. On the Puppet main server, there is a folder
+containing the configuration code for the instances of the cluster, this folder is called a
+Puppet environment and it is pulled from GitHub during the initial configuration of the Puppet
+main server.</p>
+<p>The source of that environment is provided to Terraform using the variable <code>config_git_url</code>.</p>
+<p>A repository describing a Magic Castle Puppet environment must contain at the least
+the following files and folders:
+<div class="highlight"><pre><span></span><code>config_git_repo
+┣ Puppetfile
+┣ environment.conf
+┣ hiera.yaml
+┗ data
+  ┗ common.yaml
+┗ manifests/
+  ┗ site.pp
+</code></pre></div></p>
+<ul>
+<li><a href="https://puppet.com/docs/pe/2019.8/puppetfile.html"><code>Puppetfile</code></a> specifies the Puppet modules that need to be installed in the environment.</li>
+<li><a href="https://puppet.com/docs/puppet/6/config_file_environment.html"><code>environment.conf</code></a> overrides the primary server default settings for the environment.</li>
+<li><a href="https://puppet.com/docs/puppet/6/hiera_config_yaml_5.html"><code>hiera.yaml</code></a> configures an ordered list of YAML file data sources.</li>
+<li><code>data/common.yaml</code> is common data source for the instances part of hierarchy defined by <code>hiera.yaml</code>.</li>
+<li><code>manifests/site.pp</code> defines how each instance will be configured based on their hostname and/or tags.</li>
+</ul>
+<p>An example of a bare-bone Magic Castle Puppet environment is available on GitHub:
+<a href="https://github.com/MagicCastle/puppet-environment">MagicCastle/puppet-environment</a>, while the
+Puppet environment that replicates a Compute Canada HPC cluster is named
+<a href="https://github.com/ComputeCanada/puppet-magic_castle">ComputeCanada/puppet-magic_castle</a>.</p>
+<h3 id="terraform_datayaml-a-bridge-between-terraform-and-puppet">terraform_data.yaml: a bridge between Terraform and Puppet</h3>
+<p>To provide information on the deployed resources and the value of the input parameters,
+Magic Castle Terraform code uploads to the Puppet main server a file named <code>terraform_data.yaml</code>,
+in the folder <code>/etc/puppetlabs/data/</code>. There is also a symlink created in
+<code>/etc/puppetlabs/code/environment/production/data/</code> to ease its usage inside the Puppet
+environment.</p>
+<p>When included in the data hierarchy (<code>hiera.yaml</code>), <code>terraform_data.yaml</code> can provide
+information about the instances, the volumes and the variables set by the user
+through the <code>main.tf</code> file. The file has the following structure:
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">terraform</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">data</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">cluster_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">domain_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">guest_passwd</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">nb_users</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">public_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
+<span class="w">    </span><span class="nt">sudoer_username</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">  </span><span class="nt">instances</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">host1</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">hostkeys</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">rsa</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">        </span><span class="nt">ed25519</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">      </span><span class="nt">local_ip</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;x.x.x.x&quot;</span>
+<span class="w">      </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;host&quot;</span>
+<span class="w">      </span><span class="nt">public_ip</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">      </span><span class="nt">specs</span><span class="p">:</span>
+<span class="w">        </span><span class="s">&quot;cpus&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">        </span><span class="s">&quot;gpus&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">        </span><span class="s">&quot;ram&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">      </span><span class="nt">tags</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;tag_1&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;tag_2&quot;</span>
+<span class="w">  </span><span class="nt">tag_ip</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">tag_1</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">x.x.x.x</span>
+<span class="w">    </span><span class="nt">tag_2</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">x.x.x.x</span>
+<span class="w">  </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">volume_tag1</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">volume_1</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/dev/disk/by-id/123-*&quot;</span>
+<span class="w">      </span><span class="nt">volume_2</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/dev/disk/by-id/123-abc-*&quot;</span>
+</code></pre></div></p>
+<p>The values provided by <code>terraform_data.yaml</code> can be accessed in Puppet by using the
+<code>lookup()</code> function. For example, to access an instance's list of tags:
+<div class="highlight"><pre><span></span><code><span class="na">lookup</span><span class="p">(</span><span class="s">&quot;terraform.instances.${::hostname}.tags&quot;</span><span class="p">)</span>
+</code></pre></div>
+The data source can also be used to define a key in another data source YAML file by using the
+<code>alias()</code> function. For example, to define the number of guest accounts using the value of <code>nb_users</code>,
+we could add this to <code>common.yaml</code>
+<div class="highlight"><pre><span></span><code><span class="nt">profile::accounts::guests::nb_accounts</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%{alias(&#39;terraform.data.nb_users&#39;)}&quot;</span>
+</code></pre></div></p>
+<h3 id="configuring-instances-sitepp-and-classes">Configuring instances: site.pp and classes</h3>
+<p>The configuration of each instance is defined in <code>manifests/site.pp</code> file of the Puppet environment.
+In this file, it is possible to define a configuration based on an instance hostname
+<div class="highlight"><pre><span></span><code>node &quot;mgmt1&quot; { }
+</code></pre></div>
+or using the instance tags by defining the configuration for the <code>default</code> node :
+<div class="highlight"><pre><span></span><code>node default {
+  $instance_tags = lookup(&quot;terraform.instances.${::hostname}.tags&quot;)
+  if &#39;tag_1&#39; in $instances_tags { }
+}
+</code></pre></div></p>
+<p>It is possible to define <a href="https://puppet.com/docs/puppet/6/type.html">Puppet resource</a> directly
+in <code>site.pp</code>. However, above a certain level of complexity, which can be reach fairly quickly, it
+is preferable to define classes and include these classes in <code>site.pp</code> based on the node hostname
+or tags.</p>
+<p>Classes can be defined in the Puppet environment under the following path:
+<code>site/profile/manifests</code>. These classes are named profile classes and the philosophy
+behind it is explained in <a href="https://puppet.com/docs/pe/2019.8/osp/the_roles_and_profiles_method.html">Puppet documentation</a>. Because these classes are defined in <code>site/profile</code>,
+their name has to start with the prefix <code>profile::</code>.</p>
+<p>It is also possible to include classes defined externally and installed using the <code>Puppetfile</code>.
+These classes installed by <a href="https://github.com/voxpupuli/puppet-r10k">r10k</a> can be found in the <code>modules</code> folder of the
+Puppet environment.</p>
+<h2 id="4-troubleshooting">4. Troubleshooting</h2>
+<h3 id="41-cloud-init">4.1 cloud-init</h3>
+<p>To test new additions to <code>puppet.yaml</code>, it is possible to
+execute cloud-init phases manually. There are four steps that can be executed sequentially: init local, init
+modules config and modules final. Here are the corresponding commands to execute each step:
+<div class="highlight"><pre><span></span><code>cloud-init init --local
+cloud-init init
+cloud-init modules --mode=config
+cloud-init modules --mode=final
+</code></pre></div></p>
+<p>It is also possible to clean a cloud-init execution and have it execute again at next reboot. To do so, enter
+the following command:
+<div class="highlight"><pre><span></span><code>cloud-init clean
+</code></pre></div>
+Add <code>-r</code> to the previous command to reboot the instance once cloud-init has finishing cleaning.</p>
+<h3 id="42-selinux">4.2 SELinux</h3>
+<p>SELinux is enabled on every instances of a Magic Castle cluster. Some applications do not provide
+SELinux policies which can lead to their malfunctionning when SELinux is enabled. It is possible
+to track down the reasons why SELinux is preventing an application to work properly using
+the command-line tool <code>ausearch</code>.</p>
+<p>If you suspect application <code>app-a</code> to be denied by SELinux to work properly, run the following
+command as root:
+<div class="highlight"><pre><span></span><code>ausearch -c app-a --raw | grep denied
+</code></pre></div></p>
+<p>To see all requests denied by SELinux:
+<div class="highlight"><pre><span></span><code>ausearch --raw | grep denied
+</code></pre></div></p>
+<p>Sometime, the denials are hidden from regular logging. To display all denials, run the following
+command as root:
+<div class="highlight"><pre><span></span><code>semodule --disable_dontaudit --build
+</code></pre></div>
+then re-execute the application that is not working properly.</p>
+<p>Once you have found the denials that are the cause of the problem, you can create a new policy
+to allow the requests that were previously denied with the following command:
+<div class="highlight"><pre><span></span><code>ausearch -c app-a --raw | grep denied | audit2allow -a -M app-a
+</code></pre></div></p>
+<p>Finally, you can install the generated policy using the command provided by <code>auditallow</code>.</p>
+<h4 id="building-the-policy-package-file-pp-from-the-enforcement-file-te">Building the policy package file (.pp) from the enforcement file (.te)</h4>
+<p>If you need to tweak an existing enforcement file and you want to recompile the policy package,
+you can with the following commands:
+<div class="highlight"><pre><span></span><code>checkmodule -M -m -o my_policy.mod my_policy.te
+semodule_package -o my_policy.pp -m my_policy.mod
+</code></pre></div></p>
+<h4 id="references">References</h4>
+<ul>
+<li>https://wiki.gentoo.org/wiki/SELinux</li>
+<li>https://wiki.gentoo.org/wiki/SELinux/Tutorials/Where_to_find_SELinux_permission_denial_details</li>
+</ul>
+<h2 id="5-release">5. Release</h2>
+<p>To build a release, use the script <code>release.sh</code> located at the root of Magic Castle git repo.
+<div class="highlight"><pre><span></span><code>Usage: release.sh VERSION [provider ...]
+</code></pre></div>
+The script creates a folder named <code>releases</code> where it was called.</p>
+<p>The <code>VERSION</code> argument is expected to correspond to git tag in the <code>puppet-magic_castle</code> repo.
+It could also be a branch name or a commit. If the provider optional argument is left blank,
+release files will be built for all providers currently supported by Magic Castle.</p>
+<p>Examples:</p>
+<ul>
+<li>Building a release for OpenStack with the puppet repo main branch:
+    <div class="highlight"><pre><span></span><code>$ ./release.sh main openstack
+</code></pre></div></li>
+<li>Building a release for GCP with the latest Terraform and cloud-init, and version 5.8 of puppet
+Magic Castle:
+    <code>$ ./release.sh 5.8 gcp</code></li>
+<li>Building a release for Azure and OVH with the latest Terraform and cloud-init, and version 5.7 of puppet
+Magic Castle:
+    <div class="highlight"><pre><span></span><code>$ ./release.sh 5.7 azure ovh
+</code></pre></div></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

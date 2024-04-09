@@ -1,0 +1,1161 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../developers/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>Design - Magic Castle</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.bcfcd587.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#magic-castle-terraform-structure" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Magic Castle" class="md-header__button md-logo" aria-label="Magic Castle" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Magic Castle
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Design
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Magic Castle" class="md-nav__button md-logo" aria-label="Magic Castle" data-md-component="logo">
+      
+  <img src="../img/logo.png" alt="logo">
+
+    </a>
+    Magic Castle
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Magic Castle Documentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Design
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Design
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#magic-castle-terraform-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Magic Castle Terraform Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resource-per-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resource per provider
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-reference-design-to-extend-for-a-new-cloud-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using reference design to extend for a new cloud provider
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using reference design to extend for a new cloud provider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#an-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      An example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Magic Castle Developer Documentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../globus/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Globus Endpoint in Magic Castle
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../matrix/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Comparison of Cloud HPC Cluster Projects
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Magic Castle Migration Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../otp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    One-time password
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sequence/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Magic Castle Sequence Diagrams
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../terraform_cloud/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Terraform Cloud
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#magic-castle-terraform-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Magic Castle Terraform Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resource-per-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      Resource per provider
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-reference-design-to-extend-for-a-new-cloud-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using reference design to extend for a new cloud provider
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using reference design to extend for a new cloud provider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#an-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      An example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>Design</h1>
+
+<h2 id="magic-castle-terraform-structure">Magic Castle Terraform Structure</h2>
+<p>Figure 1 (below) illustrates how Magic Castle is structured to provide a unified interface between multiple
+cloud providers. Each blue block is a file or a module, while white blocks are variables or resources.
+Arrows indicate variables or resources that contribute to the definition of the linked variables or
+resources. The figure can be read as a flow-chart from top to bottom. Some resources and variables have been left out of the chart to avoid cluttering it further.</p>
+<p><img alt="Magic Castle Terraform Structure" src="https://docs.google.com/drawings/d/e/2PACX-1vSL84MSd1rz5hgjLMfWBBKwp6-jNTEJovNUOXtTwDovpvmyFG7qo12HD32a3fhaKl8hpjcIfM5fZ8II/pub?w=1864&amp;h=1972" />
+<em>Figure 1. Magic Castle Terraform Project Structure</em></p>
+<ol>
+<li><code>main.tf</code>: User provides the instances and volumes structure they wants as _map_s.
+    <div class="highlight"><pre><span></span><code><span class="nb">instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">mgmt</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p4-7.5gb&quot;, tags = [&quot;puppet&quot;, &quot;mgmt&quot;, &quot;nfs&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nb">login</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p2-3.75gb&quot;, tags = [&quot;login&quot;, &quot;public&quot;, &quot;proxy&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nb">node</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p2-3.75gb&quot;, tags = [&quot;node&quot;</span><span class="p">],</span><span class="w"> </span><span class="na">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nb">volumes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">nfs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">home</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="nb">project</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">500</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="nb">scratch</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">500</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></li>
+<li>
+<p><code>common/design</code>: </p>
+<ol>
+<li>the <code>instances</code> map is expanded to form a new map where each entry represents a single host.
+    <div class="highlight"><pre><span></span><code><span class="nb">instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">mgmt1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p2-3.75gb&quot;</span>
+<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;puppet&quot;, &quot;mgmt&quot;, &quot;nfs&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nb">login1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p2-3.75gb&quot;</span>
+<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;login&quot;, &quot;public&quot;, &quot;proxy&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nb">node1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p2-3.75gb&quot;</span>
+<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nb">node2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p2-3.75gb&quot;</span>
+<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></li>
+<li>the <code>volumes</code> map is expanded to form a new map where each entry represent a single volume
+    <div class="highlight"><pre><span></span><code><span class="nb">volumes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">mgmt1-nfs-home</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nb">mgmt1-nfs-project</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nb">mgmt1-nfs-scratch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">500</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></li>
+</ol>
+</li>
+<li>
+<p><code>network.tf</code>: the <code>instances</code> map from <code>common/design</code> is used to generate a network interface (nic)
+for each host, and a public ip address for each host with the <code>public</code> tag.
+    <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;provider_network_interface&quot;</span><span class="w"> </span><span class="nv">&quot;nic&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.instances</span>
+<span class="w">  </span><span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><code>common/configuration</code>: for each host in <code>instances</code>, a cloud-init yaml config that includes
+<code>puppetservers</code> is generated. These configs are outputted to a <code>user_data</code> map where the keys are
+the hostnames.
+    <div class="highlight"><pre><span></span><code><span class="nb">user_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="err">for</span><span class="w"> </span><span class="err">key</span><span class="p">,</span><span class="w"> </span><span class="err">values</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.instances</span><span class="w"> </span><span class="p">:</span>
+<span class="w">    </span><span class="na">key</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">&quot;${path.module}/puppet.yaml&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">})</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><code>infrastructure.tf</code>: for each host in <code>instances</code>, an instance resource as defined by the selected
+cloud provider is generated. Each instance is initially configured by its <code>user_data</code> cloud-init
+yaml config.
+    <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;provider_instance&quot;</span><span class="w"> </span><span class="nv">&quot;instances&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.instance</span>
+<span class="w">  </span><span class="na">user_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.instance_config.user_data[each.key</span><span class="p">]</span>
+<span class="w">  </span><span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><code>infrastructure.tf</code>: for each volume in <code>volumes</code>, a block device as defined by the selected
+cloud provider is generated and attached it to its matching instance using an <code>attachment</code> resource.
+    <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;provider_volume&quot;</span><span class="w"> </span><span class="nv">&quot;volumes&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.volumes</span>
+<span class="w">  </span><span class="na">size</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.size</span>
+<span class="w">  </span><span class="p">...</span>
+<span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;provider_attachment&quot;</span><span class="w"> </span><span class="nv">&quot;attachments&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.volumes</span>
+<span class="w">  </span><span class="na">instance_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">provider_instance.instances[each.value.instance].id</span>
+<span class="w">  </span><span class="na">volume_id</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">provider_volume.volumes[each.key].id</span>
+<span class="w">  </span><span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><code>infrastructure.tf</code>: the created instances' information are consolidated in a map
+named <code>inventory</code>.
+    <div class="highlight"><pre><span></span><code><span class="nb">inventory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">mgmt1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">public_ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">    </span><span class="na">local_ip</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;10.0.0.1&quot;</span>
+<span class="w">    </span><span class="na">id</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;abc1213-123-1231&quot;</span>
+<span class="w">    </span><span class="na">tags</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;mgmt&quot;, &quot;puppet&quot;, &quot;nfs&quot;</span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><code>common/provision</code>: the information from created instances is consolidated
+and written in a yaml file named<code>terraform_data.yaml</code> that is uploaded on
+the Puppet server as part of the hieradata.
+    <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;null_resource&quot;</span><span class="w"> </span><span class="nv">&quot;deploy_hieradata&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">...</span>
+<span class="w">  </span><span class="kr">provisioner</span><span class="w"> </span><span class="nv">&quot;file&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">content</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.terraform_data</span>
+<span class="w">    </span><span class="na">destination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;terraform_data.yaml&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="p">...</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><code>outputs.tf</code>: the information of all instances that have a public address are output as a
+map named <code>public_instances</code>.</p>
+</li>
+</ol>
+<h2 id="resource-per-provider">Resource per provider</h2>
+<p>In the previous section, we have used generic resource name when writing HCL code that
+defines these resources. The following table indicate what resource is used for each
+provider based on its role in the cluster.</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc">AWS</a></th>
+<th style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs">Azure</a></th>
+<th style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs">Google Cloud Platform</a></th>
+<th><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/">OpenStack</a></th>
+<th style="text-align: left;">OVH</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>network</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc">aws_vpc</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network">azurerm_virtual_network</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network">google_compute_network</a></td>
+<td>prebuilt</td>
+<td style="text-align: left;">openstack_networking_network_v2</td>
+</tr>
+<tr>
+<td>subnet</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet">aws_subnet</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet">azurerm_subnet</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork">google_compute_subnetwork</a></td>
+<td>prebuilt</td>
+<td style="text-align: left;">openstack_networking_subnet_v2</td>
+</tr>
+<tr>
+<td>router</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route">aws_route</a></td>
+<td style="text-align: left;">not used</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router">google_compute_router</a></td>
+<td>built-in</td>
+<td style="text-align: left;">not used</td>
+</tr>
+<tr>
+<td>nat</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway">aws_internet_gateway</a></td>
+<td style="text-align: left;">not used</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router_nat">google_compute_router_nat</a></td>
+<td>built-in</td>
+<td style="text-align: left;">not used</td>
+</tr>
+<tr>
+<td>firewall</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group">aws_security_group</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group">azurerm_network_security_group</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall">google_compute_firewall</a></td>
+<td><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_secgroup_v2">openstack_compute_secgroup_v2</a></td>
+<td style="text-align: left;">openstack_compute_secgroup_v2</td>
+</tr>
+<tr>
+<td>nic</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_interface">aws_network_interface</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface">azurerm_network_interface</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address">google_compute_address</a></td>
+<td><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/networking_port_v2">openstack_networking_port_v2</a></td>
+<td style="text-align: left;">openstack_networking_port_v2</td>
+</tr>
+<tr>
+<td>public ip</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip">aws_eip</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip">azurerm_public_ip</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address">google_compute_address</a></td>
+<td><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/networking_floatingip_v2">openstack_networking_floatingip_v2</a></td>
+<td style="text-align: left;">openstack_networking_network_v2</td>
+</tr>
+<tr>
+<td>instance</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance">aws_instance</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine">azurerm_linux_virtual_machine</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance">google_compute_instance</a></td>
+<td><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_instance_v2">openstack_compute_instance_v2</a></td>
+<td style="text-align: left;">openstack_compute_instance_v2</td>
+</tr>
+<tr>
+<td>volume</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume">aws_ebs_volume</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/managed_disk">azurerm_managed_disk</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk">google_compute_disk</a></td>
+<td><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/blockstorage_volume_v3">openstack_blockstorage_volume_v3</a></td>
+<td style="text-align: left;">openstack_blockstorage_volume_v3</td>
+</tr>
+<tr>
+<td>attachment</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/volume_attachment">aws_volume_attachment</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine_data_disk_attachment">azurerm_virtual_machine_data_disk_attachment</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_attached_disk">google_compute_attached_disk</a></td>
+<td><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_volume_attach_v2">openstack_compute_volume_attach_v2</a></td>
+<td style="text-align: left;">openstack_compute_volume_attach_v2</td>
+</tr>
+</tbody>
+</table>
+<h2 id="using-reference-design-to-extend-for-a-new-cloud-provider">Using reference design to extend for a new cloud provider</h2>
+<p>Magic Castle currently supports five cloud providers, but its design makes it easy to add
+new providers. This section presents a step-by-step guide to add a new cloud provider
+support to Magic Castle.</p>
+<ol>
+<li>
+<p><strong>Identify the resources</strong>. Using the <em>Resource per provider</em> table, read the cloud provider
+Terraform documentation, and identify the name for each resource in the table.</p>
+</li>
+<li>
+<p><strong>Check minimum requirements</strong>. Once all resources have been identified, you should be able to
+determine if the cloud provider can be used to deploy Magic Castle. If you found a name for each
+resource listed in table, the cloud provider can be supported. If some resources are missing, you
+will need to read the provider's documentation to determine if the absence of the resource can
+be compensated for somehow.</p>
+</li>
+<li>
+<p><strong>Initialize the provider folder</strong>. Create a folder named after the provider. In this folder, create
+two symlinks, one pointing to <code>common/variables.tf</code> and the other to <code>common/outputs.tf</code>. These
+files define the interface common to all providers supported by Magic Castle.</p>
+</li>
+<li>
+<p><strong>Define cloud provider specifics variables</strong>. Create a file named after your provider
+<code>provider_name.tf</code> and define variables that are required by the provider but not common to all
+providers, for example the availability zone or the region. In this file, define two local
+variables named <code>cloud_provider</code> and <code>cloud_region</code>.</p>
+</li>
+<li>
+<p><strong>Initialize the infrastructure</strong>. Create a file named  <code>infrastructure.tf</code>. In this file:</p>
+<ol>
+<li>define the provider block if it requires input parameters, i.e: var.region
+    <div class="highlight"><pre><span></span><code><span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;provider_name&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.region</span>
+<span class="p">}</span>
+</code></pre></div></li>
+<li>include the design module
+    <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;design&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/design&quot;</span>
+<span class="w">  </span><span class="na">cluster_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.cluster_name</span>
+<span class="w">  </span><span class="na">domain</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.domain</span>
+<span class="w">  </span><span class="na">instances</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.instances</span>
+<span class="w">  </span><span class="na">pool</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.pool</span>
+<span class="w">  </span><span class="na">volumes</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.volumes</span>
+<span class="p">}</span>
+</code></pre></div></li>
+</ol>
+</li>
+<li>
+<p><strong>Create the networking infrastructure</strong>. Create a file named <code>network.tf</code>
+and define the network, subnet, router, nat, firewall, nic and public ip resources using
+the <code>module.design.instances</code> map.</p>
+</li>
+<li>
+<p><strong>Create the volumes</strong>. In <code>infrastructure.tf</code>, define the <code>volumes</code> resource using
+<code>module.design.volumes</code>.</p>
+</li>
+<li>
+<p><strong>Consolidate the volume device information</strong>. In <code>infrastructure.tf</code>, define a local
+variable named <code>volume_devices</code> implementing the following logic in HCL. Replace
+the line starting by <code>/dev/disk/by-id</code> with the proper logic that would match the volume
+resource to its device path from within the instance to which it is attached.
+  <div class="highlight"><pre><span></span><code><span class="nb">volume_devices</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="err">for</span><span class="w"> </span><span class="err">ki</span><span class="p">,</span><span class="w"> </span><span class="err">vi</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.volumes</span><span class="w"> </span><span class="p">:</span>
+<span class="w">  </span><span class="na">ki</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="err">for</span><span class="w"> </span><span class="err">kj</span><span class="p">,</span><span class="w"> </span><span class="err">vj</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">vi</span><span class="w"> </span><span class="p">:</span>
+<span class="w">    </span><span class="na">kj</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">[</span><span class="err">for</span><span class="w"> </span><span class="err">key</span><span class="p">,</span><span class="w"> </span><span class="err">volume</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">module.design.volumes</span><span class="w"> </span><span class="p">:</span>
+<span class="w">      </span><span class="s2">&quot;/dev/disk/by-id/*${substr(provider_volume.volumes[&quot;${volume[&quot;instance&quot;]}-${ki}-${kj}&quot;].id, 0, 20)}&quot;</span>
+<span class="w">      </span><span class="err">if</span><span class="w"> </span><span class="na">key</span><span class="w"> </span><span class="o">=</span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;${volume[&quot;instance&quot;]}-${ki}-${kj}&quot;</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Consolidate the instances' information</strong>.  In <code>infrastructure.tf</code>, define a local variable named <code>inventory</code> that will be a map containing the following keys for each instance: <code>public_ip</code>, <code>local_ip</code>, <code>prefix</code>, <code>tags</code>, and <code>specs</code> (#cpu, #gpus, ram).</p>
+</li>
+<li>
+<p><strong>Create the instance configurations</strong>. In <code>infrastructure.tf</code>, include the
+<code>common/configuration</code> module like this:
+    <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;configuration&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/configuration&quot;</span>
+<span class="w">  </span><span class="na">inventory</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">local.inventory</span>
+<span class="w">  </span><span class="na">config_git_url</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.config_git_url</span>
+<span class="w">  </span><span class="na">config_version</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.config_version</span>
+<span class="w">  </span><span class="na">sudoer_username</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sudoer_username</span>
+<span class="w">  </span><span class="na">generate_ssh_key</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.generate_ssh_key</span>
+<span class="w">  </span><span class="na">public_keys</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">var.public_keys</span>
+<span class="w">  </span><span class="na">volume_devices</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.volume_devices</span>
+<span class="w">  </span><span class="na">domain_name</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.domain_name</span>
+<span class="w">  </span><span class="na">cluster_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.cluster_name</span>
+<span class="w">  </span><span class="na">guest_passwd</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.guest_passwd</span>
+<span class="w">  </span><span class="na">nb_users</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">var.nb_users</span>
+<span class="w">  </span><span class="na">software_stack</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.software_stack</span>
+<span class="w">  </span><span class="na">cloud_provider</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.cloud_provider</span>
+<span class="w">  </span><span class="na">cloud_region</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">local.cloud_region</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Create the instances</strong>. In <code>infrastructure.tf</code>, define the <code>instances</code> resource using
+<code>module.design.instances_to_build</code> for the instance attributes and <code>module.configuration.user_data</code>
+for the initial configuration.</p>
+</li>
+<li>
+<p><strong>Attach the volumes</strong>. In <code>infrastructure.tf</code>, define the <code>attachments</code> resource using
+<code>module.design.volumes</code> and refer to the attribute <code>each.value.instance</code> to retrieve the
+instance's id to which the volume needs to be attached.</p>
+</li>
+<li>
+<p><strong>Identify the public instances</strong>. In <code>infrastructure.tf</code>, define a local variable named <code>public_instances</code>
+that contains the attributes of instances that are publicly accessible from Internet and their ids.
+  <div class="highlight"><pre><span></span><code><span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">public_instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">host</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="nv">module.design.instances_to_build</span><span class="p">):</span>
+<span class="w">    </span><span class="na">host</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="nv">module.configuration.inventory[host</span><span class="p">],</span><span class="w"> </span><span class="p">{</span><span class="na">id</span><span class="o">=</span><span class="nv">cloud_provider_instance_resource.instances[host].id</span><span class="p">})</span>
+<span class="w">    </span><span class="err">if</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nv">module.configuration.inventory[host].tags</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;public&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Include the provision module to transmit Terraform data to the Puppet server</strong>. In <code>infrastructure.tf</code>, include the
+<code>common/provision</code> module like this
+  <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;provision&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/provision&quot;</span>
+<span class="w">  </span><span class="na">bastions</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.public_instances</span>
+<span class="w">  </span><span class="na">puppetservers</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.puppetservers</span>
+<span class="w">  </span><span class="na">tf_ssh_key</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.ssh_key</span>
+<span class="w">  </span><span class="na">terraform_data</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.terraform_data</span>
+<span class="w">  </span><span class="na">terraform_facts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.terraform_facts</span>
+<span class="w">  </span><span class="na">hieradata</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.hieradata</span>
+<span class="w">  </span><span class="na">sudoer_username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sudoer_username</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="an-example">An example</h3>
+<ol>
+<li>
+<p><strong>Identify the resources</strong>. For Digital Ocean, Oracle Cloud and Alibaba Cloud, we get the following resource mapping:
+    | Resource    | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs">Digital Ocean</a> | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs">Oracle Cloud</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs">Alibaba Cloud</a> |
+    | ----------- | :-------------------- |  :-------------------- |  :-------------------- |
+    | network     | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/vpc">digitalocean_vpc</a> | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_vcn">oci_core_vcn</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/vpc">alicloud_vpc</a> |
+    | subnet      | built in vpc | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_subnet">oci_subnet</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/vswitch">alicloud_vswitch</a> |
+    | router      | n/a          | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_route_table">oci_core_route_table</a> | built in vpc |
+    | nat         | n/a          | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_internet_gateway">oci_core_internet_gateway</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/nat_gateway">alicloud_nat_gateway</a> |
+    | firewall    | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/firewall">digitalocean_firewall</a> | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_security_list">oci_core_security_list</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/security_group">alicloud_security_group</a> |
+    | nic         | n/a | built in instance | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/network_interface">alicloud_network_interface</a> |
+    | public ip   | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/floating_ip">digitalocean_floating_ip</a> | built in instance | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/eip">alicloud_eip</a> |
+    | instance    | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/droplet">digitalocean_droplet</a> | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_instance">oci_core_instance</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/instance">alicloud_instance</a> |
+    | volume      | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/volume">digitalocean_volume</a> | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_volume">oci_core_volume</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/disk">alicloud_disk</a> |
+    | attachment  | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/volume_attachment">digitalocean_volume_attachment</a> | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_volume_attachment">oci_core_volume_attachment</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/disk_attachment">alicloud_disk_attachment</a> |</p>
+</li>
+<li>
+<p><strong>Check minimum requirements</strong>. In the preceding table, we can see Digital Ocean does not have the ability
+to define a network interface. The documentation also leads us to conclude that it is not possible
+to define the private ip address of the instances before creating them. Because the Puppet server
+ip address is required before generating the cloud-init YAML config for all instances, including the Puppet
+server itself, this means it impossible to use Digital Ocean to spawn a Magic Castle cluster.
+<br><br>
+Oracle Cloud presents the same issue, however, after reading the instance documentation, we find that
+it is possible to define a static ip address as a string in the instance attribute. It would therefore
+be possible to create a datastructure in Terraform that would associate each instance hostname with
+an ip address in the subnet CIDR.
+<br><br>
+Alibaba cloud has an answer for each resource, so we will use this provider in the following steps.</p>
+</li>
+<li>
+<p><strong>Initialize the provider folder</strong>. In a terminal:
+  <div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ComputeCanada/magic_castle.git
+<span class="nb">cd</span><span class="w"> </span>magic_castle
+mkdir<span class="w"> </span>alicloud
+<span class="nb">cd</span><span class="w"> </span>aliclcoud
+ln<span class="w"> </span>-s<span class="w"> </span>../common/<span class="o">{</span>variables,outputs<span class="o">}</span>.tf<span class="w"> </span>.
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Define cloud provider specifics variables</strong>. Add the following to a new file <code>alicloud.tf</code>:
+  <div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;region&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">cloud_provider</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;alicloud&quot;</span>
+<span class="w">  </span><span class="na">cloud_region</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.region</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Initialize the infrastructure</strong>. Add the following to a new file <code>infrastructure.tf</code>:
+  <div class="highlight"><pre><span></span><code><span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;alicloud&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.region</span>
+<span class="p">}</span>
+
+<span class="kr">module</span><span class="w"> </span><span class="nv">&quot;design&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/design&quot;</span>
+<span class="w">  </span><span class="na">cluster_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.cluster_name</span>
+<span class="w">  </span><span class="na">domain</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.domain</span>
+<span class="w">  </span><span class="na">instances</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.instances</span>
+<span class="w">  </span><span class="na">pool</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.pool</span>
+<span class="w">  </span><span class="na">volumes</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.volumes</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Create the networking infrastructure</strong>. <code>network.tf</code> base template:
+  <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_vpc&quot;</span><span class="w"> </span><span class="nv">&quot;network&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_vswitch&quot;</span><span class="w"> </span><span class="nv">&quot;subnet&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_nat_gateway&quot;</span><span class="w"> </span><span class="nv">&quot;nat&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_security_group&quot;</span><span class="w"> </span><span class="nv">&quot;firewall&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_security_group_rule&quot;</span><span class="w"> </span><span class="nv">&quot;allow_in_services&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_security_group&quot;</span><span class="w"> </span><span class="nv">&quot;allow_any_inside_vpc&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_security_group_rule&quot;</span><span class="w"> </span><span class="nv">&quot;allow_ingress_inside_vpc&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_security_group_rule&quot;</span><span class="w"> </span><span class="nv">&quot;allow_egress_inside_vpc&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_network_interface&quot;</span><span class="w"> </span><span class="nv">&quot;nic&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_eip&quot;</span><span class="w"> </span><span class="nv">&quot;public_ip&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_eip_association&quot;</span><span class="w"> </span><span class="nv">&quot;eip_asso&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Create the volumes</strong>. Add and complete the following snippet to <code>infrastructure.tf</code>:
+  <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_disk&quot;</span><span class="w"> </span><span class="nv">&quot;volumes&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.volumes</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Consolidate the volume devices' information</strong>. Add the following snippet to <code>infrastructure.tf</code>:
+  <div class="highlight"><pre><span></span><code><span class="nb">volume_devices</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="err">for</span><span class="w"> </span><span class="err">ki</span><span class="p">,</span><span class="w"> </span><span class="err">vi</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.volumes</span><span class="w"> </span><span class="p">:</span>
+<span class="w">  </span><span class="na">ki</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="err">for</span><span class="w"> </span><span class="err">kj</span><span class="p">,</span><span class="w"> </span><span class="err">vj</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">vi</span><span class="w"> </span><span class="p">:</span>
+<span class="w">    </span><span class="na">kj</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">[</span><span class="err">for</span><span class="w"> </span><span class="err">key</span><span class="p">,</span><span class="w"> </span><span class="err">volume</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">module.design.volumes</span><span class="w"> </span><span class="p">:</span>
+<span class="w">      </span><span class="s2">&quot;/dev/disk/by-id/virtio-${replace(alicloud_disk.volumes[&quot;${volume[&quot;instance&quot;]}-${ki}-${kj}&quot;].id, &quot;d-&quot;, &quot;&quot;)}&quot;</span>
+<span class="w">      </span><span class="err">if</span><span class="w"> </span><span class="na">key</span><span class="w"> </span><span class="o">=</span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;${volume[&quot;instance&quot;]}-${ki}-${kj}&quot;</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Consolidate the instances' information</strong>. Add the following snippet to <code>infrastructure.tf</code>:
+  <div class="highlight"><pre><span></span><code><span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">inventory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">x</span><span class="p">,</span><span class="w"> </span><span class="err">values</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">module.design.instances</span><span class="w"> </span><span class="p">:</span>
+<span class="w">    </span><span class="na">x</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">public_ip</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="err">values</span><span class="p">[</span><span class="s2">&quot;tags&quot;], &quot;public&quot;) ? alicloud_eip.public_ip[x].public_ip : &quot;&quot;</span>
+<span class="w">      </span><span class="na">local_ip</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">alicloud_network_interface.nic[x].private_ip</span>
+<span class="w">      </span><span class="na">tags</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="err">values</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="na">id</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">alicloud_instance.instances[x].id</span>
+<span class="w">      </span><span class="nb">specs</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="na">cpus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...</span>
+<span class="w">        </span><span class="na">gpus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...</span>
+<span class="w">        </span><span class="na">ram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Create the instance configurations</strong>. In <code>infrastructure.tf</code>, include the
+<code>common/configuration</code> module like this:
+    <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;configuration&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/configuration&quot;</span>
+<span class="w">  </span><span class="na">inventory</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">local.inventory</span>
+<span class="w">  </span><span class="na">config_git_url</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.config_git_url</span>
+<span class="w">  </span><span class="na">config_version</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.config_version</span>
+<span class="w">  </span><span class="na">sudoer_username</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sudoer_username</span>
+<span class="w">  </span><span class="na">generate_ssh_key</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.generate_ssh_key</span>
+<span class="w">  </span><span class="na">public_keys</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">var.public_keys</span>
+<span class="w">  </span><span class="na">volume_devices</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.volume_devices</span>
+<span class="w">  </span><span class="na">domain_name</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.domain_name</span>
+<span class="w">  </span><span class="na">cluster_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.cluster_name</span>
+<span class="w">  </span><span class="na">guest_passwd</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.guest_passwd</span>
+<span class="w">  </span><span class="na">nb_users</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">var.nb_users</span>
+<span class="w">  </span><span class="na">software_stack</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.software_stack</span>
+<span class="w">  </span><span class="na">cloud_provider</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.cloud_provider</span>
+<span class="w">  </span><span class="na">cloud_region</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">local.cloud_region</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Create the instances</strong>. Add and complete the following snippet to <code>infrastructure.tf</code>:
+  <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_instance&quot;</span><span class="w"> </span><span class="nv">&quot;instances&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.instances</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Attach the volumes</strong>. Add and complete the following snippet to <code>infrastructure.tf</code>:
+  <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_disk_attachment&quot;</span><span class="w"> </span><span class="nv">&quot;attachments&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.volumes</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Identify the public instances</strong>. In <code>infrastructure.tf</code>, define a local variable named <code>public_instances</code>
+that contains the attributes of instances that are publicly accessible from Internet and their ids.
+  <div class="highlight"><pre><span></span><code><span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">public_instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">host</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="nv">module.design.instances_to_build</span><span class="p">):</span>
+<span class="w">    </span><span class="na">host</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="nv">module.configuration.inventory[host</span><span class="p">],</span><span class="w"> </span><span class="p">{</span><span class="na">id</span><span class="o">=</span><span class="nv">alicloud_instance.instances[host].id</span><span class="p">})</span>
+<span class="w">    </span><span class="err">if</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nv">module.configuration.inventory[host].tags</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;public&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Include the provision module to transmit Terraform data to the Puppet server</strong>. In <code>infrastructure.tf</code>, include the
+<code>common/provision</code> module like this
+  <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;provision&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/provision&quot;</span>
+<span class="w">  </span><span class="na">bastions</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.public_instances</span>
+<span class="w">  </span><span class="na">puppetservers</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.puppetservers</span>
+<span class="w">  </span><span class="na">tf_ssh_key</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.ssh_key</span>
+<span class="w">  </span><span class="na">terraform_data</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.terraform_data</span>
+<span class="w">  </span><span class="na">terraform_facts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.terraform_facts</span>
+<span class="w">  </span><span class="na">hieradata</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.hieradata</span>
+<span class="w">  </span><span class="na">sudoer_username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sudoer_username</span>
+<span class="p">}</span>
+</code></pre></div></p>
+</li>
+</ol>
+<p>Once your new provider is written, you can write an example that will use the module
+to spawn a Magic Castle cluster with that provider.
+  <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;alicloud&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;./alicloud&quot;</span>
+<span class="w">  </span><span class="na">config_git_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/ComputeCanada/puppet-magic_castle.git&quot;</span>
+<span class="w">  </span><span class="na">config_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;main&quot;</span>
+
+<span class="w">  </span><span class="na">cluster_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;new&quot;</span>
+<span class="w">  </span><span class="na">domain</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my.cloud&quot;</span>
+<span class="w">  </span><span class="na">image</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;centos_7_9_x64_20G_alibase_20210318.vhd&quot;</span>
+<span class="w">  </span><span class="na">nb_users</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">10</span>
+
+<span class="w">  </span><span class="nb">instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">mgmt</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ecs.g6.large&quot;, tags = [&quot;puppet&quot;, &quot;mgmt&quot;, &quot;nfs&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="nb">login</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ecs.g6.large&quot;, tags = [&quot;login&quot;, &quot;public&quot;, &quot;proxy&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="nb">node</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ecs.g6.large&quot;, tags = [&quot;node&quot;</span><span class="p">],</span><span class="w"> </span><span class="na">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nb">volumes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">nfs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nb">home</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="nb">project</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">50</span><span class="w"> </span><span class="p">}</span>
+<span class="w">      </span><span class="nb">scratch</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">50</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="na">public_keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nf">file</span><span class="p">(</span><span class="s2">&quot;~/.ssh/id_rsa.pub&quot;</span><span class="p">)]</span>
+
+<span class="c1">  # Alicloud specifics</span>
+<span class="w">  </span><span class="na">region</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;us-west-1&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

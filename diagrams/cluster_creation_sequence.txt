@@ -1,0 +1,14 @@
+# https://sequencediagram.org/
+title Magic Castle Cluster Creation
+
+Terraform->Cloud Provider: Create network
+Terraform->Cloud Provider: Create subnet
+Terraform->Cloud Provider: Allocate ip addresses on subnet
+Terraform->Terraform: Render user_data / instance
+Terraform->Cloud Provider: Create instances
+Terraform->Cloud Provider: Create volumes
+Terraform->Cloud Provider: Allocate public ip addresses
+Terraform->proxy instance: Upload hieradata proxy instance->puppet server: Upload hieradata
+Terraform->DNS: Create records
+Terraform->Let's Encrypt: Generate wildcard certificate
+Terraform->proxy instance: Upload wildcard certificate
