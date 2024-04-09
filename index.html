@@ -233,15 +233,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#table-of-content" class="md-nav__link">
-    <span class="md-ellipsis">
-      Table of Content
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#1-setup" class="md-nav__link">
     <span class="md-ellipsis">
       1. Setup
@@ -1415,71 +1406,11 @@
   
   
     <li class="md-nav__item">
-      <a href="globus/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Globus Endpoint in Magic Castle
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="matrix/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Comparison of Cloud HPC Cluster Projects
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="migration/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Magic Castle Migration Guide
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="otp/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    One-time password
   </span>
   
 
@@ -1553,15 +1484,6 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#table-of-content" class="md-nav__link">
-    <span class="md-ellipsis">
-      Table of Content
-    </span>
-  </a>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#1-setup" class="md-nav__link">
@@ -2700,27 +2622,15 @@
 <h1 id="magic-castle-documentation">Magic Castle Documentation</h1>
 <p><img src="img/logo.png" width="50%"/></p>
 
-<h2 id="table-of-content">Table of Content</h2>
-<ol>
-<li><a href="#1-setup">Setup</a></li>
-<li><a href="#2-cloud-cluster-architecture-overview">Cloud Cluster Architecture Overview</a></li>
-<li><a href="#3-initialization">Initialization</a></li>
-<li><a href="#4-configuration">Configuration</a></li>
-<li><a href="#5-cloud-specific-configuration">Cloud Specific Configuration</a></li>
-<li><a href="#6-dns-configuration-and-wildcard-ssl-certificate">DNS Configuration and SSL Certificates</a></li>
-<li><a href="#7-planning">Planning</a></li>
-<li><a href="#8-deployment">Deployment</a></li>
-<li><a href="#9-destruction">Destruction</a></li>
-<li><a href="#10-customize-cluster-software-configuration">Customize Cluster Software Configuration</a></li>
-<li><a href="#11-customize-magic-castle-terraform-files">Customize Magic Castle Terraform Files</a></li>
-</ol>
 <h2 id="1-setup">1. Setup</h2>
-<p>To use Magic Castle you will need:
-1. Terraform (&gt;= 1.4.0)
-2. Authenticated access to a cloud
-3. Ability to communicate with the cloud provider API from your computer
-4. A project with operational limits meeting the requirements described in <em>Quotas</em> subsection.
-5. ssh-agent running and tracking your SSH key</p>
+<p>To use Magic Castle you will need:</p>
+<ol>
+<li>Terraform (&gt;= 1.4.0)</li>
+<li>Authenticated access to a cloud</li>
+<li>Ability to communicate with the cloud provider API from your computer</li>
+<li>A project with operational limits meeting the requirements described in <em>Quotas</em> subsection.</li>
+<li>ssh-agent running and tracking your SSH key</li>
+</ol>
 <h3 id="11-terraform">1.1 Terraform</h3>
 <p>To install Terraform, follow the
 <a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">tutorial</a>
@@ -3827,7 +3737,7 @@ Then call:
 <div class="highlight"><pre><span></span><code>terraform apply
 </code></pre></div></p>
 <h3 id="107-activate-globus-endpoint">10.7 Activate Globus Endpoint</h3>
-<p>Refer to <a href="globus/">Magic Castle Globus Endpoint documentation</a>.</p>
+<p>No longer supported</p>
 <h3 id="108-recovering-from-puppet-rebuild">10.8 Recovering from puppet rebuild</h3>
 <p>The modifications of some of the parameters in the <code>main.tf</code> file can trigger the
 rebuild of the <code>puppet</code> instance. This instance hosts the Puppet Server on which
