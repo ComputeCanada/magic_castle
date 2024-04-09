@@ -1765,6 +1765,7 @@ During the cloud-init initialization phase,
 [`bootstrap.sh`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/bootstrap.sh)
 script is executed. This script generates a set of encrypted secret values that are required
 by the Magic Castle Puppet environment:
+
 - `profile::consul::acl_api_token`
 - `profile::freeipa::mokey::password`
 - `profile::freeipa::server::admin_password`
