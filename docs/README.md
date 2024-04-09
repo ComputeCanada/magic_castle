@@ -95,7 +95,7 @@ with the following content:
     terraform plan
     ```
     If everything is configured properly, terraform will output:
-    ``` 
+    ```
     No changes. Your infrastructure matches the configuration.
     ```
     Otherwise, it will output:
@@ -167,7 +167,7 @@ with the following content:
     terraform plan
     ```
     If everything is configured properly, terraform will output:
-    ``` 
+    ```
     No changes. Your infrastructure matches the configuration.
     ```
     Otherwise, it will output:
