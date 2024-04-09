@@ -3379,13 +3379,15 @@ section <a href="#1013-generate-and-replace-puppet-hieradata-encryption-keys">10
 <span class="p">}</span>
 </code></pre></div></p>
 <p>Defines a map of firewall rules that control external traffic to the public nodes. Each rule is
-defined as a map of key-value pairs and has to be assigned a unique name:
-- <code>from_port</code> (req.):  the lower part of the allowed port range, valid integer value needs to be between 1 and 65535.
-- <code>to_port</code> (req.): the higher part of the allowed port range, valid integer value needs to be between 1 and 65535.
-- <code>tag</code> (req.): instances with this tag will be assigned this firewall rule.
-- <code>ethertype</code> (opt. default: <code>"IPv4"</code>): the layer 3 protocol type (<code>"IPv4"</code> or <code>"IPv6"</code>).
-- <code>protocol</code> (opt. default: <code>"tcp"</code>): the layer 4 protocol type.
-- <code>cidr</code> (opt. default: <code>"0.0.0.0/0"</code>): the remote CIDR, the value needs to be a valid CIDR (i.e. <code>192.168.0.0/16</code>).</p>
+defined as a map of key-value pairs and has to be assigned a unique name:</p>
+<ul>
+<li><code>from_port</code> (req.):  the lower part of the allowed port range, valid integer value needs to be between 1 and 65535.</li>
+<li><code>to_port</code> (req.): the higher part of the allowed port range, valid integer value needs to be between 1 and 65535.</li>
+<li><code>tag</code> (req.): instances with this tag will be assigned this firewall rule.</li>
+<li><code>ethertype</code> (opt. default: <code>"IPv4"</code>): the layer 3 protocol type (<code>"IPv4"</code> or <code>"IPv6"</code>).</li>
+<li><code>protocol</code> (opt. default: <code>"tcp"</code>): the layer 4 protocol type.</li>
+<li><code>cidr</code> (opt. default: <code>"0.0.0.0/0"</code>): the remote CIDR, the value needs to be a valid CIDR (i.e. <code>192.168.0.0/16</code>).</li>
+</ul>
 <p>If you would like Magic Castle to be able to transfer files and update the state of the cluster in Puppet, make
 sure there exists at least one effective firewall rule where <code>from_port &lt;= 22 &lt;= to_port</code> and for which the external
 IP address of the machine that executes Terraform is in the CIDR range (i.e: <code>cidr = "0.0.0.0/0"</code> being the most
@@ -3400,22 +3402,26 @@ about this requirement, refer to Magic Castle's
 file-provisioner. The public key will be added to the sudoer account authorized keys.</p>
 <p>This parameter is useful when Terraform does not have access to one of the private key associated with the
 public keys provided in <code>public_keys</code>.</p>
-<p><strong>Post build modification effect</strong>:
-- <code>false</code> -&gt; <code>true</code>: will cause Terraform failure.
+<p><strong>Post build modification effect</strong>:</p>
+<ul>
+<li><code>false</code> -&gt; <code>true</code>: will cause Terraform failure.
 Terraform will try to use the newly created private SSH key
 to connect to the cluster, while the corresponding public SSH
-key is yet registered with the sudoer account.
-- <code>true</code> -&gt; <code>false</code>: will trigger a scp of terraform_data.yaml at
+key is yet registered with the sudoer account.</li>
+<li><code>true</code> -&gt; <code>false</code>: will trigger a scp of terraform_data.yaml at
 next terraform apply. The Terraform public SSH key will be removed
 from the sudoer account <code>authorized_keys</code> file at next
-Puppet agent run.</p>
+Puppet agent run.</li>
+</ul>
 <h3 id="416-software_stack-optional">4.16 software_stack (optional)</h3>
 <p><strong>default_value</strong>: <code>"alliance"</code></p>
 <p>Defines the scientific software environment that users have access when they login.
-Possible values are:
-- <strong>default</strong> - <code>"alliance"</code> / <code>"computecanada"</code>: <a href="https://docs.alliancecan.ca/wiki/Accessing_CVMFS">Digital Alliance Research Alliance of Canada scientific software environment</a> (previously Compute Canada environment)
-- <code>"eessi"</code>: <a href="https://eessi.github.io/docs/">European Environment for Scientific Software Installation (EESSI)</a>
-- <code>null</code> / <code>""</code>: no scientific software environment</p>
+Possible values are:</p>
+<ul>
+<li><strong>default</strong> - <code>"alliance"</code> / <code>"computecanada"</code>: <a href="https://docs.alliancecan.ca/wiki/Accessing_CVMFS">Digital Alliance Research Alliance of Canada scientific software environment</a> (previously Compute Canada environment)</li>
+<li><code>"eessi"</code>: <a href="https://eessi.github.io/docs/">European Environment for Scientific Software Installation (EESSI)</a></li>
+<li><code>null</code> / <code>""</code>: no scientific software environment</li>
+</ul>
 <p><strong>Post build modification effect</strong>: trigger scp of hieradata files at next <code>terraform apply</code>.</p>
 <h3 id="417-pool-optional">4.17 pool (optional)</h3>
 <p><strong>default_value</strong>: <code>[]</code></p>
@@ -3509,17 +3515,19 @@ for the list of available zones and their characteristics.</p>
 <p><strong>default value</strong>: <code>{}</code></p>
 <p>Defines a map as an association of instance names (key) to
 pre-allocated floating ip addresses (value). Example:
-<div class="highlight"><pre><span></span><code>  os_floating_ips = {
-    login1 = 132.213.13.59
-    login2 = 132.213.13.25
-  }
-</code></pre></div>
-- instances tagged as public that have an entry in this map will be assigned
-the corresponding ip address;
-- instances tagged as public that do not have an entry in this map will be assigned
-a floating ip managed by Terraform.
-- instances not tagged as public that have an entry in this map will
-not be assigned a floating ip.</p>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nb">os_floating_ips</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">login1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;132.213.13.59&quot;</span>
+<span class="w">    </span><span class="na">login2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;132.213.13.25&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+</code></pre></div></p>
+<ul>
+<li>instances tagged as public that have an entry in this map will be assigned
+the corresponding ip address;</li>
+<li>instances tagged as public that do not have an entry in this map will be assigned
+a floating ip managed by Terraform.</li>
+<li>instances not tagged as public that have an entry in this map will
+not be assigned a floating ip.</li>
+</ul>
 <p>This variable can be useful if you manage your DNS manually and
 you would like the keep the same domain name for your cluster at each
 build.</p>
@@ -3611,9 +3619,11 @@ and will be named as <code>${name}.${domain}.txt</code>.</p>
 This module uses the ssh-agent tracked SSH keys to authenticate and
 to copy SSL certificate files to the proxy nodes after their creation.</p>
 <p>To issue a wildcard SSL certificate with Magic Castle, modify the dns module call
-in your <code>main.tf</code> like this:
-1. add the input: <code>issue_wildcard_cert = true</code>
-2. add the input: <code>email = "replace.by@your.email"</code></p>
+in your <code>main.tf</code> like this:</p>
+<ol>
+<li>add the input: <code>issue_wildcard_cert = true</code></li>
+<li>add the input: <code>email = "replace.by@your.email"</code></li>
+</ol>
 <h4 id="641-acme-account-private-key">6.4.1 ACME Account Private Key</h4>
 <p>To create the wildcard SSL certificate associated with the domain name, Magic Castle
 creates a private key and register a new ACME account with this key. This account
@@ -3667,10 +3677,12 @@ variable to the DNS module in your <code>main.tf</code>:
 You can use <a href="https://certbot.eff.org/docs/using.html#dns-plugins">certbot</a> DNS-01 challenge
 plugin to generate the wildcard certificate.</p>
 <p>You will then need to copy the certificate files in the proper location on each proxy node.
-The reverse proxy configuration expects the following files to exist:
-- <code>/etc/letsencrypt/live/${domain_name}/fullchain.pem</code>
-- <code>/etc/letsencrypt/live/${domain_name}/privkey.pem</code>
-- <code>/etc/letsencrypt/live/${domain_name}/chain.pem</code></p>
+The reverse proxy configuration expects the following files to exist:</p>
+<ul>
+<li><code>/etc/letsencrypt/live/${domain_name}/fullchain.pem</code></li>
+<li><code>/etc/letsencrypt/live/${domain_name}/privkey.pem</code></li>
+<li><code>/etc/letsencrypt/live/${domain_name}/chain.pem</code></li>
+</ul>
 <p>Refer to the <a href="https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/reverse_proxy.pp">reverse proxy configuration</a> for more details.</p>
 <h3 id="65-sshfp-records-and-dnssec">6.5 SSHFP records and DNSSEC</h3>
 <p>Magic Castle DNS module creates SSHFP records for all instances with a public ip address.
@@ -3678,9 +3690,11 @@ These records can be used by SSH clients to verify the SSH host keys of the serv
 If <a href="https://developers.cloudflare.com/dns/dnssec/">DNSSEC</a>
 is enabled for the domain and the SSH client is correctly configured,
 no host key confirmation will be prompted when connecting to the server.</p>
-<p>For more information on how to activate DNSSEC, refer to your DNS provider documentation:
-- <a href="https://developers.cloudflare.com/dns/dnssec/#enable-dnssec">CloudFlare - Enable DNSSEC</a>
-- <a href="https://cloud.google.com/dns/docs/dnssec-config#enabling">Google Cloud - Manage DNSSEC configuration</a></p>
+<p>For more information on how to activate DNSSEC, refer to your DNS provider documentation:</p>
+<ul>
+<li><a href="https://developers.cloudflare.com/dns/dnssec/#enable-dnssec">CloudFlare - Enable DNSSEC</a></li>
+<li><a href="https://cloud.google.com/dns/docs/dnssec-config#enabling">Google Cloud - Manage DNSSEC configuration</a></li>
+</ul>
 <p>To setup an SSH client to use SSHFP records, add
 <div class="highlight"><pre><span></span><code>VerifyHostKeyDNS yes
 </code></pre></div>
@@ -4102,22 +4116,24 @@ Puppet data hierarchy.</p>
 increase their size in the <code>main.tf</code> then call <code>terraform apply</code> and the associated block
 device will be expanded.</p>
 <p>To benefit from the new storage, the following commands need to be ran as root
-on the instance to which the expanded volume is attached.
-1. Identify the physical volume path
+on the instance to which the expanded volume is attached.</p>
+<ol>
+<li>Identify the physical volume path
     <div class="highlight"><pre><span></span><code>pvscan
-</code></pre></div>
-2. Expand the physical volume
+</code></pre></div></li>
+<li>Expand the physical volume
     <div class="highlight"><pre><span></span><code>pvresize /dev/vdxyz # replace vdxyz by the volume identify at step 1
-</code></pre></div>
-3. Identify the volume group path
+</code></pre></div></li>
+<li>Identify the volume group path
     <div class="highlight"><pre><span></span><code>lvdisplay
-</code></pre></div>
-4. Expand the volume group using step volume group path identified
+</code></pre></div></li>
+<li>Expand the volume group using step volume group path identified
     <div class="highlight"><pre><span></span><code>lvextend -l &#39;+100%FREE&#39; -r /dev/project_vg/project
-</code></pre></div>
-5. Resize the XFS filesystem:
+</code></pre></div></li>
+<li>Resize the XFS filesystem:
     <div class="highlight"><pre><span></span><code>xfs_growfs /dev/project_vg/project
-</code></pre></div></p>
+</code></pre></div></li>
+</ol>
 <h2 id="11-customize-magic-castle-terraform-files">11. Customize Magic Castle Terraform Files</h2>
 <p>You can modify the Terraform module files in the folder named after your cloud
 provider (e.g: <code>gcp</code>, <code>openstack</code>, <code>aws</code>, etc.)</p>
