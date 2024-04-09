@@ -203,6 +203,7 @@ resources like GPUs or high performance network interface, refer to
 #### 1.4.4 OpenStack
 
 Minimum project requirements:
+
 * 1 floating IP
 * 3 security groups
 * 1 network (see note 1)
@@ -217,6 +218,7 @@ Minimum project requirements:
 * 80 GB of volume storage
 
 **Note 1**: Magic Castle supposes the OpenStack project comes with a network, a subnet and a router already initialized. If any of these components is missing, you will need to create them manually before launching terraform.
+
 * [Create and manage networks, JUSUF user documentation](https://apps.fz-juelich.de/jsc/hps/jsccloud/usage_cloud.html#create-and-manage-networks)
 * [Create and manage network - UI, OpenStack Documentation](https://docs.openstack.org/horizon/latest/user/create-networks.html)
 * [Create and manage network - CLI, OpenStack Documentation](https://docs.openstack.org/ocata/user-guide/cli-create-and-manage-networks.html)
@@ -373,6 +375,7 @@ the cluster in the Slurm accounting database
 ### 4.5 domain
 
 Defines
+
 * the Kerberos realm name when initializing FreeIPA.
 * the internal domain name and the `resolv.conf` search domain as
 `int.{cluster_name}.{domain}`
@@ -506,6 +509,7 @@ Tags are used in the Terraform code to identify if devices (volume, network) nee
 instance, while in Puppet code tags are used to identify roles of the instances.
 
 Terraform tags:
+
 - `login`: identify instances accessible with SSH from Internet and pointed by the domain name A records
 - `pool`: identify instances created only when their hostname appears in the [`var.pool`](#417-pool-optional) list.
 - `proxy`: identify instances accessible with HTTP/HTTPS and pointed by the vhost A records
@@ -517,6 +521,7 @@ This tag is supported in AWS, Azure and GCP. It is ignored by OpenStack and OVH.
 - `ssl`: identify instances that receive a copy of the SSL wildcard certificate for the domain
 
 Puppet tags expected by the [puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) environment.
+
 - `login`: identify a login instance (minimum: 2 CPUs, 2GB RAM)
 - `mgmt`: identify a management instance i.e: FreeIPA server, Slurm controller, Slurm DB (minimum: 2 CPUs, 6GB RAM)
 - `nfs`: identify the instance that acts as an NFS server.
@@ -531,6 +536,7 @@ You are free to define your own additional tags.
 #### 4.7.2 Optional attributes
 
 Optional attributes can be defined:
+
 1. `count`: number of virtual machines with this combination of hostname prefix, type and tags to create (default: 1).
 2. `image`: specification of the image to use for this instance type. (default: global [`image`](#46-image) value).
 Refer to section [10.12 - Create a compute node image](#1012-create-a-compute-node-image) to learn how this attribute can
@@ -571,7 +577,7 @@ For more information on these attributes, refer to
 or accounts without billing history -
 [AWS EC2 Spot Instance requests](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-requests.html#fixed-duration-spot-instances). When not available, its usage can trigger
 quota errors like this:
-``` 
+```
 Error requesting spot instances: MaxSpotInstanceCountExceeded: Max spot instance count exceeded
 ```
 
