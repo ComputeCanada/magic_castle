@@ -2,23 +2,10 @@
 
 <p><img src="img/logo.png" width="50%"/></p>
 
-## Table of Content
-
-1. [Setup](#1-setup)
-2. [Cloud Cluster Architecture Overview](#2-cloud-cluster-architecture-overview)
-3. [Initialization](#3-initialization)
-4. [Configuration](#4-configuration)
-5. [Cloud Specific Configuration](#5-cloud-specific-configuration)
-6. [DNS Configuration and SSL Certificates](#6-dns-configuration-and-wildcard-ssl-certificate)
-7. [Planning](#7-planning)
-8. [Deployment](#8-deployment)
-9. [Destruction](#9-destruction)
-10. [Customize Cluster Software Configuration](#10-customize-cluster-software-configuration)
-11. [Customize Magic Castle Terraform Files](#11-customize-magic-castle-terraform-files)
-
 ## 1. Setup
 
 To use Magic Castle you will need:
+
 1. Terraform (>= 1.4.0)
 2. Authenticated access to a cloud
 3. Ability to communicate with the cloud provider API from your computer
