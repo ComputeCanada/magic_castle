@@ -3,6 +3,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [13.4.0] UNRELEASED
+
+### Added
+
+- Added Yaml validation on hieradata (PR #284)
+- Added mount of ephemeral volume to cloud-init (puppet.yaml) (PR #295)
+
+### Changed
+
+- Improve var.software_stack flexibility and documentation (PR #281)
+- Bumped puppet-agent to 7.28.0
+- Fixed openstack_compute_floatingip_associate_v2 deprecation (PR #285)
+- Simplify Azure utils vmsizes.py by relying on az CLI tool (PR #296)
+- Updated Azure vmsizes.json (PR #297)
+
+
 ## [13.3.2] 2024-02-19
 
 No changes to infrastructure code.
