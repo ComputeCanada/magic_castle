@@ -565,6 +565,7 @@ The following sections present the available attributes per provider.
 ##### AWS
 
 For instances with the `spot` tags, these attributes can also be set:
+
 - `wait_for_fulfillment` (default: true)
 - `spot_type` (default: permanent)
 - `instance_interruption_behavior` (default: stop)
@@ -584,6 +585,7 @@ Error requesting spot instances: MaxSpotInstanceCountExceeded: Max spot instance
 ##### Azure
 
 For instances with the `spot` tags, these attributes can also be set:
+
 - `max_bid_price` (default: not set)
 - `eviction_policy` (default: `Deallocate`)
 For more information on these attributes, refer to
@@ -609,6 +611,7 @@ to instances that have the corresponding key in their list of tags. To each inst
 with the tag, unique block devices are attached, no multi-instance attachment is supported.
 
 Each volume in map is defined a key corresponding to its and a map of attributes:
+
 - `size`: size of the block device in GB.
 - `type` (optional): type of volume to use. Default value per provider:
   - Azure: `Premium_LRS`
@@ -726,6 +729,7 @@ Defines custom variable values that are injected in the Puppet hieradata file.
 Useful to override common configuration of Puppet classes.
 
 List of useful examples:
+
 - Receive logs of Puppet runs with changes to your email, add the
 following line to the string:
     ```yaml
@@ -761,6 +765,7 @@ following line to the string:
     ```
 
 Refer to the following Puppet modules' documentation to know more about the key-values that can be defined:
+
 - [puppet-magic_castle](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/README.md)
 - [puppet-jupyterhub](https://github.com/ComputeCanada/puppet-jupyterhub/blob/main/README.md#hieradata-configuration)
 - [puppet-prometheus](https://forge.puppet.com/modules/puppet/prometheus/)
