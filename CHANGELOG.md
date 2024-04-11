@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Support for NVIDIA MIG (PR #288)
 - Rendering of documentation with MkDoc (PR #290)
+- Material for MkDocs to render documentation
 
 ## Removed
 
