@@ -12,13 +12,19 @@ variable "vhost_tag" {}
 data "external" "key2fp" {
   for_each = var.public_instances
   program = ["bash", "${path.module}/key2fp.sh"]
-  query = {
-    rsa = each.value["hostkeys"]["rsa"]
-    ed25519 = each.value["hostkeys"]["ed25519"]
-  }
+  query = each.value["hostkeys"]
 }
 
 locals {
+    # Refer to
+    # https://www.iana.org/assignments/dns-sshfp-rr-parameters/dns-sshfp-rr-parameters.xhtml
+    SSHFP_SPEC = {
+        "ssh-rsa"       = "1"
+        "ssh-dss"       = "2"
+        "ssh-ecdsa"     = "3"
+        "ssh-ed25519"   = "4"
+    }
+
     records = concat(
     [
         for key, values in var.public_instances: {
@@ -49,54 +55,36 @@ locals {
         }
         if contains(values["tags"], var.domain_tag)
     ],
-    [
-        for key, values in var.public_instances: {
-            type  = "SSHFP"
-            name  = join(".", [key, var.name])
-            value = null
-            data  = {
-                algorithm   = data.external.key2fp[key].result["rsa_algorithm"]
-                type        = 2
-                fingerprint = data.external.key2fp[key].result["rsa_sha256"]
+    flatten([
+        for key, values in var.public_instances: [
+            for alg in keys(values["hostkeys"]): {
+                type  = "SSHFP"
+                name  = join(".", [key, var.name])
+                value = null
+                data  = {
+                    algorithm   = local.SSHFP_SPEC["ssh-${alg}"]
+                    type        = 2 # SHA256
+                    fingerprint = data.external.key2fp[key].result["ssh-${alg}"]
+                }
             }
-        }
-    ],
-    [
-        for key, values in var.public_instances: {
-            type  = "SSHFP"
-            name  = join(".", [key, var.name])
-            value = null
-            data  = {
-                algorithm   = data.external.key2fp[key].result["ed25519_algorithm"]
-                type        = 2
-                fingerprint = data.external.key2fp[key].result["ed25519_sha256"]
+        ]
+    ]),
+    flatten([
+        for key, values in var.public_instances: [
+            for alg in keys(values["hostkeys"]): {
+                type  = "SSHFP"
+                name  = var.name
+                value = null
+                data  = {
+                    algorithm   = local.SSHFP_SPEC["ssh-${alg}"]
+                    type        = 2 # SHA256
+                    fingerprint = data.external.key2fp[key].result["ssh-${alg}"]
+                }
             }
-        }
-    ],
-    [
-         {
-            type  = "SSHFP"
-            name  = var.name
-            value = null
-            data  = {
-                algorithm   = try(coalesce([for key, values in var.public_instances: data.external.key2fp[key].result["rsa_algorithm"] if contains(values["tags"], var.domain_tag)]...), 0)
-                type        = 2
-                fingerprint = try(coalesce([for key, values in var.public_instances: data.external.key2fp[key].result["rsa_sha256"] if contains(values["tags"], var.domain_tag)]...), 0)
-            }
-        }
-    ],
-    [
-         {
-            type  = "SSHFP"
-            name  = var.name
-            value = null
-            data  = {
-                algorithm   = try(coalesce([for key, values in var.public_instances: data.external.key2fp[key].result["ed25519_algorithm"] if contains(values["tags"], var.domain_tag)]...), 0)
-                type        = 2
-                fingerprint = try(coalesce([for key, values in var.public_instances: data.external.key2fp[key].result["ed25519_sha256"] if contains(values["tags"], var.domain_tag)]...), 0)
-            }
-        }
-    ])
+        ]
+        if contains(values["tags"], var.domain_tag)
+    ]),
+    )
 }
 
 output "records" {
