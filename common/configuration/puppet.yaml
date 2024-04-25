@@ -197,3 +197,6 @@ power_state:
   delay: now
   mode: reboot
   condition: test ! -f /etc/magic-castle-release
+
+# Change permissions to $def_log_file
+syslog_fix_perms: root:systemd-journal
