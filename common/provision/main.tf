@@ -44,8 +44,8 @@ resource "terraform_data" "deploy_hieradata" {
     inline = [
       "sudo mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts",
       # puppet user and group have been assigned the reserved UID/GID 52
-      "sudo install -o root -g 52 -m 650 terraform_data.yaml user_data.yaml /etc/puppetlabs/data/",
-      "sudo install -o root -g 52 -m 650 terraform_facts.yaml /etc/puppetlabs/facts/",
+      "sudo install -o root -g 52 -m 640 terraform_data.yaml user_data.yaml /etc/puppetlabs/data/",
+      "sudo install -o root -g 52 -m 640 terraform_facts.yaml /etc/puppetlabs/facts/",
       "rm -f terraform_data.yaml user_data.yaml terraform_facts.yaml",
       "[ -f /usr/local/bin/consul ] && [ -f /usr/bin/jq ] && consul event -token=$(sudo jq -r .acl.tokens.agent /etc/consul/config.json) -name=puppet $(date +%s) || true",
     ]

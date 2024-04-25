@@ -88,14 +88,16 @@ runcmd:
   - rm /etc/puppetlabs/Puppetfile
 %{ endif ~}
   - mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts
-  - chgrp puppet /etc/puppetlabs/data /etc/puppetlabs/facts
+  - chgrp -R puppet /etc/puppetlabs/data /etc/puppetlabs/facts
   - ln -sf /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/data/user_data.yaml /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/facts/terraform_facts.yaml /etc/puppetlabs/code/environments/production/site/profile/facts.d
 # We use r10k solely to install the modules of the main branch environment.
   - "(cd /etc/puppetlabs/code/environments/production; /opt/puppetlabs/puppet/bin/r10k puppetfile install)"
 # Wait for Terraform to scp its YAML data
+%{ if ! include_tf_data ~}
   - while [ ! -e "/etc/puppetlabs/data/terraform_data.yaml" ]; do echo "$(date -I'seconds') Waiting for terraform to scp terraform_data.yaml"; sleep 5; done
+%{ endif ~}
 %{ if node_name != keys(puppetservers)[0] }
   - sed -e '/certificate-authority-service/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
   - sed -e '/certificate-authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
