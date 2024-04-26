@@ -198,5 +198,5 @@ power_state:
   mode: reboot
   condition: test ! -f /etc/magic-castle-release
 
-# Change permissions to $def_log_file
+# Configure owner of /var/log/cloud-init.log
 syslog_fix_perms: root:systemd-journal
