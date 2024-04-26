@@ -806,7 +806,7 @@ In the preceding command, replace `puppet` by the hostname of your puppetserver 
 
 The openssl command-line can also be used to encrypt a value with the certificate file:
 ```sh
-echo 'your-secret' |  openssl smime -encrypt -aes-256-cbc -outform der public_key.pkcs7.pem | base64 | xargs printf "ENC['PKCS7,%s']\n"
+echo 'your-secret' |  openssl smime -encrypt -aes-256-cbc -outform der public_key.pkcs7.pem | base64 -w0 | xargs printf "ENC['PKCS7,%s']\n"
 ```
 
 To learn more about `public_key.pkcs7.pem` and how it can be generated before the cluster creation, refer to
