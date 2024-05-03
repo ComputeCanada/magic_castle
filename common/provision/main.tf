@@ -7,7 +7,39 @@ variable "sudoer_username" { }
 variable "tf_ssh_key" { }
 variable "eyaml_key" { }
 
-resource "terraform_data" "deploy_hieradata" {
+locals {
+  provision_folder = "puppetserver_etc"
+}
+
+data "archive_file" "puppetserver_files" {
+  type        = "zip"
+  output_path = "${path.module}/files/${local.provision_folder}.zip"
+
+  source {
+    content  = var.terraform_data
+    filename = "${local.provision_folder}/data/terraform_data.yaml"
+  }
+
+  source {
+    content  = var.terraform_facts
+    filename = "${local.provision_folder}/facts/terraform_facts.yaml"
+  }
+
+  source {
+    content  = var.hieradata
+    filename = "${local.provision_folder}/data/user_data.yaml"
+  }
+
+  dynamic "source" {
+    for_each =  var.eyaml_key != "" ? [var.eyaml_key] : []
+    content {
+      content  = var.eyaml_key
+      filename = "${local.provision_folder}/puppet/eyaml/private_key.pkcs7.pem"
+    }
+  }
+}
+
+resource "terraform_data" "deploy_puppetserver_files" {
   for_each = length(var.bastions) > 0  ? var.puppetservers : { }
 
   connection {
@@ -21,43 +53,25 @@ resource "terraform_data" "deploy_hieradata" {
   }
 
   triggers_replace = {
-    user_data      = md5(var.hieradata)
-    terraform_data = md5(var.terraform_data)
-    facts          = md5(var.terraform_facts)
+    archive = data.archive_file.puppetserver_files.output_sha256
   }
 
   provisioner "file" {
-    content     = var.terraform_data
-    destination = "terraform_data.yaml"
-  }
-
-  provisioner "file" {
-    content     = var.terraform_facts
-    destination = "terraform_facts.yaml"
-  }
-
-  provisioner "file" {
-    content     = var.hieradata
-    destination = "user_data.yaml"
-  }
-
-  provisioner "file" {
-    content     = var.eyaml_key
-    destination = "private_key.pkcs7.pem"
+    source      = "${path.module}/files/${local.provision_folder}.zip"
+    destination = "${local.provision_folder}.zip"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "sudo mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts /etc/puppetlabs/puppet/eyaml",
-      # puppet user and group have been assigned the reserved UID/GID 52
-      "sudo install -o root -g 52 -m 640 terraform_data.yaml user_data.yaml /etc/puppetlabs/data/",
-      "sudo install -o root -g 52 -m 640 terraform_facts.yaml /etc/puppetlabs/facts/",
-      # install the private key if it is a non-empty file
-      "test -s private_key.pkcs7.pem && sudo install -o 52 -g 52 -m 400 private_key.pkcs7.pem /etc/puppetlabs/puppet/eyaml",
-      # generate the public key X509 certificate from the private key file
-      # this is necessary to decrypt in hiera-eyaml 3.4.0
-      "sudo openssl req -new -key private_key.pkcs7.pem  -set_serial 1 -batch -out /etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem",
-      "rm -f terraform_data.yaml user_data.yaml terraform_facts.yaml private_key.pkcs7.pem",
+      # unzip is not necessarily installed when connecting, but python is.
+      "/usr/libexec/platform-python -c 'import zipfile; zipfile.ZipFile(\"${local.provision_folder}.zip\").extractall()'",
+      "sudo chmod g-w,o-rwx $(find ${local.provision_folder}/ -type f)",
+      "sudo chown -R root:52 ${local.provision_folder}",
+      "sudo mkdir -p -m 755 /etc/puppetlabs/",
+      "sudo rsync -avh --no-t ${local.provision_folder}/ /etc/puppetlabs/",
+      # hiera-eyaml 3.4.0 requires a public key in the form of a X509 certificate to decrypt
+      "sudo test -f ${local.provision_folder}/puppet/eyaml/private_key.pkcs7.pem && sudo openssl req -new -key /etc/puppetlabs/puppet/eyaml/private_key.pkcs7.pem -set_serial 1 -batch -out /etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem",
+      "sudo rm -rf ${local.provision_folder}/ ${local.provision_folder}.zip",
       "[ -f /usr/local/bin/consul ] && [ -f /usr/bin/jq ] && consul event -token=$(sudo jq -r .acl.tokens.agent /etc/consul/config.json) -name=puppet $(date +%s) || true",
     ]
   }
