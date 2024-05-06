@@ -803,7 +803,7 @@ per-value encryption of sensitive properties to be used by Puppet.
 The private key and its corresponding public key wrapped in a X509 certificate can be generated with `openssl`:
 
 ```shell
-openssl req -x509 -nodes -set_serial 1 -newkey rsa:2048 -keyout private_key.pkcs7.pem -out public_key.pkcs7.pem -batch
+openssl req -x509 -nodes -newkey rsa:2048 -keyout private_key.pkcs7.pem -out public_key.pkcs7.pem -batch
 ```
 
 or with `eyaml`:

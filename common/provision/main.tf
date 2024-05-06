@@ -69,8 +69,6 @@ resource "terraform_data" "deploy_puppetserver_files" {
       "sudo chown -R root:52 ${local.provision_folder}",
       "sudo mkdir -p -m 755 /etc/puppetlabs/",
       "sudo rsync -avh --no-t ${local.provision_folder}/ /etc/puppetlabs/",
-      # hiera-eyaml 3.4.0 requires a public key in the form of a X509 certificate to decrypt
-      "sudo test -f ${local.provision_folder}/puppet/eyaml/private_key.pkcs7.pem && sudo openssl req -new -key /etc/puppetlabs/puppet/eyaml/private_key.pkcs7.pem -set_serial 1 -batch -out /etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem",
       "sudo rm -rf ${local.provision_folder}/ ${local.provision_folder}.zip",
       "[ -f /usr/local/bin/consul ] && [ -f /usr/bin/jq ] && consul event -token=$(sudo jq -r .acl.tokens.agent /etc/consul/config.json) -name=puppet $(date +%s) || true",
     ]
