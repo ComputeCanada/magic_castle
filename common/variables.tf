@@ -94,7 +94,7 @@ variable "hieradata" {
   }
 }
 
-variable "hieradata_folder_path" {
+variable "hieradata_dir" {
   type        = string
   default     = ""
   description = "Path to hieradata folder containing YAML files to be included in the puppet environment"

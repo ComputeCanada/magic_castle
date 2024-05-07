@@ -3,7 +3,7 @@ variable "puppetservers" { }
 variable "terraform_data" { }
 variable "terraform_facts" { }
 variable "hieradata" { }
-variable "hieradata_folder" { }
+variable "hieradata_dir" { }
 variable "sudoer_username" { }
 variable "tf_ssh_key" { }
 variable "eyaml_key" { }
@@ -26,26 +26,25 @@ data "archive_file" "puppetserver_files" {
     filename = "${local.provision_folder}/facts/terraform_facts.yaml"
   }
 
-
   source {
     content  = var.hieradata
     filename = "${local.provision_folder}/data/user_data.yaml"
   }
 
   dynamic "source" {
-    for_each = var.hieradata_folder != "" ? fileset("${var.hieradata_folder}", "*.yaml") : []
+    for_each = var.hieradata_dir != "" ? fileset("${var.hieradata_dir}", "*.yaml") : []
     iterator = filename
     content {
-      content  = file("${var.hieradata_folder}/${filename.value}")
+      content  = file("${var.hieradata_dir}/${filename.value}")
       filename = "${local.provision_folder}/data/${filename.value}"
     }
   }
 
   dynamic "source" {
-    for_each = var.hieradata_folder != "" ? fileset("${var.hieradata_folder}", "{prefix,hostname}/**/*.yaml") : []
+    for_each = var.hieradata_dir != "" ? fileset("${var.hieradata_dir}", "{prefix,hostname}/**/*.yaml") : []
     iterator = filename
     content {
-      content  = file("${var.hieradata_folder}/${filename.value}")
+      content  = file("${var.hieradata_dir}/${filename.value}")
       filename = "${local.provision_folder}/data/${filename.value}"
     }
   }
