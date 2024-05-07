@@ -704,7 +704,7 @@ randomly generated one.
 **Requirement**: Minimum length **8 characters**.
 
 The password can be provided in a PKCS7 encrypted form. Refer to sub-section
-[4.13.1 Encrypting hieradata secrets](#4131-encrypting-hieradata-secrets)
+[4.14 eyaml_key](#414-eyaml_private-optional)
 for instructions on how to encrypt the password.
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
@@ -783,36 +783,76 @@ The file created from this string can be found on `puppet` as
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 Each instance's Puppet agent will be reloaded following the copy of the hieradata files.
 
-#### 4.13.1. Encrypting hieradata secrets
+### 4.14 eyaml_private (optional)
+
+**default value**: empty string
+
+Defines the private RSA key required to decrypt the values encrypted with hiera-eyaml PKCS7.
+This key will be copied on the Puppet server.
+
+**Post build modification effect**: trigger scp of private key file at next `terraform apply`.
+
+#### 4.14.1 Generate eyaml encryption keys
 
 If you plan to track the cluster configuration files in git (i.e:`main.tf`, `user_data.yaml`),
 it would be a good idea to encrypt the sensitive property values.
 
-Magic Castle uses [Puppet hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml) to provide a
+Magic Castle uses [hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml) to provide a
 per-value encryption of sensitive properties to be used by Puppet.
 
-To encrypt the data, you need to access the eyaml public certificate file of your cluster.
-This file is located on the Puppet server at `/etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem`.
-With the public certificate file, you can encrypt the values with eyaml:
-```sh
-/opt/puppetlabs/puppet/bin/eyaml encrypt -s 'your-secret' --pkcs7-public-key /etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem -o string
+The private key and its corresponding public key wrapped in a X509 certificate can be generated with `openssl`:
+
+```shell
+openssl req -x509 -nodes -newkey rsa:2048 -keyout private_key.pkcs7.pem -out public_key.pkcs7.pem -batch
 ```
 
-You can encrypt the value remotely using SSH jump host:
-```sh
-ssh -J centos@your-cluster.yourdomain.cloud centos@puppet /opt/puppetlabs/puppet/bin/eyaml encrypt -s 'your-secret' --pkcs7-public-key=/etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem -o string
-```
-In the preceding command, replace `puppet` by the hostname of your puppetserver (i.e.: `mgmt1`).
+or with `eyaml`:
 
-The openssl command-line can also be used to encrypt a value with the certificate file:
-```sh
-echo -n 'your-secret' | openssl smime -encrypt -aes-256-cbc -outform der public_key.pkcs7.pem | base64 -w0 | xargs printf "ENC[PKCS7,%s]\n"
+```shell
+eyaml createkeys --pkcs7-public-key=public_key.pkcs7.pem --pkcs7-private-key=private_key.pkcs7.pem
 ```
 
-To learn more about `public_key.pkcs7.pem` and how it can be generated before the cluster creation, refer to
-section [10.13 Generate and replace Puppet hieradata encryption keys](#1013-generate-and-replace-puppet-hieradata-encryption-keys).
+#### 4.14.2 Encrypting sensitive properties
 
-### 4.14 firewall_rules (optional)
+To encrypt a sensitive property with openssl:
+```sh
+echo -n 'your-secret' | openssl smime -encrypt -aes-256-cbc -outform der public_key.pkcs7.pem | openssl base64 -A | xargs printf "ENC[PKCS7,%s]\n"
+```
+
+To encrypt a sensitive property with eyaml:
+```sh
+eyaml encrypt -s 'your-secret' --pkcs7-public-key=public_key.pkcs7.pem -o string
+```
+
+#### 4.14.3 Terraform cloud
+
+To provide the value of this variable via Terraform Cloud, encode the private key content with base64:
+
+```
+openssl base64 -A -in private_key.pkcs7.pem
+```
+
+Define a variable in your main.tf:
+
+```hcl
+variable "tfc_eyaml_key" {}
+module "openstack" {
+  ...
+}
+```
+
+Then make sure to decode it before passing it to the cloud provider module:
+
+```hcl
+variable "tfc_eyaml_key" {}
+module "openstack" {
+  ...
+  eyaml_key = base64decode(var.tfc_eyaml_key)
+  ...
+}
+```
+
+### 4.15 firewall_rules (optional)
 
 **default value**:
 ```hcl
@@ -846,7 +886,7 @@ about this requirement, refer to Magic Castle's
 
 **Post build modification effect**: modify the cloud provider firewall rules at next `terraform apply`.
 
-### 4.15 generate_ssh_key (optional)
+### 4.16 generate_ssh_key (optional)
 
 **default_value**: `false`
 
@@ -867,7 +907,7 @@ next terraform apply. The Terraform public SSH key will be removed
 from the sudoer account `authorized_keys` file at next
 Puppet agent run.
 
-### 4.16 software_stack (optional)
+### 4.17 software_stack (optional)
 
 **default_value**: `"alliance"`
 
@@ -880,7 +920,7 @@ Possible values are:
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 
-### 4.17 pool (optional)
+### 4.18 pool (optional)
 
 **default_value**: `[]`
 
@@ -892,7 +932,7 @@ managed by the workload scheduler through Terraform API. For more information, r
 will be instantiated, others will stay uninstantiated or will be destroyed
 if previously instantiated.
 
-### 4.18 skip_upgrade (optional)
+### 4.19 skip_upgrade (optional)
 
 **default_value** = `false`
 
@@ -903,7 +943,7 @@ all packages are upgraded.
 after the modification will take into consideration the new value of the parameter to determine
 whether they should upgrade the base image packages or not.
 
-### 4.19 puppetfile (optional)
+### 4.20 puppetfile (optional)
 
 **default_value** = `""`
 
@@ -1730,58 +1770,7 @@ instances = {
 }
 ```
 
-### 10.13 Generate and replace Puppet hieradata encryption keys
-
-During the Puppet server initial boot, a pair of hiera-eyaml encryptions keys are generated in
-`/opt/puppetlabs/puppet/eyaml`:
-
-- `private_key.pkcs7.pem`
-- `public_key.pkcs7.pem`
-
-To encrypt the values before creating the cluster, the encryptions keys can be generated beforehand and then transferred on the Puppet server.
-
-The keys can be generated with `eyaml`:
-```
-eyaml createkeys
-```
-
-or `openssl`:
-```sh
-openssl req -x509 -nodes -days 100000 -newkey rsa:2048 -keyout private_key.pkcs7.pem -out public_key.pkcs7.pem -subj '/'
-```
-
-The resulting public key can then be used to encrypt secrets, while the private and the public keys have to be transferred on the Puppet server to allow it to decrypt the values. In the following command examples, replace
-`puppet` by the hostname of your puppetserver (i.e.: `mgmt1`).
-
-1. Transfer the keys on the Puppet server using SCP with SSH jumphost
-    ```sh
-    scp -J centos@cluster.yourdomain.cloud {public,private}_key.pkcs7.pem centos@puppet:~/
-    ```
-2. Replace the existing keys by the one transferred:
-    ```sh
-    ssh -J centos@cluster.yourdomain.cloud centos@puppet sudo cp {public,private}_key.pkcs7.pem /etc/puppetlabs/puppet/eyaml
-    ```
-3. Remove the keys from the admin account home folder:
-    ```sh
-    ssh -J centos@cluster.yourdomain.cloud centos@puppet rm {public,private}_key.pkcs7.pem
-    ```
-
-To backup the encryption keys from an existing Puppet server:
-
-1. Create a readable copy of the encryption keys in the sudoer home account
-    ```sh
-    ssh -J centos@cluster.yourdomain.cloud centos@puppet 'sudo rsync --owner --group --chown=centos:centos /etc/puppetlabs/puppet/eyaml/{public,private}_key.pkcs7.pem ~/'
-    ```
-2. Transfer the files locally:
-    ```sh
-    scp -J centos@cluster.yourdomain.cloud centos@puppet:~/{public,private}_key.pkcs7.pem .
-    ```
-3. Remove the keys from the sudoer account home folder:
-    ```sh
-    ssh -J centos@cluster.yourdomain.cloud centos@puppet rm {public,private}_key.pkcs7.pem
-    ```
-
-### 10.14 Read and edit secret values generated at boot
+### 10.13 Read and edit secret values generated at boot
 
 During the cloud-init initialization phase,
 [`bootstrap.sh`](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/bootstrap.sh)
@@ -1809,7 +1798,7 @@ the hieradata configuration file. Refer to section [4.13 hieradata](#413-hierada
 User defined values take precedence over boot generated values in the Magic Castle
 Puppet data hierarchy.
 
-### 10.15 Expand a volume
+### 10.14 Expand a volume
 
 Volumes defined in the `volumes` map can be expanded at will. After their creation, you can
 increase their size in the `main.tf` then call `terraform apply` and the associated block

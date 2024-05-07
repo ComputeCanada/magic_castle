@@ -154,3 +154,14 @@ variable "puppetfile" {
   default     = ""
   description = "Additional content for the pupet environment Puppetfile. If the string includes a `forge` setting, the string replaces the original Puppetfile completely."
 }
+
+variable "eyaml_key" {
+  type        = string
+  default     = ""
+  sensitive   = true
+  description = "Private RSA key used to encrypt the data in the hieradata yaml fire"
+  validation {
+    condition     = can(regex("(|^-----BEGIN PRIVATE KEY-----\n)", var.eyaml_key))
+    error_message = "Unsupported private key format"
+  }
+}

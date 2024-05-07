@@ -61,19 +61,18 @@ runcmd:
   - systemctl daemon-reload
   - systemctl enable puppetserver
 # Install gem dependencies
-  - "/opt/puppetlabs/puppet/bin/gem install autosign:1.0.1 hiera-eyaml:3.4.0 faraday:2.8.1 faraday-net_http:3.0.2 puppet_forge:4.1.0 r10k:4.0.1"
+  - "/opt/puppetlabs/puppet/bin/gem install autosign:1.0.1 faraday:2.8.1 faraday-net_http:3.0.2 puppet_forge:4.1.0 r10k:4.0.1"
+  - curl -L -o /opt/puppetlabs/puppet/lib/ruby/vendor_gems/gems/hiera-eyaml-3.4.0/lib/hiera/backend/eyaml/encryptors/pkcs7.rb https://raw.githubusercontent.com/MagicCastle/hiera-eyaml/6e40e4618579b4804c4b6157279d057365bbd561/lib/hiera/backend/eyaml/encryptors/pkcs7.rb
 # Enable autosign with password
   - chgrp puppet /etc/autosign.conf
   - chown puppet:puppet /var/log/autosign.log
   - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section server
   - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section server
-# Generate hieradata asymmetric encryption key
+# Generate  bootstrap hieradata asymmetric encryption key
   - mkdir -p /etc/puppetlabs/puppet/eyaml
-  - /opt/puppetlabs/puppet/bin/eyaml createkeys --pkcs7-private-key=/etc/puppetlabs/puppet/eyaml/private_key.pkcs7.pem --pkcs7-public-key=/etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem
-  - /opt/puppetlabs/puppet/bin/eyaml createkeys --pkcs7-private-key=/etc/puppetlabs/puppet/eyaml/boot_private_key.pkcs7.pem --pkcs7-public-key=/etc/puppetlabs/puppet/eyaml/boot_public_key.pkcs7.pem
-  - chown -R puppet:puppet /etc/puppetlabs/puppet/eyaml
-  - chmod 0400 /etc/puppetlabs/puppet/eyaml/private_key.pkcs7.pem
-  - chmod 0400 /etc/puppetlabs/puppet/eyaml/boot_private_key.pkcs7.pem
+  - "(cd /etc/puppetlabs/puppet/eyaml; openssl req -x509 -nodes -newkey rsa:2048 -keyout boot_private_key.pkcs7.pem -out boot_public_key.pkcs7.pem -batch)"
+  - chown -R root:puppet /etc/puppetlabs/puppet/eyaml
+  - chmod 0640 /etc/puppetlabs/puppet/eyaml/boot_private_key.pkcs7.pem
 # Setup puppet environment code and modules
   - rm -rf /etc/puppetlabs/code/environments/production
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/main
