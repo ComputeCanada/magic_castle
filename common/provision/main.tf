@@ -36,7 +36,7 @@ data "archive_file" "puppetserver_files" {
     iterator = filename
     content {
       content  = file("${var.hieradata_dir}/${filename.value}")
-      filename = "${local.provision_folder}/data/${filename.value}"
+      filename = "${local.provision_folder}/data/user_data/${filename.value}"
     }
   }
 
@@ -45,7 +45,7 @@ data "archive_file" "puppetserver_files" {
     iterator = filename
     content {
       content  = file("${var.hieradata_dir}/${filename.value}")
-      filename = "${local.provision_folder}/data/${filename.value}"
+      filename = "${local.provision_folder}/data/user_data/${filename.value}"
     }
   }
 
