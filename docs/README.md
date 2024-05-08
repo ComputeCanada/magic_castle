@@ -772,11 +772,7 @@ Refer to the following Puppet modules' documentation to know more about the key-
 - [puppet-jupyterhub](https://github.com/ComputeCanada/puppet-jupyterhub/blob/main/README.md#hieradata-configuration)
 - [puppet-prometheus](https://forge.puppet.com/modules/puppet/prometheus/)
 
-
-The file created from this string can be found on `puppet` as
-```
-/etc/puppetlabs/data/user_data.yaml
-```
+The file created from this string can be found on the Puppet server as `/etc/puppetlabs/data/user_data.yaml`
 
 **Requirement**: The string needs to respect the [YAML syntax](https://en.wikipedia.org/wiki/YAML#Syntax).
 
