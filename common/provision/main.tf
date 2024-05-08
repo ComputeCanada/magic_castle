@@ -41,7 +41,7 @@ data "archive_file" "puppetserver_files" {
   }
 
   dynamic "source" {
-    for_each = var.hieradata_dir != "" ? fileset("${var.hieradata_dir}", "{prefix,hostname}/**/*.yaml") : []
+    for_each = var.hieradata_dir != "" ? fileset("${var.hieradata_dir}", "{prefixes,hostnames}/**/*.yaml") : []
     iterator = filename
     content {
       content  = file("${var.hieradata_dir}/${filename.value}")
