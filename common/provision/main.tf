@@ -87,7 +87,8 @@ resource "terraform_data" "deploy_puppetserver_files" {
       "sudo chmod g-w,o-rwx $(find ${local.provision_folder}/ -type f)",
       "sudo chown -R root:52 ${local.provision_folder}",
       "sudo mkdir -p -m 755 /etc/puppetlabs/",
-      "sudo rsync -avh --no-t ${local.provision_folder}/ /etc/puppetlabs/",
+      "sudo rsync -avh --no-t --exclude 'data' ${local.provision_folder}/ /etc/puppetlabs/",
+      "sudo rsync -avh --no-t --del ${local.provision_folder}/data/ /etc/puppetlabs/data/",
       "sudo rm -rf ${local.provision_folder}/ ${local.provision_folder}.zip",
       "[ -f /usr/local/bin/consul ] && [ -f /usr/bin/jq ] && consul event -token=$(sudo jq -r .acl.tokens.agent /etc/consul/config.json) -name=puppet $(date +%s) || true",
     ]
