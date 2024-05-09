@@ -98,6 +98,10 @@ variable "hieradata_dir" {
   type        = string
   default     = ""
   description = "Path to hieradata folder containing YAML files to be included in the puppet environment"
+  validation {
+    condition     = alltrue([for filename in fileset("${var.hieradata_dir}", "**/*.yaml"): can(yamldecode(file("${var.hieradata_dir}/${filename}")))])
+    error_message = "At least one YAML file in ${var.hieradata_dir} is not a valid."
+  }
 }
 
 variable "sudoer_username" {
