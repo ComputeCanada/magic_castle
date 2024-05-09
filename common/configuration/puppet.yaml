@@ -139,17 +139,14 @@ write_files:
           %{ if cloud_provider != "gcp" } "GCE", %{ endif }
         ],
       }
-      global : {
-        external-dir : ["/etc/puppetlabs/facts/external"],
-      }
 
     path: /etc/puppetlabs/facter/facter.conf
     permissions: "0644"
-  - path: /etc/puppetlabs/facts/external/prefix.yaml
+  - path: /etc/puppetlabs/facter/facts.d/prefix.yaml
     content: |
       ---
       prefix : "${node_prefix}"
-    permissions: "0640"
+    permissions: "0644"
 %{ if contains(tags, "puppet") ~}
   - content: |
       ---
