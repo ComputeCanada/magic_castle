@@ -772,18 +772,37 @@ Refer to the following Puppet modules' documentation to know more about the key-
 - [puppet-jupyterhub](https://github.com/ComputeCanada/puppet-jupyterhub/blob/main/README.md#hieradata-configuration)
 - [puppet-prometheus](https://forge.puppet.com/modules/puppet/prometheus/)
 
-
-The file created from this string can be found on `puppet` as
-```
-/etc/puppetlabs/data/user_data.yaml
-```
+The file created from this string can be found on the Puppet server as `/etc/puppetlabs/data/user_data.yaml`
 
 **Requirement**: The string needs to respect the [YAML syntax](https://en.wikipedia.org/wiki/YAML#Syntax).
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 Each instance's Puppet agent will be reloaded following the copy of the hieradata files.
 
-### 4.14 eyaml_private (optional)
+### 4.14 hieradata_dir (optional)
+
+**default_value:** Empty string
+
+Defines the path to a directory containing a hierarchy of YAML data files.
+The hierarchy is copied on the Puppet server in `/etc/puppetlabs/data/user_data`.
+
+**Hierarchy structure:**
+
+- per node hostname:
+  - `<dir>/hostnames/<hostname>/*.yaml`
+  - `<dir>/hostnames/<hostname>.yaml`
+- per node prefix:
+  - `<dir>/prefixes/<prefix>/*.yaml`
+  - `<dir>/prefixes/<prefix>.yaml`
+- all nodes: `<dir>/*.yaml`
+
+For more information on hieradata, refer to section [4.13 hieradata (optional)](#413-hieradata-optional).
+
+**Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
+Each instance's Puppet agent will be reloaded following the copy of the hieradata files.
+
+
+### 4.15 eyaml_private (optional)
 
 **default value**: empty string
 
@@ -792,7 +811,7 @@ This key will be copied on the Puppet server.
 
 **Post build modification effect**: trigger scp of private key file at next `terraform apply`.
 
-#### 4.14.1 Generate eyaml encryption keys
+#### 4.15.1 Generate eyaml encryption keys
 
 If you plan to track the cluster configuration files in git (i.e:`main.tf`, `user_data.yaml`),
 it would be a good idea to encrypt the sensitive property values.
@@ -812,7 +831,7 @@ or with `eyaml`:
 eyaml createkeys --pkcs7-public-key=public_key.pkcs7.pem --pkcs7-private-key=private_key.pkcs7.pem
 ```
 
-#### 4.14.2 Encrypting sensitive properties
+#### 4.15.2 Encrypting sensitive properties
 
 To encrypt a sensitive property with openssl:
 ```sh
@@ -824,7 +843,7 @@ To encrypt a sensitive property with eyaml:
 eyaml encrypt -s 'your-secret' --pkcs7-public-key=public_key.pkcs7.pem -o string
 ```
 
-#### 4.14.3 Terraform cloud
+#### 4.15.3 Terraform cloud
 
 To provide the value of this variable via Terraform Cloud, encode the private key content with base64:
 
@@ -852,7 +871,7 @@ module "openstack" {
 }
 ```
 
-### 4.15 firewall_rules (optional)
+### 4.16 firewall_rules (optional)
 
 **default value**:
 ```hcl
@@ -886,7 +905,7 @@ about this requirement, refer to Magic Castle's
 
 **Post build modification effect**: modify the cloud provider firewall rules at next `terraform apply`.
 
-### 4.16 generate_ssh_key (optional)
+### 4.17 generate_ssh_key (optional)
 
 **default_value**: `false`
 
@@ -907,7 +926,7 @@ next terraform apply. The Terraform public SSH key will be removed
 from the sudoer account `authorized_keys` file at next
 Puppet agent run.
 
-### 4.17 software_stack (optional)
+### 4.18 software_stack (optional)
 
 **default_value**: `"alliance"`
 
@@ -920,7 +939,7 @@ Possible values are:
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 
-### 4.18 pool (optional)
+### 4.19 pool (optional)
 
 **default_value**: `[]`
 
@@ -932,7 +951,7 @@ managed by the workload scheduler through Terraform API. For more information, r
 will be instantiated, others will stay uninstantiated or will be destroyed
 if previously instantiated.
 
-### 4.19 skip_upgrade (optional)
+### 4.20 skip_upgrade (optional)
 
 **default_value** = `false`
 
@@ -943,7 +962,7 @@ all packages are upgraded.
 after the modification will take into consideration the new value of the parameter to determine
 whether they should upgrade the base image packages or not.
 
-### 4.20 puppetfile (optional)
+### 4.21 puppetfile (optional)
 
 **default_value** = `""`
 

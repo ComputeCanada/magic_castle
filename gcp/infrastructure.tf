@@ -42,6 +42,7 @@ module "provision" {
   terraform_data  = module.configuration.terraform_data
   terraform_facts = module.configuration.terraform_facts
   hieradata       = var.hieradata
+  hieradata_dir   = var.hieradata_dir
   sudoer_username = var.sudoer_username
   eyaml_key       = var.eyaml_key
   depends_on      = [ google_compute_instance.instances ]

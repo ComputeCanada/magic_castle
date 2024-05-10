@@ -86,7 +86,7 @@ locals {
   })
 
   terraform_facts = yamlencode({
-    software_stack = var.software_stack
+    software_stack = var.software_stack,
     cloud          = {
       provider = var.cloud_provider
       region = var.cloud_region
@@ -100,6 +100,7 @@ locals {
         cloud_provider        = var.cloud_provider
         tags                  = values.tags
         node_name             = key,
+        node_prefix           = values.prefix,
         domain_name           = var.domain_name
         puppetenv_git         = var.config_git_url,
         puppetenv_rev         = var.config_version,
