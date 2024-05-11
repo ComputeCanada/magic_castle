@@ -966,14 +966,13 @@ whether they should upgrade the base image packages or not.
 
 **default_value** = `""`
 
-Defines a complement of modules to install with librarian puppet when initializing the Puppet environment
-on the first boot of the Puppet server. If the provided string include the
-[`forge` setting](https://www.puppet.com/docs/pe/2019.8/puppetfile.html#declare_puppet_forge_modules_in_the_puppetfile),
-the provided content will replace entirely the Magic Castle environment's
-[Puppetfile](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/Puppetfile).
+Defines a second [Puppetfile](https://www.puppet.com/docs/pe/2023.2/puppetfile.html) used to
+install complementary modules with [r10k](https://github.com/puppetlabs/r10k). The installation
+happens only once when initializing the Puppet environment on the first boot of the Puppet server.
+The modules are installed in `/etc/puppetlabs/code/modules`.
 
-**Post build modification effect**: None. To modify the Puppetfile after the cluster is initialized, log
-on the Puppet server and modify `/etc/puppetlabs/code/environments/production/Puppetfile`.
+**Post build modification effect**: None. To modify the Puppetfile after the cluster is initialized,
+log on the Puppet server and modify `/etc/puppetlabs/code/Puppetfile`.
 
 ## 5. Cloud Specific Configuration
 

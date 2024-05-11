@@ -78,20 +78,15 @@ runcmd:
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/main
   - ln -s /etc/puppetlabs/code/environments/main /etc/puppetlabs/code/environments/production
   - "(cd /etc/puppetlabs/code/environments/production; git checkout ${puppetenv_rev})"
-%{ if puppetfile != "" ~}
-%{ if strcontains(puppetfile, "forge") ~}
-  - cat /etc/puppetlabs/Puppetfile  > /etc/puppetlabs/code/environments/production/Puppetfile
-%{ else }
-  - cat /etc/puppetlabs/Puppetfile >> /etc/puppetlabs/code/environments/production/Puppetfile
-%{ endif ~}
-  - rm /etc/puppetlabs/Puppetfile
-%{ endif ~}
   - mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts
   - chgrp -R puppet /etc/puppetlabs/data /etc/puppetlabs/facts
   - ln -sf /etc/puppetlabs/data/{user_data,user_data.yaml,terraform_data.yaml} /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/facts/terraform_facts.yaml /etc/puppetlabs/code/environments/production/site/profile/facts.d
 # We use r10k solely to install the modules of the main branch environment.
-  - "(cd /etc/puppetlabs/code/environments/production; /opt/puppetlabs/puppet/bin/r10k puppetfile install)"
+  - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/environments/production/modules --puppetfile=/etc/puppetlabs/code/environments/production/Puppetfile
+%{ if puppetfile != "" ~}
+  - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/modules --puppetfile=/etc/puppetlabs/code/Puppetfile
+%{ endif ~}
 # Wait for Terraform to scp its YAML data
 %{ if ! include_tf_data ~}
   - while [ ! -e "/etc/puppetlabs/data/terraform_data.yaml" ]; do echo "$(date -I'seconds') Waiting for terraform to scp terraform_data.yaml"; sleep 5; done
@@ -172,10 +167,10 @@ write_files:
     permissions: "0640"
 %{ endif ~}
 %{ if puppetfile != "" ~}
-  - path: /etc/puppetlabs/Puppetfile
+  - path: /etc/puppetlabs/code/Puppetfile
     content: |
       ${indent(6, puppetfile)}
-    permissions: "0640"
+    permissions: "0644"
 %{ endif ~}
 %{ endif ~}
   - content: |
