@@ -10,7 +10,7 @@ variable "eyaml_key" { }
 variable "puppetfile" { }
 
 locals {
-  provision_folder = "puppetserver_etc"
+  provision_folder = "etc_puppetlabs"
 }
 
 data "archive_file" "puppetserver_files" {
@@ -81,18 +81,15 @@ resource "terraform_data" "deploy_puppetserver_files" {
     destination = "${local.provision_folder}.zip"
   }
 
+  provisioner "file" {
+    content     = file("${path.module}/update_etc_puppetlabs.sh")
+    destination = "update_etc_puppetlabs.sh"
+  }
+
   provisioner "remote-exec" {
     inline = [
-      # unzip is not necessarily installed when connecting, but python is.
-      "/usr/libexec/platform-python -c 'import zipfile; zipfile.ZipFile(\"${local.provision_folder}.zip\").extractall()'",
-      "sudo chmod g-w,o-rwx $(find ${local.provision_folder}/ -type f ! -path ${local.provision_folder}/code/*)",
-      "sudo chown -R root:52 ${local.provision_folder}",
-      "sudo mkdir -p -m 755 /etc/puppetlabs/",
-      "sudo rsync -avh --no-t --exclude 'data' ${local.provision_folder}/ /etc/puppetlabs/",
-      "sudo rsync -avh --no-t --del ${local.provision_folder}/data/ /etc/puppetlabs/data/",
-      "sudo rm -rf ${local.provision_folder}/ ${local.provision_folder}.zip",
-      "[ -f /opt/puppetlabs/puppet/bin/r10k ] && [ /etc/puppetlabs/code/Puppetfile -nt /etc/puppetlabs/code/modules ] && sudo /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/modules --puppetfile=/etc/puppetlabs/code/Puppetfile && sudo touch /etc/puppetlabs/code/modules",
-      "[ -f /usr/local/bin/consul ] && [ -f /usr/bin/jq ] && consul event -token=$(sudo jq -r .acl.tokens.agent /etc/consul/config.json) -name=puppet $(date +%s) || true",
+      "sudo bash update_etc_puppetlabs.sh ${local.provision_folder}.zip",
+      "rm ${local.provision_folder}.zip update_etc_puppetlabs.sh"
     ]
   }
 }
