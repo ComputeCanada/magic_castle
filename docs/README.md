@@ -247,7 +247,7 @@ ssh-agent corresponds to the public key that will be granted access to your clus
 generate a key pair specific to your cluster. The public key will be written in
 the sudoer `authorized_keys` and Terraform will be able to connect the cluster
 using the corresponding private key. For more information,
-refer to [section 4.15 generate_ssh_key](#415-generate_ssh_key-optional).
+refer to [section 4.17 - generate_ssh_key](#417-generate_ssh_key-optional).
 
 ## 2. Cloud Cluster Architecture Overview
 
@@ -662,7 +662,7 @@ List of SSH public keys that will have access to your cluster sudoer account.
 keys to your local authentication agent (i.e: `ssh-add`) for Terraform to be
 able to copy Puppet configuration files with scp on the cluster. Otherwise,
 Magic Castle can create a key pair for unique to this cluster, see section
-[4.15 - generate_ssh_key (optional)](#415-generate_ssh_key-optional).
+[4.17 - generate_ssh_key](#417-generate_ssh_key-optional).
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 The sudoer account `authorized_keys` file will be updated by each instance's Puppet agent
