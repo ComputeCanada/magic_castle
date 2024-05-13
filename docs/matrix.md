@@ -49,9 +49,9 @@
 | Google HPC-Toolkit           | yes      | no       | no            | no          | no        | no        | no        | no         |
 | Cluster in the Cloud         | no       | yes      | no            | no          | no        | no        | no        | no         |
 | ElastiCluster                | yes      | yes      | yes           | yes         | no        | no        | no        | no         |
-| Magic Castle                 | yes      | yes      | yes           | yes         | no        | no        | no        | no         |
+| Magic Castle                 | no       | yes      | yes           | yes         | no        | no        | no        | no         |
 | On-Demand Data Centre        | -        | -        | -             | -           | -         | -         | -         | -          |
-| Slurm on GCP                 | yes      | no       | no            | no          | yes       | no        | yes       | no         |
+| Slurm on GCP                 | yes      | no       | yes           | no          | yes       | no        | yes       | no         |
 
 
 ## Supported job schedulers
