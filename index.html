@@ -3565,13 +3565,10 @@ after the modification will take into consideration the new value of the paramet
 whether they should upgrade the base image packages or not.</p>
 <h3 id="421-puppetfile-optional">4.21 puppetfile (optional)</h3>
 <p><strong>default_value</strong> = <code>""</code></p>
-<p>Defines a complement of modules to install with librarian puppet when initializing the Puppet environment
-on the first boot of the Puppet server. If the provided string include the
-<a href="https://www.puppet.com/docs/pe/2019.8/puppetfile.html#declare_puppet_forge_modules_in_the_puppetfile"><code>forge</code> setting</a>,
-the provided content will replace entirely the Magic Castle environment's
-<a href="https://github.com/ComputeCanada/puppet-magic_castle/blob/main/Puppetfile">Puppetfile</a>.</p>
-<p><strong>Post build modification effect</strong>: None. To modify the Puppetfile after the cluster is initialized, log
-on the Puppet server and modify <code>/etc/puppetlabs/code/environments/production/Puppetfile</code>.</p>
+<p>Defines a second <a href="https://www.puppet.com/docs/pe/2023.2/puppetfile.html">Puppetfile</a> used to
+install complementary modules with <a href="https://github.com/puppetlabs/r10k">r10k</a>.</p>
+<p><strong>Post build modification effect</strong>: trigger scp of Puppetfile at next <code>terraform apply</code>.
+Each instance's Puppet agent will be reloaded following the installation of the new modules.</p>
 <h2 id="5-cloud-specific-configuration">5. Cloud Specific Configuration</h2>
 <h3 id="51-amazon-web-services">5.1 Amazon Web Services</h3>
 <h4 id="511-region">5.1.1 region</h4>
