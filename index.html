@@ -2989,7 +2989,7 @@ ssh-agent corresponds to the public key that will be granted access to your clus
 generate a key pair specific to your cluster. The public key will be written in
 the sudoer <code>authorized_keys</code> and Terraform will be able to connect the cluster
 using the corresponding private key. For more information,
-refer to <a href="#415-generate_ssh_key-optional">section 4.15 generate_ssh_key</a>.</p>
+refer to <a href="#417-generate_ssh_key-optional">section 4.17 - generate_ssh_key</a>.</p>
 <h2 id="2-cloud-cluster-architecture-overview">2. Cloud Cluster Architecture Overview</h2>
 <p><img alt="Magic Castle Service Architecture" src="https://docs.google.com/drawings/d/e/2PACX-1vRGFtPevjgM0_ZrkIBQY881X73eQGaXDJ1Fb48Z0DyOe61h2dYdw0urWF2pQZWUTdcNSAM868sQ2Sii/pub?w=1259&amp;h=960" /></p>
 <h2 id="3-initialization">3. Initialization</h2>
@@ -3347,7 +3347,7 @@ exist following modifications, the volumes will be deleted.</p>
 keys to your local authentication agent (i.e: <code>ssh-add</code>) for Terraform to be
 able to copy Puppet configuration files with scp on the cluster. Otherwise,
 Magic Castle can create a key pair for unique to this cluster, see section
-<a href="#415-generate_ssh_key-optional">4.15 - generate_ssh_key (optional)</a>.</p>
+<a href="#417-generate_ssh_key-optional">4.17 - generate_ssh_key</a>.</p>
 <p><strong>Post build modification effect</strong>: trigger scp of hieradata files at next <code>terraform apply</code>.
 The sudoer account <code>authorized_keys</code> file will be updated by each instance's Puppet agent
 following the copy of the hieradata files.</p>
