@@ -967,12 +967,10 @@ whether they should upgrade the base image packages or not.
 **default_value** = `""`
 
 Defines a second [Puppetfile](https://www.puppet.com/docs/pe/2023.2/puppetfile.html) used to
-install complementary modules with [r10k](https://github.com/puppetlabs/r10k). The installation
-happens only once when initializing the Puppet environment on the first boot of the Puppet server.
-The modules are installed in `/etc/puppetlabs/code/modules`.
+install complementary modules with [r10k](https://github.com/puppetlabs/r10k).
 
-**Post build modification effect**: None. To modify the Puppetfile after the cluster is initialized,
-log on the Puppet server and modify `/etc/puppetlabs/code/Puppetfile`.
+**Post build modification effect**: trigger scp of Puppetfile at next `terraform apply`.
+Each instance's Puppet agent will be reloaded following the installation of the new modules.
 
 ## 5. Cloud Specific Configuration
 

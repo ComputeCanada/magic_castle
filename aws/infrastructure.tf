@@ -45,6 +45,7 @@ module "provision" {
   hieradata_dir   = var.hieradata_dir
   sudoer_username = var.sudoer_username
   eyaml_key       = var.eyaml_key
+  puppetfile      = var.puppetfile
   depends_on      = [aws_instance.instances, aws_eip.public_ip]
 }
 
