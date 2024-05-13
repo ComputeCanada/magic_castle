@@ -19,5 +19,5 @@ if [ -f /opt/puppetlabs/puppet/bin/r10k ] && [ /etc/puppetlabs/code/Puppetfile -
 fi
 
 if [ -f /usr/local/bin/consul ] && [ -f /usr/bin/jq ]; then
-    consul event -token=$(sudo jq -r .acl.tokens.agent /etc/consul/config.json) -name=puppet $(date +%s)
+    /usr/local/bin/consul event -token=$(jq -r .acl.tokens.agent /etc/consul/config.json) -name=puppet $(date +%s)
 fi
