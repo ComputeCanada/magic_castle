@@ -87,10 +87,6 @@ locals {
 
   terraform_facts = yamlencode({
     software_stack = var.software_stack,
-    cloud          = {
-      provider = var.cloud_provider
-      region = var.cloud_region
-    }
   })
 
   user_data = {
@@ -98,6 +94,7 @@ locals {
     templatefile("${path.module}/puppet.yaml",
       {
         cloud_provider        = var.cloud_provider
+        cloud_region          = var.cloud_region
         tags                  = values.tags
         node_name             = key,
         node_prefix           = values.prefix,
