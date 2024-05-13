@@ -45,6 +45,7 @@ module "provision" {
   hieradata_dir   = var.hieradata_dir
   sudoer_username = var.sudoer_username
   eyaml_key       = var.eyaml_key
+  puppetfile      = var.puppetfile
   depends_on      = [ azurerm_linux_virtual_machine.instances ]
 }
 
