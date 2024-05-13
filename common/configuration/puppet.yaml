@@ -134,13 +134,15 @@ write_files:
           %{ if cloud_provider != "gcp" } "GCE", %{ endif }
         ],
       }
-
     path: /etc/puppetlabs/facter/facter.conf
     permissions: "0644"
-  - path: /etc/puppetlabs/facter/facts.d/prefix.yaml
-    content: |
+  - content: |
       ---
       prefix : "${node_prefix}"
+      cloud:
+        provider: "${cloud_provider}"
+        region: "${cloud_region}"
+    path: /etc/puppetlabs/facter/facts.d/prefix.yaml
     permissions: "0644"
 %{ if contains(tags, "puppet") ~}
   - content: |
