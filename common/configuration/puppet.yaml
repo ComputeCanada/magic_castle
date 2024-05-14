@@ -47,8 +47,7 @@ runcmd:
       install -m 700 /dev/null /opt/puppetlabs/bin/postrun
       # kernel configuration
       systemctl disable kdump
-      sed -i 's/crashkernel=auto/crashkernel=no/' /etc/default/grub
-      sed -i 's/GRUB_CMDLINE_LINUX="[^"]*/& nouveau.modeset=0 rd.driver.blacklist=nouveau/' /etc/default/grub
+      grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0"
       grub2-mkconfig -o /boot/grub2/grub.cfg
     fi
 %{ if contains(tags, "puppet") }
