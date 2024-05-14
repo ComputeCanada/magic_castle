@@ -4196,28 +4196,10 @@ the hieradata configuration file. Refer to section <a href="#413-hieradata-optio
 User defined values take precedence over boot generated values in the Magic Castle
 Puppet data hierarchy.</p>
 <h3 id="1014-expand-a-volume">10.14 Expand a volume</h3>
-<p>Volumes defined in the <code>volumes</code> map can be expanded at will. After their creation, you can
-increase their size in the <code>main.tf</code> then call <code>terraform apply</code> and the associated block
-device will be expanded.</p>
-<p>To benefit from the new storage, the following commands need to be ran as root
-on the instance to which the expanded volume is attached.</p>
-<ol>
-<li>Identify the physical volume path
-    <div class="highlight"><pre><span></span><code>pvscan
-</code></pre></div></li>
-<li>Expand the physical volume
-    <div class="highlight"><pre><span></span><code>pvresize /dev/vdxyz # replace vdxyz by the volume identify at step 1
-</code></pre></div></li>
-<li>Identify the volume group path
-    <div class="highlight"><pre><span></span><code>lvdisplay
-</code></pre></div></li>
-<li>Expand the volume group using step volume group path identified
-    <div class="highlight"><pre><span></span><code>lvextend -l &#39;+100%FREE&#39; -r /dev/project_vg/project
-</code></pre></div></li>
-<li>Resize the XFS filesystem:
-    <div class="highlight"><pre><span></span><code>xfs_growfs /dev/project_vg/project
-</code></pre></div></li>
-</ol>
+<p>Volumes defined in the <code>volumes</code> map can be expanded at will. To enable online extension of
+a volume, add <code>enable_resize = true</code> to its specs map. You can then increase the size at will.
+The corresponding volume will be expanded by the cloud provider and the filesystem will be
+extended by Puppet.</p>
 <h2 id="11-customize-magic-castle-terraform-files">11. Customize Magic Castle Terraform Files</h2>
 <p>You can modify the Terraform module files in the folder named after your cloud
 provider (e.g: <code>gcp</code>, <code>openstack</code>, <code>aws</code>, etc.)</p>

@@ -752,24 +752,15 @@ the <code>module.design.instances</code> map.</p>
 <code>module.design.volumes</code>.</p>
 </li>
 <li>
-<p><strong>Consolidate the volume device information</strong>. In <code>infrastructure.tf</code>, define a local
-variable named <code>volume_devices</code> implementing the following logic in HCL. Replace
-the line starting by <code>/dev/disk/by-id</code> with the proper logic that would match the volume
-resource to its device path from within the instance to which it is attached.
-  <div class="highlight"><pre><span></span><code><span class="nb">volume_devices</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="err">for</span><span class="w"> </span><span class="err">ki</span><span class="p">,</span><span class="w"> </span><span class="err">vi</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.volumes</span><span class="w"> </span><span class="p">:</span>
-<span class="w">  </span><span class="na">ki</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="err">for</span><span class="w"> </span><span class="err">kj</span><span class="p">,</span><span class="w"> </span><span class="err">vj</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">vi</span><span class="w"> </span><span class="p">:</span>
-<span class="w">    </span><span class="na">kj</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">[</span><span class="err">for</span><span class="w"> </span><span class="err">key</span><span class="p">,</span><span class="w"> </span><span class="err">volume</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">module.design.volumes</span><span class="w"> </span><span class="p">:</span>
-<span class="w">      </span><span class="s2">&quot;/dev/disk/by-id/*${substr(provider_volume.volumes[&quot;${volume[&quot;instance&quot;]}-${ki}-${kj}&quot;].id, 0, 20)}&quot;</span>
-<span class="w">      </span><span class="err">if</span><span class="w"> </span><span class="na">key</span><span class="w"> </span><span class="o">=</span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;${volume[&quot;instance&quot;]}-${ki}-${kj}&quot;</span>
-<span class="w">    </span><span class="p">]</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
+<p><strong>Consolidate the instances' information</strong>.  In <code>infrastructure.tf</code>, define a local variable named <code>inventory</code> that will be a map containing the following keys for each instance: <code>public_ip</code>, <code>local_ip</code>, <code>prefix</code>, <code>tags</code>, and <code>specs</code> (#cpu, #gpus, ram, volumes). For the volumes, you need to provide the paths under which the volumes will be found on the instances to which they are attached. This is typically derived from the volume id. Here is an example:
+  <div class="highlight"><pre><span></span><code><span class="na">volumes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nf">keys</span><span class="p">(</span><span class="nv">module.design.volume_per_instance</span><span class="p">),</span><span class="w"> </span><span class="err">x</span><span class="p">)</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="err">for</span><span class="w"> </span><span class="err">pv_key</span><span class="p">,</span><span class="w"> </span><span class="err">pv_values</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.volumes</span><span class="p">:</span>
+<span class="w">    </span><span class="na">pv_key</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="err">for</span><span class="w"> </span><span class="err">name</span><span class="p">,</span><span class="w"> </span><span class="err">specs</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">pv_values</span><span class="p">:</span>
+<span class="w">        </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/dev/disk/by-id/*${substr(provider.volumes[&quot;${x}-${pv_key}-${name}&quot;].id, 0, 20)}&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="err">if</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nv">values.tags</span><span class="p">,</span><span class="w"> </span><span class="err">pv_key</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
 </code></pre></div></p>
-</li>
-<li>
-<p><strong>Consolidate the instances' information</strong>.  In <code>infrastructure.tf</code>, define a local variable named <code>inventory</code> that will be a map containing the following keys for each instance: <code>public_ip</code>, <code>local_ip</code>, <code>prefix</code>, <code>tags</code>, and <code>specs</code> (#cpu, #gpus, ram).</p>
 </li>
 <li>
 <p><strong>Create the instance configurations</strong>. In <code>infrastructure.tf</code>, include the
@@ -782,7 +773,6 @@ resource to its device path from within the instance to which it is attached.
 <span class="w">  </span><span class="na">sudoer_username</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sudoer_username</span>
 <span class="w">  </span><span class="na">generate_ssh_key</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.generate_ssh_key</span>
 <span class="w">  </span><span class="na">public_keys</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">var.public_keys</span>
-<span class="w">  </span><span class="na">volume_devices</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.volume_devices</span>
 <span class="w">  </span><span class="na">domain_name</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.domain_name</span>
 <span class="w">  </span><span class="na">cluster_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.cluster_name</span>
 <span class="w">  </span><span class="na">guest_passwd</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.guest_passwd</span>
@@ -918,20 +908,6 @@ ln<span class="w"> </span>-s<span class="w"> </span>../common/<span class="o">{<
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>Consolidate the volume devices' information</strong>. Add the following snippet to <code>infrastructure.tf</code>:
-  <div class="highlight"><pre><span></span><code><span class="nb">volume_devices</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="err">for</span><span class="w"> </span><span class="err">ki</span><span class="p">,</span><span class="w"> </span><span class="err">vi</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.volumes</span><span class="w"> </span><span class="p">:</span>
-<span class="w">  </span><span class="na">ki</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="err">for</span><span class="w"> </span><span class="err">kj</span><span class="p">,</span><span class="w"> </span><span class="err">vj</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">vi</span><span class="w"> </span><span class="p">:</span>
-<span class="w">    </span><span class="na">kj</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">[</span><span class="err">for</span><span class="w"> </span><span class="err">key</span><span class="p">,</span><span class="w"> </span><span class="err">volume</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">module.design.volumes</span><span class="w"> </span><span class="p">:</span>
-<span class="w">      </span><span class="s2">&quot;/dev/disk/by-id/virtio-${replace(alicloud_disk.volumes[&quot;${volume[&quot;instance&quot;]}-${ki}-${kj}&quot;].id, &quot;d-&quot;, &quot;&quot;)}&quot;</span>
-<span class="w">      </span><span class="err">if</span><span class="w"> </span><span class="na">key</span><span class="w"> </span><span class="o">=</span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;${volume[&quot;instance&quot;]}-${ki}-${kj}&quot;</span>
-<span class="w">    </span><span class="p">]</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div></p>
-</li>
-<li>
 <p><strong>Consolidate the instances' information</strong>. Add the following snippet to <code>infrastructure.tf</code>:
   <div class="highlight"><pre><span></span><code><span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nb">inventory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">x</span><span class="p">,</span><span class="w"> </span><span class="err">values</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">module.design.instances</span><span class="w"> </span><span class="p">:</span>
@@ -944,6 +920,13 @@ ln<span class="w"> </span>-s<span class="w"> </span>../common/<span class="o">{<
 <span class="w">        </span><span class="na">cpus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...</span>
 <span class="w">        </span><span class="na">gpus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...</span>
 <span class="w">        </span><span class="na">ram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...</span>
+<span class="w">        </span><span class="na">volumes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nf">keys</span><span class="p">(</span><span class="nv">module.design.volume_per_instance</span><span class="p">),</span><span class="w"> </span><span class="err">x</span><span class="p">)</span><span class="w"> </span><span class="p">?</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="err">for</span><span class="w"> </span><span class="err">pv_key</span><span class="p">,</span><span class="w"> </span><span class="err">pv_values</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.volumes</span><span class="p">:</span>
+<span class="w">            </span><span class="na">pv_key</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="err">for</span><span class="w"> </span><span class="err">name</span><span class="p">,</span><span class="w"> </span><span class="err">specs</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">pv_values</span><span class="p">:</span>
+<span class="w">                </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/dev/disk/by-id/virtio-${replace(alicloud_disk.volumes[&quot;${x}-${pv_key}-${name}&quot;].id, &quot;d-&quot;, &quot;&quot;)}&quot;</span><span class="p">]</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="err">if</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nv">values.tags</span><span class="p">,</span><span class="w"> </span><span class="err">pv_key</span><span class="p">)</span>
+<span class="w">          </span><span class="p">}</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
@@ -961,7 +944,6 @@ ln<span class="w"> </span>-s<span class="w"> </span>../common/<span class="o">{<
 <span class="w">  </span><span class="na">sudoer_username</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sudoer_username</span>
 <span class="w">  </span><span class="na">generate_ssh_key</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.generate_ssh_key</span>
 <span class="w">  </span><span class="na">public_keys</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">var.public_keys</span>
-<span class="w">  </span><span class="na">volume_devices</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.volume_devices</span>
 <span class="w">  </span><span class="na">domain_name</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.domain_name</span>
 <span class="w">  </span><span class="na">cluster_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.cluster_name</span>
 <span class="w">  </span><span class="na">guest_passwd</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.guest_passwd</span>
