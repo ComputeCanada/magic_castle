@@ -1816,33 +1816,10 @@ Puppet data hierarchy.
 
 ### 10.14 Expand a volume
 
-Volumes defined in the `volumes` map can be expanded at will. After their creation, you can
-increase their size in the `main.tf` then call `terraform apply` and the associated block
-device will be expanded.
-
-To benefit from the new storage, the following commands need to be ran as root
-on the instance to which the expanded volume is attached.
-
-1. Identify the physical volume path
-    ```
-    pvscan
-    ```
-2. Expand the physical volume
-    ```
-    pvresize /dev/vdxyz # replace vdxyz by the volume identify at step 1
-    ```
-3. Identify the volume group path
-    ```
-    lvdisplay
-    ```
-4. Expand the volume group using step volume group path identified
-    ```
-    lvextend -l '+100%FREE' -r /dev/project_vg/project
-    ```
-5. Resize the XFS filesystem:
-    ```
-    xfs_growfs /dev/project_vg/project
-    ```
+Volumes defined in the `volumes` map can be expanded at will. To enable online extension of
+a volume, add `enable_resize = true` to its specs map. You can then increase the size at will.
+The corresponding volume will be expanded by the cloud provider and the filesystem will be
+extended by Puppet.
 
 ## 11. Customize Magic Castle Terraform Files
 

@@ -16,7 +16,6 @@ module "configuration" {
   sudoer_username       = var.sudoer_username
   generate_ssh_key      = var.generate_ssh_key
   public_keys           = var.public_keys
-  volume_devices        = local.volume_devices
   domain_name           = module.design.domain_name
   bastion_tag           = module.design.bastion_tag
   cluster_name          = var.cluster_name
@@ -107,6 +106,7 @@ resource "openstack_blockstorage_volume_v3" "volumes" {
   size        = each.value.size
   volume_type = lookup(each.value, "type", null)
   snapshot_id = lookup(each.value, "snapshot", null)
+  enable_online_resize = lookup(each.value, "enable_resize", false)
 }
 
 resource "openstack_compute_volume_attach_v2" "attachments" {
@@ -116,17 +116,6 @@ resource "openstack_compute_volume_attach_v2" "attachments" {
 }
 
 locals {
-  volume_devices = {
-    for ki, vi in var.volumes :
-    ki => {
-      for kj, vj in vi :
-      kj => [for key, volume in module.design.volumes :
-        "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v3.volumes["${volume["instance"]}-${ki}-${kj}"].id, 0, 20)}"
-        if key == "${volume["instance"]}-${ki}-${kj}"
-      ]
-    }
-  }
-
   inventory = { for x, values in module.design.instances :
     x => {
       public_ip = contains(values.tags, "public") ? local.public_ip[x] : ""
@@ -142,6 +131,16 @@ locals {
         ])
         mig  = lookup(values, "mig", null)
       }
+      volumes = contains(keys(module.design.volume_per_instance), x) ? {
+        for pv_key, pv_values in var.volumes:
+          pv_key => {
+            for name, specs in pv_values:
+              name => merge(
+                { glob = "/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v3.volumes["${x}-${pv_key}-${name}"].id, 0, 20)}" },
+                specs,
+              )
+          } if contains(values.tags, pv_key)
+       } : {}
     }
   }
 

@@ -10,7 +10,6 @@ variable "cloud_provider" { }
 variable "cloud_region" { }
 variable "domain_name" { }
 variable "cluster_name" { }
-variable "volume_devices" { }
 variable "guest_passwd" { }
 
 variable "generate_ssh_key" { }
@@ -73,7 +72,6 @@ locals {
     terraform = {
       instances = local.inventory
       tag_ip    = local.tag_ip
-      volumes   = var.volume_devices
       data      = {
         sudoer_username = var.sudoer_username
         public_keys     = local.ssh_authorized_keys
