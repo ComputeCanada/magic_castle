@@ -28,22 +28,22 @@ runcmd:
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
   - systemctl restart sshd
   # Enable fastest mirror for distribution using dnf package manager
-  - test -f /etc/dnf/dnf.conf && (grep -qxF "fastestmirror=True" /etc/dnf/dnf.conf || echo "fastestmirror=True" >> /etc/dnf/dnf.conf)
+  - dnf config-manager --setopt=fastestmirror=True --save
   # Install package and configure kernel only if building from a "vanilla" linux image
   - |
     if ! test -f /etc/magic-castle-release; then
       # Install required packages in runcmd instead of packages to speedup configuration
       # of the admin user. This reduces the risk of Terraform timing out when trying to
       # upload the terraform_data.yaml
-      yum -y install git pciutils unzip
-      yum remove -y firewalld --exclude=iptables
+      dnf -y install git pciutils unzip
+      dnf -y remove cockpit\* firewalld --exclude=iptables
 %{ if ! skip_upgrade ~}
       # Upgrade all packages except Puppet if already installed
-      yum -y upgrade -x puppet*
+      dnf -y upgrade -x puppet*
 %{ endif ~}
       # Puppet agent configuration and install
-      yum -y install https://yum.puppet.com/puppet7-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
-      yum -y install puppet-agent-7.28.0
+      dnf -y install https://yum.puppet.com/puppet7-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
+      dnf -y install puppet-agent-7.28.0
       install -m 700 /dev/null /opt/puppetlabs/bin/postrun
       # kernel configuration
       systemctl disable kdump
@@ -53,7 +53,7 @@ runcmd:
     fi
 %{ if contains(tags, "puppet") }
 # Install Java 11 and puppetserver
-  - yum -y install java-11-openjdk-headless puppetserver-7.14.0
+  - dnf -y install java-11-openjdk-headless puppetserver-7.14.0
 # Configure puppetserver to use Java 11
   - sudo sed -i 's;\(JAVA_BIN=\).*;\1"/usr/lib/jvm/jre-11/bin/java";g' /etc/sysconfig/puppetserver
 # Configure puppet-agent to start after puppetserver when on puppetserver
