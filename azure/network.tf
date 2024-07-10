@@ -27,9 +27,9 @@ resource "azurerm_public_ip" "public_ip" {
 locals {
   fw_tags = toset([ for key, value in var.firewall_rules: value.tag ])
   fw_sets = {
-    for key, value in module.design.instances:
-      join("-", toset(value.tags)) => toset(value.tags)
-      if length(setintersection(value.tags, local.fw_tags)) > 0
+    for tags in distinct([for key, values in module.design.instances: toset(setintersection(values.tags, local.fw_tags))]):
+      join("-", toset(tags)) => toset(tags)
+      if length(tags) > 0
   }
 }
 
