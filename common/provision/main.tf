@@ -82,7 +82,7 @@ resource "terraform_data" "deploy_puppetserver_files" {
 
   provisioner "remote-exec" {
     inline = [
-      "cd tmp && sudo /usr/sbin/update_etc_puppetlabs.sh /tmp/${local.provision_folder}.zip",
+      "cd /tmp && sudo /usr/sbin/update_etc_puppetlabs.sh /tmp/${local.provision_folder}.zip",
       "rm /tmp/${local.provision_folder}.zip"
     ]
   }
