@@ -118,7 +118,7 @@ named `inventory`.
 and written in a yaml file named`terraform_data.yaml` that is uploaded on
 the Puppet server as part of the hieradata.
     ```hcl
-    resource "null_resource" "deploy_hieradata" {
+    resource "terraform_data" "deploy_puppetserver_files" {
       ...
       provisioner "file" {
         content     = var.terraform_data
