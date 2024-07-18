@@ -19,7 +19,6 @@ module "configuration" {
   config_git_url        = var.config_git_url
   config_version        = var.config_version
   sudoer_username       = var.sudoer_username
-  generate_ssh_key      = var.generate_ssh_key
   public_keys           = var.public_keys
   domain_name           = module.design.domain_name
   bastion_tag           = module.design.bastion_tag
@@ -42,7 +41,6 @@ module "provision" {
   terraform_facts = module.configuration.terraform_facts
   hieradata       = var.hieradata
   hieradata_dir   = var.hieradata_dir
-  sudoer_username = var.sudoer_username
   eyaml_key       = var.eyaml_key
   puppetfile      = var.puppetfile
   depends_on      = [aws_instance.instances, aws_eip.public_ip]

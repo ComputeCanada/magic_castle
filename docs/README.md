@@ -243,12 +243,6 @@ To learn how to start ssh-agent and add keys, refer to
 ssh-agent corresponds to the public key that will be granted access to your cluster
 (refer to [section 4.9 public_keys](#49-public_keys)).
 
-**Note 2**: If you have no wish to use ssh-agent, you can configure Magic Castle to
-generate a key pair specific to your cluster. The public key will be written in
-the sudoer `authorized_keys` and Terraform will be able to connect the cluster
-using the corresponding private key. For more information,
-refer to [section 4.17 - generate_ssh_key](#417-generate_ssh_key-optional).
-
 ## 2. Cloud Cluster Architecture Overview
 
 ![Magic Castle Service Architecture](https://docs.google.com/drawings/d/e/2PACX-1vRGFtPevjgM0_ZrkIBQY881X73eQGaXDJ1Fb48Z0DyOe61h2dYdw0urWF2pQZWUTdcNSAM868sQ2Sii/pub?w=1259&amp;h=960)
@@ -658,12 +652,6 @@ exist following modifications, the volumes will be deleted.
 
 List of SSH public keys that will have access to your cluster sudoer account.
 
-**Note 1**: You need to add the private key associated with one of the public
-keys to your local authentication agent (i.e: `ssh-add`) for Terraform to be
-able to copy Puppet configuration files with scp on the cluster. Otherwise,
-Magic Castle can create a key pair for unique to this cluster, see section
-[4.17 - generate_ssh_key](#417-generate_ssh_key-optional).
-
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 The sudoer account `authorized_keys` file will be updated by each instance's Puppet agent
 following the copy of the hieradata files.
@@ -904,27 +892,6 @@ about this requirement, refer to Magic Castle's
 [bastion tag computation code](https://github.com/ComputeCanada/magic_castle/blob/main/common/design/main.tf#L58).
 
 **Post build modification effect**: modify the cloud provider firewall rules at next `terraform apply`.
-
-### 4.17 generate_ssh_key (optional)
-
-**default_value**: `false`
-
-If true, Terraform will generate an ssh key pair that would then be used when copying file with Terraform
-file-provisioner. The public key will be added to the sudoer account authorized keys.
-
-This parameter is useful when Terraform does not have access to one of the private key associated with the
-public keys provided in `public_keys`.
-
-**Post build modification effect**:
-
-- `false` -> `true`: will cause Terraform failure.
-Terraform will try to use the newly created private SSH key
-to connect to the cluster, while the corresponding public SSH
-key is yet registered with the sudoer account.
-- `true` -> `false`: will trigger a scp of terraform_data.yaml at
-next terraform apply. The Terraform public SSH key will be removed
-from the sudoer account `authorized_keys` file at next
-Puppet agent run.
 
 ### 4.18 software_stack (optional)
 

@@ -221,7 +221,6 @@ the `module.design.instances` map.
       config_git_url        = var.config_git_url
       config_version        = var.config_version
       sudoer_username       = var.sudoer_username
-      generate_ssh_key      = var.generate_ssh_key
       public_keys           = var.public_keys
       domain_name           = module.design.domain_name
       cluster_name          = var.cluster_name
@@ -386,7 +385,6 @@ Alibaba cloud has an answer for each resource, so we will use this provider in t
       config_git_url        = var.config_git_url
       config_version        = var.config_version
       sudoer_username       = var.sudoer_username
-      generate_ssh_key      = var.generate_ssh_key
       public_keys           = var.public_keys
       domain_name           = module.design.domain_name
       cluster_name          = var.cluster_name

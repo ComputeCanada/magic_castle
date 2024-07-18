@@ -4,7 +4,6 @@ variable "terraform_data" { }
 variable "terraform_facts" { }
 variable "hieradata" { }
 variable "hieradata_dir" { }
-variable "sudoer_username" { }
 variable "tf_ssh_key" { }
 variable "eyaml_key" { }
 variable "puppetfile" { }
@@ -65,9 +64,9 @@ resource "terraform_data" "deploy_puppetserver_files" {
   connection {
     type                = "ssh"
     bastion_host        = var.bastions[keys(var.bastions)[0]].public_ip
-    bastion_user        = var.sudoer_username
+    bastion_user        = "tf"
     bastion_private_key = var.tf_ssh_key.private
-    user                = var.sudoer_username
+    user                = "tf"
     host                = each.value
     private_key         = var.tf_ssh_key.private
   }
@@ -78,18 +77,13 @@ resource "terraform_data" "deploy_puppetserver_files" {
 
   provisioner "file" {
     source      = "${path.module}/files/${local.provision_folder}.zip"
-    destination = "${local.provision_folder}.zip"
-  }
-
-  provisioner "file" {
-    content     = file("${path.module}/update_etc_puppetlabs.sh")
-    destination = "update_etc_puppetlabs.sh"
+    destination = "/tmp/${local.provision_folder}.zip"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "sudo bash update_etc_puppetlabs.sh ${local.provision_folder}.zip",
-      "rm ${local.provision_folder}.zip update_etc_puppetlabs.sh"
+      "sudo /usr/bin/update_etc_puppetlabs.sh /tmp/${local.provision_folder}.zip",
+      "rm /tmp/${local.provision_folder}.zip"
     ]
   }
 }

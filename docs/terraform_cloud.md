@@ -291,10 +291,7 @@ To enable this feature:
       4. On the right-hand-side of `public_keys = `, replace `[file("~/.ssh/id_rsa.pub")]`
       by a list of SSH public keys that will have admin access to the cluster.
       5. After the line `public_keys = ...`, add `hieradata = file("data.yaml")`.
-      6. After the line `hieradata = ...`, add `generate_ssh_key = true`. This will provide
-      Terraform Cloud SSH admin access to the cluster and it will be used to upload configuration
-      files.
-      7. Stage changes, commit and push to git repo.
+      6. Stage changes, commit and push to git repo.
 
 9. Go to your workspace in TFE, click on Actions -> Start a new run -> Plan and apply -> Start run.
 Then, click on "Confirm & Apply" and "Confirm Plan".
