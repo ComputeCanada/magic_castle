@@ -152,8 +152,8 @@ output "inventory" {
 
 output "ssh_key" {
   value = {
-    public  = try("${chomp(tls_private_key.ssh[0].public_key_openssh)} terraform@localhost", null)
-    private = try(tls_private_key.ssh[0].private_key_pem, null)
+    public  = try("${chomp(tls_private_key.ssh.public_key_openssh)} terraform@localhost", null)
+    private = try(tls_private_key.ssh.private_key_pem, null)
   }
 }
 
