@@ -9,7 +9,7 @@ users:
   - name: tf
     ssh_authorized_keys:
       - ${tf_ssh_public_key}
-    sudo: "tf ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh /tmp/*.zip"
+    sudo: "ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh /tmp/*.zip"
   - name: ${sudoer_username}
     groups: adm, wheel, systemd-journal
     homedir: /${sudoer_username}
