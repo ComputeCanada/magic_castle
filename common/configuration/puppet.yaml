@@ -7,13 +7,11 @@ mounts:
 
 users:
   - name: tf
-    homedir: /tf
     ssh_authorized_keys:
       - ${tf_ssh_public_key}
-    sudo: "ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh /tf/*.zip"
+    sudo: "ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh /localhome/tf/*.zip"
   - name: ${sudoer_username}
     groups: adm, wheel, systemd-journal
-    homedir: /${sudoer_username}
     selinux_user: unconfined_u
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
@@ -22,12 +20,9 @@ users:
 %{ endfor ~}
 
 runcmd:
-  # Verify ${sudoer_username} was created with the right homedir. If it wasn't
-  # the user with the corresponding username is entirely removed, cloud-init is
-  # cleaned and the system is rebooted. This happens when configuring from images
-  # that were customized.
-  - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
-  - restorecon -R /${sudoer_username}
+  - mkdir /localhome
+  - usermod -m -d /localhome/tf tf
+  - usermod -m -d /localhome/${sudoer_username} ${sudoer_username}
   - sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
