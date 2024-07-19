@@ -24,6 +24,8 @@ users:
 %{ endfor ~}
 
 runcmd:
+  - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
+  - restorecon -R /${sudoer_username}
   - echo -e "match User tf\n    AuthorizedKeysFile /etc/ssh/authorized_keys.%u\n    AuthenticationMethods publickey" >> /etc/ssh/sshd_config
   - sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
