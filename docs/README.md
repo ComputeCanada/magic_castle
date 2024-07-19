@@ -10,7 +10,6 @@ To use Magic Castle you will need:
 2. Authenticated access to a cloud
 3. Ability to communicate with the cloud provider API from your computer
 4. A project with operational limits meeting the requirements described in _Quotas_ subsection.
-5. ssh-agent running and tracking your SSH key
 
 ### 1.1 Terraform
 
@@ -230,18 +229,6 @@ OVH examples. To increase the limits, or request access to special
 resources like GPUs, refer to
 [OVHcloud - Increasing Public Cloud quotas](https://docs.ovh.com/ca/en/public-cloud/increase-public-cloud-quota/).
 
-### 1.5 ssh-agent
-
-To transfer configuration files, Terraform will connect to your cluster using SSH.
-To avoid providing your private key to Terraform directly, you will have to
-add it to the authentication agent, ssh-agent.
-
-To learn how to start ssh-agent and add keys, refer to
-[ssh-agent - How to configure, forwarding, protocol](https://www.ssh.com/academy/ssh/agent).
-
-**Note 1**: If you own more than one key pair, make sure the private key added to
-ssh-agent corresponds to the public key that will be granted access to your cluster
-(refer to [section 4.9 public_keys](#49-public_keys)).
 
 ## 2. Cloud Cluster Architecture Overview
 
