@@ -54,8 +54,6 @@ locals {
     tag => [for key, values in var.inventory : values.local_ip if contains(values.tags, tag)]
   }
 
-  ssh_authorized_keys = var.public_keys
-
   # add openssh public key to inventory
   inventory = { for host, values in var.inventory:
     host => merge(values, {
@@ -72,7 +70,7 @@ locals {
       tag_ip    = local.tag_ip
       data      = {
         sudoer_username = var.sudoer_username
-        public_keys     = local.ssh_authorized_keys
+        public_keys     = var.public_keys
         cluster_name    = lower(var.cluster_name)
         domain_name     = var.domain_name
         guest_passwd    = local.guest_passwd
@@ -100,7 +98,7 @@ locals {
         puppetservers         = local.puppetservers,
         puppetserver_password = local.puppet_passwd,
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = local.ssh_authorized_keys
+        ssh_authorized_keys   = var.public_keys
         tf_ssh_public_key     = tls_private_key.ssh.public_key_openssh
         # If there is no bastion, the terraform data has to be packed with the user_data of the puppetserver.
         # We do not packed it systematically because it increases the user-data size to a value that can be
