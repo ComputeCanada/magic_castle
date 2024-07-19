@@ -7,9 +7,11 @@ mounts:
 
 users:
   - name: tf
-    ssh_authorized_keys:
-      - ${tf_ssh_public_key}
-    sudo: "ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh /localhome/tf/*.zip"
+    no_create_home: true
+    no_create_group: true
+%{ if contains(tags, "puppet") }
+    sudo: "ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh /tmp/*.zip"
+%{ endif ~}
   - name: ${sudoer_username}
     groups: adm, wheel, systemd-journal
     selinux_user: unconfined_u
@@ -20,8 +22,9 @@ users:
 %{ endfor ~}
 
 runcmd:
+  - echo -e "match User tf\n    AuthorizedKeysFile /etc/ssh/authorized_keys.%u\n    AuthenticationMethods publickey" >> /etc/ssh/sshd_config
   - mkdir /localhome
-  - usermod -m -d /localhome/tf tf
+  - chcon -t home_root_t /localhome
   - usermod -m -d /localhome/${sudoer_username} ${sudoer_username}
   - sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
@@ -126,6 +129,9 @@ runcmd:
   - test -f /etc/magic-castle-release && systemctl start puppet || true
 
 write_files:
+  - content: ${tf_ssh_public_key}
+    path: /etc/ssh/authorized_keys.tf
+    permissions: "0644"
   - content: |
       facts : {
         blocklist : [
