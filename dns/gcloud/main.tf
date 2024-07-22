@@ -1,7 +1,3 @@
-provider "acme" {
-  server_url = "https://acme-v02.api.letsencrypt.org/directory"
-}
-
 data "google_dns_managed_zone" "domain" {
   name    = var.zone_name
   project = var.project
