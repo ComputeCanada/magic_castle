@@ -35,21 +35,6 @@ resource "cloudflare_record" "records" {
   }
 }
 
-module "acme" {
-  count            = var.issue_wildcard_cert ? 1 : 0
-  source           = "../acme"
-  dns_provider     = "cloudflare"
-  name             = lower(var.name)
-  domain           = var.domain
-  email            = var.email
-  sudoer_username  = var.sudoer_username
-  bastions         = var.bastions
-  public_instances = var.public_instances
-  ssh_private_key  = var.ssh_private_key
-  ssl_tags         = var.ssl_tags
-  acme_key_pem     = var.acme_key_pem
-}
-
 output "hostnames" {
   value = distinct(compact([for record in module.record_generator.records : join(".", [record.name, var.domain]) if record.type == "A" ]))
 }

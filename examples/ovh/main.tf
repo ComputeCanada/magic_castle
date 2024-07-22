@@ -56,10 +56,7 @@ output "public_ip" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
 #   name             = module.ovh.cluster_name
 #   domain           = module.ovh.domain
-#   bastions         = module.ovh.bastions
 #   public_instances = module.ovh.public_instances
-#   ssh_private_key  = module.ovh.ssh_private_key
-#   sudoer_username  = module.ovh.accounts.sudoer.username
 # }
 
 ## Uncomment to register your domain name with Google Cloud
@@ -69,10 +66,7 @@ output "public_ip" {
 #   zone_name        = "you-zone-name"
 #   name             = module.ovh.cluster_name
 #   domain           = module.ovh.domain
-#   bastions         = module.ovh.bastions
 #   public_instances = module.ovh.public_instances
-#   ssh_private_key  = module.ovh.ssh_private_key
-#   sudoer_username  = module.ovh.accounts.sudoer.username
 # }
 
 # output "hostnames" {
