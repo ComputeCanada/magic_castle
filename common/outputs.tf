@@ -37,8 +37,3 @@ output "accounts" {
     }
   }
 }
-
-output "ssh_private_key" {
-  value     = module.configuration.ssh_key.private
-  sensitive = true
-}
