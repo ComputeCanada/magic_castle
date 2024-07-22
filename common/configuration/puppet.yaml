@@ -130,7 +130,7 @@ runcmd:
   - test -f /etc/magic-castle-release && systemctl start puppet || true
 
 write_files:
-  - content: restrict ${tf_ssh_public_key}
+  - content: restrict,agent-forwarding ${tf_ssh_public_key}
     path: /etc/ssh/authorized_keys.tf
     permissions: "0644"
   - content: |
