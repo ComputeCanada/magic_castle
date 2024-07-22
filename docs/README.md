@@ -1516,25 +1516,6 @@ then call :
 terraform apply
 ```
 
-### 10.10 Generate a new SSL certificate
-
-The SSL certificate configured by the dns module is valid for [90 days](https://letsencrypt.org/docs/faq/#what-is-the-lifetime-for-let-s-encrypt-certificates-for-how-long-are-they-valid).
-If you plan to use your cluster for more than 90 days, you will need to generate a
-new SSL certificate before the one installed on the cluster expires.
-
-To generate a new certificate, use the following command on your computer:
-```
-terraform taint 'module.dns.module.acme.acme_certificate.certificate'
-```
-
-Then apply the modification:
-```
-terraform apply
-```
-
-The apply generates a new certificate, uploads it on the nodes that need it
-and reloads the reverse proxy if it is configured.
-
 ### 10.11 Set SELinux in permissive mode
 
 SELinux can be set in permissive mode to debug new workflows that would be
