@@ -26,7 +26,7 @@ users:
 runcmd:
   - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
   - restorecon -R /${sudoer_username}
-  - echo -e "match User tf\n    AuthorizedKeysFile /etc/ssh/authorized_keys.%u\n    AuthenticationMethods publickey" >> /etc/ssh/sshd_config
+  - echo -e "match User tf\n\tAuthorizedKeysFile /etc/ssh/authorized_keys.%u\n\tAuthenticationMethods publickey" >> /etc/ssh/sshd_config
   - sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
@@ -130,7 +130,7 @@ runcmd:
   - test -f /etc/magic-castle-release && systemctl start puppet || true
 
 write_files:
-  - content: ${tf_ssh_public_key}
+  - content: restrict ${tf_ssh_public_key}
     path: /etc/ssh/authorized_keys.tf
     permissions: "0644"
   - content: |
