@@ -15,9 +15,10 @@ module "azure" {
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
 
-  # To list the available image versions you can use the Azure CLI with, for example,
+  # Using the AZure CLI, you can list the image versions that are available to use. For example,
   #   az vm image list --location eastus --publisher almalinux --offer almalinux-x86_64 --sku 9-gen2 --all --output table
   #   az vm image list --location eastus --publisher almalinux --offer almalinux-arm --sku 9-arm-gen2 --all --output table
+  # (Note: available versions may be location specific!)
   image        = {
     publisher = "almalinux",
     offer     = "almalinux-x86_64",
