@@ -53,10 +53,7 @@ output "public_ip" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
 #   name             = module.gcp.cluster_name
 #   domain           = module.gcp.domain
-#   bastions         = module.gcp.bastions
 #   public_instances = module.gcp.public_instances
-#   ssh_private_key  = module.gcp.ssh_private_key
-#   sudoer_username  = module.gcp.accounts.sudoer.username
 # }
 
 ## Uncomment to register your domain name with Google Cloud
@@ -66,10 +63,7 @@ output "public_ip" {
 #   zone_name        = "you-zone-name"
 #   name             = module.gcp.cluster_name
 #   domain           = module.gcp.domain
-#   bastions         = module.gcp.bastions
 #   public_instances = module.gcp.public_instances
-#   ssh_private_key  = module.gcp.ssh_private_key
-#   sudoer_username  = module.gcp.accounts.sudoer.username
 # }
 
 # output "hostnames" {

@@ -35,10 +35,7 @@ output "sudoer" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
-#   bastions         = module.openstack.bastions
 #   public_instances = module.openstack.public_instances
-#   ssh_private_key  = module.openstack.ssh_private_key
-#   sudoer_username  = module.openstack.accounts.sudoer.username
 # }
 
 ## Uncomment to register your domain name with Google Cloud
@@ -48,10 +45,7 @@ output "sudoer" {
 #   zone_name        = "you-zone-name"
 #   name             = module.openstack.cluster_name
 #   domain           = module.openstack.domain
-#   bastions         = module.openstack.bastions
 #   public_instances = module.openstack.public_instances
-#   ssh_private_key  = module.openstack.ssh_private_key
-#   sudoer_username  = module.openstack.accounts.sudoer.username
 # }
 
 # output "hostnames" {

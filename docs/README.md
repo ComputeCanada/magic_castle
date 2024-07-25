@@ -10,7 +10,6 @@ To use Magic Castle you will need:
 2. Authenticated access to a cloud
 3. Ability to communicate with the cloud provider API from your computer
 4. A project with operational limits meeting the requirements described in _Quotas_ subsection.
-5. ssh-agent running and tracking your SSH key
 
 ### 1.1 Terraform
 
@@ -230,24 +229,6 @@ OVH examples. To increase the limits, or request access to special
 resources like GPUs, refer to
 [OVHcloud - Increasing Public Cloud quotas](https://docs.ovh.com/ca/en/public-cloud/increase-public-cloud-quota/).
 
-### 1.5 ssh-agent
-
-To transfer configuration files, Terraform will connect to your cluster using SSH.
-To avoid providing your private key to Terraform directly, you will have to
-add it to the authentication agent, ssh-agent.
-
-To learn how to start ssh-agent and add keys, refer to
-[ssh-agent - How to configure, forwarding, protocol](https://www.ssh.com/academy/ssh/agent).
-
-**Note 1**: If you own more than one key pair, make sure the private key added to
-ssh-agent corresponds to the public key that will be granted access to your cluster
-(refer to [section 4.9 public_keys](#49-public_keys)).
-
-**Note 2**: If you have no wish to use ssh-agent, you can configure Magic Castle to
-generate a key pair specific to your cluster. The public key will be written in
-the sudoer `authorized_keys` and Terraform will be able to connect the cluster
-using the corresponding private key. For more information,
-refer to [section 4.17 - generate_ssh_key](#417-generate_ssh_key-optional).
 
 ## 2. Cloud Cluster Architecture Overview
 
@@ -383,7 +364,7 @@ Defines
 Optional modules following the current module in the example `main.tf` can
 be used to register DNS records in relation to your cluster if the
 DNS zone of this domain is administered by one of the supported providers.
-Refer to section [6. DNS Configuration and SSL Certificates](#6-dns-configuration-and-wildcard-ssl-certificate)
+Refer to section [6. DNS Configuration](#6-dns-configuration)
 for more details.
 
 **Requirements**:
@@ -518,7 +499,6 @@ Terraform tags:
 - `spot`: identify instances that are to be spawned as spot/preemptible instances.
 This tag is supported in AWS, Azure and GCP. It is ignored by OpenStack and OVH.
 - `efa`: attach an Elastic Fabric Adapter network interface to the instance. This tag is supported in AWS.
-- `ssl`: identify instances that receive a copy of the SSL wildcard certificate for the domain
 
 Puppet tags expected by the [puppet-magic_castle](https://www.github.com/ComputeCanada/puppet-magic_castle) environment.
 
@@ -657,12 +637,6 @@ exist following modifications, the volumes will be deleted.
 ### 4.9 public_keys
 
 List of SSH public keys that will have access to your cluster sudoer account.
-
-**Note 1**: You need to add the private key associated with one of the public
-keys to your local authentication agent (i.e: `ssh-add`) for Terraform to be
-able to copy Puppet configuration files with scp on the cluster. Otherwise,
-Magic Castle can create a key pair for unique to this cluster, see section
-[4.17 - generate_ssh_key](#417-generate_ssh_key-optional).
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 The sudoer account `authorized_keys` file will be updated by each instance's Puppet agent
@@ -905,27 +879,6 @@ about this requirement, refer to Magic Castle's
 
 **Post build modification effect**: modify the cloud provider firewall rules at next `terraform apply`.
 
-### 4.17 generate_ssh_key (optional)
-
-**default_value**: `false`
-
-If true, Terraform will generate an ssh key pair that would then be used when copying file with Terraform
-file-provisioner. The public key will be added to the sudoer account authorized keys.
-
-This parameter is useful when Terraform does not have access to one of the private key associated with the
-public keys provided in `public_keys`.
-
-**Post build modification effect**:
-
-- `false` -> `true`: will cause Terraform failure.
-Terraform will try to use the newly created private SSH key
-to connect to the cluster, while the corresponding public SSH
-key is yet registered with the sudoer account.
-- `true` -> `false`: will trigger a scp of terraform_data.yaml at
-next terraform apply. The Terraform public SSH key will be removed
-from the sudoer account `authorized_keys` file at next
-Puppet agent run.
-
 ### 4.18 software_stack (optional)
 
 **default_value**: `"alliance"`
@@ -1122,7 +1075,7 @@ find it automatically. Can be used to force a v4 subnet when both v4 and v6 exis
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
-## 6. DNS Configuration and Wildcard SSL Certificate
+## 6. DNS Configuration
 
 Some functionalities in Magic Castle require the registration of DNS records under the
 [cluster name](#44-cluster_name) in the selected [domain](#45-domain). This includes
@@ -1134,12 +1087,6 @@ DNS records created and tracked by Magic Castle.
 
 If your DNS provider is not supported, you can manually create the records.
 Refer to the subsection [6.3](#63-unsupported-providers) for more details.
-
-Optionally, Magic Castle can issue with [Let's encrypt DNS-01 challenge](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge)
-a wildcard certificate of the form `*.${cluster_name}.${domain_name}`. Refer to
-the subsection [6.4](#64-wildcard-ssl-certificate) for more information. If no wildcard certificate is issued,
-the reverse proxy server Caddy will automatically issue one certificate per virtual
-host.
 
 ### 6.1 Cloudflare
 
@@ -1191,93 +1138,6 @@ if not OpenStack (i.e: `aws`, `gcp`, etc.).
 
 The file will be created after the `terraform apply` in the same folder as your `main.tf`
 and will be named as `${name}.${domain}.txt`.
-
-### 6.4 Wildcard SSL Certificate
-
-**Requirement**: A private key associated with one of the
-[public keys](#49-public_keys) needs to be tracked (i.e: `ssh-add`) by the local
-[authentication agent](https://www.ssh.com/ssh/agent) (i.e: `ssh-agent`).
-This module uses the ssh-agent tracked SSH keys to authenticate and
-to copy SSL certificate files to the proxy nodes after their creation.
-
-To issue a wildcard SSL certificate with Magic Castle, modify the dns module call
-in your `main.tf` like this:
-
-1. add the input: `issue_wildcard_cert = true`
-2. add the input: `email = "replace.by@your.email"`
-
-#### 6.4.1 ACME Account Private Key
-
-To create the wildcard SSL certificate associated with the domain name, Magic Castle
-creates a private key and register a new ACME account with this key. This account
-registration process is done for each new cluster. However, ACME limits the number of
-new accounts that can be created to a maximum of 10 per IP Address per 3 hours.
-
-If you plan to create more than 10 clusters per 3 hours, we recommend registering an
-ACME account first and then provide its private key in PEM format to Magic Castle DNS
-module, using the `acme_key_pem` variable.
-
-##### How to Generate an ACME Account Private Key
-
-In a separate folder, create a file with the following content
-```hcl
-terraform {
-  required_version = ">= 1.2.1"
-  required_providers {
-    acme = {
-      source = "vancluever/acme"
-    }
-    tls = {
-      source = "hashicorp/tls"
-    }
-  }
-}
-
-variable "email" {}
-
-provider "acme" {
-  server_url = "https://acme-v02.api.letsencrypt.org/directory"
-}
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-}
-resource "acme_registration" "reg" {
-  account_key_pem = tls_private_key.private_key.private_key_pem
-  email_address   = var.email
-}
-resource "local_file" "acme_key_pem" {
-    content     = tls_private_key.private_key.private_key_pem
-    filename = "acme_key.pem"
-}
-```
-
-In the same folder, enter the following commands and follow the instructions:
-```
-terraform init
-terraform apply
-```
-
-Once done, copy the file named `acme_key.pem` somewhere safe, and where you will be able
-to refer to later on. Then, when the time comes to create a new cluster, add the following
-variable to the DNS module in your `main.tf`:
-```hcl
-acme_key_pem = file("path/to/your/acme_key.pem")
-```
-
-#### 6.4.2 Issuing the wildcard SSL certificate manually
-
-Magic Castle generates with Let's Encrypt a wildcard certificate for `*.cluster_name.domain`.
-You can use [certbot](https://certbot.eff.org/docs/using.html#dns-plugins) DNS-01 challenge
-plugin to generate the wildcard certificate.
-
-You will then need to copy the certificate files in the proper location on each proxy node.
-The reverse proxy configuration expects the following files to exist:
-
-- `/etc/letsencrypt/live/${domain_name}/fullchain.pem`
-- `/etc/letsencrypt/live/${domain_name}/privkey.pem`
-- `/etc/letsencrypt/live/${domain_name}/chain.pem`
-
-Refer to the [reverse proxy configuration](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/site/profile/manifests/reverse_proxy.pp) for more details.
 
 ### 6.5 SSHFP records and DNSSEC
 
@@ -1655,25 +1515,6 @@ then call :
 ```
 terraform apply
 ```
-
-### 10.10 Generate a new SSL certificate
-
-The SSL certificate configured by the dns module is valid for [90 days](https://letsencrypt.org/docs/faq/#what-is-the-lifetime-for-let-s-encrypt-certificates-for-how-long-are-they-valid).
-If you plan to use your cluster for more than 90 days, you will need to generate a
-new SSL certificate before the one installed on the cluster expires.
-
-To generate a new certificate, use the following command on your computer:
-```
-terraform taint 'module.dns.module.acme.acme_certificate.certificate'
-```
-
-Then apply the modification:
-```
-terraform apply
-```
-
-The apply generates a new certificate, uploads it on the nodes that need it
-and reloads the reverse proxy if it is configured.
 
 ### 10.11 Set SELinux in permissive mode
 

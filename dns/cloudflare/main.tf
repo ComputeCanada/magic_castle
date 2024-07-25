@@ -1,7 +1,3 @@
-provider "acme" {
-  server_url = "https://acme-v02.api.letsencrypt.org/directory"
-}
-
 data "cloudflare_zones" "domain" {
   filter {
     name   = var.domain
@@ -33,21 +29,6 @@ resource "cloudflare_record" "records" {
       type        = data.value["type"]
     }
   }
-}
-
-module "acme" {
-  count            = var.issue_wildcard_cert ? 1 : 0
-  source           = "../acme"
-  dns_provider     = "cloudflare"
-  name             = lower(var.name)
-  domain           = var.domain
-  email            = var.email
-  sudoer_username  = var.sudoer_username
-  bastions         = var.bastions
-  public_instances = var.public_instances
-  ssh_private_key  = var.ssh_private_key
-  ssl_tags         = var.ssl_tags
-  acme_key_pem     = var.acme_key_pem
 }
 
 output "hostnames" {
