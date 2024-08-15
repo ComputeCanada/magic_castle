@@ -11,8 +11,8 @@ data "cloudflare_zones" "domain" {
 }
 
 module "record_generator" {
-  source         = "../record_generator"
-  name           = lower(var.name)
+  source           = "../record_generator"
+  name             = lower(var.name)
   public_instances = var.public_instances
   vhosts           = var.vhosts
   domain_tag       = var.domain_tag
@@ -23,7 +23,7 @@ resource "cloudflare_record" "records" {
   count   = length(module.record_generator.records)
   zone_id = data.cloudflare_zones.domain.zones[0].id
   name    = module.record_generator.records[count.index].name
-  value   = module.record_generator.records[count.index].value
+  content = module.record_generator.records[count.index].value
   type    = module.record_generator.records[count.index].type
   dynamic "data" {
     for_each = module.record_generator.records[count.index].data != null ? [module.record_generator.records[count.index].data] : []
@@ -51,5 +51,5 @@ module "acme" {
 }
 
 output "hostnames" {
-  value = distinct(compact([for record in module.record_generator.records : join(".", [record.name, var.domain]) if record.type == "A" ]))
+  value = distinct(compact([for record in module.record_generator.records : join(".", [record.name, var.domain]) if record.type == "A"]))
 }
