@@ -1032,9 +1032,6 @@ restricted to the minimum required for autoscale purpose.
 <li>On the right-hand-side of <code>public_keys =</code>, replace <code>[file("~/.ssh/id_rsa.pub")]</code>
   by a list of SSH public keys that will have admin access to the cluster.</li>
 <li>After the line <code>public_keys = ...</code>, add <code>hieradata = file("data.yaml")</code>.</li>
-<li>After the line <code>hieradata = ...</code>, add <code>generate_ssh_key = true</code>. This will provide
-  Terraform Cloud SSH admin access to the cluster and it will be used to upload configuration
-  files.</li>
 <li>Stage changes, commit and push to git repo.</li>
 </ol>
 </li>
