@@ -23,7 +23,6 @@ Users can use their own fork. See the [developer documentation](/docs/developers
 - [`magic_castle:/openstack/infrastructure.tf`](/openstack/infrastructure.tf)
 - [`magic_castle:/common/provision/main.tf`](/common/provision/main.tf)
 - [`magic_castle:/dns/cloudflare/main.tf`](/dns/cloudflare/main.tf)
-- [`magic_castle:/dns/acme/main.tf`](/dns/acme/main.tf)
 
 ## 2. Configuration with cloud-init
 
