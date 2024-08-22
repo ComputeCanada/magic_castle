@@ -133,12 +133,6 @@ variable "firewall_rules" {
   description = "Map of ingress firewall rules. Rules are defined as object({from_port, to_port, tag, cidr, ethertype, protocol})."
 }
 
-variable "generate_ssh_key" {
-  type        = bool
-  default     = false
-  description = "If set to true, Terraform will generate an ssh key pair to connect to the cluster. Default: false"
-}
-
 variable "software_stack" {
   type        = string
   default     = "alliance"

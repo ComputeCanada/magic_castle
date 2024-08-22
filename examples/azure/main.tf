@@ -69,10 +69,7 @@ output "public_ip" {
 #   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
 #   name             = module.azure.cluster_name
 #   domain           = module.azure.domain
-#   bastions         = module.azure.bastions
 #   public_instances = module.azure.public_instances
-#   ssh_private_key  = module.azure.ssh_private_key
-#   sudoer_username  = module.azure.accounts.sudoer.username
 # }
 
 ## Uncomment to register your domain name with Google Cloud
@@ -82,10 +79,7 @@ output "public_ip" {
 #   zone_name        = "you-zone-name"
 #   name             = module.azure.cluster_name
 #   domain           = module.azure.domain
-#   bastions         = module.azure.bastions
 #   public_instances = module.azure.public_instances
-#   ssh_private_key  = module.azure.ssh_private_key
-#   sudoer_username  = module.azure.accounts.sudoer.username
 # }
 
 # output "hostnames" {
