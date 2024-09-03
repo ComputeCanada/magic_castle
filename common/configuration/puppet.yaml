@@ -8,7 +8,7 @@ mounts:
 users:
   - name: tf
     no_create_home: true
-    no_create_group: true
+    no_user_group: true
     homedir: /tmp
 %{ if contains(tags, "puppet") }
     sudo: "ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh *.zip"
