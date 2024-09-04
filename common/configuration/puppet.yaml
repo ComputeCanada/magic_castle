@@ -47,7 +47,7 @@ runcmd:
 %{ endif ~}
       # Puppet agent configuration and install
       dnf -y install https://yum.puppet.com/puppet7-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
-      dnf -y install puppet-agent-7.28.0
+      dnf -y install puppet-agent-7.32.1
       install -m 700 /dev/null /opt/puppetlabs/bin/postrun
       # kernel configuration
       systemctl disable kdump
@@ -56,7 +56,7 @@ runcmd:
     fi
 %{ if contains(tags, "puppet") }
 # Install Java 11 and puppetserver
-  - dnf -y install java-11-openjdk-headless puppetserver-7.14.0
+  - dnf -y install java-11-openjdk-headless puppetserver-7.17.2
 # Configure puppetserver to use Java 11
   - sudo sed -i 's;\(JAVA_BIN=\).*;\1"/usr/lib/jvm/jre-11/bin/java";g' /etc/sysconfig/puppetserver
 # Configure puppet-agent to start after puppetserver when on puppetserver
@@ -64,7 +64,7 @@ runcmd:
   - systemctl daemon-reload
   - systemctl enable puppetserver
 # Install gem dependencies
-  - "/opt/puppetlabs/puppet/bin/gem install autosign:1.0.1 faraday:2.8.1 faraday-net_http:3.0.2 puppet_forge:4.1.0 r10k:4.0.1"
+  - "/opt/puppetlabs/puppet/bin/gem install autosign:1.0.1 faraday:2.8.1 faraday-net_http:3.0.2 minitar:0.12.1 puppet_forge:5.0.4 r10k:4.1.0"
   - curl -L -o /opt/puppetlabs/puppet/lib/ruby/vendor_gems/gems/hiera-eyaml-3.4.0/lib/hiera/backend/eyaml/encryptors/pkcs7.rb https://raw.githubusercontent.com/MagicCastle/hiera-eyaml/be1b85f508b3c1a2ce72ac85d093666f2eafb561/lib/hiera/backend/eyaml/encryptors/pkcs7.rb
 # Enable autosign with password
   - chgrp puppet /etc/autosign.conf
