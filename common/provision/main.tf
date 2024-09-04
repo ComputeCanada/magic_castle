@@ -63,6 +63,7 @@ resource "terraform_data" "deploy_puppetserver_files" {
 
   connection {
     type                = "ssh"
+    agent               = false
     bastion_host        = var.bastions[keys(var.bastions)[0]].public_ip
     bastion_user        = "tf"
     bastion_private_key = var.tf_ssh_key.private
