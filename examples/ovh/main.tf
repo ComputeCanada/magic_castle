@@ -14,7 +14,7 @@ module "ovh" {
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
-  image        = "Rocky Linux 8"
+  image        = "Rocky Linux 9"
 
   instances = {
     mgmt   = { type = "b2-7", tags = ["puppet", "mgmt", "nfs"], count = 1 }

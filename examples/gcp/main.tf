@@ -14,7 +14,7 @@ module "gcp" {
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
-  image        = "rocky-linux-8-optimized-gcp"
+  image        = "rocky-linux-9-optimized-gcp"
 
   instances = {
     mgmt   = { type = "n2-standard-2", tags = ["puppet", "mgmt", "nfs"], count = 1 }

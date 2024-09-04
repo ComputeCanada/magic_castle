@@ -9,7 +9,7 @@ module "openstack" {
 
   cluster_name = "odfe-cluster"
   domain       = "computecanada.dev"
-  image        = "Rocky-8.6-x64-2022-07"
+  image        = "Rocky-9"
 
   instances = {
     puppet = { type = "p2-3.75gb", tags = ["puppet"] }
