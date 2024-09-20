@@ -89,7 +89,7 @@ variable "hieradata" {
   default     = "---"
   description = "String formatted as YAML defining hiera key-value pairs to be included in the puppet environment"
   validation {
-    condition     = can(yamldecode(var.hieradata))
+    condition     = var.hieradata == "" || can(yamldecode(var.hieradata))
     error_message = "Hieradata needs to be valid YAML"
   }
 }
