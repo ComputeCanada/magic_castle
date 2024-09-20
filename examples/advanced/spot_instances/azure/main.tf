@@ -9,10 +9,16 @@ module "azure" {
 
   cluster_name = "spot-azure"
   domain       = "calculquebec.cloud"
+
+  # Using the AZure CLI, you can list the image versions that are available to use. For example,
+  #   az vm image list --location eastus --publisher almalinux --offer almalinux-x86_64 --sku 9-gen2 --all --output table
+  #   az vm image list --location eastus --publisher almalinux --offer almalinux-arm --sku 9-arm-gen2 --all --output table
+  # (Note: available versions may be location specific!)
   image        = {
-    publisher = "OpenLogic",
-    offer     = "CentOS-CI",
-    sku       = "7-CI"
+    publisher = "almalinux",
+    offer     = "almalinux-x86_64",
+    sku       = "9-gen2",
+    version   = "9.3.2023111602"
   }
 
   instances = {

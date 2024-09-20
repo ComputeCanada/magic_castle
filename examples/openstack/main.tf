@@ -14,7 +14,7 @@ module "openstack" {
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
-  image        = "Rocky-8"
+  image        = "Rocky-9"
 
   instances = {
     mgmt   = { type = "p4-6gb", tags = ["puppet", "mgmt", "nfs"], count = 1 }

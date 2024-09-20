@@ -14,9 +14,9 @@ module "aws" {
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
-  # Rocky Linux 8 -  ca-central-1
-  # https://rockylinux.org/cloud-images
-  image        = "ami-09ada793eea1559e6"
+  # Rocky Linux 9.4 -  ca-central-1
+  # https://rockylinux.org/download
+  image        = "ami-07fbc9d69b1aa88b9"
 
   instances = {
     mgmt  = { type = "t3.large",  count = 1, tags = ["mgmt", "puppet", "nfs"] },

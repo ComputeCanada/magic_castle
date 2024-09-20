@@ -9,7 +9,7 @@ module "gcp" {
 
   cluster_name = "spot-gcp"
   domain       = "calculquebec.cloud"
-  image        = "rocky-linux-8"
+  image        = "rocky-linux-9"
   nb_users     = 10
 
   instances = {
