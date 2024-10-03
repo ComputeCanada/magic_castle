@@ -678,7 +678,7 @@ randomly generated one.
 **Requirement**: Minimum length **8 characters**.
 
 The password can be provided in a PKCS7 encrypted form. Refer to sub-section
-[4.14 eyaml_key](#414-eyaml_private-optional)
+[4.15 eyaml_key](#415-eyaml_key-optional)
 for instructions on how to encrypt the password.
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
@@ -776,7 +776,7 @@ For more information on hieradata, refer to section [4.13 hieradata (optional)](
 Each instance's Puppet agent will be reloaded following the copy of the hieradata files.
 
 
-### 4.15 eyaml_private (optional)
+### 4.15 eyaml_key (optional)
 
 **default value**: empty string
 
