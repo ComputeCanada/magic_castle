@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.35">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.35f28582.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.8c3ca2c6.min.css">
       
       
 
@@ -711,13 +711,13 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#415-eyaml_private-optional" class="md-nav__link">
+  <a href="#415-eyaml_key-optional" class="md-nav__link">
     <span class="md-ellipsis">
-      4.15 eyaml_private (optional)
+      4.15 eyaml_key (optional)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="4.15 eyaml_private (optional)">
+    <nav class="md-nav" aria-label="4.15 eyaml_key (optional)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1970,13 +1970,13 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#415-eyaml_private-optional" class="md-nav__link">
+  <a href="#415-eyaml_key-optional" class="md-nav__link">
     <span class="md-ellipsis">
-      4.15 eyaml_private (optional)
+      4.15 eyaml_key (optional)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="4.15 eyaml_private (optional)">
+    <nav class="md-nav" aria-label="4.15 eyaml_key (optional)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3204,7 +3204,7 @@ already created will be left intact.</p>
 randomly generated one.</p>
 <p><strong>Requirement</strong>: Minimum length <strong>8 characters</strong>.</p>
 <p>The password can be provided in a PKCS7 encrypted form. Refer to sub-section
-<a href="#414-eyaml_private-optional">4.14 eyaml_key</a>
+<a href="#415-eyaml_key-optional">4.15 eyaml_key</a>
 for instructions on how to encrypt the password.</p>
 <p><strong>Post build modification effect</strong>: trigger scp of hieradata files at next <code>terraform apply</code>.
 Password of all guest accounts will be changed to match the new password value.</p>
@@ -3280,7 +3280,7 @@ The hierarchy is copied on the Puppet server in <code>/etc/puppetlabs/data/user_
 <p>For more information on hieradata, refer to section <a href="#413-hieradata-optional">4.13 hieradata (optional)</a>.</p>
 <p><strong>Post build modification effect</strong>: trigger scp of hieradata files at next <code>terraform apply</code>.
 Each instance's Puppet agent will be reloaded following the copy of the hieradata files.</p>
-<h3 id="415-eyaml_private-optional">4.15 eyaml_private (optional)</h3>
+<h3 id="415-eyaml_key-optional">4.15 eyaml_key (optional)</h3>
 <p><strong>default value</strong>: empty string</p>
 <p>Defines the private RSA key required to decrypt the values encrypted with hiera-eyaml PKCS7.
 This key will be copied on the Puppet server.</p>
@@ -3975,7 +3975,7 @@ provider (e.g: <code>gcp</code>, <code>openstack</code>, <code>aws</code>, etc.)
     <script id="__config" type="application/json">{"base": ".", "features": ["content.code.copy"], "search": "assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="assets/javascripts/bundle.56dfad97.min.js"></script>
+      <script src="assets/javascripts/bundle.525ec568.min.js"></script>
       
     
   </body>
