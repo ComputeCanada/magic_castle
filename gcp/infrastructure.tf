@@ -166,10 +166,11 @@ locals {
       prefix    = values.prefix
       tags      = values.tags
       specs = {
-        cpus = data.external.machine_type[values["prefix"]].result["vcpus"]
-        ram  = data.external.machine_type[values["prefix"]].result["ram"]
-        gpus = try(data.external.machine_type[values["prefix"]].result["gpus"], lookup(values, "gpu_count", 0))
-        mig  = lookup(values, "mig", null)
+        cpus   = data.external.machine_type[values["prefix"]].result["vcpus"]
+        ram    = data.external.machine_type[values["prefix"]].result["ram"]
+        gpus   = try(data.external.machine_type[values["prefix"]].result["gpus"], lookup(values, "gpu_count", 0))
+        mig    = lookup(values, "mig", null)
+        shard  = lookup(values, "shard", null)
       }
       volumes = contains(keys(module.design.volume_per_instance), x) ? {
         for pv_key, pv_values in var.volumes:
