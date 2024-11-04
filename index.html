@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.43">
     
     
       
@@ -3097,6 +3097,7 @@ the operating system and service software
 </code></pre></div>
     This is only functional with <a href="https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-gpus">MIG supported GPUs</a>,
     and with x86-64 processors (see <a href="https://github.com/NVIDIA/mig-parted/issues/30">NVIDIA/mig-parted issue #30</a>).</li>
+<li><code>shard</code>: total number of <a href="https://slurm.schedmd.com/gres.html#Sharding">Sharding</a> on the node. Sharding allows sharing the same GPU on multiple jobs. The total number of shards is evenly distributed across all GPUs on the node.</li>
 </ol>
 <p>For some cloud providers, it possible to define additional attributes.
 The following sections present the available attributes per provider.</p>
