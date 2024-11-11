@@ -134,7 +134,7 @@ resource "aws_spot_instance_request" "spot_instances" {
   ebs_optimized = true
   root_block_device {
     volume_type = lookup(each.value, "disk_type", "gp2")
-    volume_size = lookup(each.value, "disk_size", 10)
+    volume_size = lookup(each.value, "disk_size", 20)
   }
 
   tags = {
