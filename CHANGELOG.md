@@ -3,6 +3,36 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [14.0.0] UNRELEASED
+
+### Added
+- Added GPU sharding (PR #289)
+- Added ability to define a hieradata per prefix (PR #291)
+- Added user tf in puppet.yaml (#316)
+
+### Changed
+
+- Refactored SSHFP record generation removing hardcoded algorithm names (PR #301)
+- Fixed owner of puppet data when there is no bastion (PR #302)
+- Refactored variable Puppetfile to include it in the remove-exec provisioner (PR #306)
+- Moved cloud facts in user-data (PR #307)
+- Hostkeys are now chomped (PR #308)
+- Dropped support for CentOS 7 (PR #309)
+- Moved volumes in instance specs (PR #275)
+- Fixed #313 "Terraform can't create more than one instance with the "login" tag in Azure" (PR #314)
+- Updated cloudflare record to support >=v4.39.0 (PR #318)
+- Fixed terraform lock file in release (PR #320)
+- Bumped puppet and gem versions (PR #322)
+- Moved to Rocky / Alma Linux 9 in examples (PR #323)
+- Empty string var.hieradata is now allowed
+- Increased AWS instance volume size to 20gb
+- Fixed /etc permissions issue with Rocky 9.4
+- Defined a value for sku in azurerm_public_ip (PR #332)
+
+### Removed
+
+- Removed generation of private_key.pkcs7.pem from puppet.yaml (Issue #260, PR #303)
+
 ## [13.5.0] 2024-04-11
 
 ### Added
@@ -11,7 +41,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Rendering of documentation with MkDoc (PR #290)
 - Material for MkDocs to render documentation
 
-## Removed
+### Removed
 
 - Removed install of EFA driver from cloud-init (PR #293)
 
