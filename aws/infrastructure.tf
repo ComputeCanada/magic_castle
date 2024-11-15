@@ -117,6 +117,7 @@ resource "aws_instance" "instances" {
     for_each = contains(each.value.tags, "spot") ? [each.value] : []
     iterator = spot
     content {
+      market_type = "spot"
       spot_options {
         spot_instance_type             = lookup(spot, "spot_instance_type", "persistent")
         instance_interruption_behavior = lookup(spot, "instance_interruption_behavior", "stop")
