@@ -395,6 +395,12 @@ To specify a different image for an instance type, use the
 **Requirements**: the operating system on the image must be from the RedHat family.
 This includes CentOS (8, 9), Rocky Linux (8, 9), and AlmaLinux (8, 9).
 
+**Warning**: Avoid "with LVM" or "LVM-partitioned" images as Magic Castle is currently
+unable to detect that the root disk has unallocated free space available and grow the
+main partition (example: [Rocky Linux 9 with LVM](https://aws.amazon.com/marketplace/pp/prodview-yjxmiuc6p5jzk)).
+Therefore, the root disk size is ignored and typically ends up being insufficient
+for the configuration requirements.
+
 **Post build modification effect**: none. If this variable is modified, existing
 instances will ignore the change and future instances will use the new value.
 
