@@ -183,7 +183,7 @@ locals {
   }
 
   public_instances = { for host in keys(module.design.instances_to_build):
-    host => merge(module.configuration.inventory[host], {id=try(!contains(module.configuration.inventory[host].tags, "spot") ? aws_instance.instances[host].id : aws_spot_instance_request.spot_instances[host].spot_instance_id, "")})
+    host => merge(module.configuration.inventory[host], {id=try(aws_instance.instances[host].id, "")})
     if contains(module.configuration.inventory[host].tags, "public")
   }
 }
