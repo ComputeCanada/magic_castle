@@ -20,8 +20,8 @@ resource "azurerm_public_ip" "public_ip" {
   name                = format("%s-%s-public-ipv4", var.cluster_name, each.key)
   location            = var.location
   resource_group_name = local.resource_group_name
-  sku                 = contains(each.value.tags, "public") ? "Standard" : "Basic"
-  allocation_method   = contains(each.value.tags, "public") ? "Static" : "Dynamic"
+  sku                 = "Standard"
+  allocation_method   = "Static"
 }
 
 # Build a list of tag sets that include firewall rule tags
