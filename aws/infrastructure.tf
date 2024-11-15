@@ -114,7 +114,7 @@ resource "aws_instance" "instances" {
   }
 
   dynamic "instance_market_options" {
-    for_each = contains(values.tags, "spot") ? [each.value] : []
+    for_each = contains(each.value.tags, "spot") ? [each.value] : []
     iterator = spot
     content {
       spot_options {
