@@ -114,13 +114,13 @@ resource "aws_instance" "instances" {
   }
 
   dynamic "instance_market_options" {
-    for_each = contains(values.tags, "spot") ? [each] : []
+    for_each = contains(values.tags, "spot") ? [each.value] : []
     iterator = spot
     content {
       spot_options {
-        spot_instance_type             = lookup(spot.value, "spot_instance_type", "persistent")
-        instance_interruption_behavior = lookup(spot.value, "instance_interruption_behavior", "stop")
-        max_price                      = lookup(spot.value, "max_price", null)
+        spot_instance_type             = lookup(spot, "spot_instance_type", "persistent")
+        instance_interruption_behavior = lookup(spot, "instance_interruption_behavior", "stop")
+        max_price                      = lookup(spot, "max_price", null)
       }
     }
   }
