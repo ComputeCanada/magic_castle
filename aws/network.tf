@@ -126,7 +126,7 @@ resource "aws_eip" "public_ip" {
   for_each = {
     for x, values in module.design.instances : x => true if contains(values.tags, "public")
   }
-  vpc               = true
+  domain            = "vpc"
   network_interface = aws_network_interface.nic[each.key].id
   depends_on        = [aws_internet_gateway.gw]
   tags = {

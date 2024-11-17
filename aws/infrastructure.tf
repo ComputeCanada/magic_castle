@@ -82,7 +82,7 @@ data "aws_ec2_instance_type" "instance_type" {
 }
 
 resource "aws_instance" "instances" {
-  for_each          = {for key, values in module.design.instances_to_build: key => values if !contains(values["tags"], "spot")}
+  for_each          = module.design.instances_to_build
   instance_type     = each.value.type
   ami               = lookup(each.value, "image", var.image)
   user_data         = base64gzip(module.configuration.user_data[each.key])
@@ -113,49 +113,20 @@ resource "aws_instance" "instances" {
     ]
   }
 
-  depends_on = [aws_internet_gateway.gw]
-}
-
-resource "aws_spot_instance_request" "spot_instances" {
-  for_each          = {for key, values in module.design.instances_to_build: key => values if contains(values["tags"], "spot")}
-  instance_type     = each.value.type
-  ami               = lookup(each.value, "image", var.image)
-  user_data         = base64gzip(module.configuration.user_data[each.key])
-  availability_zone = local.availability_zone
-  placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null
-
-  key_name          = aws_key_pair.key.key_name
-
-  network_interface {
-    network_interface_id = aws_network_interface.nic[each.key].id
-    device_index         = 0
-  }
-
-  ebs_optimized = true
-  root_block_device {
-    volume_type = lookup(each.value, "disk_type", "gp2")
-    volume_size = lookup(each.value, "disk_size", 20)
-  }
-
-  tags = {
-    Name = format("%s-%s", var.cluster_name, each.key)
-  }
-
-  lifecycle {
-    ignore_changes = [
-      ami
-    ]
+  dynamic "instance_market_options" {
+    for_each = contains(each.value.tags, "spot") ? [each.value] : []
+    iterator = spot
+    content {
+      market_type = "spot"
+      spot_options {
+        spot_instance_type             = lookup(spot, "spot_instance_type", "persistent")
+        instance_interruption_behavior = lookup(spot, "instance_interruption_behavior", "stop")
+        max_price                      = lookup(spot, "max_price", null)
+      }
+    }
   }
 
   depends_on = [aws_internet_gateway.gw]
-
-  # spot specific variables
-  wait_for_fulfillment           = lookup(each.value, "wait_for_fulfillment", true)
-  spot_type                      = lookup(each.value, "spot_type", "persistent")
-  instance_interruption_behavior = lookup(each.value, "instance_interruption_behavior", "stop")
-  spot_price                     = lookup(each.value, "spot_price", null)
-  block_duration_minutes         = lookup(each.value, "block_duration_minutes", null)
-
 }
 
 resource "aws_ebs_volume" "volumes" {
@@ -213,7 +184,7 @@ locals {
   }
 
   public_instances = { for host in keys(module.design.instances_to_build):
-    host => merge(module.configuration.inventory[host], {id=try(!contains(module.configuration.inventory[host].tags, "spot") ? aws_instance.instances[host].id : aws_spot_instance_request.spot_instances[host].spot_instance_id, "")})
+    host => merge(module.configuration.inventory[host], {id=try(aws_instance.instances[host].id, "")})
     if contains(module.configuration.inventory[host].tags, "public")
   }
 }
