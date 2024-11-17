@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [14.1.0] 2024-11-17
+
+### Changed
+
+- Upgraded AWS provider version to 5.76.0
+- Replaced AWS legacy `aws_instance_spot_request` by `aws_instance`'s `instance_market_options`.
+- Fixed Azure public ips `sku` to `Standard` and `allocation_method` to `static`.
+
 ## [14.0.0] 2024-11-12
 
 ### Added
