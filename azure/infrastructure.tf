@@ -110,7 +110,6 @@ resource "azurerm_linux_virtual_machine" "instances" {
       username   = "azure"
       public_key = key.value
     }
-
   }
 
   priority = contains(each.value["tags"], "spot") ? "Spot" : "Regular"
@@ -123,6 +122,7 @@ resource "azurerm_linux_virtual_machine" "instances" {
       source_image_reference,
       source_image_id,
       custom_data,
+      admin_ssh_key,
     ]
   }
 }
