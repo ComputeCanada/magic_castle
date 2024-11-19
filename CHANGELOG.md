@@ -3,7 +3,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [14.1.1] UNRELEASED
+## [14.1.2] 2024-11-10
+
+### Added
+
+- Added rsync to the list of essential packages installed by cloud-init (PR #336)
+
+### Changed
+
+- Fix how security group are associated with instance tags (PR #336)
+
+## [14.1.1] 2024-11-19
 
 ### Changed
 
