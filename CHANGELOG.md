@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [14.1.1] UNRELEASED
+
+### Changed
+
+- Added `admin_ssh_key` to the `ignore_changes` list in Azure (PR #335)
+
 ## [14.1.0] 2024-11-17
 
 ### Changed
