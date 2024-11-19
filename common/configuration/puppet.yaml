@@ -40,7 +40,7 @@ runcmd:
       # Install required packages in runcmd instead of packages to speedup configuration
       # of the admin user. This reduces the risk of Terraform timing out when trying to
       # upload the terraform_data.yaml
-      dnf -y install git pciutils unzip
+      dnf -y install git pciutils unzip rsync
       dnf -y remove cockpit\* firewalld --exclude=iptables
 %{ if ! skip_upgrade ~}
       # Upgrade all packages except Puppet if already installed
