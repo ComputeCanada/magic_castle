@@ -100,7 +100,7 @@ resource "openstack_compute_instance_v2" "instances" {
 
 resource "openstack_blockstorage_volume_v3" "volumes" {
   for_each    = {
-    for x, values in module.design.volumes : x => true if !contains(keys(values), "volume_id")
+    for x, values in module.design.volumes : x => values if !contains(keys(values), "volume_id")
   }
   name        = "${var.cluster_name}-${each.key}"
   description = "${var.cluster_name} ${each.key}"
