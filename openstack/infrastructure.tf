@@ -113,7 +113,7 @@ resource "openstack_blockstorage_volume_v3" "volumes" {
 resource "openstack_compute_volume_attach_v2" "attachments" {
   for_each    = module.design.volumes
   instance_id = openstack_compute_instance_v2.instances[each.value.instance].id
-  volume_id   = try(each.value.volume_id, openstack_blockstorage_volume_v3.volumes[each.key].id)
+  volume_id   = try("${var.cluster_name}-${each.value.instance}-${each.value.volume_id}", openstack_blockstorage_volume_v3.volumes[each.key].id)
 }
 
 locals {
