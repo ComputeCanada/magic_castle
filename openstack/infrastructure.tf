@@ -109,6 +109,12 @@ resource "openstack_blockstorage_volume_v3" "volumes" {
   snapshot_id = lookup(each.value, "snapshot", null)
   enable_online_resize = lookup(each.value, "enable_resize", false)
 }
+data "openstack_blockstorage_volume_v3" "volumes" {
+  for_each    = {
+    for x, values in module.design.volumes : x => values if contains(keys(values), "volume_id")
+  }
+  name        = "${var.cluster_name}-${each.key}"
+}
 
 resource "openstack_compute_volume_attach_v2" "attachments" {
   for_each    = module.design.volumes
