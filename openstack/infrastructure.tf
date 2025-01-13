@@ -99,7 +99,9 @@ resource "openstack_compute_instance_v2" "instances" {
 }
 
 resource "openstack_blockstorage_volume_v3" "volumes" {
-  for_each    = module.design.volumes
+  for_each    = {
+    for x, values in module.design.volumes : x => true if values.volume_id != undef
+  }
   name        = "${var.cluster_name}-${each.key}"
   description = "${var.cluster_name} ${each.key}"
   size        = each.value.size
@@ -111,7 +113,7 @@ resource "openstack_blockstorage_volume_v3" "volumes" {
 resource "openstack_compute_volume_attach_v2" "attachments" {
   for_each    = module.design.volumes
   instance_id = openstack_compute_instance_v2.instances[each.value.instance].id
-  volume_id   = openstack_blockstorage_volume_v3.volumes[each.key].id
+  volume_id   = try(each.value.volume_id, openstack_blockstorage_volume_v3.volumes[each.key].id)
 }
 
 locals {
