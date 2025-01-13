@@ -119,7 +119,7 @@ data "openstack_blockstorage_volume_v3" "existing_volumes" {
 resource "openstack_compute_volume_attach_v2" "attachments" {
   for_each    = module.design.volumes
   instance_id = openstack_compute_instance_v2.instances[each.value.instance].id
-  volume_id   = try(openstack_blockstorage_volume_v3.volumes[each.key].id, data.openstack_blockstorage_volume_v3.existing_volumes[each.key])
+  volume_id   = try(openstack_blockstorage_volume_v3.volumes[each.key].id, data.openstack_blockstorage_volume_v3.existing_volumes[each.key].id)
 }
 
 locals {
