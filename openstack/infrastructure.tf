@@ -100,7 +100,7 @@ resource "openstack_compute_instance_v2" "instances" {
 
 resource "openstack_blockstorage_volume_v3" "volumes" {
   for_each    = {
-    for x, values in module.design.volumes : x => values if lookup(values, 'managed', true)
+    for x, values in module.design.volumes : x => values if lookup(values, "managed", true)
   }
   name        = "${var.cluster_name}-${each.key}"
   description = "${var.cluster_name} ${each.key}"
@@ -111,7 +111,7 @@ resource "openstack_blockstorage_volume_v3" "volumes" {
 }
 data "openstack_blockstorage_volume_v3" "existing_volumes" {
   for_each    = {
-    for x, values in module.design.volumes : x => values if ! lookup(values, 'managed', true)
+    for x, values in module.design.volumes : x => values if ! lookup(values, "managed", true)
   }
   name        = "${var.cluster_name}-${each.key}"
 }
