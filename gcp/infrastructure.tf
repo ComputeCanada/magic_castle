@@ -172,6 +172,7 @@ locals {
         mig    = lookup(values, "mig", null)
         shard  = lookup(values, "shard", null)
       }
+      weight = lookup(values, "weight", null)
       volumes = contains(keys(module.design.volume_per_instance), x) ? {
         for pv_key, pv_values in var.volumes:
           pv_key => {
