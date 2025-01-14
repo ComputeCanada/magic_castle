@@ -110,10 +110,10 @@ resource "openstack_blockstorage_volume_v3" "volumes" {
   enable_online_resize = lookup(each.value, "enable_resize", false)
 }
 data "openstack_blockstorage_volume_v3" "existing_volumes" {
-  for_each    = {
+  for_each = {
     for x, values in module.design.volumes : x => values if ! lookup(values, "managed", true)
   }
-  name        = "${var.cluster_name}-${each.key}"
+  name     = "${var.cluster_name}-${each.key}"
 }
 
 resource "openstack_compute_volume_attach_v2" "attachments" {
