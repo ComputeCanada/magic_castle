@@ -108,6 +108,9 @@ resource "openstack_blockstorage_volume_v3" "volumes" {
   volume_type = lookup(each.value, "type", null)
   snapshot_id = lookup(each.value, "snapshot", null)
   enable_online_resize = lookup(each.value, "enable_resize", false)
+  lifecycle {
+    prevent_destroy = ! lookup(values, "managed", true)
+  }
 }
 data "openstack_blockstorage_volume_v3" "existing_volumes" {
   for_each    = {
