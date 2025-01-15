@@ -9,10 +9,10 @@ inputs:
 runs:
   using: "composite"
   steps:
-      - run: ${{ input.path }}/terraform -chdir=${{ inputs.provider }} init
+      - run: ${{ inputs.path }}/terraform -chdir=${{ inputs.provider }} init
         shell: bash
         id: init
-      - run: ${{ input.path }}/terraform  -chdir=${{ inputs.provider }} validate
+      - run: ${{ inputs.path }}/terraform  -chdir=${{ inputs.provider }} validate
         shell: bash
         id: validate
       - run: find examples -name ${{ inputs.provider }} -type d -not -path '*/\.*'
@@ -21,9 +21,9 @@ runs:
       - run: sed -E -i 's;(source)\s*=.*${{ inputs.provider }}.*;\1 = "../../${{ inputs.provider }}";g' examples/${{ inputs.provider }}/main.tf;
         shell: bash
         id: sed-example
-      - run: ${{ input.path }}/terraform -chdir=examples/${{ inputs.provider }} init
+      - run: ${{ inputs.path }}/terraform -chdir=examples/${{ inputs.provider }} init
         shell: bash
         id: init-example
-      - run: ${{ input.path }}/terraform -chdir=examples/${{ inputs.provider }} validate
+      - run: ${{ inputs.path }}/terraform -chdir=examples/${{ inputs.provider }} validate
         shell: bash
         id: validate-example
