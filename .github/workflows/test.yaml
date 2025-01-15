@@ -70,15 +70,11 @@ jobs:
           provider: 'ovh'
 
       - name: Test CloudFlare DNS
-        with:
-          path: ~/bin
         run: |
           terraform -chdir=dns/cloudflare init
           terraform -chdir=dns/cloudflare validate
 
       - name: Test Google Cloud DNS
-        with:
-          path: ~/bin
         run: |
           terraform -chdir=dns/gcloud init
           terraform -chdir=dns/gcloud validate
