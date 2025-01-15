@@ -163,13 +163,11 @@ locals {
       local_ip    = aws_network_interface.nic[x].private_ip
       prefix      = values.prefix
       tags        = values.tags
-      specs = {
+      specs = merge({
         cpus   = data.aws_ec2_instance_type.instance_type[values.prefix].default_vcpus
         ram    = data.aws_ec2_instance_type.instance_type[values.prefix].memory_size
         gpus   = try(one(data.aws_ec2_instance_type.instance_type[values.prefix].gpus).count, 0)
-        mig    = lookup(values, "mig", null)
-        shard  = lookup(values, "shard", null)
-      }
+      }, values.specs)
       volumes = contains(keys(module.design.volume_per_instance), x) ? {
         for pv_key, pv_values in var.volumes:
           pv_key => {

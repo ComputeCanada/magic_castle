@@ -155,13 +155,11 @@ locals {
       local_ip  = azurerm_network_interface.nic[x].private_ip_address
       prefix    = values.prefix
       tags      = values.tags
-      specs = {
+      specs = merge({
         cpus   = local.vmsizes[values.type].vcpus
         ram    = local.vmsizes[values.type].ram
         gpus   = local.vmsizes[values.type].gpus
-        mig    = lookup(values, "mig", null)
-        shard  = lookup(values, "shard", null)
-      }
+      }, values.specs)
       volumes = contains(keys(module.design.volume_per_instance), x) ? {
         for pv_key, pv_values in var.volumes:
           pv_key => {
