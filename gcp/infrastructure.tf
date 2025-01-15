@@ -165,13 +165,11 @@ locals {
       local_ip  = google_compute_address.nic[x].address
       prefix    = values.prefix
       tags      = values.tags
-      specs = {
+      specs = merge({
         cpus   = data.external.machine_type[values["prefix"]].result["vcpus"]
         ram    = data.external.machine_type[values["prefix"]].result["ram"]
         gpus   = try(data.external.machine_type[values["prefix"]].result["gpus"], lookup(values, "gpu_count", 0))
-        mig    = lookup(values, "mig", null)
-        shard  = lookup(values, "shard", null)
-      }
+      }, values.specs)
       volumes = contains(keys(module.design.volume_per_instance), x) ? {
         for pv_key, pv_values in var.volumes:
           pv_key => {

@@ -10,8 +10,11 @@ locals {
       for prefix, attrs in var.instances : [
         for i in range(lookup(attrs, "count", 1)) : {
           (format("%s%d", prefix, i + 1)) = merge(
-            { for attr, value in attrs : attr => value if attr != "count" },
-            { prefix = prefix }
+            { for attr, value in attrs : attr => value if ! contains(["count"], attr) },
+            {
+              prefix = prefix,
+              specs = { for attr, value in attrs : attr => value if ! contains(["count", "tags", "image"], attr) }
+            },
           )
         }
       ]

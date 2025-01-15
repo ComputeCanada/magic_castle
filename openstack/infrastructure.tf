@@ -120,16 +120,14 @@ locals {
       local_ip  = openstack_networking_port_v2.nic[x].all_fixed_ips[0]
       prefix    = values.prefix
       tags      = values.tags
-      specs = {
+      specs = merge({
         cpus   = data.openstack_compute_flavor_v2.flavors[values.prefix].vcpus
         ram    = data.openstack_compute_flavor_v2.flavors[values.prefix].ram
         gpus   = sum([
           parseint(lookup(data.openstack_compute_flavor_v2.flavors[values.prefix].extra_specs, "resources:VGPU", "0"), 10),
           parseint(split(":", lookup(data.openstack_compute_flavor_v2.flavors[values.prefix].extra_specs, "pci_passthrough:alias", "gpu:0"))[1], 10)
         ])
-        mig    = lookup(values, "mig", null)
-        shard  = lookup(values, "shard", null)
-      }
+      }, values.specs)
       volumes = contains(keys(module.design.volume_per_instance), x) ? {
         for pv_key, pv_values in var.volumes:
           pv_key => {
