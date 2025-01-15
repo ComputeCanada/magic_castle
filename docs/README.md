@@ -548,6 +548,13 @@ the operating system and service software
     and with x86-64 processors (see [NVIDIA/mig-parted issue #30](https://github.com/NVIDIA/mig-parted/issues/30)).
 6. `shard`: total number of [Sharding](https://slurm.schedmd.com/gres.html#Sharding) on the node. Sharding allows sharing the same GPU on multiple jobs. The total number of shards is evenly distributed across all GPUs on the node.
 
+The instance specifications are retrieved from the cloud provider data source, but it is possible to explicitly specify them.
+
+7. `cpus`: number of logical processors on the node - [`CPUs` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_CPUs)
+8. `ram`: size of real memory on the node in megabyte - [`RealMemory` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_RealMemory)
+9. `gpus`: number of graphical processor on the node - [`Gres=gpu:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
+10. `gpu_type`: type of graphical processor on the node - [`Gres=gpu:<gpu_type>:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
+
 For some cloud providers, it possible to define additional attributes.
 The following sections present the available attributes per provider.
 
@@ -585,7 +592,7 @@ For more information on these attributes, refer to
 - `gpu_type`: name of the GPU model to attach to the instance. Refer to
 [Google Cloud documentation](https://cloud.google.com/compute/docs/gpus) for the list of
 available models per region
-- `gpu_count`: number of GPUs of the `gpu_type` model to attach to the instance
+- `gpus`: number of GPUs of the `gpu_type` model to attach to the instance
 
 #### 4.7.3 Post build modification effect
 

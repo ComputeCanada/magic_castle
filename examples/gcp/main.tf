@@ -24,8 +24,8 @@ module "gcp" {
       type = "n1-standard-2",
       tags = ["node"],
       count = 1,
+      gpus = 1
       gpu_type = "nvidia-tesla-t4",
-      gpu_count = 1
     }
   }
 
