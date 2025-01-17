@@ -69,7 +69,7 @@ and apply their configuration based on the tags defined in the preceding YAML fi
 
 > When I think about the DevOps landscape, we have so many people just like chefs in a restaurant that are experimenting with different ways of doing things. Once they get it, then they create those recipes. Those recipes in our world is source code. [...] That's why we will always have duplicates and similar projects, because there's going to be one ingredient that's going to be slightly different to make you preferred over something else
 
-[Kelsey Hightower, Sourcegraph Podcast, Episode 16, 2020](https://about.sourcegraph.com/podcast/kelsey-hightower/)
+[Kelsey Hightower, Sourcegraph Podcast, Episode 16, 2020](https://web.archive.org/web/20240527182945/https://sourcegraph.com/podcast/kelsey-hightower)
 
 ## Contributing / Customizing
 
