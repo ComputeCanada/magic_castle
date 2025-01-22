@@ -1367,7 +1367,7 @@ kdestroy
 <summary>Tips on using command-line to configure FreeIPA</summary>
 
 1. Once connected to a login node, access `mgmt1` with `[centos@login1 ~]$ ssh mgmt1`.
-2. Retrieve the `profile::freeipa::server::admin_password` encrypted value following instructions in section [10.13](#1013-read-and-edit-secret-values-generated-at-boot) (you only need the value in betwen '[...]' brackets).
+2. Retrieve the `profile::freeipa::server::admin_password` encrypted value following instructions in section [10.13](#1013-read-and-edit-secret-values-generated-at-boot) (you only need the value in between '[...]' brackets).
 3. Log in to FreeIPA with `kinit admin` using the password retrieved in step 2.
 4. The `ipa` command now is available to accomplish administrator tasks, here's a [detailed guide](https://www.freeipa.org/page/Administrators_Guide.html).
 
@@ -1568,7 +1568,7 @@ This process has three steps:
 
 The following subsection explains how to accomplish each step.
 
-**Warning**: While it will work in most cases, avoid re-using the compute node image of a
+**Warning**: While it will work in most cases, avoid reusing the compute node image of a
 previous deployment. The preparation steps cleans most
 of the deployment specific configuration and secrets, but there is no guarantee
 that the configuration will be entirely compatible with a different deployment.
