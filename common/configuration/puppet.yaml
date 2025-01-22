@@ -27,7 +27,7 @@ runcmd:
   - chmod 755 /etc # avoid issue with Rocky 9.4
   - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
   - restorecon -R /${sudoer_username}
-  - echo -e "match User tf\n\tAuthorizedKeysFile /etc/ssh/authorized_keys.%u\n\tAuthenticationMethods publickey" >> /etc/ssh/sshd_config
+  - echo -e "Include /etc/ssh/sshd_config.d/50-authenticationmethods.conf" >> /etc/ssh/sshd_config
   - sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
@@ -134,6 +134,12 @@ write_files:
   - content: restrict%{ if contains(tags, "puppet") },pty%{ else }%{ for host, ip in puppetservers },permitopen="${ip}:22"%{ endfor },port-forwarding,command="/sbin/nologin"%{ endif } ${tf_ssh_public_key}
     path: /etc/ssh/authorized_keys.tf
     permissions: "0644"
+  - content: |
+    Match User tf
+      AuthorizedKeysFile /etc/ssh/authorized_keys.%u
+      AuthenticationMethods publickey
+    path: /etc/ssh/sshd_config.d/50-authenticationmethods.conf
+    permissions: "0600"
   - content: |
       facts : {
         blocklist : [
