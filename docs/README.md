@@ -1355,11 +1355,23 @@ Examples of LDAP user definition with hieradata are provided in
 #### 10.3.2 Command-Line
 
 To add a user account after the cluster is built, log in `mgmt1` and call:
+
 ```bash
 kinit admin
 IPA_GUEST_PASSWD=<new_user_passwd> /sbin/ipa_create_user.py <username> [--group <group_name>]
 kdestroy
 ```
+
+<details>
+
+<summary>Tips on using command-line to configure FreeIPA</summary>
+
+1. Once connected to a login node, access `mgmt1` with `[centos@login1 ~]$ ssh mgmt1`.
+2. Retrieve the `profile::freeipa::server::admin_password` encrypted value following instructions in section [10.13](#1013-read-and-edit-secret-values-generated-at-boot) (you only need the value in between '[...]' brackets).
+3. Log in to FreeIPA with `kinit admin` using the password retrieved in step 2.
+4. The `ipa` command now is available to accomplish administrator tasks, here's a [detailed guide](https://www.freeipa.org/page/Administrators_Guide.html).
+
+</details>
 
 #### 10.3.3 Mokey
 
@@ -1375,7 +1387,7 @@ https://ipa.yourcluster.domain.tld/
 ```
 
 The FreeIPA administrator credentials can be retrieved from an encrypted file
-on the Puppet server. Refer to section [10.14](#1014-read-and-edit-secret-values-generated-at-boot)
+on the Puppet server. Refer to section [10.13](#1013-read-and-edit-secret-values-generated-at-boot)
 to know how.
 
 ### 10.4 Increase the Number of Guest Accounts
@@ -1556,7 +1568,7 @@ This process has three steps:
 
 The following subsection explains how to accomplish each step.
 
-**Warning**: While it will work in most cases, avoid re-using the compute node image of a
+**Warning**: While it will work in most cases, avoid reusing the compute node image of a
 previous deployment. The preparation steps cleans most
 of the deployment specific configuration and secrets, but there is no guarantee
 that the configuration will be entirely compatible with a different deployment.
