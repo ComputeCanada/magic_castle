@@ -135,9 +135,9 @@ write_files:
     path: /etc/ssh/authorized_keys.tf
     permissions: "0644"
   - content: |
-    Match User tf
-      AuthorizedKeysFile /etc/ssh/authorized_keys.%u
-      AuthenticationMethods publickey
+      Match User tf
+        AuthorizedKeysFile /etc/ssh/authorized_keys.%u
+        AuthenticationMethods publickey
     path: /etc/ssh/sshd_config.d/50-authenticationmethods.conf
     permissions: "0600"
   - content: |
