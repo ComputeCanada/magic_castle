@@ -30,6 +30,7 @@ module "configuration" {
   cloud_region          = local.cloud_region
   skip_upgrade          = var.skip_upgrade
   puppetfile            = var.puppetfile
+  cidr                  = aws_subnet.subnet.cidr_block
 }
 
 module "provision" {

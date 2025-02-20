@@ -17,6 +17,7 @@ variable "public_keys" { }
 variable "skip_upgrade" { }
 variable "puppetfile" { }
 variable "bastion_tag" { }
+variable "cidr" { }
 
 resource "tls_private_key" "ssh" {
   algorithm = "ED25519"
@@ -68,6 +69,7 @@ locals {
     terraform = {
       instances = local.inventory
       tag_ip    = local.tag_ip
+      cidr      = var.cidr
       data      = {
         sudoer_username = var.sudoer_username
         public_keys     = var.public_keys

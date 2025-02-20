@@ -38,4 +38,5 @@ locals {
   )
   ext_networks = []
   network_provision_dep = openstack_networking_floatingip_associate_v2.fip
+  cidr = openstack_networking_subnet_v2.subnet.cidr
 }
