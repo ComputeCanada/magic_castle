@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [14.1.3] 2025-01-29
+
+### Changed
+
+- Set an upper bound on CloudFlare provider version.
+
 ## [14.1.2] 2024-11-10
 
 ### Added
