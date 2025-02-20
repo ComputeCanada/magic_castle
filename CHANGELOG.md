@@ -3,6 +3,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [14.2.0] 2025-02-20
+
+### Added
+
+- Added documentation for FreeIPA configuration (PR #344)
+
+### Changed
+
+- Generalized definition of instance's specs (PR #341)
+- Made tf user a system user (PR #343)
+- Splited sshd config so that Match directives are in their own files (PR #345)
+
 ## [14.1.3] 2025-01-29
 
 ### Changed
