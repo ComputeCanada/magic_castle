@@ -256,8 +256,6 @@ To enable this feature:
       5. Under "Variables" select "Read and write"
       6. Leave the rest as is and click on "Assign custom permissions"
 
-    2.3 In _Configure settings_, under _Advanced options_, for _Apply method_, select _Auto apply_.
-
 3. [Create the environment variables of the cloud provider credentials in TFE](#providing-cloud-provider-credentials-to-terraform-cloud)
 4. [Create a variable named `pool` in TFE](#managing-magic-castle-variables-with-terraform-cloud-ui). Set value to `[]` and check **HCL**.
 5. Add a file named `data.yaml` in your git repo with the following content:
@@ -310,14 +308,6 @@ jupyterhub::jupyterhub_config_hash:
   SlurmFormSpawner:
     start_timeout: 900
 ```
-
-Slurm 23 adds the possibility for `sinfo` to report nodes that are not yet spawned. This is useful
-if you want JupyterHub to be aware of those nodes, for example if you want to allow to use GPU nodes
-without keeping them online at all time. To use that version of Slurm, add the following to your YAML
-configuration file:
-```
-profile::slurm::base::slurm_version: '23.02'
-``` 
 
 ### Troubleshoot autoscaling with Terraform Cloud
 
