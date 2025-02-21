@@ -1005,7 +1005,6 @@ restricted to the minimum required for autoscale purpose.
 <li>Under "Variables" select "Read and write"</li>
 <li>Leave the rest as is and click on "Assign custom permissions"</li>
 </ol>
-<p>2.3 In <em>Configure settings</em>, under <em>Advanced options</em>, for <em>Apply method</em>, select <em>Auto apply</em>.</p>
 </li>
 <li>
 <p><a href="#providing-cloud-provider-credentials-to-terraform-cloud">Create the environment variables of the cloud provider credentials in TFE</a></p>
@@ -1059,12 +1058,6 @@ by adding the following to your YAML configuration file:
 <div class="highlight"><pre><span></span><code>jupyterhub::jupyterhub_config_hash:
   SlurmFormSpawner:
     start_timeout: 900
-</code></pre></div></p>
-<p>Slurm 23 adds the possibility for <code>sinfo</code> to report nodes that are not yet spawned. This is useful
-if you want JupyterHub to be aware of those nodes, for example if you want to allow to use GPU nodes
-without keeping them online at all time. To use that version of Slurm, add the following to your YAML
-configuration file:
-<div class="highlight"><pre><span></span><code>profile::slurm::base::slurm_version: &#39;23.02&#39;
 </code></pre></div></p>
 <h3 id="troubleshoot-autoscaling-with-terraform-cloud">Troubleshoot autoscaling with Terraform Cloud</h3>
 <p>If after enabling autoscaling with Terraform Cloud for your Magic Castle cluster,
