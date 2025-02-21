@@ -65,11 +65,17 @@ locals {
     })
   }
 
+  netmask = split(".", cidrnetmask(var.cidr))
+  reverse_zone = format("%s.in-addr.arpa.", join(".", reverse([for i, v in split(".", cidrhost(var.cidr, 0)): v if local.netmask[i] != "0" ])))
+
   terraform_data  = yamlencode({
     terraform = {
       instances = local.inventory
       tag_ip    = local.tag_ip
-      cidr      = var.cidr
+      network   = {
+        cidr         = var.cidr
+        reverse_zone = local.reverse_zone
+      }
       data      = {
         sudoer_username = var.sudoer_username
         public_keys     = var.public_keys
