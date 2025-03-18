@@ -188,7 +188,7 @@ plan will then be automatically applied.
 
 Terraform cloud only allows to apply or destroy the plan as stated in the main.tf,
 but sometimes it can be useful to run some other terraform commands that are only
-available through the command-line interface, for example `terraform taint`.
+available through the command-line interface.
 
 It is possible to import the terraform state of a cluster on your local computer
 and then use the CLI on it.

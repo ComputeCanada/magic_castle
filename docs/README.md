@@ -1274,16 +1274,15 @@ It is possible to destroy only the instances and keep the rest of the infrastruc
 like the floating ip, the volumes, the generated SSH host key, etc. To do so, set
 the count value of the instance type you wish to destroy to 0.
 
-### 9.2 Reset
+### 9.2 Instance Replacement
 
 On some occasions, it is desirable to rebuild some of the instances from scratch.
-Using `terraform taint`, you can designate resources that will be rebuilt at
-next application of the plan.
+Using the `-replace` option of `terraform apply`, you can designate resources
+that will be rebuilt at next application of the plan.
 
-To rebuild the first login node :
+For example, to rebuild the first login node :
 ```
-terraform taint 'module.openstack.openstack_compute_instance_v2.instances["login1"]'
-terraform apply
+terraform apply -replace='module.openstack.openstack_compute_instance_v2.instances["login1"]'
 ```
 
 ## 10. Customize Cluster Software Configuration
