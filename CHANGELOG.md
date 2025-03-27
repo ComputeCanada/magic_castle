@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [14.3.0] UNRELEASED
+
+### Changed
+
+- [dns] The default list of vhost subdomains has been replaced by a `["*"]`.
+This simplifies configuration of new virtual hosts in the reverse proxy.
+
 ## [14.2.1] 2025-02-21
 
 No changes to infrastructure code.
