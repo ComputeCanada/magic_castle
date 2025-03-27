@@ -1345,6 +1345,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#1015-access-prometheus-expression-browser" class="md-nav__link">
+    <span class="md-ellipsis">
+      10.15 Access Prometheus' expression browser
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2604,6 +2613,15 @@
   <a href="#1014-expand-a-volume" class="md-nav__link">
     <span class="md-ellipsis">
       10.14 Expand a volume
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1015-access-prometheus-expression-browser" class="md-nav__link">
+    <span class="md-ellipsis">
+      10.15 Access Prometheus' expression browser
     </span>
   </a>
   
@@ -3954,6 +3972,22 @@ Puppet data hierarchy.</p>
 a volume, add <code>enable_resize = true</code> to its specs map. You can then increase the size at will.
 The corresponding volume will be expanded by the cloud provider and the filesystem will be
 extended by Puppet.</p>
+<h3 id="1015-access-prometheus-expression-browser">10.15 Access Prometheus' expression browser</h3>
+<p>Prometheus is an open-source systems monitoring and alerting toolkit. It is installed by default
+in Magic Castle. Every instance exposes their usage metrics and some services do to. To explore
+and visualize this data, it possible to access the <a href="https://prometheus.io/docs/visualization/browser/">expression browser</a>.</p>
+<p>From inside the cluster, it is typically available at <code>http://mgmt1:9090</code>. Given DNS is configured
+for your cluster, you can add the following snippet to your <a href="#413-hieradata-optional">hieradata</a>. to access the expression browser
+from Internet.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">lookup_options</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">profile::reverse_proxy::subdomains</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">merge</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;hash&#39;</span>
+<span class="nt">profile::reverse_proxy::subdomains</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">metrics</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%{lookup(&#39;terraform.tag_ip.mgmt.0&#39;)}:9090&quot;</span>
+<span class="nt">profile::reverse_proxy::remote_ips</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">metrics</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;&lt;REPLACE_BY_YOUR_OWN_IP&gt;&#39;</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+<p>Prometheus will then be available at <code>http://metrics.your-cluster.yourdomain.tld/</code>.</p>
 <h2 id="11-customize-magic-castle-terraform-files">11. Customize Magic Castle Terraform Files</h2>
 <p>You can modify the Terraform module files in the folder named after your cloud
 provider (e.g: <code>gcp</code>, <code>openstack</code>, <code>aws</code>, etc.)</p>
