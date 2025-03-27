@@ -1687,6 +1687,28 @@ a volume, add `enable_resize = true` to its specs map. You can then increase the
 The corresponding volume will be expanded by the cloud provider and the filesystem will be
 extended by Puppet.
 
+### 10.15 Access Prometheus' expression browser
+
+Prometheus is an open-source systems monitoring and alerting toolkit. It is installed by default
+in Magic Castle. Every instance exposes their usage metrics and some services do to. To explore
+and visualize this data, it possible to access the [expression browser](https://prometheus.io/docs/visualization/browser/).
+
+From inside the cluster, it is typically available at `http://mgmt1:9090`. Given DNS is configured
+for your cluster, you can add the following snippet to your [hieradata](#413-hieradata-optional). to access the expression browser
+from Internet.
+
+```yaml
+lookup_options:
+  profile::reverse_proxy::subdomains:
+    merge: 'hash'
+profile::reverse_proxy::subdomains:
+  metrics: "%{lookup('terraform.tag_ip.mgmt.0')}:9090"
+profile::reverse_proxy::remote_ips:
+  metrics: ['<REPLACE_BY_YOUR_OWN_IP>']
+```
+
+Prometheus will then be available at `http://metrics.your-cluster.yourdomain.tld/`.
+
 ## 11. Customize Magic Castle Terraform Files
 
 You can modify the Terraform module files in the folder named after your cloud
