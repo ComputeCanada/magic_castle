@@ -1,0 +1,53 @@
+name: Trivy Vulnerabilities Scan
+
+on:
+  pull_request:
+
+jobs:
+  trivy-vuln-scan:
+    name: Running Trivy Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Compose templates to scan
+        run: ./compose.sh
+
+      - name: Manual Trivy Setup
+        uses: aquasecurity/setup-trivy@v0.2.2
+        with:
+          cache: true
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@0.29.0
+        with:
+          skip-setup-trivy: true
+          scan-type: "fs"
+          scan-ref: "magic_castle-scan"
+          scanners: "misconfig"
+          severity: "CRITICAL,HIGH,MEDIUM"
+          format: "json"
+          output: "trivy-results.json"
+
+      - name: Convert Trivy JSON output to SARIF
+        run: trivy convert --format sarif --output trivy-results.sarif trivy-results.json
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: "trivy-results.sarif"
+
+      - name: Publish Trivy Output to Summary
+        run: |
+          if [[ -s trivy-results.json ]]; then
+          {
+            echo "### Security Output"
+            echo "<details><summary>Click to expand</summary>"
+            echo ""
+            echo '```terraform'
+            cat trivy-results.json
+            echo '```'
+            echo "</details>"
+            } >> $GITHUB_STEP_SUMMARY
+            fi
