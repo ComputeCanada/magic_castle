@@ -1111,7 +1111,7 @@ Refer to the subsection [6.3](#63-unsupported-providers) for more details.
 
 #### 6.1.2 Cloudflare API Token
 
-If you prefer using an API token instead of the global API key, you will need to configure a token with the following four permissions with the [Cloudflare API Token interface](https://dash.cloudflare.com/profile/api-tokens).
+If you prefer using an API token instead of the global API key, you will need to configure a token with the following permissions using the [Cloudflare API Token interface](https://dash.cloudflare.com/profile/api-tokens).
 
 | Section | Subsection | Permission|
 | :------ |:---------- | :-------- |
