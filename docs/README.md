@@ -1709,6 +1709,17 @@ profile::reverse_proxy::remote_ips:
 
 Prometheus will then be available at `http://metrics.your-cluster.yourdomain.tld/`.
 
+### 10.16 Receive Prometheus alert
+
+```yaml
+prometheus::alertmanager::receivers:
+  - name: 'Admin'
+    slack_configs:
+      - api_url: "https://hooks.slack.com/services/<rest of the slack API URL>"
+        title: "{{ .CommonAnnotations.summary }}"
+        text: "{{ .CommonAnnotations.description }}"
+```
+
 ## 11. Customize Magic Castle Terraform Files
 
 You can modify the Terraform module files in the folder named after your cloud
