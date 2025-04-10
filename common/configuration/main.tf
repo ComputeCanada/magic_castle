@@ -47,6 +47,7 @@ resource "random_pet" "guest_passwd" {
 locals {
   puppet_passwd = random_string.puppet_passwd.result
   guest_passwd = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
+  public_keys = [for key in var.public_keys: trimspace(key)]
 
   puppetservers = { for host, values in var.inventory: host => values.local_ip if contains(values.tags, "puppet")}
   all_tags = toset(flatten([for key, values in var.inventory : values.tags]))
@@ -70,7 +71,7 @@ locals {
       tag_ip    = local.tag_ip
       data      = {
         sudoer_username = var.sudoer_username
-        public_keys     = var.public_keys
+        public_keys     = local.public_keys
         cluster_name    = lower(var.cluster_name)
         domain_name     = var.domain_name
         guest_passwd    = local.guest_passwd
@@ -98,7 +99,7 @@ locals {
         puppetservers         = local.puppetservers,
         puppetserver_password = local.puppet_passwd,
         sudoer_username       = var.sudoer_username,
-        ssh_authorized_keys   = var.public_keys
+        ssh_authorized_keys   = local.public_keys
         tf_ssh_public_key     = tls_private_key.ssh.public_key_openssh
         # If there is no bastion, the terraform data has to be packed with the user_data of the puppetserver.
         # We do not packed it systematically because it increases the user-data size to a value that can be
