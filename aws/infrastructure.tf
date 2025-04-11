@@ -103,6 +103,7 @@ locals {
 }
 
 resource "aws_placement_group" "efa_group" {
+  count    = contains(module.design.all_instance_tags, "efa") ? 1 : 0
   name     = "${var.cluster_name}-efa-placement_group"
   strategy = "cluster"
 }
@@ -129,7 +130,7 @@ resource "aws_instance" "instances" {
   ami               = lookup(each.value, "image", var.image)
   user_data         = base64gzip(module.configuration.user_data[each.key])
   availability_zone = local.availability_zone
-  placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null
+  placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group[0].id : null
 
   key_name          = aws_key_pair.key.key_name
 
