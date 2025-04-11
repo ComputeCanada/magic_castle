@@ -48,22 +48,58 @@ module "provision" {
 
 data "aws_availability_zones" "available" {
   state = "available"
+  lifecycle {
+    postcondition {
+      condition = var.availability_zone == "" || contains(self.names, var.availability_zone)
+      error_message = "var.availability_zone must be one of ${jsonencode(self.names)}"
+    }
+  }
+}
+
+# Retrieve the availability zones in which each unique instance type is available
+data "aws_ec2_instance_type_offerings" "inst_az" {
+  filter {
+    name   = "instance-type"
+    values = distinct([for instance in module.design.instances: instance.type])
+  }
+  location_type = "availability-zone"
+}
+
+# Build a set of availability zones that offer all selected instance types
+locals {
+  instance_types = distinct([for instance in module.design.instances: instance.type])
+  az_choices = setintersection(data.aws_availability_zones.available.names, values({
+    for type in local.instance_types: type =>
+      [ for idx, zone in data.aws_ec2_instance_type_offerings.inst_az.locations: zone
+        if data.aws_ec2_instance_type_offerings.inst_az.instance_types[idx] == type
+      ]
+  })...)
+}
+
+resource "terraform_data" "az_check" {
+  lifecycle {
+    precondition {
+      condition = length(local.az_choices) > 0
+      error_message = "There is not a single availability zone in ${var.region} that provides all instance types you have selected."
+    }
+    precondition {
+      condition = var.availability_zone == "" || contains(local.az_choices, var.availability_zone)
+      error_message = <<EOT
+      The selected availability zone "${var.availability_zone}" does not provide all instance types you have selected.
+Pick one of these zone instead ${jsonencode(local.az_choices)} or leave var.availability_zone undefined."
+EOT
+    }
+  }
 }
 
 resource "random_shuffle" "random_az" {
-  input = data.aws_availability_zones.available.names
+  count = var.availability_zone == "" ? 1 : 0
+  input = local.az_choices
   result_count = 1
 }
 
 locals {
-  availability_zone = (
-    ( var.availability_zone != "" &&
-      contains(data.aws_availability_zones.available.names,
-               var.availability_zone)
-      ?
-      var.availability_zone : random_shuffle.random_az.result[0]
-    )
-  )
+  availability_zone = var.availability_zone != "" ? var.availability_zone : random_shuffle.random_az[0].result[0]
 }
 
 resource "aws_placement_group" "efa_group" {
@@ -79,6 +115,12 @@ resource "aws_key_pair" "key" {
 data "aws_ec2_instance_type" "instance_type" {
   for_each      = var.instances
   instance_type = each.value.type
+  lifecycle {
+    precondition {
+      condition = contains(data.aws_ec2_instance_type_offerings.inst_az.instance_types, each.value.type)
+      error_message = "The selected region ${var.region} does not offer ${each.value.type} instances."
+    }
+  }
 }
 
 resource "aws_instance" "instances" {
