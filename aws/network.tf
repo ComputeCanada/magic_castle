@@ -48,8 +48,7 @@ resource "aws_security_group" "allow_out_any" {
 }
 
 locals {
-  all_tags   = toset(flatten([ for key, value in module.design.instances: value.tags ]))
-  sec_groups = toset([ for name, rule in var.firewall_rules: rule.tag if contains(local.all_tags, rule.tag) ])
+  sec_groups = toset([ for name, rule in var.firewall_rules: rule.tag if contains(module.design.all_instance_tags, rule.tag) ])
 }
 
 resource "aws_security_group" "external" {
