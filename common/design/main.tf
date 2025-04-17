@@ -5,6 +5,10 @@ data "http" "agent_ip" {
 locals {
   domain_name = "${lower(var.cluster_name)}.${lower(var.domain)}"
 
+  min_disk_size_per_tags = {
+    "mgmt": 20
+  }
+
   instances = merge(
     flatten([
       for prefix, attrs in var.instances : [
@@ -14,6 +18,7 @@ locals {
             {
               prefix = prefix,
               specs = { for attr, value in attrs : attr => value if ! contains(["count", "tags", "image"], attr) }
+              disk_size = max(var.min_disk_size, [for tag in attrs.tags: local.min_disk_size_per_tags[tag]]...)
             },
           )
         }
