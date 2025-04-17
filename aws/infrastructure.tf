@@ -8,6 +8,7 @@ module "design" {
   cluster_name   = var.cluster_name
   domain         = var.domain
   instances      = var.instances
+  min_disk_size  = 20
   pool           = var.pool
   volumes        = var.volumes
   firewall_rules = var.firewall_rules
@@ -141,7 +142,7 @@ resource "aws_instance" "instances" {
   ebs_optimized = true
   root_block_device {
     volume_type = lookup(each.value, "disk_type", "gp2")
-    volume_size = lookup(each.value, "disk_size", 20)
+    volume_size = each.value.disk_size
   }
 
   tags = {

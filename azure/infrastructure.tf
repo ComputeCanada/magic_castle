@@ -8,6 +8,7 @@ module "design" {
   cluster_name   = var.cluster_name
   domain         = var.domain
   instances      = var.instances
+  min_disk_size  = 30
   pool           = var.pool
   volumes        = var.volumes
   firewall_rules = var.firewall_rules
@@ -73,7 +74,7 @@ resource "azurerm_linux_virtual_machine" "instances" {
     name                 = format("%s-%s-disk", var.cluster_name, each.key)
     caching              = "ReadWrite"
     storage_account_type = lookup(each.value, "disk_type", "Premium_LRS")
-    disk_size_gb         = lookup(each.value, "disk_size", 30)
+    disk_size_gb         = each.value.disk_size
   }
 
   dynamic "plan" {

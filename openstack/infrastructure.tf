@@ -3,6 +3,7 @@ module "design" {
   cluster_name   = var.cluster_name
   domain         = var.domain
   instances      = var.instances
+  min_disk_size  = 10
   pool           = var.pool
   volumes        = var.volumes
   firewall_rules = var.firewall_rules
@@ -58,7 +59,7 @@ data "openstack_compute_flavor_v2" "flavors" {
 resource "openstack_compute_instance_v2" "instances" {
   for_each = module.design.instances_to_build
   name     = format("%s-%s", var.cluster_name, each.key)
-  image_id = lookup(each.value, "disk_size", 10) > data.openstack_compute_flavor_v2.flavors[each.value.prefix].disk ? null : data.openstack_images_image_v2.image[each.value.prefix].id
+  image_id = each.value.disk_size > data.openstack_compute_flavor_v2.flavors[each.value.prefix].disk ? null : data.openstack_images_image_v2.image[each.value.prefix].id
 
   flavor_name  = each.value.type
   user_data    = base64gzip(module.configuration.user_data[each.key])
@@ -76,7 +77,7 @@ resource "openstack_compute_instance_v2" "instances" {
   }
 
   dynamic "block_device" {
-    for_each = lookup(each.value, "disk_size", 10) > data.openstack_compute_flavor_v2.flavors[each.value.prefix].disk ? [{ volume_size = lookup(each.value, "disk_size", 10) }] : []
+    for_each = each.value.disk_size > data.openstack_compute_flavor_v2.flavors[each.value.prefix].disk ? [{ volume_size = each.value.disk_size }] : []
     content {
       uuid                  = data.openstack_images_image_v2.image[each.value.prefix].id
       source_type           = "image"
