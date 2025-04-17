@@ -19,7 +19,7 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.4.0
+          terraform_version: 1.5.7
 
       - name: Create tarballs and zips
         if: startsWith(github.ref, 'refs/tags/')
