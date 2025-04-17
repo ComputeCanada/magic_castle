@@ -532,14 +532,20 @@ be leveraged to accelerate compute node configuration.
     | Provider | `disk_type` | `disk_size` (GiB) |
     | -------- | :---------- | ----------------: |
     | Azure    |`Premium_LRS`| 30                |
-    | AWS      | `gp2`       | 10                |
+    | AWS      | `gp2`       | 20                |
     | GCP      | `pd-ssd`    | 20                |
     | OpenStack| `null`      | 10                |
     | OVH      | `null`      | 10                |
 
 4. `disk_size`: size in gibibytes (GiB) of the instance's root disk containing
-the operating system and service software
-(default: see the previous table).
+the operating system and service software. The default value is computed has the
+maximum between the cloud provider default size (see previous table) and the
+recommended minimum size per tag as specified in the following table.
+
+    | Tag      | min `disk_size` (GiB) |
+    | -------- | --------------------: |
+    | `mgmt`   | 20                    |
+
 5. `mig`: map of [NVIDIA Multi-Instance GPU (MIG)](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html) short profile names and count used to partition the instances' GPU, example for an A100:
     ```
     mig = { "1g.5gb" = 2, "2g.10gb" = 1, "3g.20gb" = 1 }
