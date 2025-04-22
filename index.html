@@ -2673,7 +2673,7 @@
 <h2 id="1-setup">1. Setup</h2>
 <p>To use Magic Castle you will need:</p>
 <ol>
-<li>Terraform (&gt;= 1.4.0)</li>
+<li>Terraform (&gt;= 1.5.7)</li>
 <li>Authenticated access to a cloud</li>
 <li>Ability to communicate with the cloud provider API from your computer</li>
 <li>A project with operational limits meeting the requirements described in <em>Quotas</em> subsection.</li>
@@ -3108,7 +3108,7 @@ be leveraged to accelerate compute node configuration.</li>
 <tr>
 <td>AWS</td>
 <td style="text-align: left;"><code>gp2</code></td>
-<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
 </tr>
 <tr>
 <td>GCP</td>
@@ -3130,14 +3130,31 @@ be leveraged to accelerate compute node configuration.</li>
 </li>
 <li>
 <p><code>disk_size</code>: size in gibibytes (GiB) of the instance's root disk containing
-the operating system and service software
-(default: see the previous table).</p>
+the operating system and service software. The default value is computed has the
+maximum between the cloud provider default size (see previous table) and the
+recommended minimum size per tag as specified in the following table.</p>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th style="text-align: right;">min <code>disk_size</code> (GiB)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mgmt</code></td>
+<td style="text-align: right;">20</td>
+</tr>
+</tbody>
+</table>
 </li>
-<li><code>mig</code>: map of <a href="https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html">NVIDIA Multi-Instance GPU (MIG)</a> short profile names and count used to partition the instances' GPU, example for an A100:
+<li>
+<p><code>mig</code>: map of <a href="https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html">NVIDIA Multi-Instance GPU (MIG)</a> short profile names and count used to partition the instances' GPU, example for an A100:
     <div class="highlight"><pre><span></span><code>mig = { &quot;1g.5gb&quot; = 2, &quot;2g.10gb&quot; = 1, &quot;3g.20gb&quot; = 1 }
 </code></pre></div>
     This is only functional with <a href="https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-gpus">MIG supported GPUs</a>,
-    and with x86-64 processors (see <a href="https://github.com/NVIDIA/mig-parted/issues/30">NVIDIA/mig-parted issue #30</a>).</li>
+    and with x86-64 processors (see <a href="https://github.com/NVIDIA/mig-parted/issues/30">NVIDIA/mig-parted issue #30</a>).</p>
+</li>
 <li><code>shard</code>: total number of <a href="https://slurm.schedmd.com/gres.html#Sharding">Sharding</a> on the node. Sharding allows sharing the same GPU on multiple jobs. The total number of shards is evenly distributed across all GPUs on the node.</li>
 </ol>
 <p>The instance specifications are retrieved from the cloud provider data source, but it is possible to explicitly specify them.</p>
