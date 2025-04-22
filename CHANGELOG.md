@@ -26,7 +26,7 @@ Refer to [puppet-magic_castle changelog](https://github.com/ComputeCanada/puppet
 
 - Generalized definition of instance's specs (PR #341)
 - Made tf user a system user (PR #343)
-- Splited sshd config so that Match directives are in their own files (PR #345)
+- Split sshd config so that Match directives are in their own files (PR #345)
 
 ## [14.1.3] 2025-01-29
 
