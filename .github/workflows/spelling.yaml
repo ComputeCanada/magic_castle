@@ -16,5 +16,5 @@ jobs:
     - uses: codespell-project/actions-codespell@master
       with:
         check_filenames: true
-        ignore_words_list: keypair
+        ignore_words_list: keypair, te
         only_warn: 1
