@@ -32,7 +32,14 @@ jobs:
         run: trivy config --misconfig-scanners terraform --tf-exclude-downloaded-modules --skip-dirs examples/advanced --format json -o trivy-results.json .
 
       - name: Convert Trivy JSON output to SARIF and filter duplicated results
-        run: trivy convert --format sarif trivy-results.json |  jq 'reduce .runs[0].results[] as $a ([]; if IN(.[]; $a) then . else . += [$a] end)' > trivy-results.sarif
+        run: |
+          trivy convert --format sarif trivy-results.json --output trivy-results.sarif
+          # When converting from JSON to SARIF, some information, like origin of the misconfiguration, is lost.
+          # The lost information results in duplicated issues. We filter these issues with jq and create a new
+          # sarif file that will be uploaded to the security tab.
+          jq 'reduce .runs[0].results[] as $a ([]; if IN(.[]; $a) then . else . += [$a] end)' trivy-results.sarif > trivy-results-filtered.sarif
+          jq ".runs[0].results |= $(cat trivy-results-filtered.sarif)" trivy-results.sarif > trivy-results-final.sarif
+          mv trivy-results-final.sarif trivy-results.sarif
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
