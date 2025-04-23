@@ -1,0 +1,6 @@
+# Some instance should have public ip addresses
+AVD-GCP-0031
+
+# Magic Castle does not handle VPC flow logs
+AVD-GCP-0029
+AVD-AWS-0178
