@@ -1,4 +1,4 @@
-name: Trivy Vulnerabilities Scan
+name: Trivy Misconfiguration Scan
 
 on:
   pull_request:
@@ -18,7 +18,7 @@ jobs:
             cp common/outputs.tf common/variables.tf $cloud/;
           done
           for example in examples/*/*.tf; do
-            sed 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' $example
+            sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' $example
           done
 
       - name: Manual Trivy Setup
