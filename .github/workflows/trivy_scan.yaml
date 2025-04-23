@@ -53,7 +53,7 @@ jobs:
             echo "### Security Output"
             echo "<details><summary>Click to expand</summary>"
             echo ""
-            echo '```terraform'
+            echo '```bash'
             trivy convert --format table trivy-results.json
             echo '```'
             echo "</details>"
