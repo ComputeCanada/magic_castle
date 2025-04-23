@@ -1,7 +1,10 @@
 name: Trivy Misconfiguration Scan
 
 on:
+  push:
   pull_request:
+    branches:
+    - main
 
 jobs:
   trivy-vuln-scan:
