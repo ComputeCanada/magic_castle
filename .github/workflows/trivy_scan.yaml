@@ -11,12 +11,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Resolve symbolic links
+      - name: Resolve symbolic links and fix source
         run: |
           rm {aws,azure,gcp,openstack}/{outputs.tf,variables.tf}
           for cloud in aws azure gcp openstack; do
             cp common/outputs.tf common/variables.tf $cloud/;
-          done 
+          done
+          for example in examples/*/*.tf; do
+            sed 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' $example
+          done
 
       - name: Manual Trivy Setup
         uses: aquasecurity/setup-trivy@v0.2.2
@@ -26,7 +29,7 @@ jobs:
 
       - name: Run Trivy on providers
         shell: bash
-        run: trivy config --misconfig-scanners terraform --tf-exclude-downloaded-modules --skip-dirs examples --format json -o trivy-results.json .
+        run: trivy config --misconfig-scanners terraform --tf-exclude-downloaded-modules --skip-dirs examples/advanced --format json -o trivy-results.json .
 
       - name: Convert Trivy JSON output to SARIF
         run: trivy convert --format sarif --output trivy-results.sarif trivy-results.json
