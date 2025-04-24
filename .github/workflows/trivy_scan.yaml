@@ -53,10 +53,10 @@ jobs:
         run: |
           if [[ -s trivy-results.json ]]; then
           {
-            echo "### Security Output"
+            echo "### Trivy Misconfiguration Scan Output"
             echo "<details><summary>Click to expand</summary>"
             echo ""
-            echo '```bash'
+            echo '```console'
             trivy convert --format table trivy-results.json
             echo '```'
             echo "</details>"
