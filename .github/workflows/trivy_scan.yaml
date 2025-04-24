@@ -57,6 +57,7 @@ jobs:
             echo "<details><summary>Click to expand</summary>"
             echo ""
             echo '```console'
+            echo '$ trivy config --misconfig-scanners terraform --tf-exclude-downloaded-modules --skip-dirs examples/advanced .'
             trivy convert --format table trivy-results.json
             echo '```'
             echo "</details>"
