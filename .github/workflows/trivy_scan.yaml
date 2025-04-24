@@ -54,7 +54,7 @@ jobs:
             echo "<details><summary>Click to expand</summary>"
             echo ""
             echo '```terraform'
-            cat trivy-results.json
+            trivy convert --format table trivy-results.json
             echo '```'
             echo "</details>"
           } >> $GITHUB_STEP_SUMMARY
