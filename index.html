@@ -3063,7 +3063,7 @@ instance, while in Puppet code tags are used to identify roles of the instances.
 <p>Terraform tags:</p>
 <ul>
 <li><code>login</code>: identify instances accessible with SSH from Internet and pointed by the domain name A records</li>
-<li><code>pool</code>: identify instances created only when their hostname appears in the <a href="#417-pool-optional"><code>var.pool</code></a> list.</li>
+<li><code>pool</code>: identify instances created only when their hostname appears in the <a href="#419-pool-optional"><code>var.pool</code></a> list.</li>
 <li><code>proxy</code>: identify instances accessible with HTTP/HTTPS and pointed by the vhost A records</li>
 <li><code>public</code>: identify instances that need to have a public ip address reachable from Internet</li>
 <li><code>puppet</code>: identify instances configured as Puppet servers</li>
@@ -3789,7 +3789,7 @@ and the new accounts will be created.</p>
 <p>By default, instances tagged <code>login</code> have their port 22 opened to entire world.
 If you know the range of ip addresses that will connect to your cluster,
 we strongly recommend that you limit the access to port 22 to this range.</p>
-<p>To limit the access to port 22, refer to <a href="#414-firewall_rules-optional">section 4.14 firewall_rules</a>,
+<p>To limit the access to port 22, refer to <a href="#416-firewall_rules-optional">section 4.16 firewall_rules</a>,
 and replace the <code>cidr</code> of the <code>ssh</code> rule to match the range of ip addresses that
 have be the allowed to connect to the cluster. If there are more than one range, create multiple rules
 with distinct names.</p>
