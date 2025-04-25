@@ -54,7 +54,7 @@ jobs:
           terraform_version: "1.5.7"
       - name: Generate an SSH key
         run: ssh-keygen -b 2048 -t rsa -q -N "" -f ~/.ssh/id_rsa
-      - run: sed -i "s;git::${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}//;../../;g" examples/${{ matrix.example }}/main.tf;
+      - run: sed -i "s;git::${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git//;../../;g" examples/${{ matrix.example }}/main.tf;
       - run: terraform -chdir=examples/${{ matrix.example }} init
       - run: terraform -chdir=examples/${{ matrix.example }} validate
 
