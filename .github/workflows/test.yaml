@@ -16,7 +16,7 @@ jobs:
         provider: ['aws', 'azure', 'gcp', 'openstack', 'ovh']
     steps:
       - name: Checkout code
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.5.7"
@@ -26,6 +26,7 @@ jobs:
         uses: ./.github/actions/test_provider
         with:
           provider: ${{ matrix.provider }}
+
   test_dns_provider:
     runs-on: ubuntu-latest
     strategy:
@@ -33,7 +34,7 @@ jobs:
         provider: ['cloudflare', 'gcloud', 'txt']
     steps:
       - name: Checkout code
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.5.7"
@@ -41,6 +42,7 @@ jobs:
         run: terraform -chdir=dns/${{ matrix.provider }} init
       - name: Validate ${{ matrix.provider }} DNS
         run: terraform -chdir=dns/${{ matrix.provider }} validate
+
   trivy-vuln-scan:
     name: Running Trivy Scan
     runs-on: ubuntu-latest
