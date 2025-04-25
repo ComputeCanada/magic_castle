@@ -9,25 +9,20 @@ on:
       - main
 
 jobs:
-  test_cloud_provider:
+  validate_cloud_providers:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         provider: ['aws', 'azure', 'gcp', 'openstack', 'ovh']
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.5.7"
-      - name: Create SSH keys
-        run: ssh-keygen -b 2048 -t rsa -q -N "" -f ~/.ssh/id_rsa
-      - name: Test ${{ matrix.provider }}
-        uses: ./.github/actions/test_provider
-        with:
-          provider: ${{ matrix.provider }}
+      - run: terraform -chdir=${{ matrix.provider }} init
+      - run: terraform -chdir=${{ matrix.provider }} validate
 
-  test_dns_provider:
+  validate_dns_providers:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -38,17 +33,36 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.5.7"
-      - name: Init ${{ matrix.provider }} DNS
-        run: terraform -chdir=dns/${{ matrix.provider }} init
-      - name: Validate ${{ matrix.provider }} DNS
-        run: terraform -chdir=dns/${{ matrix.provider }} validate
+      - run: terraform -chdir=dns/${{ matrix.provider }} init
+      - run: terraform -chdir=dns/${{ matrix.provider }} validate
+
+  validate_examples:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        example:
+          - aws
+          - azure
+          - gcp
+          - openstack
+          - ovh
+          - advanced/spot_instance/aws
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.7"
+      - name: Generate an SSH key
+        run: ssh-keygen -b 2048 -t rsa -q -N "" -f ~/.ssh/id_rsa
+      - run: sed -i "s;git::${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}//;../../;g" examples/${{ matrix.example }}/main.tf;
+      - run: terraform -chdir=examples/${{ matrix.example }} init
+      - run: terraform -chdir=examples/${{ matrix.example }} validate
 
   trivy-vuln-scan:
     name: Running Trivy Scan
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Resolve symbolic links and fix source
         run: |
