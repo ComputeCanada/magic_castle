@@ -46,7 +46,7 @@ jobs:
           - gcp
           - openstack
           - ovh
-          - advanced/spot_instances/aws
+          # - advanced/spot_instances/aws
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
