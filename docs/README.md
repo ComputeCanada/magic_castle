@@ -1188,7 +1188,7 @@ described by the `main.tf` configuration file.
 Terraform should now be able to communicate with your cloud provider.
 To test your configuration file, enter the following command
 ```
-terraform plan
+terraform plan -out tfplan
 ```
 
 This command will validate the syntax of your configuration file and
@@ -1196,6 +1196,49 @@ communicate with the provider, but it will not create new resources. It
 is only a dry-run. If Terraform does not report any error, you can move
 to the next step. Otherwise, read the errors and fix your configuration
 file accordingly.
+
+### 7.1 Scanning plan for misconfiguration (optional)
+
+[Trivy](https://trivy.dev/latest/) is an open source security scanner
+that scans Terraform files (code and plan) and reports about potential issues.
+Magic Castle development team has integrated Trivy in its
+[CI/CD pipeline](https://github.com/ComputeCanada/magic_castle/blob/main/.github/workflows/trivy_scan.yaml)
+to prevent misconfiguration and security issues that could be introduced
+by commits or a pull-requests. You too can use Trivy to verify your Terraform plan
+before applying it.
+
+After [installing Trivy](https://trivy.dev/latest/getting-started/), you can
+scan the Terraform plan produced in section 7, like this:
+```
+trivy conf tfplan
+```
+
+Trivy then produces a report about configuration issues like this:
+```console
+AVD-OPNSTK-0003 (MEDIUM): Security group rule allows ingress to multiple public addresses.
+═════════════════════════════════════════════════════════════════════════
+Opening up ports to the public internet is generally to be avoided. You should
+restrict access to IP addresses or ranges that explicitly require it where possible.
+
+See https://avd.aquasec.com/misconfig/avd-opnstk-0003
+─────────────────────────────────────────────────────────────────────────
+ ./openstack/openstack/network-2.tf:53
+   via ./openstack/openstack/network-2.tf:45-56 (openstack_networking_secgroup_rule_v2.rule["ssh"])
+    via main.tf:10-44 (module.openstack)
+─────────────────────────────────────────────────────────────────────────
+  45   resource openstack_networking_secgroup_rule_v2 "rule" {
+  ..
+  53 [   remote_ip_prefix  = each.value.cidr
+  ..
+  56   }
+─────────────────────────────────────────────────────────────────────────
+```
+
+The most common configuration issues identified by Trivy in Magic Castle plans
+(illustrated in the previous output example), are firewall rules allowing access to port from
+public internet. If you know which IP addresses should have access to the cluster,
+you can harden the firewall rules. Refer to section [4.16 firewall_rules](#416-firewall_rules-optional)
+for more information.
 
 ## 8. Deployment
 
