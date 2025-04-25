@@ -1056,6 +1056,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="7. Planning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-scanning-plan-for-misconfiguration-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.1 Scanning plan for misconfiguration (optional)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -2333,6 +2348,21 @@
       7. Planning
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="7. Planning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-scanning-plan-for-misconfiguration-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.1 Scanning plan for misconfiguration (optional)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3629,13 +3659,49 @@ your cloud provider and verify that your cluster can be built as it is
 described by the <code>main.tf</code> configuration file.</p>
 <p>Terraform should now be able to communicate with your cloud provider.
 To test your configuration file, enter the following command
-<div class="highlight"><pre><span></span><code>terraform plan
+<div class="highlight"><pre><span></span><code>terraform plan -out tfplan
 </code></pre></div></p>
 <p>This command will validate the syntax of your configuration file and
 communicate with the provider, but it will not create new resources. It
 is only a dry-run. If Terraform does not report any error, you can move
 to the next step. Otherwise, read the errors and fix your configuration
 file accordingly.</p>
+<h3 id="71-scanning-plan-for-misconfiguration-optional">7.1 Scanning plan for misconfiguration (optional)</h3>
+<p><a href="https://trivy.dev/latest/">Trivy</a> is an open source security scanner
+that scans Terraform files (code and plan) and reports about potential issues.
+Magic Castle development team has integrated Trivy in its
+<a href="https://github.com/ComputeCanada/magic_castle/blob/main/.github/workflows/trivy_scan.yaml">CI/CD pipeline</a>
+to prevent misconfiguration and security issues that could be introduced
+by commits or a pull-requests. You too can use Trivy to verify your Terraform plan
+before applying it.</p>
+<p>After <a href="https://trivy.dev/latest/getting-started/">installing Trivy</a>, you can
+scan the Terraform plan produced in section 7, like this:
+<div class="highlight"><pre><span></span><code>trivy conf tfplan
+</code></pre></div></p>
+<p>Trivy then produces a report about configuration issues like this:
+<div class="highlight"><pre><span></span><code><span class="go">AVD-OPNSTK-0003 (MEDIUM): Security group rule allows ingress to multiple public addresses.</span>
+<span class="go">═════════════════════════════════════════════════════════════════════════</span>
+<span class="go">Opening up ports to the public internet is generally to be avoided. You should</span>
+<span class="go">restrict access to IP addresses or ranges that explicitly require it where possible.</span>
+
+<span class="go">See https://avd.aquasec.com/misconfig/avd-opnstk-0003</span>
+<span class="go">─────────────────────────────────────────────────────────────────────────</span>
+<span class="go"> ./openstack/openstack/network-2.tf:53</span>
+<span class="go">   via ./openstack/openstack/network-2.tf:45-56 (openstack_networking_secgroup_rule_v2.rule[&quot;ssh&quot;])</span>
+<span class="go">    via main.tf:10-44 (module.openstack)</span>
+<span class="go">─────────────────────────────────────────────────────────────────────────</span>
+<span class="go">  45   resource openstack_networking_secgroup_rule_v2 &quot;rule&quot; {</span>
+<span class="go">  ..</span>
+<span class="go">  53 [   remote_ip_prefix  = each.value.cidr</span>
+<span class="go">  ..</span>
+<span class="go">  56   }</span>
+<span class="go">─────────────────────────────────────────────────────────────────────────</span>
+</code></pre></div></p>
+<p>The most common configuration issues identified by Trivy in Magic Castle plans
+(illustrated in the previous output example), are firewall rules allowing access to port from
+public internet. If you know which IP addresses should have access to the cluster,
+you can harden the firewall rules. Refer to section <a href="#416-firewall_rules-optional">4.16 firewall_rules</a>
+for more information.</p>
 <h2 id="8-deployment">8. Deployment</h2>
 <p>To create the resources defined by your main, enter the following command
 <div class="highlight"><pre><span></span><code>terraform apply
