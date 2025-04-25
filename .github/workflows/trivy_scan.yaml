@@ -31,7 +31,6 @@ jobs:
           cache: true
 
       - name: Run Trivy on providers
-        shell: bash
         run: trivy config --misconfig-scanners terraform --tf-exclude-downloaded-modules --skip-dirs examples/advanced --format json -o trivy-results.json .
 
       - name: Convert Trivy JSON output to SARIF and filter duplicated results
