@@ -498,7 +498,7 @@ instance, while in Puppet code tags are used to identify roles of the instances.
 Terraform tags:
 
 - `login`: identify instances accessible with SSH from Internet and pointed by the domain name A records
-- `pool`: identify instances created only when their hostname appears in the [`var.pool`](#417-pool-optional) list.
+- `pool`: identify instances created only when their hostname appears in the [`var.pool`](#419-pool-optional) list.
 - `proxy`: identify instances accessible with HTTP/HTTPS and pointed by the vhost A records
 - `public`: identify instances that need to have a public ip address reachable from Internet
 - `puppet`: identify instances configured as Puppet servers
