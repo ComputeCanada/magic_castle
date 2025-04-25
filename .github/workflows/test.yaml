@@ -12,6 +12,7 @@ jobs:
   validate_cloud_providers:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         provider: ['aws', 'azure', 'gcp', 'openstack', 'ovh']
     steps:
@@ -25,6 +26,7 @@ jobs:
   validate_dns_providers:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         provider: ['cloudflare', 'gcloud', 'txt']
     steps:
@@ -39,6 +41,7 @@ jobs:
   validate_examples:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         example:
           - aws
