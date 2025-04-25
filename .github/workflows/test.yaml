@@ -32,6 +32,11 @@ jobs:
       matrix:
         provider: ['cloudflare', 'gcloud', 'txt']
     steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.7"
       - name: Init ${{ matrix.provider }} DNS
         run: terraform -chdir=dns/${{ matrix.provider }} init
       - name: Validate ${{ matrix.provider }} DNS
