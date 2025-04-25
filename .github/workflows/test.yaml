@@ -2,11 +2,27 @@ name: Validate Terraform code
 
 on:
   push:
-    branches:
-      - '*'
+    paths:
+      - aws/*
+      - azure/*
+      - common/*
+      - dns/*
+      - examples/*
+      - openstack/*
+      - ovh/*
+      - .github/workflows/test.yaml
   pull_request:
     branches:
       - main
+    paths:
+      - aws/*
+      - azure/*
+      - common/*
+      - dns/*
+      - examples/*
+      - openstack/*
+      - ovh/*
+      - .github/workflows/test.yaml
 
 jobs:
   validate_cloud_providers:
