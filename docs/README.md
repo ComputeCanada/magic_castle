@@ -1413,7 +1413,7 @@ By default, instances tagged `login` have their port 22 opened to entire world.
 If you know the range of ip addresses that will connect to your cluster,
 we strongly recommend that you limit the access to port 22 to this range.
 
-To limit the access to port 22, refer to [section 4.14 firewall_rules](#414-firewall_rules-optional),
+To limit the access to port 22, refer to [section 4.16 firewall_rules](#416-firewall_rules-optional),
 and replace the `cidr` of the `ssh` rule to match the range of ip addresses that
 have be the allowed to connect to the cluster. If there are more than one range, create multiple rules
 with distinct names.

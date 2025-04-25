@@ -1,4 +1,6 @@
 site_name: Magic Castle
+validation:
+  anchors: warn
 theme:
   name: material
   logo: img/logo.png
