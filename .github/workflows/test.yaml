@@ -9,72 +9,30 @@ on:
       - main
 
 jobs:
-  test:
-    env:
-      TF_VERSION: 1.5.7
-
+  test_cloud_provider:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        provider: ['aws', 'azure', 'gcp', 'openstack', 'ovh']
     steps:
       - name: Checkout code
         uses: actions/checkout@main
-
-      - name: Cache Terraform
-        id: cache-terraform
-        uses: actions/cache@v4
+      - uses: hashicorp/setup-terraform@v3
         with:
-          path: ~/bin
-          key: terraform-${{ env.TF_VERSION }}
-
-      - name: Download terraform
-        if: steps.cache-terraform.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p "${HOME}/bin"
-          curl -sSL -o terraform.zip "https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip"
-          unzip terraform.zip
-          mv -v terraform "${HOME}/bin/terraform"
-          ~/bin/terraform version
-
+          terraform_version: "1.5.7"
       - name: Create SSH keys
-        run: |
-          ssh-keygen -b 2048 -t rsa -q -N "" -f ~/.ssh/id_rsa
-
-      - name: Test AWS
+        run: ssh-keygen -b 2048 -t rsa -q -N "" -f ~/.ssh/id_rsa
+      - name: Test ${{ matrix.provider }}
         uses: ./.github/actions/test_provider
         with:
-          path: ~/bin
-          provider: 'aws'
-
-      - name: Test Azure
-        uses: ./.github/actions/test_provider
-        with:
-          path: ~/bin
-          provider: 'azure'
-
-      - name: Test GCP
-        uses: ./.github/actions/test_provider
-        with:
-          path: ~/bin
-          provider: 'gcp'
-
-      - name: Test OpenStack
-        uses: ./.github/actions/test_provider
-        with:
-          path: ~/bin
-          provider: 'openstack'
-
-      - name: Test OVH
-        uses: ./.github/actions/test_provider
-        with:
-          path: ~/bin
-          provider: 'ovh'
-
-      - name: Test CloudFlare DNS
-        run: |
-          ~/bin/terraform -chdir=dns/cloudflare init
-          ~/bin/terraform -chdir=dns/cloudflare validate
-
-      - name: Test Google Cloud DNS
-        run: |
-          ~/bin/terraform -chdir=dns/gcloud init
-          ~/bin/terraform -chdir=dns/gcloud validate
+          provider: ${{ matrix.provider }}
+  test_dns_provider:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        provider: ['cloudflare', 'gcloud', 'txt']
+    steps:
+      - name: Init ${{ matrix.provider }} DNS
+        run: terraform -chdir=dns/${{ matrix.provider }} init
+      - name: Validate ${{ matrix.provider }} DNS
+        run: terraform -chdir=dns/${{ matrix.provider }} validate
