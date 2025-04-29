@@ -90,9 +90,7 @@ jobs:
           for cloud in aws azure gcp openstack; do
             cp common/outputs.tf common/variables.tf $cloud/;
           done
-          for example in examples/*/*.tf; do
-            sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' $example
-          done
+          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' examples/*/*.tf
 
       - name: Manual Trivy Setup
         uses: aquasecurity/setup-trivy@v0.2.2
