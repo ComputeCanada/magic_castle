@@ -80,6 +80,7 @@ jobs:
   trivy-vuln-scan:
     name: Running Trivy Scan
     runs-on: ubuntu-latest
+    needs: [validate_cloud_providers, validate_examples]
     steps:
       - uses: actions/checkout@v4
 
