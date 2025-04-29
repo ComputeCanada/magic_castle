@@ -16,7 +16,7 @@ variable "nb_users" {
 variable "instances" {
   description = "Map that defines the parameters for each type of instance of the cluster"
   validation {
-    condition = alltrue([for key, values in var.instances: can(regex("^[a-z][0-9a-z-]{1,63}$", "${key}${values.count}"))])
+    condition = alltrue([for key, values in var.instances: can(regex("^[a-z][0-9a-z-]{1,63}$", "${key}${lookup(values, "count", 1)}"))])
     error_message = "Instances' prefix plus index must be at most 63 lowercase alphanumeric characters and start with a letter. It can include dashes."
   }
   validation {
@@ -24,7 +24,7 @@ variable "instances" {
     error_message = "Each entry in var.instances needs to have at least a type and a list of tags."
   }
   validation {
-    condition = sum([for key, values in var.instances: contains(values["tags"], "proxy") ? values["count"] : 0]) < 2
+    condition = sum([for key, values in var.instances: contains(values["tags"], "proxy") ? lookup(values, "count", 1) : 0]) < 2
     error_message = "At most one instance in var.instances can have the _proxy_ tag"
   }
   validation {
