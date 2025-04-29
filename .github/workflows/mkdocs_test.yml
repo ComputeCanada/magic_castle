@@ -1,6 +1,13 @@
 # documentation: https://help.github.com/en/articles/workflow-syntax-for-github-actions
 name: build documentation
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - docs/*
+  pull_request:
+    paths:
+      - docs/*
+
 # Declare default permissions as read only.
 permissions: read-all
 jobs:

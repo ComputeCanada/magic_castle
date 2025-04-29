@@ -2,79 +2,131 @@ name: Validate Terraform code
 
 on:
   push:
-    branches:
-      - '*'
+    paths:
+      - aws/*
+      - azure/*
+      - common/*
+      - dns/*
+      - examples/*
+      - openstack/*
+      - ovh/*
+      - .github/workflows/test.yaml
   pull_request:
     branches:
       - main
+    paths:
+      - aws/*
+      - azure/*
+      - common/*
+      - dns/*
+      - examples/*
+      - openstack/*
+      - ovh/*
+      - .github/workflows/test.yaml
 
 jobs:
-  test:
-    env:
-      TF_VERSION: 1.5.7
-
+  validate_cloud_providers:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        provider: ['aws', 'azure', 'gcp', 'openstack', 'ovh']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.7"
+      - run: terraform -chdir=${{ matrix.provider }} init
+      - run: terraform -chdir=${{ matrix.provider }} validate
 
+  validate_dns_providers:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        provider: ['cloudflare', 'gcloud', 'txt']
     steps:
       - name: Checkout code
-        uses: actions/checkout@main
-
-      - name: Cache Terraform
-        id: cache-terraform
-        uses: actions/cache@v4
+        uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
         with:
-          path: ~/bin
-          key: terraform-${{ env.TF_VERSION }}
+          terraform_version: "1.5.7"
+      - run: terraform -chdir=dns/${{ matrix.provider }} init
+      - run: terraform -chdir=dns/${{ matrix.provider }} validate
 
-      - name: Download terraform
-        if: steps.cache-terraform.outputs.cache-hit != 'true'
+  validate_examples:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        example:
+          - aws
+          - azure
+          - gcp
+          - openstack
+          - ovh
+          # - advanced/spot_instances/aws
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.7"
+      - name: Generate an SSH key
+        run: ssh-keygen -b 2048 -t rsa -q -N "" -f ~/.ssh/id_rsa
+      - run: sed -i "s;git::${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git//;../../;g" examples/${{ matrix.example }}/main.tf;
+      - run: terraform -chdir=examples/${{ matrix.example }} init
+      - run: terraform -chdir=examples/${{ matrix.example }} validate
+
+  trivy-vuln-scan:
+    name: Running Trivy Scan
+    runs-on: ubuntu-latest
+    needs: [validate_cloud_providers, validate_examples]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve symbolic links and fix source
         run: |
-          mkdir -p "${HOME}/bin"
-          curl -sSL -o terraform.zip "https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip"
-          unzip terraform.zip
-          mv -v terraform "${HOME}/bin/terraform"
-          ~/bin/terraform version
+          rm {aws,azure,gcp,openstack}/{outputs.tf,variables.tf}
+          for cloud in aws azure gcp openstack; do
+            cp common/outputs.tf common/variables.tf $cloud/;
+          done
+          sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' examples/*/*.tf
 
-      - name: Create SSH keys
+      - name: Manual Trivy Setup
+        uses: aquasecurity/setup-trivy@v0.2.2
+        with:
+          version: v0.61.1
+          cache: true
+
+      - name: Run Trivy on providers
+        run: trivy config --misconfig-scanners terraform --tf-exclude-downloaded-modules --skip-dirs examples/advanced --format json -o trivy-results.json .
+
+      - name: Convert Trivy JSON output to SARIF and filter duplicated results
         run: |
-          ssh-keygen -b 2048 -t rsa -q -N "" -f ~/.ssh/id_rsa
+          trivy convert --format sarif trivy-results.json --output trivy-results.sarif
+          # When converting from JSON to SARIF, some information, like origin of the misconfiguration, is lost.
+          # The lost information results in duplicated issues. We filter these issues with jq and create a new
+          # sarif file that will be uploaded to the security tab.
+          jq 'reduce .runs[0].results[] as $a ([]; if IN(.[]; $a) then . else . += [$a] end)' trivy-results.sarif > trivy-results-filtered.sarif
+          jq ".runs[0].results |= $(cat trivy-results-filtered.sarif)" trivy-results.sarif > trivy-results-final.sarif
+          mv trivy-results-final.sarif trivy-results.sarif
 
-      - name: Test AWS
-        uses: ./.github/actions/test_provider
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
         with:
-          path: ~/bin
-          provider: 'aws'
+          sarif_file: "trivy-results.sarif"
 
-      - name: Test Azure
-        uses: ./.github/actions/test_provider
-        with:
-          path: ~/bin
-          provider: 'azure'
-
-      - name: Test GCP
-        uses: ./.github/actions/test_provider
-        with:
-          path: ~/bin
-          provider: 'gcp'
-
-      - name: Test OpenStack
-        uses: ./.github/actions/test_provider
-        with:
-          path: ~/bin
-          provider: 'openstack'
-
-      - name: Test OVH
-        uses: ./.github/actions/test_provider
-        with:
-          path: ~/bin
-          provider: 'ovh'
-
-      - name: Test CloudFlare DNS
+      - name: Publish Trivy Output to Summary
         run: |
-          ~/bin/terraform -chdir=dns/cloudflare init
-          ~/bin/terraform -chdir=dns/cloudflare validate
-
-      - name: Test Google Cloud DNS
-        run: |
-          ~/bin/terraform -chdir=dns/gcloud init
-          ~/bin/terraform -chdir=dns/gcloud validate
+          if [[ -s trivy-results.json ]]; then
+          {
+            echo "### Trivy Misconfiguration Scan Output"
+            echo "<details><summary>Click to expand</summary>"
+            echo ""
+            echo '```console'
+            echo '$ trivy config --misconfig-scanners terraform --tf-exclude-downloaded-modules --skip-dirs examples/advanced .'
+            trivy convert --format table trivy-results.json
+            echo '```'
+            echo "</details>"
+          } >> $GITHUB_STEP_SUMMARY
+          fi
