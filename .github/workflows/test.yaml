@@ -77,6 +77,31 @@ jobs:
       - run: terraform -chdir=examples/${{ matrix.example }} init
       - run: terraform -chdir=examples/${{ matrix.example }} validate
 
+  validate_advanced_examples:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        example:
+          - spot_instances/aws
+          - spot_instances/azure
+          - spot_instances/gcp
+          - basic_puppet/openstack
+          - elk/openstack
+          - k8s/openstack
+          - lustre/openstack
+          - spark/openstack
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.7"
+      - name: Generate an SSH key
+        run: ssh-keygen -b 2048 -t rsa -q -N "" -f ~/.ssh/id_rsa
+      - run: sed -i "s;git::${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git//;../../../../;g" examples/advanced/${{ matrix.example }}/main.tf;
+      - run: terraform -chdir=examples/advanced/${{ matrix.example }} init
+      - run: terraform -chdir=examples/advanced/${{ matrix.example }} validate
+
   trivy-vuln-scan:
     name: Running Trivy Scan
     runs-on: ubuntu-latest
