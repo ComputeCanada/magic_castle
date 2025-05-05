@@ -108,11 +108,6 @@ resource "aws_placement_group" "efa_group" {
   strategy = "cluster"
 }
 
-resource "aws_key_pair" "key" {
-  key_name   = "${var.cluster_name}-key"
-  public_key = var.public_keys[0]
-}
-
 data "aws_ec2_instance_type" "instance_type" {
   for_each      = var.instances
   instance_type = each.value.type
@@ -131,8 +126,6 @@ resource "aws_instance" "instances" {
   user_data         = base64gzip(module.configuration.user_data[each.key])
   availability_zone = local.availability_zone
   placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null
-
-  key_name          = aws_key_pair.key.key_name
 
   network_interface {
     network_interface_id = aws_network_interface.nic[each.key].id
