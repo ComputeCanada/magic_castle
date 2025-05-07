@@ -21,3 +21,7 @@ output "domain_name" {
 output "bastion_tag" {
   value = local.bastion_tag
 }
+
+output "all_instance_tags" {
+  value = toset(flatten([for instance in local.instances: instance.tags]))
+}
