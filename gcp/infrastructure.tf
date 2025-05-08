@@ -152,6 +152,7 @@ resource "google_compute_disk" "volumes" {
   zone     = local.zone
   size     = each.value.size
 }
+
 data "google_compute_disk" "existing_volumes" {
   for_each = {
     for x, values in module.design.volumes : x => values if ! lookup(values, "managed", true)

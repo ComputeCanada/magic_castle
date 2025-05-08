@@ -178,6 +178,7 @@ resource "aws_ebs_volume" "volumes" {
     Name = "${var.cluster_name}-${each.key}"
   }
 }
+
 data "aws_ebs_volume" "existing_volumes" {
   for_each = {
     for x, values in module.design.volumes : x => values if ! lookup(values, "managed", true)
@@ -221,7 +222,7 @@ locals {
           pv_key => {
             for name, specs in pv_values:
               name => merge(
-                { glob = try("/dev/disk/by-id/*${replace(aws_ebs_volume.volumes["${x}-${pv_key}-${name}"].id, "-", "")}", "/dev/disk/by-id/*${replace(data.aws_ebs_volume.existing_volumes["${x}-${pv_key}-${name}"].id, "-", "")}") },
+                { glob = "/dev/disk/by-id/*${replace(aws_volume_attachment.attachments["${x}-${pv_key}-${name}"].volume_id, "-", "")}" },
                 specs,
               )
           } if contains(values.tags, pv_key)

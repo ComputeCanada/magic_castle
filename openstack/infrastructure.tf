@@ -109,6 +109,7 @@ resource "openstack_blockstorage_volume_v3" "volumes" {
   snapshot_id = lookup(each.value, "snapshot", null)
   enable_online_resize = lookup(each.value, "enable_resize", false)
 }
+
 data "openstack_blockstorage_volume_v3" "existing_volumes" {
   for_each = {
     for x, values in module.design.volumes : x => values if ! lookup(values, "managed", true)
@@ -142,7 +143,7 @@ locals {
           pv_key => {
             for name, specs in pv_values:
               name => merge(
-                { glob = try("/dev/disk/by-id/*${substr(openstack_blockstorage_volume_v3.volumes["${x}-${pv_key}-${name}"].id, 0, 20)}", "/dev/disk/by-id/*${substr(data.openstack_blockstorage_volume_v3.existing_volumes["${x}-${pv_key}-${name}"].id, 0, 20)}") },
+                { glob = "/dev/disk/by-id/*${substr(openstack_compute_volume_attach_v2.attachments["${x}-${pv_key}-${name}"].volume_id, 0, 20)}" },
                 specs,
               )
           } if contains(values.tags, pv_key)

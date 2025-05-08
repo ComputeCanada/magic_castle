@@ -139,6 +139,7 @@ resource "azurerm_managed_disk" "volumes" {
   create_option        = "Empty"
   disk_size_gb         = each.value.size
 }
+
 data "azurerm_managed_disk" "existing_volumes" {
   for_each             = {
     for x, values in module.design.volumes : x => values if ! lookup(values, "managed", true)
@@ -175,7 +176,7 @@ locals {
           pv_key => {
             for name, specs in pv_values:
               name => merge(
-                { glob = "/dev/disk/azure/scsi1/lun${index(module.design.volume_per_instance[x], "${pv_key}-${name}")}" },
+                { glob = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.attachments.lun}" },
                 specs,
               )
           } if contains(values.tags, pv_key)
