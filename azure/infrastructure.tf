@@ -148,9 +148,16 @@ data "azurerm_managed_disk" "existing_volumes" {
   resource_group_name  = local.resource_group_name
 }
 
+locals {
+  volume_ids = {
+    for key, values in module.design.volumes:
+    key => lookup(values, "managed", true) ? azurerm_managed_disk.volumes[key].id: data.azurerm_managed_disk.existing_volumes[key].id
+  }
+}
+
 resource "azurerm_virtual_machine_data_disk_attachment" "attachments" {
   for_each           = module.design.volumes
-  managed_disk_id    = try(azurerm_managed_disk.volumes[each.key].id, data.azurerm_managed_disk.existing_volumes[each.key].id)
+  managed_disk_id    = local.volume_ids[each.key]
   virtual_machine_id = azurerm_linux_virtual_machine.instances[each.value.instance].id
   lun                = index(module.design.volume_per_instance[each.value.instance], replace(each.key, "${each.value.instance}-", ""))
   caching            = "ReadWrite"
@@ -176,7 +183,7 @@ locals {
           pv_key => {
             for name, specs in pv_values:
               name => merge(
-                { glob = "/dev/disk/azure/scsi1/lun${azurerm_virtual_machine_data_disk_attachment.attachments.lun}" },
+                { glob = "/dev/disk/azure/scsi1/lun${index(module.design.volume_per_instance[x], "${pv_key}-${name}")}" },
                 specs,
               )
           } if contains(values.tags, pv_key)

@@ -160,10 +160,21 @@ data "google_compute_disk" "existing_volumes" {
   name     = "${var.cluster_name}-${each.key}"
 }
 
+locals{
+  volume_self_links = {
+    for key, values in module.design.volumes:
+    key => lookup(values, "managed", true) ? google_compute_disk.volumes[key].self_link : data.google_compute_disk.existing_volumes[key].self_link
+  }
+  volume_device_names = {
+    for key, values in module.design.volumes:
+    key => lookup(values, "managed", true) ? google_compute_disk.volumes[key].name : data.google_compute_disk.existing_volumes[key].name
+  }
+}
+
 resource "google_compute_attached_disk" "attachments" {
   for_each    = module.design.volumes
-  disk        = try(google_compute_disk.volumes[each.key].self_link, data.google_compute_disk.existing_volumes[each.key].self_link)
-  device_name = try(google_compute_disk.volumes[each.key].name, data.google_compute_disk.existing_volumes[each.key].name)
+  disk        = local.volume_self_links[each.key]
+  device_name = local.volume_device_names[each.key]
   mode        = "READ_WRITE"
   instance    = google_compute_instance.instances[each.value.instance].self_link
 }

@@ -117,10 +117,17 @@ data "openstack_blockstorage_volume_v3" "existing_volumes" {
   name     = "${var.cluster_name}-${each.key}"
 }
 
+locals {
+  volume_ids = {
+    for key, values in module.design.volumes:
+    key => lookup(values, "managed", true) ? openstack_blockstorage_volume_v3.volumes[key].id : data.openstack_blockstorage_volume_v3.existing_volumes[key].id
+  }
+}
+
 resource "openstack_compute_volume_attach_v2" "attachments" {
   for_each    = module.design.volumes
   instance_id = openstack_compute_instance_v2.instances[each.value.instance].id
-  volume_id   = try(openstack_blockstorage_volume_v3.volumes[each.key].id, data.openstack_blockstorage_volume_v3.existing_volumes[each.key].id)
+  volume_id   = local.volume_ids[each.key]
 }
 
 locals {
@@ -143,7 +150,7 @@ locals {
           pv_key => {
             for name, specs in pv_values:
               name => merge(
-                { glob = "/dev/disk/by-id/*${substr(openstack_compute_volume_attach_v2.attachments["${x}-${pv_key}-${name}"].volume_id, 0, 20)}" },
+                { glob = "/dev/disk/by-id/*${substr(local.volume_ids["${x}-${pv_key}-${name}"], 0, 20)}" },
                 specs,
               )
           } if contains(values.tags, pv_key)
