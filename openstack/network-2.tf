@@ -31,8 +31,7 @@ resource openstack_networking_secgroup_rule_v2 "udp" {
 }
 
 locals {
-  all_tags   = toset(flatten([ for key, value in module.design.instances: value.tags ]))
-  sec_groups = toset([ for name, rule in var.firewall_rules: rule.tag if contains(local.all_tags, rule.tag) ])
+  sec_groups = toset([ for name, rule in var.firewall_rules: rule.tag if contains(module.design.all_instance_tags, rule.tag) ])
 }
 
 resource "openstack_networking_secgroup_v2" "external" {
