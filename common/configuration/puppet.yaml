@@ -72,6 +72,8 @@ runcmd:
   - chown puppet:puppet /var/log/autosign.log
   - /opt/puppetlabs/bin/puppet config set autosign /opt/puppetlabs/puppet/bin/autosign-validator --section server
   - /opt/puppetlabs/bin/puppet config set allow_duplicate_certs true --section server
+  - /opt/puppetlabs/bin/puppet config set reports prometheus --section server
+  - install -d -m 0755 -o puppet -g puppet /var/lib/node_exporter # allow puppet to write report as prometheus metrics on first run
 # Generate  bootstrap hieradata asymmetric encryption key
   - mkdir -p /etc/puppetlabs/puppet/eyaml
   - "(cd /etc/puppetlabs/puppet/eyaml; openssl req -x509 -nodes -newkey rsa:2048 -keyout boot_private_key.pkcs7.pem -out boot_public_key.pkcs7.pem -batch)"
@@ -110,7 +112,7 @@ runcmd:
 %{ endif ~}
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - /opt/puppetlabs/bin/puppet config set waitforcert 15s
-  - /opt/puppetlabs/bin/puppet config set report false
+  - /opt/puppetlabs/bin/puppet config set report true
   - /opt/puppetlabs/bin/puppet config set postrun_command /opt/puppetlabs/bin/postrun
   - systemctl enable puppet
 # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
