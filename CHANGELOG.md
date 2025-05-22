@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [14.3.0] UNRELEASED
+## [14.3.0] 2025-05-22
 
 ### Added
 - [github] Added Trivy misconfiguration scan of Terraform code (PR #355)
