@@ -32,6 +32,10 @@ runcmd:
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
   - systemctl restart sshd
+# Make sure puppet server can be reached by name early in the process if we need to debug.
+%{ for host, ip in puppetservers ~}
+  - echo "${ip} ${host}" >> /etc/hosts
+%{ endfor ~}
   # Enable fastest mirror for distribution using dnf package manager
   - dnf config-manager --setopt=fastestmirror=True --save
   # Install package and configure kernel only if building from a "vanilla" linux image
@@ -103,10 +107,6 @@ runcmd:
 %{ endif }
   - chgrp puppet /etc/puppetlabs/puppet/csr_attributes.yaml
 %{ endif }
-# Setup puppet servers
-%{ for host, ip in puppetservers ~}
-  - echo "${ip} ${host}" >> /etc/hosts
-%{ endfor ~}
 %{ if length(puppetservers) > 0 ~}
   - /opt/puppetlabs/bin/puppet config set server ${keys(puppetservers)[0]}
 %{ endif ~}
