@@ -5,10 +5,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [14.3.0] UNRELEASED
 
+### Added
+- [github] Added Trivy misconfiguration scan of Terraform code (PR #355)
+- [github] Added advanced examples to validation in CI/CD (PR #358)
+
 ### Changed
 
 - [dns] The default list of vhost subdomains has been replaced by a `["*"]`.
-This simplifies configuration of new virtual hosts in the reverse proxy.
+This simplifies configuration of new virtual hosts in the reverse proxy. (PR #347)
+- [common] Made sure ssh keys do not have whitespace prefix or suffix (PR #350)
+- [aws] Reduced choices of availablity zones in AWS (PR #351)
+- [common] Bumped terraform minimum version to 1.5.7
+- [common] Improved instance root disk size computation and warnings (PR #353)
+- [github] Modernized github workflows (PR #356)
+- [common] Made `count` optional in validation (PR #357)
+- [cloud-init] Enabled puppet prometheus reporting (PR #349)
+- [cloud-init] Moved puppet server inclusion in /etc/hosts to earlier steps
+
+### Removed
+
+- [aws] Removed key pair resource (PR #359)
 
 ## [14.2.1] 2025-02-21
 
