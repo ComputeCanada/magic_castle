@@ -32,9 +32,11 @@ runcmd:
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
   - systemctl restart sshd
-# Make sure puppet server can be reached by name early in the process if we need to debug.
 %{ for host, ip in puppetservers ~}
+%{ if can(cidrnetmask("${ip}/32")) ~}
+  # Make sure puppet server can be reached by name early in the process if we need to debug.
   - echo "${ip} ${host}" >> /etc/hosts
+%{ endif ~}
 %{ endfor ~}
   # Enable fastest mirror for distribution using dnf package manager
   - dnf config-manager --setopt=fastestmirror=True --save
