@@ -100,13 +100,13 @@ locals {
         puppetserver_password = local.puppet_passwd,
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = local.public_keys
-        tf_ssh_public_key     = tls_private_key.ssh.public_key_openssh
+        tf_ssh_public_key     = chomp(tls_private_key.ssh.public_key_openssh)
         # If there is no bastion, the terraform data has to be packed with the user_data of the puppetserver.
         # We do not packed it systematically because it increases the user-data size to a value that can be
         # near or exceeds the cloud provider limit - AWS 16KB, Azure and OpenStack 64KB, GCP 256 KB.
         include_tf_data       = ! contains(local.all_tags, var.bastion_tag)
-        terraform_data        = local.terraform_data
-        terraform_facts       = local.terraform_facts
+        terraform_data        = chomp(local.terraform_data)
+        terraform_facts       = chomp(local.terraform_facts)
         skip_upgrade          = var.skip_upgrade
         puppetfile            = var.puppetfile
         hostkeys = {

@@ -10,7 +10,7 @@ users:
     system: true
     no_user_group: true
     homedir: /tmp
-%{ if contains(tags, "puppet") }
+%{ if contains(tags, "puppet") ~}
     sudo: "ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh *.zip"
 %{ endif ~}
   - name: ${sudoer_username}
@@ -59,7 +59,7 @@ runcmd:
       grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0"
       grub2-mkconfig -o /boot/grub2/grub.cfg
     fi
-%{ if contains(tags, "puppet") }
+%{ if contains(tags, "puppet") ~}
 # Install Java 11 and puppetserver
   - dnf -y install java-11-openjdk-headless puppetserver-7.17.2
 # Configure puppetserver to use Java 11
@@ -101,12 +101,12 @@ runcmd:
 %{ if ! include_tf_data ~}
   - while [ ! -e "/etc/puppetlabs/data/terraform_data.yaml" ]; do echo "$(date -I'seconds') Waiting for terraform to scp terraform_data.yaml"; sleep 5; done
 %{ endif ~}
-%{ if node_name != keys(puppetservers)[0] }
+%{ if node_name != keys(puppetservers)[0] ~}
   - sed -e '/certificate-authority-service/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
   - sed -e '/certificate-authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
-%{ endif }
+%{ endif ~}
   - chgrp puppet /etc/puppetlabs/puppet/csr_attributes.yaml
-%{ endif }
+%{ endif ~}
 %{ if length(puppetservers) > 0 ~}
   - /opt/puppetlabs/bin/puppet config set server ${keys(puppetservers)[0]}
 %{ endif ~}
@@ -117,17 +117,17 @@ runcmd:
   - systemctl enable puppet
 # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
   - for i in /etc/sysconfig/network-scripts/ifcfg-*; do if ! ip link show | grep -q "$${i##*-}:"; then rm -f $i; fi; done
-%{ if cloud_provider == "gcp" }
+%{ if cloud_provider == "gcp" ~}
 # Google Cloud user-data fact generates a warning because its size is greater than what is allowed (<4096 bytes).
 # We have no use for it, so we remove startup-script, user-data and user-data-encoding when running in GCE.
   - sed -i "/gce_data\['instance'\] = instance_data/i \ \ \ \ \ \ \ \ \ \ instance_data['attributes'].delete('startup-script')" /opt/puppetlabs/puppet/lib/ruby/vendor_ruby/facter/resolvers/gce.rb
   - sed -i "/gce_data\['instance'\] = instance_data/i \ \ \ \ \ \ \ \ \ \ instance_data['attributes'].delete('user-data')" /opt/puppetlabs/puppet/lib/ruby/vendor_ruby/facter/resolvers/gce.rb
   - sed -i "/gce_data\['instance'\] = instance_data/i \ \ \ \ \ \ \ \ \ \ instance_data['attributes'].delete('user-data-encoding')" /opt/puppetlabs/puppet/lib/ruby/vendor_ruby/facter/resolvers/gce.rb
-%{ endif }
-%{ if contains(tags, "puppet") }
+%{ endif ~}
+%{ if contains(tags, "puppet") ~}
 # Bootstrap services that are essential to the puppet repo
   - (cd /etc/puppetlabs/code/environments/production; test -e bootstrap.sh && ./bootstrap.sh)
-%{ endif }
+%{ endif ~}
   # If the current image has already been configured with Magic Castle Puppet environment,
   # we can start puppet and skip reboot, reducing the delay for bringing the node up.
   - test -f /etc/magic-castle-release && systemctl start puppet || true
