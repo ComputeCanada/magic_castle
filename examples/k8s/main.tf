@@ -9,7 +9,7 @@ module "k8s" {
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
-  image        = "Rocky-9"
+  image        = "ebc1b9af8edd"
 
   instances = {
     mgmt   = { type = "container", cpus = 4, ram = 6000, tags = ["puppet", "mgmt", "nfs"], count = 1 }

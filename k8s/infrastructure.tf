@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "3.6.0"
+    }
+  }
+}
+
 module "design" {
   source         = "../common/design"
   cluster_name   = var.cluster_name
@@ -26,6 +35,36 @@ module "configuration" {
   cloud_region          = "local"
   skip_upgrade          = var.skip_upgrade
   puppetfile            = var.puppetfile
+}
+
+resource "docker_image" "image" {
+  name = var.image
+}
+
+resource "docker_container" "instances" {
+  for_each = module.design.instances_to_build
+  name  = each.key
+  image = docker_image.image.image_id
+  upload {
+    file = "/etc/cloud/cloud.cfg.d/01_mc_config.cfg"
+    content = <<EOT
+datasource:
+    NoCloud:
+    user-data: |
+      ${indent(6, module.configuration.user_data[each.key])}
+EOT
+  }
+  upload {
+    file = "/usr/bin/start-mc"
+    content = <<EOT
+#/bin/bash
+dnf install -y cloud-init
+cloud-init --all-stages
+EOT
+    executable = true
+  }
+#   command = ["cloud-init", "modules", "--mode", "final"]
+    command = ["sleep", "3600"]
 }
 
 locals {
