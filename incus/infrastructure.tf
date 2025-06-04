@@ -1,6 +1,6 @@
 terraform {
   required_providers {
-    docker = {
+    incus = {
       source  = "lxc/incus"
       version = "0.3.1"
     }
