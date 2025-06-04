@@ -15,6 +15,7 @@ users:
 %{ endif ~}
   - name: ${sudoer_username}
     groups: adm, wheel, systemd-journal
+    passwd: '*'
     homedir: /${sudoer_username}
     sudo: ALL=(ALL) NOPASSWD:ALL
 %{ if cloud_provider != "incus" }
