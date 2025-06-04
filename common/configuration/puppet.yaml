@@ -16,7 +16,6 @@ users:
   - name: ${sudoer_username}
     groups: adm, wheel, systemd-journal
     homedir: /${sudoer_username}
-    selinux_user: unconfined_u
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh_authorized_keys:
 %{ for key in ssh_authorized_keys ~}
