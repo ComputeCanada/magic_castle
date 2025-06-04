@@ -5,7 +5,7 @@ terraform {
 module "incus" {
   source         = "../../incus"
   config_git_url = "https://github.com/ComputeCanada/puppet-magic_castle.git"
-  config_version = "main"
+  config_version = "incus"
 
   cluster_name = "phoenix"
   domain       = "calculquebec.cloud"
