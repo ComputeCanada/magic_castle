@@ -60,6 +60,7 @@ resource "incus_instance" "instances" {
 
   config = {
     "cloud-init.user-data" = module.configuration.user_data[each.key]
+    "security.privileged"  = true
   }
 }
 
