@@ -33,8 +33,12 @@ runcmd:
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
   - systemctl restart sshd
 # Make sure puppet server can be reached by name early in the process if we need to debug.
+# For some provider, the ip address of the puppetserver is not known in advance, so we make
+# sure it is not empty before adding it to /etc/hosts
 %{ for host, ip in puppetservers ~}
+%{ if ip != "" ~}
   - echo "${ip} ${host}" >> /etc/hosts
+%{ endif ~}
 %{ endfor ~}
   # Enable fastest mirror for distribution using dnf package manager
   - dnf config-manager --setopt=fastestmirror=True --save
@@ -98,9 +102,6 @@ runcmd:
   - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/modules --puppetfile=/etc/puppetlabs/code/Puppetfile
 %{ endif ~}
 # Wait for Terraform to scp its YAML data
-%{ if ! include_tf_data ~}
-  - while [ ! -e "/etc/puppetlabs/data/terraform_data.yaml" ]; do echo "$(date -I'seconds') Waiting for terraform to scp terraform_data.yaml"; sleep 5; done
-%{ endif ~}
 %{ if node_name != keys(puppetservers)[0] }
   - sed -e '/certificate-authority-service/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
   - sed -e '/certificate-authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
@@ -133,7 +134,8 @@ runcmd:
   - test -f /etc/magic-castle-release && systemctl start puppet || true
 
 write_files:
-  - content: restrict%{ if contains(tags, "puppet") },pty%{ else }%{ for host, ip in puppetservers },permitopen="${ip}:22"%{ endfor },port-forwarding,command="/sbin/nologin"%{ endif } ${tf_ssh_public_key}
+  # If the ip addresses of the puppet servers are not known in advance, we cannot restrict the ssh connection to them.
+  - content: restrict,%{ if contains(tags, "puppet") }pty%{ else }%{if length(compact(values(puppetservers))) == length(keys(puppetservers)) }%{ for host, ip in puppetservers }permitopen="${ip}:22"%{ endfor }%{ else }pty%{ endif },port-forwarding,command="/sbin/nologin"%{ endif } ${tf_ssh_public_key}
     path: /etc/ssh/authorized_keys.tf
     permissions: "0644"
   - content: |
@@ -198,16 +200,6 @@ write_files:
     permissions: "0640"
   - path: /var/log/autosign.log
     permissions: "0640"
-%{ if include_tf_data ~}
-  - path: /etc/puppetlabs/data/terraform_data.yaml
-    content: |
-      ${indent(6, terraform_data)}
-    permissions: "0640"
-  - path: /etc/puppetlabs/facts/terraform_facts.yaml
-    content: |
-      ${indent(6, terraform_facts)}
-    permissions: "0640"
-%{ endif ~}
 %{ if puppetfile != "" ~}
   - path: /etc/puppetlabs/code/Puppetfile
     content: |
