@@ -21,6 +21,7 @@ module "design" {
 module "configuration" {
   source                = "../common/configuration"
   inventory             = local.inventory
+  pre_inventory         = module.design.instances_to_build
   config_git_url        = var.config_git_url
   config_version        = var.config_version
   sudoer_username       = var.sudoer_username
@@ -39,7 +40,7 @@ module "configuration" {
 
 module "provision" {
   source          = "../common/provision"
-  bastions        = {for key, value in module.design.instances_to_build: key => incus_instance.instances[key].ipv4_address if contains(value.tags, "puppet") }
+  bastions        = module.configuration.bastions
   puppetservers   = module.configuration.puppetservers
   tf_ssh_key      = module.configuration.ssh_key
   terraform_data  = module.configuration.terraform_data
