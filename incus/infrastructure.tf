@@ -67,7 +67,7 @@ locals {
   inventory = { for x, values in module.design.instances_to_build :
     x => {
       public_ip = ""
-      local_ip  = incus_instance.instances.ipv4_address
+      local_ip  = incus_instance.instances[x].ipv4_address
       prefix    = values.prefix
       tags      = values.tags
       specs     = values.specs
