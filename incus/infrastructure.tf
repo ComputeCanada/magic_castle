@@ -56,7 +56,7 @@ resource "incus_instance" "instances" {
 
   name  = each.key
   image = "images:${var.image}"
-  type = each.type
+  type = each.value.type
 
   config = {
     "cloud-init.user-data" = module.configuration.user_data[each.key]
