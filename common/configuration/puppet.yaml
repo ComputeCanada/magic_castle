@@ -16,8 +16,11 @@ users:
   - name: ${sudoer_username}
     groups: adm, wheel, systemd-journal
     homedir: /${sudoer_username}
-    selinux_user: unconfined_u
     sudo: ALL=(ALL) NOPASSWD:ALL
+%{ if cloud_provider != "incus" }
+    # most container images do not have selinux pre-installed
+    selinux_user: unconfined_u
+%{ endif }
     ssh_authorized_keys:
 %{ for key in ssh_authorized_keys ~}
       - ${key}
@@ -26,7 +29,10 @@ users:
 runcmd:
   - chmod 755 /etc # avoid issue with Rocky 9.4
   - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
+%{ if cloud_provider != "incus" }
+    # most container images do not have selinux pre-installed
   - restorecon -R /${sudoer_username}
+%{ endif }
   - dnf -y install openssh openssh-server rsync
   - echo -e "Include /etc/ssh/sshd_config.d/50-authenticationmethods.conf" >> /etc/ssh/sshd_config
   - sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
