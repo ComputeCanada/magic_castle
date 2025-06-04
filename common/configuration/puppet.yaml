@@ -192,16 +192,6 @@ write_files:
     permissions: "0640"
   - path: /var/log/autosign.log
     permissions: "0640"
-%{ if include_tf_data ~}
-  - path: /etc/puppetlabs/data/terraform_data.yaml
-    content: |
-      ${indent(6, terraform_data)}
-    permissions: "0640"
-  - path: /etc/puppetlabs/facts/terraform_facts.yaml
-    content: |
-      ${indent(6, terraform_facts)}
-    permissions: "0640"
-%{ endif ~}
 %{ if puppetfile != "" ~}
   - path: /etc/puppetlabs/code/Puppetfile
     content: |
