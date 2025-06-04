@@ -193,7 +193,7 @@ write_files:
       if [ -f /usr/local/bin/consul ] && [ -f /usr/bin/jq ]; then
           /usr/local/bin/consul event -token=$(jq -r .acl.tokens.agent /etc/consul/config.json) -name=puppet $(date +%s)
       fi
-    permissions: 0755
+    permissions: "0755"
     path: /usr/sbin/update_etc_puppetlabs.sh
   - content: |
       ---
