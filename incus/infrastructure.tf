@@ -62,6 +62,10 @@ resource "incus_instance" "instances" {
     "cloud-init.user-data" = module.configuration.user_data[each.key]
     "security.privileged"  = true
   }
+
+  wait_for {
+    type = "ipv4"
+  }
 }
 
 locals {
