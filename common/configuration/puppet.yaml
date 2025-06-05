@@ -135,7 +135,8 @@ runcmd:
   - test -f /etc/magic-castle-release && systemctl start puppet || true
 
 write_files:
-  - content: restrict%{ if contains(tags, "puppet") },pty%{ else }%{ for host, ip in puppetservers }%{ if ip != "" },permitopen="${ip}:22"%{ endif }%{ endfor },port-forwarding,command="/sbin/nologin"%{ endif } ${tf_ssh_public_key}
+  # If the ip addresses of the puppet servers are not known in advance, we cannot restrict the ssh connection to them.
+  - content: restrict%{ if contains(tags, "puppet") },pty%{ else }%{if length(compact(keys(puppetservers))) == length(keys(puppetservers)) }%{ for host, ip in puppetservers }permitopen="${ip}:22"%{ endfor },port-forwarding,command="/sbin/nologin"%{ else }pty%{ endif }%{ endif } ${tf_ssh_public_key}
     path: /etc/ssh/authorized_keys.tf
     permissions: "0644"
   - content: |
