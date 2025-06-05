@@ -57,7 +57,7 @@ locals {
   }
 
   # add openssh public key to inventory
-  inventory = { for host, values in var.pre_inventory:
+  inventory = { for host, values in var.inventory:
     host => merge(values, {
       hostkeys = {
         rsa     = chomp(tls_private_key.rsa[values.prefix].public_key_openssh)
