@@ -8,6 +8,7 @@ mounts:
 users:
   - name: tf
     system: true
+    passwd: '*'
     no_user_group: true
     homedir: /tmp
 %{ if contains(tags, "puppet") }
