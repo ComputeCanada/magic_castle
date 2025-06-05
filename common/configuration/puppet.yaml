@@ -137,7 +137,7 @@ runcmd:
 
 write_files:
   # If the ip addresses of the puppet servers are not known in advance, we cannot restrict the ssh connection to them.
-  - content: restrict,%{ if contains(tags, "puppet") }pty%{ else }%{if length(compact(values(puppetservers))) == length(keys(puppetservers)) }%{ for host, ip in puppetservers }permitopen="${ip}:22"%{ endfor },port-forwarding,command="/sbin/nologin"%{ else }pty%{ endif }%{ endif } ${tf_ssh_public_key}
+  - content: restrict,%{ if contains(tags, "puppet") }pty%{ else }%{if length(compact(values(puppetservers))) == length(keys(puppetservers)) }%{ for host, ip in puppetservers }permitopen="${ip}:22"%{ endfor }%{ else }pty%{ endif },port-forwarding,command="/sbin/nologin"%{ endif } ${tf_ssh_public_key}
     path: /etc/ssh/authorized_keys.tf
     permissions: "0644"
   - content: |
