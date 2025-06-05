@@ -113,6 +113,7 @@ runcmd:
   - /opt/puppetlabs/bin/puppet config set certname ${node_name}
   - /opt/puppetlabs/bin/puppet config set waitforcert 15s
   - /opt/puppetlabs/bin/puppet config set report true
+  - /opt/puppetlabs/bin/puppet config set runtimeout 2h
   - /opt/puppetlabs/bin/puppet config set postrun_command /opt/puppetlabs/bin/postrun
   - systemctl enable puppet
 # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
