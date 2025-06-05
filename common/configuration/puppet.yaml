@@ -33,6 +33,14 @@ runcmd:
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
   - systemctl restart sshd
+# Make sure puppet server can be reached by name early in the process if we need to debug.
+# For some provider, the ip address of the puppetserver is not known in advance, so we make
+# sure it is not empty before adding it to /etc/hosts
+%{ for host, ip in puppetservers ~}
+%{ if ip != "" ~}
+  - echo "${ip} ${host}" >> /etc/hosts
+%{ endif ~}
+%{ endfor ~}
   # Enable fastest mirror for distribution using dnf package manager
   - dnf config-manager --setopt=fastestmirror=True --save
   # Install package and configure kernel only if building from a "vanilla" linux image
@@ -127,7 +135,7 @@ runcmd:
   - test -f /etc/magic-castle-release && systemctl start puppet || true
 
 write_files:
-  - content: restrict%{ if contains(tags, "puppet") },pty%{ else }%{ for host, ip in puppetservers },permitopen="${ip}:22"%{ endfor },port-forwarding,command="/sbin/nologin"%{ endif } ${tf_ssh_public_key}
+  - content: restrict%{ if contains(tags, "puppet") },pty%{ else }%{ for host, ip in puppetservers }%{ if ip != "" },permitopen="${ip}:22"%{ endif }%{ endfor },port-forwarding,command="/sbin/nologin"%{ endif } ${tf_ssh_public_key}
     path: /etc/ssh/authorized_keys.tf
     permissions: "0644"
   - content: |
