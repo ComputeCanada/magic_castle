@@ -13,7 +13,7 @@ module "incus" {
 
   instances = {
     mgmt   = { type = "container", cpus = 4, ram = 6000, tags = ["puppet", "mgmt", "nfs"], count = 1 }
-    login  = { type = "container", cpus = 2, ram = 3000, tags = ["login", "proxy"], count = 1 }
+    login  = { type = "container", cpus = 2, ram = 3000, tags = ["login", "public", "proxy"], count = 1 }
     node   = { type = "container", cpus = 2, ram = 3000, tags = ["node"], count = 1 }
   }
 
