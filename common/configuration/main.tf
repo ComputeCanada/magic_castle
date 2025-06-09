@@ -1,4 +1,4 @@
-variable "pre_inventory" { }
+variable "design" { }
 variable "inventory" { }
 variable "config_git_url" { }
 variable "config_version" { }
@@ -24,13 +24,13 @@ resource "tls_private_key" "ssh" {
 }
 
 resource "tls_private_key" "rsa" {
-  for_each  = toset([for x, values in var.pre_inventory: values.prefix])
+  for_each  = toset([for x, values in var.design: values.prefix])
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "tls_private_key" "ed25519" {
-  for_each  = toset([for x, values in var.pre_inventory: values.prefix])
+  for_each  = toset([for x, values in var.design: values.prefix])
   algorithm = "ED25519"
 }
 
@@ -51,7 +51,7 @@ locals {
   public_keys = [for key in var.public_keys: trimspace(key)]
 
   puppetservers = { for host, values in var.inventory: host => values.local_ip if contains(values.tags, "puppet")}
-  all_tags = toset(flatten([for key, values in var.pre_inventory : values.tags]))
+  all_tags = toset(flatten([for key, values in var.design : values.tags]))
   tag_ip = { for tag in local.all_tags :
     tag => [for key, values in var.inventory : values.local_ip if contains(values.tags, tag)]
   }
@@ -86,7 +86,7 @@ locals {
   })
 
   user_data = {
-    for key, values in var.pre_inventory : key =>
+    for key, values in var.design : key =>
     templatefile("${path.module}/puppet.yaml",
       {
         cloud_provider        = var.cloud_provider
@@ -97,7 +97,7 @@ locals {
         domain_name           = var.domain_name
         puppetenv_git         = var.config_git_url,
         puppetenv_rev         = var.config_version,
-        puppetservers         = { for host, values in var.pre_inventory: host => "" if contains(values.tags, "puppet")}
+        puppetservers         = { for host, values in var.design: host => "" if contains(values.tags, "puppet")}
         puppetserver_password = local.puppet_passwd,
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = local.public_keys

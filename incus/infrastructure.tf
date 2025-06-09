@@ -21,7 +21,7 @@ module "design" {
 module "configuration" {
   source                = "../common/configuration"
   inventory             = local.inventory
-  pre_inventory         = module.design.instances_to_build
+  design                = module.design.instances
   config_git_url        = var.config_git_url
   config_version        = var.config_version
   sudoer_username       = var.sudoer_username
