@@ -97,7 +97,7 @@ locals {
         domain_name           = var.domain_name
         puppetenv_git         = var.config_git_url,
         puppetenv_rev         = var.config_version,
-        puppetservers         = { for host, values in var.design: host => "" if contains(values.tags, "puppet")}
+        puppetservers         = { for host, values in var.design: host => try(values.local_ip, "") if contains(values.tags, "puppet")}
         puppetserver_password = local.puppet_passwd,
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = local.public_keys
