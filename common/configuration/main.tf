@@ -77,6 +77,7 @@ locals {
       tag_ip    = local.tag_ip
       data      = {
         sudoer_username = var.sudoer_username
+        tf_public_key   = chomp(tls_private_key.ssh.public_key_openssh)
         public_keys     = local.public_keys
         cluster_name    = lower(var.cluster_name)
         domain_name     = var.domain_name
