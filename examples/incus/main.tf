@@ -17,15 +17,10 @@ module "incus" {
     node   = { type = "container", cpus = 2, ram = 3000, gpus = 0, tags = ["node"], count = 1 }
   }
 
-  volumes = {
-    nfs = {
-      home     = { size = 100 }
-      project  = { size = 50 }
-      scratch  = { size = 50 }
-    }
-  }
+  volumes = {}
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
+  hieradata = file("data.yaml")
 
   nb_users = 10
   # Shared password, randomly chosen if blank
