@@ -1,0 +1,5 @@
+---
+profile::nfs::server::export_paths: ['/home', '/project', '/scratch']
+profile::nfs::client::share_names: ['home', 'project', 'scratch']
+profile::slurm::controller::selinux_context: null
+

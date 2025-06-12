@@ -1,3 +1,4 @@
+variable "design" { }
 variable "inventory" { }
 variable "config_git_url" { }
 variable "config_version" { }
@@ -23,13 +24,13 @@ resource "tls_private_key" "ssh" {
 }
 
 resource "tls_private_key" "rsa" {
-  for_each  = toset([for x, values in var.inventory: values.prefix])
+  for_each  = toset([for x, values in var.design: values.prefix])
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "tls_private_key" "ed25519" {
-  for_each  = toset([for x, values in var.inventory: values.prefix])
+  for_each  = toset([for x, values in var.design: values.prefix])
   algorithm = "ED25519"
 }
 
@@ -50,7 +51,7 @@ locals {
   public_keys = [for key in var.public_keys: trimspace(key)]
 
   puppetservers = { for host, values in var.inventory: host => values.local_ip if contains(values.tags, "puppet")}
-  all_tags = toset(flatten([for key, values in var.inventory : values.tags]))
+  all_tags = toset(flatten([for key, values in var.design : values.tags]))
   tag_ip = { for tag in local.all_tags :
     tag => [for key, values in var.inventory : values.local_ip if contains(values.tags, tag)]
   }
@@ -71,6 +72,7 @@ locals {
       tag_ip    = local.tag_ip
       data      = {
         sudoer_username = var.sudoer_username
+        tf_public_key   = chomp(tls_private_key.ssh.public_key_openssh)
         public_keys     = local.public_keys
         cluster_name    = lower(var.cluster_name)
         domain_name     = var.domain_name
@@ -85,7 +87,7 @@ locals {
   })
 
   user_data = {
-    for key, values in var.inventory : key =>
+    for key, values in var.design : key =>
     templatefile("${path.module}/puppet.yaml",
       {
         cloud_provider        = var.cloud_provider
@@ -96,16 +98,11 @@ locals {
         domain_name           = var.domain_name
         puppetenv_git         = var.config_git_url,
         puppetenv_rev         = var.config_version,
-        puppetservers         = local.puppetservers,
+        puppetservers         = { for host, values in var.design: host => try(values.local_ip, "") if contains(values.tags, "puppet")}
         puppetserver_password = local.puppet_passwd,
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = local.public_keys
         tf_ssh_public_key     = tls_private_key.ssh.public_key_openssh
-        # If there is no bastion, the terraform data has to be packed with the user_data of the puppetserver.
-        # We do not packed it systematically because it increases the user-data size to a value that can be
-        # near or exceeds the cloud provider limit - AWS 16KB, Azure and OpenStack 64KB, GCP 256 KB.
-        include_tf_data       = ! contains(local.all_tags, var.bastion_tag)
-        terraform_data        = local.terraform_data
         terraform_facts       = local.terraform_facts
         skip_upgrade          = var.skip_upgrade
         puppetfile            = var.puppetfile
