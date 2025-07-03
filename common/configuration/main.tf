@@ -160,7 +160,7 @@ output "ssh_key" {
 
 output "bastions" {
   value = {
-    for host, values in var.inventory: host => values
+    for host, values in local.final_inventory: host => values
     if contains(values.tags, var.bastion_tag) && contains(values.tags, "public") &&  (!contains(values.tags, "pool"))
   }
 }
