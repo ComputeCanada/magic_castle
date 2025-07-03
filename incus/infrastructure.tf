@@ -87,5 +87,5 @@ locals {
     })
   }
 
-  public_instances = { for host, values in local.inventory: host => values if contains(values.tags, "public")}
+  public_instances = { for host, values in local.post_inventory: host => values if contains(values.tags, "public")}
 }
