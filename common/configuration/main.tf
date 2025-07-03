@@ -56,9 +56,9 @@ locals {
   guest_passwd = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
   public_keys = [for key in var.public_keys: trimspace(key)]
 
-  all_tags = toset(flatten([for key, values in var.post_inventory : values.tags]))
+  all_tags = toset(flatten([for key, values in local.post_inventory : values.tags]))
   tag_ip = { for tag in local.all_tags :
-    tag => [for key, values in var.post_inventory : values.local_ip if contains(values.tags, tag)]
+    tag => [for key, values in local.post_inventory : values.local_ip if contains(values.tags, tag)]
   }
 
   # add openssh public key to inventory
