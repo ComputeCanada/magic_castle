@@ -3,7 +3,7 @@ variable "post_inventory" {
   default = {}
 }
 locals {
-  post_inventory = length(var.post_inventory) > 0 ? var.post_inventory : var.inventory
+  post_inventory = merge(var.inventory, var.post_inventory)
 }
 
 variable "config_git_url" { }
