@@ -28,3 +28,13 @@ answer: `none`.
 4. Initialize terraform: `terraform init`
 5. Apply: `terraform apply`
 6. Connect to an instance: `incus exec mgmt1 -- /bin/bash`
+
+## What features are not currently included?
+
+When running Magic Castle instances are containers, the following currently does not work:
+- SELinux
+- NFS Automount
+
+In general (virtual machines and containers):
+- public instances are not directly reachable from the Internet after creation,
+you need to configure the incus host to redirect traffic to the public instances.
