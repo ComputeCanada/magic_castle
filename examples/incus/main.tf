@@ -26,3 +26,11 @@ module "incus" {
   # Shared password, randomly chosen if blank
   guest_passwd = ""
 }
+
+output "accounts" {
+  value = module.incus.accounts
+}
+
+output "public_ip" {
+  value = module.incus.public_ip
+}
