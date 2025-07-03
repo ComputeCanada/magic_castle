@@ -21,7 +21,7 @@ module "design" {
 module "configuration" {
   source                = "../common/configuration"
   inventory             = local.inventory
-  design                = module.design.instances
+  post_inventory        = local.post_inventory
   config_git_url        = var.config_git_url
   config_version        = var.config_version
   sudoer_username       = var.sudoer_username
@@ -71,13 +71,20 @@ resource "incus_instance" "instances" {
 locals {
   inventory = { for x, values in module.design.instances_to_build :
     x => {
-      public_ip = incus_instance.instances[x].ipv4_address
-      local_ip  = incus_instance.instances[x].ipv4_address
+      public_ip = ""
+      local_ip  = ""
       prefix    = values.prefix
       tags      = values.tags
       specs     = values.specs
       volumes = {}
     }
+  }
+
+  post_inventory = { for host, values in local.inventory:
+    key => merge(values, {
+      local_ip  = incus_instance.instances[host].ipv4_address
+      public_ip = incus_instance.instances[host].ipv4_address
+    })
   }
 
   public_instances = { for host, values in local.inventory: host => values if contains(values.tags, "public")}

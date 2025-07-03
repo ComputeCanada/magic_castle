@@ -1,5 +1,11 @@
-variable "design" { }
 variable "inventory" { }
+variable "post_inventory" {
+  default = {}
+}
+locals {
+  post_inventory = length(var.post_inventory) > 0 ? var.post_inventory : var.inventory
+}
+
 variable "config_git_url" { }
 variable "config_version" { }
 
@@ -24,13 +30,13 @@ resource "tls_private_key" "ssh" {
 }
 
 resource "tls_private_key" "rsa" {
-  for_each  = toset([for x, values in var.design: values.prefix])
+  for_each  = toset([for x, values in var.inventory: values.prefix])
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "tls_private_key" "ed25519" {
-  for_each  = toset([for x, values in var.design: values.prefix])
+  for_each  = toset([for x, values in var.inventory: values.prefix])
   algorithm = "ED25519"
 }
 
@@ -50,14 +56,13 @@ locals {
   guest_passwd = var.guest_passwd != "" ? var.guest_passwd : try(random_pet.guest_passwd[0].id, "")
   public_keys = [for key in var.public_keys: trimspace(key)]
 
-  puppetservers = { for host, values in var.inventory: host => values.local_ip if contains(values.tags, "puppet")}
-  all_tags = toset(flatten([for key, values in var.design : values.tags]))
+  all_tags = toset(flatten([for key, values in var.inventory : values.tags]))
   tag_ip = { for tag in local.all_tags :
     tag => [for key, values in var.inventory : values.local_ip if contains(values.tags, tag)]
   }
 
   # add openssh public key to inventory
-  inventory = { for host, values in var.inventory:
+  final_inventory = { for host, values in local.post_inventory:
     host => merge(values, {
       hostkeys = {
         rsa     = chomp(tls_private_key.rsa[values.prefix].public_key_openssh)
@@ -68,7 +73,7 @@ locals {
 
   terraform_data  = yamlencode({
     terraform = {
-      instances = local.inventory
+      instances = local.final_inventory
       tag_ip    = local.tag_ip
       data      = {
         sudoer_username = var.sudoer_username
@@ -87,7 +92,7 @@ locals {
   })
 
   user_data = {
-    for key, values in var.design : key =>
+    for key, values in var.inventory : key =>
     templatefile("${path.module}/puppet.yaml",
       {
         cloud_provider        = var.cloud_provider
@@ -98,7 +103,7 @@ locals {
         domain_name           = var.domain_name
         puppetenv_git         = var.config_git_url,
         puppetenv_rev         = var.config_version,
-        puppetservers         = { for host, values in var.design: host => try(values.local_ip, "") if contains(values.tags, "puppet")}
+        puppetservers         = { for host, values in var.inventory: host => try(values.local_ip, "") if contains(values.tags, "puppet")}
         puppetserver_password = local.puppet_passwd,
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = local.public_keys
@@ -135,7 +140,7 @@ output "terraform_facts" {
 }
 
 output "puppetservers" {
-  value = local.puppetservers
+  value = { for host, values in local.final_inventory: host => values.local_ip if contains(values.tags, "puppet")}
 }
 
 output "guest_passwd" {
@@ -143,7 +148,7 @@ output "guest_passwd" {
 }
 
 output "inventory" {
-  value = local.inventory
+  value = local.final_inventory
 }
 
 output "ssh_key" {
