@@ -79,4 +79,6 @@ locals {
       volumes = {}
     }
   }
+
+  public_instances = { for host, values in module.design.instances_to_build: host => values if contains(values.tags, "public")}
 }
