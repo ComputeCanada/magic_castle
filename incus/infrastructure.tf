@@ -71,8 +71,6 @@ resource "incus_instance" "instances" {
 locals {
   inventory = { for x, values in module.design.instances_to_build :
     x => {
-      public_ip = ""
-      local_ip  = ""
       prefix    = values.prefix
       tags      = values.tags
       specs     = values.specs
