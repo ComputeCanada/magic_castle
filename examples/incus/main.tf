@@ -19,7 +19,7 @@ module "incus" {
 
   volumes = {}
 
-  public_keys = [file("~/.ssh/id_rsa.pub")]
+  public_keys = []
   hieradata = file("data.yaml")
 
   nb_users = 10
