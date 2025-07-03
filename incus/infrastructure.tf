@@ -81,7 +81,7 @@ locals {
   }
 
   post_inventory = { for host, values in local.inventory:
-    key => merge(values, {
+    host => merge(values, {
       local_ip  = incus_instance.instances[host].ipv4_address
       public_ip = incus_instance.instances[host].ipv4_address
     })
