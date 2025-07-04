@@ -52,11 +52,11 @@ module "provision" {
 }
 
 resource "random_id" "project_name" {
-  byte_length = 2
+  byte_length = 7
 }
 
 resource "incus_project" "project" {
-  name        = random_id.project_name.id
+  name        = random_id.project_name.hex
   description = "Magic Castle cluster ${var.cluster_name}.${var.domain}"
 }
 
