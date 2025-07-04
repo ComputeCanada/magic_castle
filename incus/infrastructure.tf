@@ -51,16 +51,42 @@ module "provision" {
   puppetfile      = var.puppetfile
 }
 
+resource "incus_project" "project" {
+  name        = "${var.cluster_name}.${var.domain}"
+  description = "Magic Castle cluster ${var.cluster_name}.${var.domain}"
+}
+
 resource "incus_instance" "instances" {
   for_each = module.design.instances_to_build
 
-  name  = each.key
-  image = "images:${var.image}"
-  type = each.value.type
+  project = incus_project.project.name
+  name    = each.key
+  image   = "images:${var.image}"
+  type    = each.value.type
 
   config = {
     "cloud-init.user-data" = module.configuration.user_data[each.key]
     "security.privileged"  = true
+  }
+
+  device {
+    name = "eth0"
+    type = "nic"
+
+    properties = {
+      nictype = "bridged"
+      parent  = incus_network.network.name
+    }
+  }
+
+  device {
+    type = "disk"
+    name = "root"
+
+    properties = {
+      pool = "default"
+      path = "/"
+    }
   }
 
   wait_for {
