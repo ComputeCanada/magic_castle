@@ -62,9 +62,10 @@ resource "incus_project" "project" {
 
 resource "incus_image" "image" {
   for_each = module.design.instances_to_build
+  project  = incus_project.project.name
   source_image = {
     remote = "images"
-    name   = lookup(each.value, "image", var.image)
+    name   = "${lookup(each.value, "image", var.image)}"
   }
 }
 
