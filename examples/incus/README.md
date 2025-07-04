@@ -27,7 +27,8 @@ answer: `none`.
 3. Set the incus terraform provider environment variable : `export INCUS_SOCKET=/var/run/incus/unix.socket`
 4. Initialize terraform: `terraform init`
 5. Apply: `terraform apply`
-6. Connect to an instance: `incus exec mgmt1 -- /bin/bash`
+6. Note the project id from the terraform output.
+7. Connect to an instance, replace `<project>` by incus project id: `incus --project <project> exec mgmt1 -- /bin/bash`.
 
 ## What features are not currently included?
 
