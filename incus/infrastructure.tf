@@ -73,7 +73,7 @@ resource "incus_instance" "instances" {
 
   project = incus_project.project.name
   name    = each.key
-  image   = incus_image.image[each.key].fingerprint
+  image   = incus_image.image.fingerprint
   type    = each.value.type
 
   config = {
