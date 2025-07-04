@@ -13,13 +13,6 @@ From [linuxcontainers.org](https://linuxcontainers.org/incus/#what-is-incus):
 To install Incus on your personal compute or in a virtual machine,
 follow the instructions: [Install and initialize Incus](https://linuxcontainers.org/incus/docs/main/tutorial/first_steps/#install-and-initialize-incus)
 
-Magic Castle currently has issue when instances are being assigned an IPV6 id.
-Therefore when initializing incus, to the question
-```
-What IPv6 address should be used? (CIDR subnet notation, “auto” or “none”) [default=auto]
-```
-answer: `none`.
-
 ## How to create a Magic Castle cluster with Incus
 
 1. [Install terraform](https://developer.hashicorp.com/terraform/install) on the same machine running Incus.
