@@ -51,16 +51,62 @@ module "provision" {
   puppetfile      = var.puppetfile
 }
 
+resource "random_id" "project_name" {
+  byte_length = 7
+}
+
+resource "incus_project" "project" {
+  name        = random_id.project_name.hex
+  description = "Magic Castle cluster ${var.cluster_name}.${var.domain}"
+  config = {
+    "features.storage.volumes" = true
+    "features.images"          = true
+    "features.profiles"        = true
+    "features.networks.zones"  = true
+    "features.storage.buckets" = false
+    "features.networks"        = false
+  }
+}
+
+resource "incus_image" "image" {
+  project  = incus_project.project.name
+  source_image = {
+    remote = "images"
+    name   = var.image
+  }
+}
+
 resource "incus_instance" "instances" {
   for_each = module.design.instances_to_build
 
-  name  = each.key
-  image = "images:${var.image}"
-  type = each.value.type
+  project = incus_project.project.name
+  name    = each.key
+  image   = incus_image.image.fingerprint
+  type    = each.value.type
 
   config = {
     "cloud-init.user-data" = module.configuration.user_data[each.key]
     "security.privileged"  = true
+  }
+
+  device {
+    name = "eth0"
+    type = "nic"
+
+    properties = {
+      nictype = "bridged"
+      parent  = incus_network.network.name
+    }
+  }
+
+  device {
+    type = "disk"
+    name = "root"
+
+    properties = {
+      pool = "default"
+      path = "/"
+    }
   }
 
   wait_for {
@@ -86,4 +132,8 @@ locals {
   }
 
   public_instances = { for host, values in module.configuration.inventory: host => values if contains(values.tags, "public")}
+}
+
+output "project" {
+  value = incus_project.project.name
 }

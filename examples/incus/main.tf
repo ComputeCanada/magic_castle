@@ -31,6 +31,10 @@ output "accounts" {
   value = module.incus.accounts
 }
 
+output "project" {
+  value = module.incus.project
+}
+
 output "public_ip" {
   value = module.incus.public_ip
 }
