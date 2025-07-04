@@ -58,6 +58,14 @@ resource "random_id" "project_name" {
 resource "incus_project" "project" {
   name        = random_id.project_name.hex
   description = "Magic Castle cluster ${var.cluster_name}.${var.domain}"
+  config = {
+    "features.storage.volumes" = true
+    "features.images"          = true
+    "features.profiles"        = true
+    "features.networks.zones"  = true
+    "features.storage.buckets" = false
+    "features.networks"        = false
+  }
 }
 
 resource "incus_image" "image" {
@@ -124,4 +132,8 @@ locals {
   }
 
   public_instances = { for host, values in local.post_inventory: host => values if contains(values.tags, "public")}
+}
+
+output "project" {
+  value = incus_project.project.name
 }
