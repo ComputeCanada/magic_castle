@@ -1,5 +1,5 @@
 resource "incus_network" "network" {
-  name = "${var.cluster_name}.${var.domain}"
+  name = incus_project.project.name
 
   config = {
     "ipv4.nat"     = "true"

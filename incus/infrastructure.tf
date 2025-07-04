@@ -51,8 +51,12 @@ module "provision" {
   puppetfile      = var.puppetfile
 }
 
+resource "random_pet" "project_name" {
+  length = 3
+}
+
 resource "incus_project" "project" {
-  name        = "${var.cluster_name}.${var.domain}"
+  name        = random_pet.project_name.id
   description = "Magic Castle cluster ${var.cluster_name}.${var.domain}"
 }
 
