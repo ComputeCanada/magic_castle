@@ -52,7 +52,7 @@ module "provision" {
 }
 
 resource "random_id" "project_name" {
-  byte_length = 1
+  byte_length = 2
 }
 
 resource "incus_project" "project" {
@@ -60,12 +60,20 @@ resource "incus_project" "project" {
   description = "Magic Castle cluster ${var.cluster_name}.${var.domain}"
 }
 
+resource "incus_image" "image" {
+  for_each = module.design.instances_to_build
+  source_image = {
+    remote = "images"
+    name   = lookup(each.value, "image", var.image)
+  }
+}
+
 resource "incus_instance" "instances" {
   for_each = module.design.instances_to_build
 
   project = incus_project.project.name
   name    = each.key
-  image   = "images:${var.image}"
+  image   = incus_image.image[each.key].fingerprint
   type    = each.value.type
 
   config = {
