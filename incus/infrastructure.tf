@@ -72,8 +72,11 @@ resource "incus_image" "image" {
   for_each = toset([ for host, values in module.design.instances: lookup(values, "image", var.image) ])
   project  = incus_project.project.name
   source_image = {
+    # TODO: figure out if what needs to happen to "remote" when using snapshot instead of remote images.
     remote = "images"
     name   = each.key
+    # TODO: Figure out how choose between "container" and "virtual-machine"
+    # type =
   }
 }
 
