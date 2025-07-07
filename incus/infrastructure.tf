@@ -69,10 +69,11 @@ resource "incus_project" "project" {
 }
 
 resource "incus_image" "image" {
+  for_each = toset([ for host, values in module.design.instances: lookup(values, "image", var.image) ])
   project  = incus_project.project.name
   source_image = {
     remote = "images"
-    name   = var.image
+    name   = each.key
   }
 }
 
@@ -81,7 +82,7 @@ resource "incus_instance" "instances" {
 
   project = incus_project.project.name
   name    = each.key
-  image   = incus_image.image.fingerprint
+  image   = incus_image.image[lookup(each.value, "image", var.image)].fingerprint
   type    = each.value.type
 
   config = {
