@@ -1,6 +1,6 @@
 # Magic Castle for Incus example
 
-## What is Incus 
+## What is Incus
 
 From [linuxcontainers.org](https://linuxcontainers.org/incus/#what-is-incus):
 > Incus is a next-generation system container, application container, and virtual machine manager.
@@ -23,7 +23,7 @@ follow the instructions: [Install and initialize Incus](https://linuxcontainers.
 6. Note the project id from the terraform output.
 7. Connect to an instance, replace `<project>` by incus project id: `incus --project <project> exec mgmt1 -- /bin/bash`.
 
-## What features are not currently included?
+## What features are not currently supported?
 
 When running Magic Castle instances are containers, the following currently does not work:
 - SELinux
@@ -32,3 +32,15 @@ When running Magic Castle instances are containers, the following currently does
 In general (virtual machines and containers):
 - public instances are not directly reachable from the Internet after creation,
 you need to configure the incus host to redirect traffic to the public instances.
+
+## Autoscaling with Terraform Cloud
+
+It is possible to enable the cluster autoscaling as described in
+[https://github.com/ComputeCanada/magic_castle/blob/main/docs/terraform_cloud.md](Magic Castle Terraform Cloud documentation).
+
+Since Incus is a local provider, a local terraform agent is required.
+To setup a Terraform agent, [follow the instructions](https://developer.hashicorp.com/terraform/tutorials/cloud/cloud-agents).
+The Terraform agent has to run on the same machine as the incus server. In the Terraform cloud workspace of the cluster, make
+sure to define the environment variable `INCUS_SOCKET=/var/run/incus/unix.socket`. This will allow the Terraform agent to
+communicate with Incus.
+
