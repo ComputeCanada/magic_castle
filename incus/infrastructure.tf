@@ -113,6 +113,18 @@ resource "incus_instance" "instances" {
     }
   }
 
+  dynamic "device" {
+    for_each = var.forward_proxy && contains(each.value.tags, "proxy") ? { for name, rule in var.firewall_rules: name => rule if rule.tag == "proxy" } : {}
+    content {
+      name = device.key
+      type = "proxy"
+      properties = {
+        listen = "${device.value.protocol}:0.0.0.0:${device.value.from_port}"
+        connect = "${device.value.protocol}:127.0.0.1:${device.value.to_port}"
+      }
+    }
+  }
+
   wait_for {
     type = "ipv4"
   }
