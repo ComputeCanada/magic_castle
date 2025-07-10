@@ -11,7 +11,7 @@ if [ -z "$VERSION" ]; then
 fi
 
 if [ -z "$CLOUD" ]; then
-    CLOUD=(aws azure gcp openstack ovh)
+    CLOUD=(aws azure gcp openstack ovh incus)
 fi
 
 if [ "$(uname)" == "Linux" ]; then
