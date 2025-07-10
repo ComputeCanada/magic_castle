@@ -1,4 +1,4 @@
-# Magic Castle for Incus example
+# Magic Castle for Incus
 
 ## What is Incus
 
