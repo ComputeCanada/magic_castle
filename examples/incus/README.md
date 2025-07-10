@@ -25,13 +25,14 @@ follow the instructions: [Install and initialize Incus](https://linuxcontainers.
 
 ## What features are not currently supported?
 
-When running Magic Castle instances are containers, the following currently does not work:
+When deploying Magic Castle with Incus, the following features are currently not supported:
+- Virtual machine instance type
+- Volumes
+- GPU
+- Firewall / network ACLs
 - SELinux
 - NFS Automount
 
-In general (virtual machines and containers):
-- public instances are not directly reachable from the Internet after creation,
-you need to configure the incus host to redirect traffic to the public instances.
 
 ## Autoscaling with Terraform Cloud
 
