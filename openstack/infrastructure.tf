@@ -48,7 +48,7 @@ module "provision" {
 
 data "openstack_images_image_v2" "image" {
   for_each    = var.instances
-  name_regex  = lookup(each.value, "image", var.image)
+  name_regex  = each.value.image
   most_recent = true
 }
 

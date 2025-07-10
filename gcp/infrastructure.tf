@@ -95,7 +95,7 @@ resource "google_compute_instance" "instances" {
 
   boot_disk {
     initialize_params {
-      image = lookup(each.value, "image", var.image)
+      image = each.value.image
       type  = lookup(each.value, "disk_type", "pd-ssd")
       size  = each.value.disk_size
     }
