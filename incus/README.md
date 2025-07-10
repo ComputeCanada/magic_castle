@@ -23,9 +23,9 @@ follow the instructions: [Install and initialize Incus](https://linuxcontainers.
 6. Note the project id from the terraform output.
 7. Connect to an instance, replace `<project>` by incus project id: `incus --project <project> exec mgmt1 -- /bin/bash`.
 
-## What features are not currently supported?
+## What features are yet implemented?
 
-When deploying Magic Castle with Incus, the following features are currently not supported:
+When deploying Magic Castle with Incus, the following features are yet implemented:
 - Virtual machine instance type
 - Volumes
 - GPU
