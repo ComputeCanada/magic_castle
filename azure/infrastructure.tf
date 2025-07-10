@@ -7,6 +7,7 @@ module "design" {
   source         = "../common/design"
   cluster_name   = var.cluster_name
   domain         = var.domain
+  image          = var.image
   instances      = var.instances
   min_disk_size  = 30
   pool           = var.pool

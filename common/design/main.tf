@@ -14,6 +14,7 @@ locals {
       for prefix, attrs in var.instances : [
         for i in range(lookup(attrs, "count", 1)) : {
           (format("%s%d", prefix, i + 1)) = merge(
+            { image = var.image },
             { disk_size = max(var.min_disk_size, [for tag in attrs.tags: lookup(local.min_disk_size_per_tags, tag, 0)]...)},
             { for attr, value in attrs : attr => value if ! contains(["count"], attr) },
             {

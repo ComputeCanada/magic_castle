@@ -5,3 +5,4 @@ variable "volumes" { }
 variable "pool" { }
 variable "firewall_rules" { }
 variable "min_disk_size" { }
+variable "image" { }

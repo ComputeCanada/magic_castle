@@ -11,6 +11,7 @@ module "design" {
   source         = "../common/design"
   cluster_name   = var.cluster_name
   domain         = var.domain
+  image          = var.image
   instances      = var.instances
   min_disk_size  = 10
   pool           = var.pool
@@ -69,10 +70,9 @@ resource "incus_project" "project" {
 }
 
 resource "incus_image" "image" {
-  for_each = toset([ for host, values in module.design.instances: lookup(values, "image", var.image) ])
+  for_each = toset([ for host, values in module.design.instances: values.image if endswith(values.image, "/cloud") ])
   project  = incus_project.project.name
   source_image = {
-    # TODO: figure out if what needs to happen to "remote" when using snapshot instead of remote images.
     remote = "images"
     name   = each.key
     # TODO: Figure out how choose between "container" and "virtual-machine"
@@ -85,7 +85,7 @@ resource "incus_instance" "instances" {
 
   project = incus_project.project.name
   name    = each.key
-  image   = incus_image.image[lookup(each.value, "image", var.image)].fingerprint
+  image   = try(incus_image.image[each.value.image].fingerprint, each.value.image)
   type    = each.value.type
 
   config = {
