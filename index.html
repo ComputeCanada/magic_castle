@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
@@ -574,6 +574,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#464-incus" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.6.4 Incus
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -968,6 +977,30 @@
   <a href="#544-subnet_id-optional" class="md-nav__link">
     <span class="md-ellipsis">
       5.4.4 subnet_id (optional)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-incus" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.5 Incus
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.5 Incus">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forward_proxy-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      forward_proxy (optional)
     </span>
   </a>
   
@@ -1867,6 +1900,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#464-incus" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.6.4 Incus
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2261,6 +2303,30 @@
   <a href="#544-subnet_id-optional" class="md-nav__link">
     <span class="md-ellipsis">
       5.4.4 subnet_id (optional)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-incus" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.5 Incus
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.5 Incus">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forward_proxy-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      forward_proxy (optional)
     </span>
   </a>
   
@@ -3057,6 +3123,14 @@ Here is an example:
 <h4 id="463-openstack">4.6.3 OpenStack</h4>
 <p>The image name can be a regular expression. If more than one image is returned by the query
 to OpenStack, the most recent is selected.</p>
+<h4 id="464-incus">4.6.4 Incus</h4>
+<p>The source of the images is <a href="https://images.linuxcontainers.org/">images.linuxcontainers.org/</a>.
+Make sure to select the <code>cloud</code> variant of the distribution image since only these images
+have cloud-init installed and enabled, which is required for bootstrapping Magic Castle.</p>
+<p>Since the cloud variant of images is a requirement for Magic Castle, it is implemented
+that an Incus image name that does not end with <code>/cloud</code> has to be a local image
+created using the process documented in section
+<a href="#1012-create-a-compute-node-image">10.12 - Create a compute node image</a>.</p>
 <h3 id="47-instances">4.7 instances</h3>
 <p>The <code>instances</code> variable is a map that defines the virtual machines that will form
 the cluster. The map' keys define the hostnames and the values are the attributes
@@ -3576,6 +3650,15 @@ connected. Define this if you have or intend to have more than one
 subnets defined in your OpenStack project. Otherwise, Terraform can
 find it automatically. Can be used to force a v4 subnet when both v4 and v6 exist.</p>
 <p><strong>Post build modification effect</strong>: rebuild of all instances at next <code>terraform apply</code>.</p>
+<h3 id="55-incus">5.5 Incus</h3>
+<h4 id="forward_proxy-optional">forward_proxy (optional)</h4>
+<p><strong>default value</strong>: false</p>
+<p>When enabled, the network connections for ports with the <code>proxy</code> tags in firewall rules
+are forwarded between the incus host and the proxy instance. To do so, an
+<a href="https://linuxcontainers.org/incus/docs/main/reference/devices_proxy/">incus proxy device</a>
+is added to the instance for each port.</p>
+<p>This setting can be enabled on at most one cluster per incus host.</p>
+<p><strong>Post build modification effect</strong>: add or remove devices forwarding proxy ports.</p>
 <h2 id="6-dns-configuration">6. DNS Configuration</h2>
 <p>Some functionalities in Magic Castle require the registration of DNS records under the
 <a href="#44-cluster_name">cluster name</a> in the selected <a href="#45-domain">domain</a>. This includes
@@ -4000,6 +4083,10 @@ be disconnected from the instance.</p>
 <li>Remove cloud-init's logs and artifacts so it can re-run</li>
 <li>Power off the machine</li>
 </ol>
+<p><strong>Warning</strong>: When using Incus, running <code>prepare4image.sh</code> on instance is an irreversible process.
+The script removes <code>/var/lib/cloud</code> which is only created when the instance is created. Therefore,
+to make the instance work properly again, you will either have to taint it or change its image
+attribute to the one you have just created.</p>
 <h4 id="10122-create-the-image">10.12.2 Create the image</h4>
 <p>Once the instance is powered off, access your cloud provider dashboard, find the instance
 and follow the provider's instructions to create the image.</p>
@@ -4007,6 +4094,7 @@ and follow the provider's instructions to create the image.</p>
 <li><a href="https://docs.aws.amazon.com/toolkit-for-visual-studio/latest/user-guide/tkv-create-ami-from-instance.html">AWS</a></li>
 <li><a href="https://learn.microsoft.com/en-us/azure/virtual-machines/capture-image-portal">Azure</a></li>
 <li><a href="https://cloud.google.com/compute/docs/machine-images/create-machine-images#create-image-from-instance">GCP</a></li>
+<li><a href="https://linuxcontainers.org/incus/docs/main/howto/images_create/">Incus</a></li>
 <li><a href="https://docs.openstack.org/horizon/latest/user/launch-instances.html#create-an-instance-snapshot">OpenStack</a></li>
 <li><a href="https://blog.ovhcloud.com/create-and-use-openstack-snapshots/">OVH</a></li>
 </ul>
@@ -4135,7 +4223,7 @@ provider (e.g: <code>gcp</code>, <code>openstack</code>, <code>aws</code>, etc.)
       <script id="__config" type="application/json">{"base": ".", "features": ["content.code.copy"], "search": "assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="assets/javascripts/bundle.56ea9cef.min.js"></script>
       
     
   </body>
