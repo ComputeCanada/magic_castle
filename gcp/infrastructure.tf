@@ -7,6 +7,7 @@ module "design" {
   source         = "../common/design"
   cluster_name   = var.cluster_name
   domain         = var.domain
+  image          = var.image
   instances      = var.instances
   min_disk_size  = 20
   pool           = var.pool
@@ -94,7 +95,7 @@ resource "google_compute_instance" "instances" {
 
   boot_disk {
     initialize_params {
-      image = lookup(each.value, "image", var.image)
+      image = each.value.image
       type  = lookup(each.value, "disk_type", "pd-ssd")
       size  = each.value.disk_size
     }

@@ -1,0 +1,20 @@
+---
+profile::nfs::server::export_paths: ['/home', '/project', '/scratch']
+profile::nfs::client::share_names: ['home', 'project', 'scratch']
+profile::slurm::controller::selinux_context: ""
+
+magic_castle::site::all:
+  - profile::base
+  - profile::consul
+  - profile::freeipa
+  - profile::users::local
+  - profile::sssd::client
+  - profile::metrics::node_exporter
+  - profile::rsyslog::client
+  - profile::volumes
+# - swap_file
+# We remove swap when running in containers
+# because when comes time to destroy the cluster
+# incus is unable to run swap_off on the instance
+# swap file (it tries a simple rm instead)
+# and it results in a crash of the terraform destroy.

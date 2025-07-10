@@ -7,6 +7,7 @@ module "design" {
   source         = "../common/design"
   cluster_name   = var.cluster_name
   domain         = var.domain
+  image          = var.image
   instances      = var.instances
   min_disk_size  = 20
   pool           = var.pool
@@ -122,7 +123,7 @@ data "aws_ec2_instance_type" "instance_type" {
 resource "aws_instance" "instances" {
   for_each          = module.design.instances_to_build
   instance_type     = each.value.type
-  ami               = lookup(each.value, "image", var.image)
+  ami               = each.value.image
   user_data         = base64gzip(module.configuration.user_data[each.key])
   availability_zone = local.availability_zone
   placement_group   = contains(each.value.tags, "efa") ? aws_placement_group.efa_group.id : null

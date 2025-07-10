@@ -455,6 +455,17 @@ Here is an example:
 The image name can be a regular expression. If more than one image is returned by the query
 to OpenStack, the most recent is selected.
 
+#### 4.6.4 Incus
+
+The source of the images is [images.linuxcontainers.org/](https://images.linuxcontainers.org/).
+Make sure to select the `cloud` variant of the distribution image since only these images
+have cloud-init installed and enabled, which is required for bootstrapping Magic Castle.
+
+Since the cloud variant of images is a requirement for Magic Castle, it is implemented
+that an Incus image name that does not end with `/cloud` has to be a local image
+created using the process documented in section
+[10.12 - Create a compute node image](#1012-create-a-compute-node-image).
+
 ### 4.7 instances
 
 The `instances` variable is a map that defines the virtual machines that will form
@@ -1095,6 +1106,21 @@ find it automatically. Can be used to force a v4 subnet when both v4 and v6 exis
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
+### 5.5 Incus
+
+#### forward_proxy (optional)
+
+**default value**: false
+
+When enabled, the network connections for ports with the `proxy` tags in firewall rules
+are forwarded between the incus host and the proxy instance. To do so, an
+[incus proxy device](https://linuxcontainers.org/incus/docs/main/reference/devices_proxy/)
+is added to the instance for each port.
+
+This setting can be enabled on at most one cluster per incus host.
+
+**Post build modification effect**: add or remove devices forwarding proxy ports.
+
 ## 6. DNS Configuration
 
 Some functionalities in Magic Castle require the registration of DNS records under the
@@ -1659,6 +1685,11 @@ The script `prepare4image.sh` executes the following steps in order:
   12. Remove cloud-init's logs and artifacts so it can re-run
   13. Power off the machine
 
+**Warning**: When using Incus, running `prepare4image.sh` on instance is an irreversible process.
+The script removes `/var/lib/cloud` which is only created when the instance is created. Therefore,
+to make the instance work properly again, you will either have to taint it or change its image
+attribute to the one you have just created.
+
 #### 10.12.2 Create the image
 
 Once the instance is powered off, access your cloud provider dashboard, find the instance
@@ -1667,6 +1698,7 @@ and follow the provider's instructions to create the image.
 - [AWS](https://docs.aws.amazon.com/toolkit-for-visual-studio/latest/user-guide/tkv-create-ami-from-instance.html)
 - [Azure](https://learn.microsoft.com/en-us/azure/virtual-machines/capture-image-portal)
 - [GCP](https://cloud.google.com/compute/docs/machine-images/create-machine-images#create-image-from-instance)
+- [Incus](https://linuxcontainers.org/incus/docs/main/howto/images_create/)
 - [OpenStack](https://docs.openstack.org/horizon/latest/user/launch-instances.html#create-an-instance-snapshot)
 - [OVH](https://blog.ovhcloud.com/create-and-use-openstack-snapshots/)
 
