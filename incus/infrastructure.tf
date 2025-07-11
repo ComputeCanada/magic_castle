@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    incus = {
-      source  = "lxc/incus"
-      version = "0.3.1"
-    }
-  }
-}
-
 module "design" {
   source         = "../common/design"
   cluster_name   = var.cluster_name
