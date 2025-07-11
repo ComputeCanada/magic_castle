@@ -47,20 +47,20 @@ module "provision" {
 }
 
 data "openstack_images_image_v2" "image" {
-  for_each    = var.instances
-  name_regex  = each.value.image
+  for_each    = toset([for key, values in module.design.instances: values.image])
+  name_regex  = each.key
   most_recent = true
 }
 
 data "openstack_compute_flavor_v2" "flavors" {
-  for_each = var.instances
-  name     = each.value.type
+  for_each = toset([for key, values in module.design.instances: values.type])
+  name     = each.key
 }
 
 resource "openstack_compute_instance_v2" "instances" {
   for_each = module.design.instances_to_build
   name     = format("%s-%s", var.cluster_name, each.key)
-  image_id = each.value.disk_size > data.openstack_compute_flavor_v2.flavors[each.value.prefix].disk ? null : data.openstack_images_image_v2.image[each.value.prefix].id
+  image_id = each.value.disk_size > data.openstack_compute_flavor_v2.flavors[each.value.type].disk ? null : data.openstack_images_image_v2.image[each.value.image].id
 
   flavor_name  = each.value.type
   user_data    = base64gzip(module.configuration.user_data[each.key])
@@ -78,9 +78,9 @@ resource "openstack_compute_instance_v2" "instances" {
   }
 
   dynamic "block_device" {
-    for_each = each.value.disk_size > data.openstack_compute_flavor_v2.flavors[each.value.prefix].disk ? [{ volume_size = each.value.disk_size }] : []
+    for_each = each.value.disk_size > data.openstack_compute_flavor_v2.flavors[each.value.type].disk ? [{ volume_size = each.value.disk_size }] : []
     content {
-      uuid                  = data.openstack_images_image_v2.image[each.value.prefix].id
+      uuid                  = data.openstack_images_image_v2.image[each.value.image].id
       source_type           = "image"
       destination_type      = "volume"
       boot_index            = 0
@@ -123,11 +123,11 @@ locals {
       prefix    = values.prefix
       tags      = values.tags
       specs = merge({
-        cpus   = data.openstack_compute_flavor_v2.flavors[values.prefix].vcpus
-        ram    = data.openstack_compute_flavor_v2.flavors[values.prefix].ram
+        cpus   = data.openstack_compute_flavor_v2.flavors[values.type].vcpus
+        ram    = data.openstack_compute_flavor_v2.flavors[values.type].ram
         gpus   = sum([
-          parseint(lookup(data.openstack_compute_flavor_v2.flavors[values.prefix].extra_specs, "resources:VGPU", "0"), 10),
-          parseint(split(":", lookup(data.openstack_compute_flavor_v2.flavors[values.prefix].extra_specs, "pci_passthrough:alias", "gpu:0"))[1], 10)
+          parseint(lookup(data.openstack_compute_flavor_v2.flavors[values.type].extra_specs, "resources:VGPU", "0"), 10),
+          parseint(split(":", lookup(data.openstack_compute_flavor_v2.flavors[values.type].extra_specs, "pci_passthrough:alias", "gpu:0"))[1], 10)
         ])
       }, values.specs)
       volumes = contains(keys(module.design.volume_per_instance), x) ? {
