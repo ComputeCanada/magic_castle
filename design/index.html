@@ -725,8 +725,8 @@ provider based on its role in the cluster.</p>
 </tbody>
 </table>
 <h2 id="using-reference-design-to-extend-for-a-new-cloud-provider">Using reference design to extend for a new cloud provider</h2>
-<p>Magic Castle currently supports five cloud providers, but its design makes it easy to add
-new providers. This section presents a step-by-step guide to add a new cloud provider
+<p>Magic Castle currently supports six providers, but its design makes it easy to add
+new ones. This section presents a step-by-step guide to add a new provider
 support to Magic Castle.</p>
 <ol>
 <li>
@@ -746,10 +746,23 @@ two symlinks, one pointing to <code>common/variables.tf</code> and the other to 
 files define the interface common to all providers supported by Magic Castle.</p>
 </li>
 <li>
+<p><strong>Specify the provider version to user</strong>. Create a file named <code>versions.tf</code>. In this file, paste the
+<code>terraform</code> block content provided when clicking on "Use this provider" button in the Terraform provider
+documentation, i.e:
+    <div class="highlight"><pre><span></span><code>terraform {
+  required_providers {
+    incus = {
+      source = &quot;lxc/incus&quot;
+      version = &quot;0.3.1&quot;
+    }
+  }
+}
+</code></pre></div></p>
+</li>
+<li>
 <p><strong>Define cloud provider specifics variables</strong>. Create a file named after your provider
 <code>provider_name.tf</code> and define variables that are required by the provider but not common to all
-providers, for example the availability zone or the region. In this file, define two local
-variables named <code>cloud_provider</code> and <code>cloud_region</code>.</p>
+providers, for example the availability zone or the region.</p>
 </li>
 <li>
 <p><strong>Initialize the infrastructure</strong>. Create a file named  <code>infrastructure.tf</code>. In this file:</p>
@@ -761,12 +774,15 @@ variables named <code>cloud_provider</code> and <code>cloud_region</code>.</p>
 </code></pre></div></li>
 <li>include the design module
     <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;design&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="na">source</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/design&quot;</span>
-<span class="w">  </span><span class="na">cluster_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.cluster_name</span>
-<span class="w">  </span><span class="na">domain</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.domain</span>
-<span class="w">  </span><span class="na">instances</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.instances</span>
-<span class="w">  </span><span class="na">pool</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.pool</span>
-<span class="w">  </span><span class="na">volumes</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.volumes</span>
+<span class="w">  </span><span class="na">source</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/design&quot;</span>
+<span class="w">  </span><span class="na">cluster_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">var.cluster_name</span>
+<span class="w">  </span><span class="na">domain</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.domain</span>
+<span class="w">  </span><span class="na">image</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.image</span>
+<span class="w">  </span><span class="na">instances</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.instances</span>
+<span class="w">  </span><span class="na">min_disk_size</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">10</span>
+<span class="w">  </span><span class="na">pool</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">var.pool</span>
+<span class="w">  </span><span class="na">volumes</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.volumes</span>
+<span class="w">  </span><span class="na">firewall_rules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.firewall_rules</span>
 <span class="p">}</span>
 </code></pre></div></li>
 </ol>
@@ -789,6 +805,15 @@ the <code>module.design.instances</code> map.</p>
 <span class="w">        </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/dev/disk/by-id/*${substr(provider.volumes[&quot;${x}-${pv_key}-${name}&quot;].id, 0, 20)}&quot;</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="err">if</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nv">values.tags</span><span class="p">,</span><span class="w"> </span><span class="err">pv_key</span><span class="p">)</span>
 <span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+</code></pre></div>
+  If some of these values are only known after the instances are created, create a second data structure that will merge the original inventory
+  with these values. For example, in Incus, we only known the ip addresses after the instances creation:
+    <div class="highlight"><pre><span></span><code><span class="nb">post_inventory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">host</span><span class="p">,</span><span class="w"> </span><span class="err">values</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">local.inventory</span><span class="p">:</span>
+<span class="w">  </span><span class="na">host</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="err">values</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">local_ip</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">try</span><span class="p">(</span><span class="nv">incus_instance.instances[host].ipv4_address</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="na">public_ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">try</span><span class="p">(</span><span class="nv">incus_instance.instances[host].ipv4_address</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="p">}</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -797,17 +822,21 @@ the <code>module.design.instances</code> map.</p>
     <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;configuration&quot;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="na">source</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/configuration&quot;</span>
 <span class="w">  </span><span class="na">inventory</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">local.inventory</span>
+<span class="c1">  #post_inventory        = local.post_inventory # uncomment if you have a post_inventory</span>
 <span class="w">  </span><span class="na">config_git_url</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.config_git_url</span>
 <span class="w">  </span><span class="na">config_version</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.config_version</span>
 <span class="w">  </span><span class="na">sudoer_username</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sudoer_username</span>
 <span class="w">  </span><span class="na">public_keys</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">var.public_keys</span>
 <span class="w">  </span><span class="na">domain_name</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.domain_name</span>
+<span class="w">  </span><span class="na">bastion_tag</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.bastion_tag</span>
 <span class="w">  </span><span class="na">cluster_name</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.cluster_name</span>
 <span class="w">  </span><span class="na">guest_passwd</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.guest_passwd</span>
 <span class="w">  </span><span class="na">nb_users</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="nv">var.nb_users</span>
 <span class="w">  </span><span class="na">software_stack</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.software_stack</span>
 <span class="w">  </span><span class="na">cloud_provider</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.cloud_provider</span>
 <span class="w">  </span><span class="na">cloud_region</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">local.cloud_region</span>
+<span class="w">  </span><span class="na">skip_upgrade</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.skip_upgrade</span>
+<span class="w">  </span><span class="na">puppetfile</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="nv">var.puppetfile</span>
 <span class="p">}</span>
 </code></pre></div></p>
 </li>
@@ -830,20 +859,23 @@ that contains the attributes of instances that are publicly accessible from Inte
 <span class="w">    </span><span class="err">if</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nv">module.configuration.inventory[host].tags</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;public&quot;</span><span class="p">)</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div></p>
+</code></pre></div>
+  Make sure you use the inventory output of the <code>configuration</code> module.</p>
 </li>
 <li>
 <p><strong>Include the provision module to transmit Terraform data to the Puppet server</strong>. In <code>infrastructure.tf</code>, include the
 <code>common/provision</code> module like this
   <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;provision&quot;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="na">source</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/provision&quot;</span>
-<span class="w">  </span><span class="na">bastions</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.public_instances</span>
+<span class="w">  </span><span class="na">bastions</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.bastions</span>
 <span class="w">  </span><span class="na">puppetservers</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.puppetservers</span>
 <span class="w">  </span><span class="na">tf_ssh_key</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.ssh_key</span>
 <span class="w">  </span><span class="na">terraform_data</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.terraform_data</span>
 <span class="w">  </span><span class="na">terraform_facts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.terraform_facts</span>
 <span class="w">  </span><span class="na">hieradata</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.hieradata</span>
-<span class="w">  </span><span class="na">sudoer_username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.sudoer_username</span>
+<span class="w">  </span><span class="na">hieradata_dir</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">var.hieradata_dir</span>
+<span class="w">  </span><span class="na">eyaml_key</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.eyaml_key</span>
+<span class="w">  </span><span class="na">puppetfile</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">var.puppetfile</span>
 <span class="p">}</span>
 </code></pre></div></p>
 </li>
