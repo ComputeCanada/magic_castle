@@ -623,93 +623,104 @@ provider based on its role in the cluster.</p>
 <thead>
 <tr>
 <th>Resource</th>
-<th style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc">AWS</a></th>
-<th style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs">Azure</a></th>
-<th style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs">Google Cloud Platform</a></th>
+<th><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc">AWS</a></th>
+<th><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs">Azure</a></th>
+<th><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs">Google Cloud Platform</a></th>
+<th><a href="https://registry.terraform.io/providers/lxc/incus/latest/docs">Incus</a></th>
 <th><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/">OpenStack</a></th>
-<th style="text-align: left;">OVH</th>
+<th>OVH</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>network</td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc">aws_vpc</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network">azurerm_virtual_network</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network">google_compute_network</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc">aws_vpc</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network">azurerm_virtual_network</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network">google_compute_network</a></td>
+<td><a href="https://registry.terraform.io/providers/lxc/incus/latest/docs/resources/network">incus_network</a></td>
 <td>prebuilt</td>
-<td style="text-align: left;">openstack_networking_network_v2</td>
+<td>openstack_networking_network_v2</td>
 </tr>
 <tr>
 <td>subnet</td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet">aws_subnet</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet">azurerm_subnet</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork">google_compute_subnetwork</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet">aws_subnet</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet">azurerm_subnet</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork">google_compute_subnetwork</a></td>
+<td><a href="https://registry.terraform.io/providers/lxc/incus/latest/docs/resources/network">incus_network</a></td>
 <td>prebuilt</td>
-<td style="text-align: left;">openstack_networking_subnet_v2</td>
+<td>openstack_networking_subnet_v2</td>
 </tr>
 <tr>
 <td>router</td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route">aws_route</a></td>
-<td style="text-align: left;">not used</td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router">google_compute_router</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route">aws_route</a></td>
+<td>not used</td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router">google_compute_router</a></td>
 <td>built-in</td>
-<td style="text-align: left;">not used</td>
+<td>built-in</td>
+<td>not used</td>
 </tr>
 <tr>
 <td>nat</td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway">aws_internet_gateway</a></td>
-<td style="text-align: left;">not used</td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router_nat">google_compute_router_nat</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway">aws_internet_gateway</a></td>
+<td>not used</td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router_nat">google_compute_router_nat</a></td>
 <td>built-in</td>
-<td style="text-align: left;">not used</td>
+<td>built-in</td>
+<td>not used</td>
 </tr>
 <tr>
 <td>firewall</td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group">aws_security_group</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group">azurerm_network_security_group</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall">google_compute_firewall</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group">aws_security_group</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group">azurerm_network_security_group</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall">google_compute_firewall</a></td>
+<td>not implemented</td>
 <td><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_secgroup_v2">openstack_compute_secgroup_v2</a></td>
-<td style="text-align: left;">openstack_compute_secgroup_v2</td>
+<td>openstack_compute_secgroup_v2</td>
 </tr>
 <tr>
 <td>nic</td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_interface">aws_network_interface</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface">azurerm_network_interface</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address">google_compute_address</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_interface">aws_network_interface</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface">azurerm_network_interface</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address">google_compute_address</a></td>
+<td>not available</td>
 <td><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/networking_port_v2">openstack_networking_port_v2</a></td>
-<td style="text-align: left;">openstack_networking_port_v2</td>
+<td>openstack_networking_port_v2</td>
 </tr>
 <tr>
 <td>public ip</td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip">aws_eip</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip">azurerm_public_ip</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address">google_compute_address</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip">aws_eip</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip">azurerm_public_ip</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address">google_compute_address</a></td>
+<td>not available</td>
 <td><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/networking_floatingip_v2">openstack_networking_floatingip_v2</a></td>
-<td style="text-align: left;">openstack_networking_network_v2</td>
+<td>openstack_networking_network_v2</td>
 </tr>
 <tr>
 <td>instance</td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance">aws_instance</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine">azurerm_linux_virtual_machine</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance">google_compute_instance</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance">aws_instance</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine">azurerm_linux_virtual_machine</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance">google_compute_instance</a></td>
+<td><a href="https://registry.terraform.io/providers/lxc/incus/latest/docs/resources/instance">incus_instance</a></td>
 <td><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_instance_v2">openstack_compute_instance_v2</a></td>
-<td style="text-align: left;">openstack_compute_instance_v2</td>
+<td>openstack_compute_instance_v2</td>
 </tr>
 <tr>
 <td>volume</td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume">aws_ebs_volume</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/managed_disk">azurerm_managed_disk</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk">google_compute_disk</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume">aws_ebs_volume</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/managed_disk">azurerm_managed_disk</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk">google_compute_disk</a></td>
+<td>not implemented</td>
 <td><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/blockstorage_volume_v3">openstack_blockstorage_volume_v3</a></td>
-<td style="text-align: left;">openstack_blockstorage_volume_v3</td>
+<td>openstack_blockstorage_volume_v3</td>
 </tr>
 <tr>
 <td>attachment</td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/volume_attachment">aws_volume_attachment</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine_data_disk_attachment">azurerm_virtual_machine_data_disk_attachment</a></td>
-<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_attached_disk">google_compute_attached_disk</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/volume_attachment">aws_volume_attachment</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine_data_disk_attachment">azurerm_virtual_machine_data_disk_attachment</a></td>
+<td><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_attached_disk">google_compute_attached_disk</a></td>
+<td>not implemented</td>
 <td><a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_volume_attach_v2">openstack_compute_volume_attach_v2</a></td>
-<td style="text-align: left;">openstack_compute_volume_attach_v2</td>
+<td>openstack_compute_volume_attach_v2</td>
 </tr>
 </tbody>
 </table>
@@ -839,21 +850,81 @@ that contains the attributes of instances that are publicly accessible from Inte
 </ol>
 <h3 id="an-example">An example</h3>
 <ol>
-<li>
-<p><strong>Identify the resources</strong>. For Digital Ocean, Oracle Cloud and Alibaba Cloud, we get the following resource mapping:
-    | Resource    | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs">Digital Ocean</a> | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs">Oracle Cloud</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs">Alibaba Cloud</a> |
-    | ----------- | :-------------------- |  :-------------------- |  :-------------------- |
-    | network     | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/vpc">digitalocean_vpc</a> | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_vcn">oci_core_vcn</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/vpc">alicloud_vpc</a> |
-    | subnet      | built in vpc | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_subnet">oci_subnet</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/vswitch">alicloud_vswitch</a> |
-    | router      | n/a          | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_route_table">oci_core_route_table</a> | built in vpc |
-    | nat         | n/a          | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_internet_gateway">oci_core_internet_gateway</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/nat_gateway">alicloud_nat_gateway</a> |
-    | firewall    | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/firewall">digitalocean_firewall</a> | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_security_list">oci_core_security_list</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/security_group">alicloud_security_group</a> |
-    | nic         | n/a | built in instance | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/network_interface">alicloud_network_interface</a> |
-    | public ip   | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/floating_ip">digitalocean_floating_ip</a> | built in instance | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/eip">alicloud_eip</a> |
-    | instance    | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/droplet">digitalocean_droplet</a> | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_instance">oci_core_instance</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/instance">alicloud_instance</a> |
-    | volume      | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/volume">digitalocean_volume</a> | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_volume">oci_core_volume</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/disk">alicloud_disk</a> |
-    | attachment  | <a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/volume_attachment">digitalocean_volume_attachment</a> | <a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_volume_attachment">oci_core_volume_attachment</a> | <a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/disk_attachment">alicloud_disk_attachment</a> |</p>
-</li>
+<li><strong>Identify the resources</strong>. For Digital Ocean, Oracle Cloud and Alibaba Cloud, we get the following resource mapping:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th style="text-align: left;"><a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs">Digital Ocean</a></th>
+<th style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs">Oracle Cloud</a></th>
+<th style="text-align: left;"><a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs">Alibaba Cloud</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>network</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/vpc">digitalocean_vpc</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_vcn">oci_core_vcn</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/vpc">alicloud_vpc</a></td>
+</tr>
+<tr>
+<td>subnet</td>
+<td style="text-align: left;">built in vpc</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_subnet">oci_subnet</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/vswitch">alicloud_vswitch</a></td>
+</tr>
+<tr>
+<td>router</td>
+<td style="text-align: left;">n/a</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_route_table">oci_core_route_table</a></td>
+<td style="text-align: left;">built in vpc</td>
+</tr>
+<tr>
+<td>nat</td>
+<td style="text-align: left;">n/a</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_internet_gateway">oci_core_internet_gateway</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/nat_gateway">alicloud_nat_gateway</a></td>
+</tr>
+<tr>
+<td>firewall</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/firewall">digitalocean_firewall</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_security_list">oci_core_security_list</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/security_group">alicloud_security_group</a></td>
+</tr>
+<tr>
+<td>nic</td>
+<td style="text-align: left;">n/a</td>
+<td style="text-align: left;">built in instance</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/network_interface">alicloud_network_interface</a></td>
+</tr>
+<tr>
+<td>public ip</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/floating_ip">digitalocean_floating_ip</a></td>
+<td style="text-align: left;">built in instance</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/eip">alicloud_eip</a></td>
+</tr>
+<tr>
+<td>instance</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/droplet">digitalocean_droplet</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_instance">oci_core_instance</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/instance">alicloud_instance</a></td>
+</tr>
+<tr>
+<td>volume</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/volume">digitalocean_volume</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_volume">oci_core_volume</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/disk">alicloud_disk</a></td>
+</tr>
+<tr>
+<td>attachment</td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/volume_attachment">digitalocean_volume_attachment</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_volume_attachment">oci_core_volume_attachment</a></td>
+<td style="text-align: left;"><a href="https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/disk_attachment">alicloud_disk_attachment</a></td>
+</tr>
+</tbody>
+</table>
+<ol>
 <li>
 <p><strong>Check minimum requirements</strong>. In the preceding table, we can see Digital Ocean does not have the ability
 to define a network interface. The documentation also leads us to conclude that it is not possible
