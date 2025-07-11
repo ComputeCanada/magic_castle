@@ -77,15 +77,8 @@ data "external" "machine_type" {
   }
 }
 
-locals {
-  to_build_instances = {
-    for key, values in module.design.instances: key => values
-    if ! contains(values.tags, "pool") || contains(var.pool, key)
-   }
-}
-
 resource "google_compute_instance" "instances" {
-  for_each = local.to_build_instances
+  for_each = module.design.instances_to_build
   project  = var.project
   zone     = local.zone
 
