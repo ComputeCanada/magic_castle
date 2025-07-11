@@ -174,8 +174,9 @@ locals {
     }
   }
 
-  public_instances = { for host in keys(module.design.instances_to_build):
-    host => merge(module.configuration.inventory[host], {id=google_compute_instance.instances[host].id})
-    if contains(module.configuration.inventory[host].tags, "public")
+  post_inventory = { for host, values in local.inventory:
+    host => merge(values, {
+      id = try(google_compute_instance.instances[host].id, "")
+    })
   }
 }

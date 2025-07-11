@@ -1,5 +1,5 @@
 output "public_instances" {
-  value = local.public_instances
+  value = module.configuration.public_instances
 }
 
 output "bastions" {
@@ -8,7 +8,7 @@ output "bastions" {
 
 output "public_ip" {
   value = {
-    for key, values in local.public_instances: key => values["public_ip"]
+    for key, values in module.configuration.public_instances: key => values["public_ip"]
     if values["public_ip"] != ""
   }
 }

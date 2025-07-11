@@ -164,3 +164,7 @@ output "bastions" {
     if contains(values.tags, var.bastion_tag) && contains(values.tags, "public") &&  (!contains(values.tags, "pool"))
   }
 }
+
+output "public_instances" {
+  value = { for host, values in local.final_inventory: host => values if contains(values.tags, "public") }
+}
