@@ -18,6 +18,7 @@ module "design" {
 module "configuration" {
   source                = "../common/configuration"
   inventory             = local.inventory
+  post_inventory        = local.post_inventory
   config_git_url        = var.config_git_url
   config_version        = var.config_version
   sudoer_username       = var.sudoer_username
@@ -214,8 +215,9 @@ locals {
     }
   }
 
-  public_instances = { for host in keys(module.design.instances_to_build):
-    host => merge(module.configuration.inventory[host], {id=try(aws_instance.instances[host].id, "")})
-    if contains(module.configuration.inventory[host].tags, "public")
+  post_inventory = { for host, values in local.inventory:
+    host => merge(values, {
+      id = try(aws_instance.instances[host].id, "")
+    })
   }
 }
