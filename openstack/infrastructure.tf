@@ -31,11 +31,7 @@ module "configuration" {
 
 module "provision" {
   source          = "../common/provision"
-  bastions        = module.configuration.bastions
-  puppetservers   = module.configuration.puppetservers
-  tf_ssh_key      = module.configuration.ssh_key
-  terraform_data  = module.configuration.terraform_data
-  terraform_facts = module.configuration.terraform_facts
+  configuration   = module.configuration
   hieradata       = var.hieradata
   hieradata_dir   = var.hieradata_dir
   eyaml_key       = var.eyaml_key
