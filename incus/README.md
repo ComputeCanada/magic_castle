@@ -44,12 +44,3 @@ To setup a Terraform agent, [follow the instructions](https://developer.hashicor
 The Terraform agent has to run on the same machine as the incus server. In the Terraform cloud workspace of the cluster, make
 sure to define the environment variable `INCUS_SOCKET=/var/run/incus/unix.socket`. This will allow the Terraform agent to
 communicate with Incus.
-
-## Unprivileged containers
-
-By default, the LXC containers created by Magic Castle are privileged. It is possible for security reasons
-to turn this off by provider `privileged = false` to the Incus module. However, due to kernel restrictions
-designed to prevent unprivileged users from performing privileged operations like initiating mounts,
-the following features have to be disabled when running with `privileged = false`:
-- CVMFS software stack
-- NFS server and mounts

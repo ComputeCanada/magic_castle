@@ -1121,6 +1121,19 @@ This setting can be enabled on at most one cluster per incus host.
 
 **Post build modification effect**: add or remove devices forwarding proxy ports.
 
+### privileged (optional)
+
+**default value**: true
+
+By default, the LXC containers created by Magic Castle are privileged. It is possible for security reasons
+to turn this off by provider `privileged = false` to the Incus module. However, due to kernel restrictions
+designed to prevent unprivileged users from performing privileged operations like initiating mounts,
+the following features have to be disabled when running with `privileged = false`:
+- CVMFS software stack (`profile::software_stack`)
+- NFS server and mounts (`profile::nfs`)
+
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
+
 ## 6. DNS Configuration
 
 Some functionalities in Magic Castle require the registration of DNS records under the
