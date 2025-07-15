@@ -22,6 +22,10 @@ module "incus" {
   public_keys = []
   hieradata = file("data.yaml")
 
+  # Uncomment to run the containers without privileges
+  #privileged = false
+  #hieradata = file("unprivileged.yaml")
+
   nb_users = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
