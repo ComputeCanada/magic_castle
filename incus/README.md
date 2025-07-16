@@ -37,7 +37,7 @@ When deploying Magic Castle with Incus, the following features are yet implement
 ## Autoscaling with Terraform Cloud
 
 It is possible to enable the cluster autoscaling as described in
-[https://github.com/ComputeCanada/magic_castle/blob/main/docs/terraform_cloud.md](Magic Castle Terraform Cloud documentation).
+[Magic Castle Terraform Cloud documentation](https://github.com/ComputeCanada/magic_castle/blob/main/docs/terraform_cloud.md).
 
 Since Incus is a local provider, a local terraform agent is required.
 To setup a Terraform agent, [follow the instructions](https://developer.hashicorp.com/terraform/tutorials/cloud/cloud-agents).
