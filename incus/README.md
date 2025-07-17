@@ -44,4 +44,3 @@ To setup a Terraform agent, [follow the instructions](https://developer.hashicor
 The Terraform agent has to run on the same machine as the incus server. In the Terraform cloud workspace of the cluster, make
 sure to define the environment variable `INCUS_SOCKET=/var/run/incus/unix.socket`. This will allow the Terraform agent to
 communicate with Incus.
-

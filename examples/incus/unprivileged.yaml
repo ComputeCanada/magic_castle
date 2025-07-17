@@ -1,0 +1,54 @@
+lookup_options:
+  magic_castle::site::all:
+    merge: 'first'
+  magic_castle::site::tags:
+    merge: 'first'
+
+jupyterhub::kernel::venv::python: "3.12"
+
+magic_castle::site::all:
+  - profile::base
+  - profile::consul
+  - profile::freeipa
+  - profile::users::local
+  - profile::sssd::client
+  - profile::metrics::node_exporter
+  - profile::rsyslog::client
+  - profile::volumes
+
+magic_castle::site::tags:
+  dtn: []
+  login:
+    - motd
+    - profile::fail2ban
+    - profile::slurm::submitter
+    - profile::ssh::hostbased_auth::client
+    - profile::software_stack
+  mgmt:
+    - mysql::server
+    - prometheus::server
+    - prometheus::alertmanager
+    - profile::metrics::slurm_exporter
+    - profile::metrics::apache_exporter
+    - profile::rsyslog::server
+    - profile::squid::server
+    - profile::slurm::controller
+    - profile::slurm::accounting
+    - profile::accounts
+  node:
+    - profile::gpu
+    - profile::jupyterhub::node
+    - profile::slurm::node
+    - profile::ssh::hostbased_auth::client
+    - profile::ssh::hostbased_auth::server
+    - profile::metrics::slurm_job_exporter
+    - profile::software_stack
+  nfs: []
+  proxy:
+    - profile::jupyterhub::hub
+    - profile::jupyterhub::hub::keytab
+    - profile::reverse_proxy
+    - profile::metrics::caddy_exporter
+  puppet:
+    - profile::puppetserver
+
