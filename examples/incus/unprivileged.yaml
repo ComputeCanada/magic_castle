@@ -23,6 +23,7 @@ magic_castle::site::tags:
     - profile::fail2ban
     - profile::slurm::submitter
     - profile::ssh::hostbased_auth::client
+    - profile::software_stack
   mgmt:
     - mysql::server
     - prometheus::server
@@ -41,6 +42,7 @@ magic_castle::site::tags:
     - profile::ssh::hostbased_auth::client
     - profile::ssh::hostbased_auth::server
     - profile::metrics::slurm_job_exporter
+    - profile::software_stack
   nfs: []
   proxy:
     - profile::jupyterhub::hub

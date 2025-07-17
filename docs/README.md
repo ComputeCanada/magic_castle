@@ -1129,7 +1129,6 @@ By default, the LXC containers created by Magic Castle are privileged. It is pos
 to turn this off by provider `privileged = false` to the Incus module. However, due to kernel restrictions
 designed to prevent unprivileged users from performing privileged operations like initiating mounts,
 the following features have to be disabled when running with `privileged = false`:
-- CVMFS software stack (`profile::software_stack`)
 - NFS server and mounts (`profile::nfs`)
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
