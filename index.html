@@ -1011,6 +1011,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#privileged-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      privileged (optional)
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2337,6 +2346,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#privileged-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      privileged (optional)
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3659,6 +3677,14 @@ are forwarded between the incus host and the proxy instance. To do so, an
 is added to the instance for each port.</p>
 <p>This setting can be enabled on at most one cluster per incus host.</p>
 <p><strong>Post build modification effect</strong>: add or remove devices forwarding proxy ports.</p>
+<h3 id="privileged-optional">privileged (optional)</h3>
+<p><strong>default value</strong>: true</p>
+<p>By default, the LXC containers created by Magic Castle are privileged. It is possible for security reasons
+to turn this off by provider <code>privileged = false</code> to the Incus module. However, due to kernel restrictions
+designed to prevent unprivileged users from performing privileged operations like initiating mounts,
+the following features have to be disabled when running with <code>privileged = false</code>:
+- NFS server and mounts (<code>profile::nfs</code>)</p>
+<p><strong>Post build modification effect</strong>: rebuild of all instances at next <code>terraform apply</code>.</p>
 <h2 id="6-dns-configuration">6. DNS Configuration</h2>
 <p>Some functionalities in Magic Castle require the registration of DNS records under the
 <a href="#44-cluster_name">cluster name</a> in the selected <a href="#45-domain">domain</a>. This includes
