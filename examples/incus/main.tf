@@ -25,6 +25,7 @@ module "incus" {
   # Uncomment to run the containers without privileges
   #privileged = false
   #hieradata = file("unprivileged.yaml")
+  #shared_filesystems = ["home", "project", "scratch"]
 
   nb_users = 10
   # Shared password, randomly chosen if blank
