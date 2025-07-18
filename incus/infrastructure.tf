@@ -67,6 +67,16 @@ resource "incus_image" "image" {
   }
 }
 
+resource "incus_storage_volume" "filesystems" {
+  for_each = toset(var.shared_filesystems)
+
+  name         = each.key
+  pool         = var.storage_pool
+  content_type = "filesystem"
+  description  = "${var.cluster_name}.${var.domain} ${each.key}"
+  project      = random_id.project_name.hex
+}
+
 resource "incus_instance" "instances" {
   for_each = module.design.instances_to_build
 
@@ -95,8 +105,21 @@ resource "incus_instance" "instances" {
     name = "root"
 
     properties = {
-      pool = "default"
+      pool = var.storage_pool
       path = "/"
+    }
+  }
+
+  dynamic "device" {
+    for_each = incus_storage_volume.filesystems
+    content {
+      type = "disk"
+      name = device.key
+      properties = {
+        pool = var.storage_pool
+        source = device.value.name
+        path = "/${device.key}"
+      }
     }
   }
 
