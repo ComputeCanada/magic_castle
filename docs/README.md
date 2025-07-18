@@ -611,6 +611,10 @@ For more information on these attributes, refer to
 available models per region
 - `gpus`: number of GPUs of the `gpu_type` model to attach to the instance
 
+##### Incus
+
+- `target`: name of the [specific cluster member](https://linuxcontainers.org/incus/docs/main/howto/cluster_manage_instance/#launch-an-instance-on-a-specific-cluster-member) to deploy the instance. **Only use with Incus cluster.** 
+
 #### 4.7.3 Post build modification effect
 
 Modifying any part of the map after the cluster is built will only affect
@@ -1156,6 +1160,22 @@ Indicate the name of the [Incus storage pool](https://linuxcontainers.org/incus/
 that will be used to create the instance root disk and the shared filesystems.
 
 **Post build modification effect**: rebuild all instance and filesystems.
+
+### network_type (optional)
+
+**default value**: `"bridge"`
+
+Indicates the type of [Incus network](https://linuxcontainers.org/incus/docs/main/howto/network_create/#network-types).
+For OVN, the host must support the OVN network.
+
+**Possible values**: 'ovn' or 'bridge'
+
+### ovn_uplink_network (optional)
+**default value**: `"UPLINK"`
+
+[Uplink bridge network](https://linuxcontainers.org/incus/docs/main/howto/network_ovn_setup/#set-up-an-incus-cluster-on-ovn) configured with the `ipv4.ovn.ranges` option.
+
+**Only used for OVN network**
 
 ## 6. DNS Configuration
 

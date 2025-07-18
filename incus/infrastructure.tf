@@ -85,6 +85,8 @@ resource "incus_instance" "instances" {
   image   = try(incus_image.image[each.value.image].fingerprint, each.value.image)
   type    = each.value.type
 
+  target = try(each.value.target, null)
+
   config = {
     "cloud-init.user-data" = module.configuration.user_data[each.key]
     "security.privileged"  = var.privileged
@@ -95,8 +97,7 @@ resource "incus_instance" "instances" {
     type = "nic"
 
     properties = {
-      nictype = "bridged"
-      parent  = incus_network.network.name
+      network = incus_network.network.name
     }
   }
 
@@ -141,8 +142,8 @@ resource "incus_instance" "instances" {
 }
 
 locals {
-  inventory = { for x, values in module.design.instances :
-    x => {
+  inventory = { for host, values in module.design.instances :
+    host => {
       prefix  = values.prefix
       tags    = values.tags
       specs   = values.specs
