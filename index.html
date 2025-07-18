@@ -1020,6 +1020,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#shared_filesystems-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      shared_filesystems (optional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#storage_pool-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      storage_pool (optional)
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2355,6 +2373,24 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#shared_filesystems-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      shared_filesystems (optional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#storage_pool-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      storage_pool (optional)
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3685,6 +3721,18 @@ designed to prevent unprivileged users from performing privileged operations lik
 the following features have to be disabled when running with <code>privileged = false</code>:
 - NFS server and mounts (<code>profile::nfs</code>)</p>
 <p><strong>Post build modification effect</strong>: rebuild of all instances at next <code>terraform apply</code>.</p>
+<h3 id="shared_filesystems-optional">shared_filesystems (optional)</h3>
+<p><strong>default value</strong>: <code>[]</code></p>
+<p>This creates a filesystem for every entry in the list and mount that filesystem in every instance under
+<code>/${filesystem.name}</code>. For example, <code>shared_filesystems = ["home"]</code> will create a home filesystem and
+mount it under <code>/home</code> in every instance. This is useful when working with unprivileged containers where
+NFS mount does not work.</p>
+<p><strong>Post build modification effect</strong>: create/destroy the filesystem and mount/unmount it in every instance.</p>
+<h3 id="storage_pool-optional">storage_pool (optional)</h3>
+<p><strong>default value</strong>: <code>"default"</code></p>
+<p>Indicate the name of the <a href="https://linuxcontainers.org/incus/docs/main/howto/storage_pools/">Incus storage pool</a>
+that will be used to create the instance root disk and the shared filesystems.</p>
+<p><strong>Post build modification effect</strong>: rebuild all instance and filesystems.</p>
 <h2 id="6-dns-configuration">6. DNS Configuration</h2>
 <p>Some functionalities in Magic Castle require the registration of DNS records under the
 <a href="#44-cluster_name">cluster name</a> in the selected <a href="#45-domain">domain</a>. This includes
