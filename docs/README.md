@@ -1133,6 +1133,26 @@ the following features have to be disabled when running with `privileged = false
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
+### shared_filesystems (optional)
+
+**default value**: `[]`
+
+This creates a filesystem for every entry in the list and mount that filesystem in every instance under
+`/${filesystem.name}`. For example, `shared_filesystems = ["home"]` will create a home filesystem and
+mount it under `/home` in every instance. This is useful when working with unprivileged containers where
+NFS mount does not work.
+
+**Post build modification effect**: create/destroy the filesystem and mount/unmount it in every instance.
+
+### storage_pool (optional)
+
+**default value**: `"default"`
+
+Indicate the name of the [Incus storage pool](https://linuxcontainers.org/incus/docs/main/howto/storage_pools/)
+that will be used to create the instance root disk and the shared filesystems.
+
+**Post build modification effect**: rebuild all instance and filesystems.
+
 ## 6. DNS Configuration
 
 Some functionalities in Magic Castle require the registration of DNS records under the
