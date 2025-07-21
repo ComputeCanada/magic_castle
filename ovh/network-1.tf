@@ -17,29 +17,29 @@ resource "openstack_networking_subnet_v2" "subnet" {
 }
 
 resource "openstack_networking_port_v2" "public_nic" {
-  for_each              = module.design.instances
-  name                  = format("%s-%s-public-port", var.cluster_name, each.key)
-  network_id            = data.openstack_networking_network_v2.ext_network.id
+  for_each   = module.design.instances
+  name       = format("%s-%s-public-port", var.cluster_name, each.key)
+  network_id = data.openstack_networking_network_v2.ext_network.id
   # We concatenate the external tag specific security groups with the
   # cluster global security group to avoid assigning the project
   # default security group when the security group ids list is empty.
-  security_group_ids    = concat(
+  security_group_ids = concat(
     [
       openstack_networking_secgroup_v2.global.id
     ],
     [
-      for tag, value in openstack_networking_secgroup_v2.external: value.id if contains(each.value.tags, tag)
+      for tag, value in openstack_networking_secgroup_v2.external : value.id if contains(each.value.tags, tag)
     ]
   )
 }
 
 locals {
-  network   = openstack_networking_network_v2.int_network
-  subnet    = openstack_networking_subnet_v2.subnet
+  network = openstack_networking_network_v2.int_network
+  subnet  = openstack_networking_subnet_v2.subnet
   public_ip = {
     for x, values in module.design.instances :
-      x => element([for ip in openstack_networking_port_v2.public_nic[x].all_fixed_ips: ip if ! strcontains(ip, ":")], 0)
-      if contains(values.tags, "public")
+    x => element([for ip in openstack_networking_port_v2.public_nic[x].all_fixed_ips : ip if !strcontains(ip, ":")], 0)
+    if contains(values.tags, "public")
   }
   ext_networks = [{
     access_network = true,

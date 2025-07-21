@@ -4,7 +4,7 @@ terraform {
 
 variable "pool" {
   description = "Slurm pool of compute nodes"
-  default = []
+  default     = []
 }
 
 module "openstack" {
@@ -17,9 +17,9 @@ module "openstack" {
   image        = "Rocky-9"
 
   instances = {
-    mgmt   = { type = "p4-6gb", tags = ["puppet", "mgmt", "nfs"], count = 1 }
-    login  = { type = "p2-3gb", tags = ["login", "public", "proxy"], count = 1 }
-    node   = { type = "p2-3gb", tags = ["node"], count = 1 }
+    mgmt  = { type = "p4-6gb", tags = ["puppet", "mgmt", "nfs"], count = 1 }
+    login = { type = "p2-3gb", tags = ["login", "public", "proxy"], count = 1 }
+    node  = { type = "p2-3gb", tags = ["node"], count = 1 }
   }
 
   # var.pool is managed by Slurm through Terraform REST API.
@@ -30,9 +30,9 @@ module "openstack" {
 
   volumes = {
     nfs = {
-      home     = { size = 100 }
-      project  = { size = 50 }
-      scratch  = { size = 50 }
+      home    = { size = 100 }
+      project = { size = 50 }
+      scratch = { size = 50 }
     }
   }
 

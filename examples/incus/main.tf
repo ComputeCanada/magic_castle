@@ -12,15 +12,15 @@ module "incus" {
   image        = "rockylinux/9/cloud"
 
   instances = {
-    mgmt   = { type = "container", cpus = 4, ram = 6000, gpus = 0, tags = ["puppet", "mgmt", "nfs"], count = 1 }
-    login  = { type = "container", cpus = 2, ram = 3000, gpus = 0, tags = ["login", "public", "proxy"], count = 1 }
-    node   = { type = "container", cpus = 2, ram = 3000, gpus = 0, tags = ["node"], count = 1 }
+    mgmt  = { type = "container", cpus = 4, ram = 6000, gpus = 0, tags = ["puppet", "mgmt", "nfs"], count = 1 }
+    login = { type = "container", cpus = 2, ram = 3000, gpus = 0, tags = ["login", "public", "proxy"], count = 1 }
+    node  = { type = "container", cpus = 2, ram = 3000, gpus = 0, tags = ["node"], count = 1 }
   }
 
   volumes = {}
 
   public_keys = []
-  hieradata = file("data.yaml")
+  hieradata   = file("data.yaml")
 
   # Uncomment to run the containers without privileges
   #privileged = false

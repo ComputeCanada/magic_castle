@@ -3,7 +3,7 @@ resource "openstack_networking_secgroup_v2" "global" {
   description = "${var.cluster_name} global security group"
 }
 
-resource openstack_networking_secgroup_rule_v2 "icmp" {
+resource "openstack_networking_secgroup_rule_v2" "icmp" {
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "icmp"
@@ -12,7 +12,7 @@ resource openstack_networking_secgroup_rule_v2 "icmp" {
   remote_group_id   = openstack_networking_secgroup_v2.global.id
 }
 
-resource openstack_networking_secgroup_rule_v2 "tcp" {
+resource "openstack_networking_secgroup_rule_v2" "tcp" {
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"
@@ -21,7 +21,7 @@ resource openstack_networking_secgroup_rule_v2 "tcp" {
   remote_group_id   = openstack_networking_secgroup_v2.global.id
 }
 
-resource openstack_networking_secgroup_rule_v2 "udp" {
+resource "openstack_networking_secgroup_rule_v2" "udp" {
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "udp"
@@ -31,8 +31,8 @@ resource openstack_networking_secgroup_rule_v2 "udp" {
 }
 
 locals {
-  all_tags   = toset(flatten([ for key, value in module.design.instances: value.tags ]))
-  sec_groups = toset([ for name, rule in var.firewall_rules: rule.tag if contains(local.all_tags, rule.tag) ])
+  all_tags   = toset(flatten([for key, value in module.design.instances : value.tags]))
+  sec_groups = toset([for name, rule in var.firewall_rules : rule.tag if contains(local.all_tags, rule.tag)])
 }
 
 resource "openstack_networking_secgroup_v2" "external" {
@@ -42,8 +42,8 @@ resource "openstack_networking_secgroup_v2" "external" {
   tags        = [each.key]
 }
 
-resource openstack_networking_secgroup_rule_v2 "rule" {
-  for_each = { for name, rule in var.firewall_rules: name => rule if contains(local.sec_groups, rule.tag) }
+resource "openstack_networking_secgroup_rule_v2" "rule" {
+  for_each = { for name, rule in var.firewall_rules : name => rule if contains(local.sec_groups, rule.tag) }
 
   direction         = "ingress"
   ethertype         = each.value.ethertype
@@ -56,15 +56,15 @@ resource openstack_networking_secgroup_rule_v2 "rule" {
 }
 
 resource "openstack_networking_port_v2" "nic" {
-  for_each           = module.design.instances
-  name               = format("%s-%s-port", var.cluster_name, each.key)
-  network_id         = local.network.id
+  for_each   = module.design.instances
+  name       = format("%s-%s-port", var.cluster_name, each.key)
+  network_id = local.network.id
   security_group_ids = concat(
     [
       openstack_networking_secgroup_v2.global.id
     ],
     [
-      for tag, value in openstack_networking_secgroup_v2.external: value.id if contains(each.value.tags, tag)
+      for tag, value in openstack_networking_secgroup_v2.external : value.id if contains(each.value.tags, tag)
     ]
   )
   fixed_ip {

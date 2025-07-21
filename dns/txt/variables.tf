@@ -4,7 +4,7 @@ variable "name" {
 variable "domain" {
 }
 
-variable "public_instances" { }
+variable "public_instances" {}
 
 variable "domain_tag" {
   description = "Indicate which tag the instances that will be pointed by the domain name A record has to have."
@@ -13,11 +13,11 @@ variable "domain_tag" {
 
 variable "vhost_tag" {
   description = "Indicate which tag the instances that will be pointed by the vhost A record has to have."
-  default = "proxy"
+  default     = "proxy"
 }
 
 variable "vhosts" {
   description = "List of vhost records A to create."
-  type    = list(string)
-  default = ["ipa", "jupyter", "mokey", "explore"]
+  type        = list(string)
+  default     = ["ipa", "jupyter", "mokey", "explore"]
 }

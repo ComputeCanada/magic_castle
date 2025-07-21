@@ -4,7 +4,7 @@ terraform {
 
 variable "pool" {
   description = "Slurm pool of compute nodes"
-  default = []
+  default     = []
 }
 
 module "azure" {
@@ -19,7 +19,7 @@ module "azure" {
   #   az vm image list --location eastus --publisher almalinux --offer almalinux-x86_64 --sku 9-gen2 --all --output table
   #   az vm image list --location eastus --publisher almalinux --offer almalinux-arm --sku 9-arm-gen2 --all --output table
   # (Note: available versions may be location specific!)
-  image        = {
+  image = {
     publisher = "almalinux",
     offer     = "almalinux-x86_64",
     sku       = "9-gen2",
@@ -27,9 +27,9 @@ module "azure" {
   }
 
   instances = {
-    mgmt  = { type = "Standard_DS2_v2",  count = 1, tags = ["mgmt", "puppet", "nfs"] },
+    mgmt  = { type = "Standard_DS2_v2", count = 1, tags = ["mgmt", "puppet", "nfs"] },
     login = { type = "Standard_DS1_v2", count = 1, tags = ["login", "public", "proxy"] },
-    node  = { type = "Standard_DS1_v2",  count = 1, tags = ["node"] }
+    node  = { type = "Standard_DS1_v2", count = 1, tags = ["node"] }
   }
 
   # var.pool is managed by Slurm through Terraform REST API.
@@ -40,15 +40,15 @@ module "azure" {
 
   volumes = {
     nfs = {
-      home     = { size = 10 }
-      project  = { size = 50 }
-      scratch  = { size = 50 }
+      home    = { size = 10 }
+      project = { size = 50 }
+      scratch = { size = 50 }
     }
   }
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
 
-  nb_users     = 10
+  nb_users = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
 

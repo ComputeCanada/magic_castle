@@ -11,32 +11,32 @@ module "design" {
 }
 
 module "configuration" {
-  source                = "../common/configuration"
-  inventory             = local.inventory
-  post_inventory        = local.post_inventory
-  config_git_url        = var.config_git_url
-  config_version        = var.config_version
-  sudoer_username       = var.sudoer_username
-  public_keys           = var.public_keys
-  domain_name           = module.design.domain_name
-  bastion_tag           = module.design.bastion_tag
-  cluster_name          = var.cluster_name
-  guest_passwd          = var.guest_passwd
-  nb_users              = var.nb_users
-  software_stack        = var.software_stack
-  cloud_provider        = "incus"
-  cloud_region          = "local"
-  skip_upgrade          = var.skip_upgrade
-  puppetfile            = var.puppetfile
+  source          = "../common/configuration"
+  inventory       = local.inventory
+  post_inventory  = local.post_inventory
+  config_git_url  = var.config_git_url
+  config_version  = var.config_version
+  sudoer_username = var.sudoer_username
+  public_keys     = var.public_keys
+  domain_name     = module.design.domain_name
+  bastion_tag     = module.design.bastion_tag
+  cluster_name    = var.cluster_name
+  guest_passwd    = var.guest_passwd
+  nb_users        = var.nb_users
+  software_stack  = var.software_stack
+  cloud_provider  = "incus"
+  cloud_region    = "local"
+  skip_upgrade    = var.skip_upgrade
+  puppetfile      = var.puppetfile
 }
 
 module "provision" {
-  source          = "../common/provision"
-  configuration   = module.configuration
-  hieradata       = var.hieradata
-  hieradata_dir   = var.hieradata_dir
-  eyaml_key       = var.eyaml_key
-  puppetfile      = var.puppetfile
+  source        = "../common/provision"
+  configuration = module.configuration
+  hieradata     = var.hieradata
+  hieradata_dir = var.hieradata_dir
+  eyaml_key     = var.eyaml_key
+  puppetfile    = var.puppetfile
 }
 
 resource "random_id" "project_name" {
@@ -57,7 +57,7 @@ resource "incus_project" "project" {
 }
 
 resource "incus_image" "image" {
-  for_each = toset([ for host, values in module.design.instances: values.image if endswith(values.image, "/cloud") ])
+  for_each = toset([for host, values in module.design.instances : values.image if endswith(values.image, "/cloud")])
   project  = incus_project.project.name
   source_image = {
     remote = "images"
@@ -116,20 +116,20 @@ resource "incus_instance" "instances" {
       type = "disk"
       name = device.key
       properties = {
-        pool = var.storage_pool
+        pool   = var.storage_pool
         source = device.value.name
-        path = "/${device.key}"
+        path   = "/${device.key}"
       }
     }
   }
 
   dynamic "device" {
-    for_each = var.forward_proxy && contains(each.value.tags, "proxy") ? { for name, rule in var.firewall_rules: name => rule if rule.tag == "proxy" } : {}
+    for_each = var.forward_proxy && contains(each.value.tags, "proxy") ? { for name, rule in var.firewall_rules : name => rule if rule.tag == "proxy" } : {}
     content {
       name = device.key
       type = "proxy"
       properties = {
-        listen = "${device.value.protocol}:0.0.0.0:${device.value.from_port}"
+        listen  = "${device.value.protocol}:0.0.0.0:${device.value.from_port}"
         connect = "${device.value.protocol}:127.0.0.1:${device.value.to_port}"
       }
     }
@@ -143,21 +143,21 @@ resource "incus_instance" "instances" {
 locals {
   inventory = { for x, values in module.design.instances :
     x => {
-      prefix    = values.prefix
-      tags      = values.tags
-      specs     = values.specs
+      prefix  = values.prefix
+      tags    = values.tags
+      specs   = values.specs
       volumes = {}
     }
   }
 
-  post_inventory = { for host, values in local.inventory:
+  post_inventory = { for host, values in local.inventory :
     host => merge(values, {
       local_ip  = try(incus_instance.instances[host].ipv4_address, "")
       public_ip = try(incus_instance.instances[host].ipv4_address, "")
     })
   }
 
-  public_instances = { for host, values in module.configuration.inventory: host => values if contains(values.tags, "public")}
+  public_instances = { for host, values in module.configuration.inventory : host => values if contains(values.tags, "public") }
 }
 
 output "project" {
