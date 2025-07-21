@@ -18,6 +18,7 @@ To develop for Magic Castle you will need:
 * Ability to communicate with the cloud provider API from your computer
 * A cloud project with enough room for the resources described in [section 1.4](README.md#14-quotas).
 * [optional] [Puppet Development Kit (PDK)](https://www.puppet.com/docs/pdk/latest/pdk.html)
+* [optional] [pre-commit](https://pre-commit.com/#installation) to automatically run the linter on each commit.
 
 ## 2. Where to start
 
