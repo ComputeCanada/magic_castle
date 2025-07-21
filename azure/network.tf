@@ -26,11 +26,11 @@ resource "azurerm_public_ip" "public_ip" {
 
 # Build a list of tag sets that include firewall rule tags
 locals {
-  fw_tags = toset([ for key, value in var.firewall_rules: value.tag ])
+  fw_tags = toset([for key, value in var.firewall_rules : value.tag])
   fw_sets = {
-    for tags in distinct([for key, values in module.design.instances: toset(values.tags) if length(setintersection(values.tags, local.fw_tags)) > 0]):
-      join("-", toset(tags)) => toset(tags)
-      if length(tags) > 0
+    for tags in distinct([for key, values in module.design.instances : toset(values.tags) if length(setintersection(values.tags, local.fw_tags)) > 0]) :
+    join("-", toset(tags)) => toset(tags)
+    if length(tags) > 0
   }
 }
 
@@ -42,7 +42,7 @@ resource "azurerm_network_security_group" "external" {
   resource_group_name = local.resource_group_name
 
   dynamic "security_rule" {
-    for_each = { for name, rule in var.firewall_rules: name => rule if contains(each.value, rule.tag) }
+    for_each = { for name, rule in var.firewall_rules : name => rule if contains(each.value, rule.tag) }
     iterator = rule
     content {
       name                       = rule.key
@@ -74,7 +74,7 @@ resource "azurerm_network_interface" "nic" {
 }
 
 resource "azurerm_network_interface_security_group_association" "sg_assoc" {
- for_each                  = { for key, values in module.design.instances : key => values if can(local.fw_sets[join("-", toset(values.tags))]) }
- network_interface_id      = azurerm_network_interface.nic[each.key].id
- network_security_group_id = azurerm_network_security_group.external[join("-", toset(each.value.tags))].id
+  for_each                  = { for key, values in module.design.instances : key => values if can(local.fw_sets[join("-", toset(values.tags))]) }
+  network_interface_id      = azurerm_network_interface.nic[each.key].id
+  network_security_group_id = azurerm_network_security_group.external[join("-", toset(each.value.tags))].id
 }

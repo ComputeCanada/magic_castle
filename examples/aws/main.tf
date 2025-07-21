@@ -4,7 +4,7 @@ terraform {
 
 variable "pool" {
   description = "Slurm pool of compute nodes"
-  default = []
+  default     = []
 }
 
 module "aws" {
@@ -16,10 +16,10 @@ module "aws" {
   domain       = "calculquebec.cloud"
   # Rocky Linux 9.4 -  ca-central-1
   # https://rockylinux.org/download
-  image        = "ami-07fbc9d69b1aa88b9"
+  image = "ami-07fbc9d69b1aa88b9"
 
   instances = {
-    mgmt  = { type = "t3.large",  count = 1, tags = ["mgmt", "puppet", "nfs"] },
+    mgmt  = { type = "t3.large", count = 1, tags = ["mgmt", "puppet", "nfs"] },
     login = { type = "t3.medium", count = 1, tags = ["login", "public", "proxy"] },
     node  = { type = "t3.medium", count = 1, tags = ["node"] }
   }
@@ -32,20 +32,20 @@ module "aws" {
 
   volumes = {
     nfs = {
-      home     = { size = 10, type = "gp2" }
-      project  = { size = 50, type = "gp2" }
-      scratch  = { size = 50, type = "gp2" }
+      home    = { size = 10, type = "gp2" }
+      project = { size = 50, type = "gp2" }
+      scratch = { size = 50, type = "gp2" }
     }
   }
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
 
-  nb_users     = 10
+  nb_users = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
 
   # AWS specifics
-  region            = "ca-central-1"
+  region = "ca-central-1"
 }
 
 output "accounts" {

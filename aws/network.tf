@@ -25,9 +25,9 @@ resource "aws_route" "internet_access" {
 }
 
 resource "aws_subnet" "subnet" {
-  vpc_id     = aws_vpc.network.id
-  cidr_block = "10.0.0.0/24"
-  availability_zone = local.availability_zone
+  vpc_id                  = aws_vpc.network.id
+  cidr_block              = "10.0.0.0/24"
+  availability_zone       = local.availability_zone
   map_public_ip_on_launch = true
 
   tags = {
@@ -48,8 +48,8 @@ resource "aws_security_group" "allow_out_any" {
 }
 
 locals {
-  all_tags   = toset(flatten([ for key, value in module.design.instances: value.tags ]))
-  sec_groups = toset([ for name, rule in var.firewall_rules: rule.tag if contains(local.all_tags, rule.tag) ])
+  all_tags   = toset(flatten([for key, value in module.design.instances : value.tags]))
+  sec_groups = toset([for name, rule in var.firewall_rules : rule.tag if contains(local.all_tags, rule.tag)])
 }
 
 resource "aws_security_group" "external" {
@@ -59,7 +59,7 @@ resource "aws_security_group" "external" {
   vpc_id      = aws_vpc.network.id
 
   dynamic "ingress" {
-    for_each = { for name, values in var.firewall_rules: name => values if values.tag == each.value }
+    for_each = { for name, values in var.firewall_rules : name => values if values.tag == each.value }
     iterator = rule
     content {
       description      = rule.key
@@ -103,9 +103,9 @@ resource "aws_security_group" "allow_any_inside_vpc" {
 }
 
 resource "aws_network_interface" "nic" {
-  for_each        = module.design.instances
-  subnet_id       = aws_subnet.subnet.id
-  interface_type  = contains(each.value["tags"], "efa") ? "efa" : null
+  for_each       = module.design.instances
+  subnet_id      = aws_subnet.subnet.id
+  interface_type = contains(each.value["tags"], "efa") ? "efa" : null
 
   security_groups = concat(
     [
@@ -113,7 +113,7 @@ resource "aws_network_interface" "nic" {
       aws_security_group.allow_out_any.id,
     ],
     [
-      for tag, value in aws_security_group.external: value.id if contains(each.value.tags, tag)
+      for tag, value in aws_security_group.external : value.id if contains(each.value.tags, tag)
     ]
   )
 

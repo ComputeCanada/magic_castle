@@ -3,6 +3,6 @@ resource "incus_network" "network" {
   project = incus_project.project.name
   config = {
     "ipv4.nat"     = "true"
-    "ipv6.address"  = "none"
+    "ipv6.address" = "none"
   }
 }

@@ -1,8 +1,8 @@
-variable "configuration" { }
-variable "hieradata" { }
-variable "hieradata_dir" { }
-variable "eyaml_key" { }
-variable "puppetfile" { }
+variable "configuration" {}
+variable "hieradata" {}
+variable "hieradata_dir" {}
+variable "eyaml_key" {}
+variable "puppetfile" {}
 
 locals {
   provision_folder = "etc_puppetlabs"
@@ -37,7 +37,7 @@ data "archive_file" "puppetserver_files" {
   }
 
   dynamic "source" {
-    for_each =  var.eyaml_key != "" ? [var.eyaml_key] : []
+    for_each = var.eyaml_key != "" ? [var.eyaml_key] : []
     content {
       content  = var.eyaml_key
       filename = "${local.provision_folder}/puppet/eyaml/private_key.pkcs7.pem"
@@ -45,7 +45,7 @@ data "archive_file" "puppetserver_files" {
   }
 
   dynamic "source" {
-    for_each = var.puppetfile != "" ? [var.puppetfile]: []
+    for_each = var.puppetfile != "" ? [var.puppetfile] : []
     iterator = filename
     content {
       content  = var.puppetfile
@@ -55,7 +55,7 @@ data "archive_file" "puppetserver_files" {
 }
 
 resource "terraform_data" "deploy_puppetserver_files" {
-  for_each = length(var.configuration.bastions) > 0  ? var.configuration.puppetservers : { }
+  for_each = length(var.configuration.bastions) > 0 ? var.configuration.puppetservers : {}
 
   connection {
     type                = "ssh"

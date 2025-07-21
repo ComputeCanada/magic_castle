@@ -36,6 +36,6 @@ locals {
     { for x, values in module.design.instances : x => openstack_networking_floatingip_v2.fip[x].address
     if contains(values.tags, "public") && !contains(keys(var.os_floating_ips), x) }
   )
-  ext_networks = []
+  ext_networks          = []
   network_provision_dep = openstack_networking_floatingip_associate_v2.fip
 }
