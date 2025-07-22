@@ -94,7 +94,7 @@ locals {
 
   user_data = {
     for key, values in var.inventory : key =>
-    templatefile("${path.module}/puppet.yaml",
+    templatefile("${path.module}/puppet.yaml.tftpl",
       {
         cloud_provider        = var.cloud_provider
         cloud_region          = var.cloud_region
