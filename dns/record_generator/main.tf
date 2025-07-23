@@ -27,6 +27,10 @@ locals {
     "ssh-ed25519" = "4"
   }
 
+  # Remove pre/post encapsulation boundary when
+  # the key is in rfc1421 format. If it is only
+  # encapsulated text portion, the transformation
+  # has no effect.
   dkim_public_key = trimspace(
     trimsuffix(
       trimprefix(
