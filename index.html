@@ -1104,6 +1104,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#66-dkim-record-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.6 DKIM record (optional)
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2452,6 +2461,15 @@
   <a href="#65-sshfp-records-and-dnssec" class="md-nav__link">
     <span class="md-ellipsis">
       6.5 SSHFP records and DNSSEC
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#66-dkim-record-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      6.6 DKIM record (optional)
     </span>
   </a>
   
@@ -3809,6 +3827,40 @@ no host key confirmation will be prompted when connecting to the server.</p>
 <div class="highlight"><pre><span></span><code>VerifyHostKeyDNS yes
 </code></pre></div>
 to its configuration file (i.e.: <code>~/.ssh/config</code>).</p>
+<h3 id="66-dkim-record-optional">6.6 DKIM record (optional)</h3>
+<p>Magic Castle DNS module provides an optional input named <code>dkim_public_key</code> that enables
+the creation of a <a href="https://www.cloudflare.com/learning/dns/dns-records/dns-dkim-record/">DNS DKIM record</a>
+that can be used to verify authenticity of emails sent from the cluster.</p>
+<p>The DKIM key can be generated with Terraform and the public key supplied to
+Magic Castle DNS module like this:</p>
+<div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;tls_private_key&quot;</span><span class="w"> </span><span class="nv">&quot;dkim_key&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">algorithm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;RSA&quot;</span>
+<span class="w">  </span><span class="na">rsa_bits</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">2048</span>
+<span class="p">}</span>
+
+<span class="kr">module</span><span class="w"> </span><span class="nv">&quot;dns&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare&quot;</span>
+<span class="w">  </span><span class="na">name</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">module.openstack.cluster_name</span>
+<span class="w">  </span><span class="na">domain</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">module.openstack.domain</span>
+<span class="w">  </span><span class="na">public_instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.openstack.public_instances</span>
+<span class="w">  </span><span class="na">dkim_public_key</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">tls_private_key.dkim_key.public_key_pem</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The public and private key can also be generated with openssl command-line and supplied
+to the DNS module like this:
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>dkim_private.pem<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>dkim_public.pem
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;dns&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare&quot;</span>
+<span class="w">  </span><span class="na">name</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">module.openstack.cluster_name</span>
+<span class="w">  </span><span class="na">domain</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="nv">module.openstack.domain</span>
+<span class="w">  </span><span class="na">public_instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.openstack.public_instances</span>
+<span class="w">  </span><span class="na">dkim_public_key</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">file</span><span class="p">(</span><span class="s2">&quot;dkim_public.pem&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>The private half of the generated key should be <a href="#4152-encrypting-sensitive-properties">encrypted</a>
+and provided to Puppet through the <a href="#413-hieradata-optional">hieradata variable</a>
+of the Magic Castle cloud provider module.</p>
 <h2 id="7-planning">7. Planning</h2>
 <p>Once your initial cluster configuration is done, you can initiate
 a planning phase where you will ask Terraform to communicate with
