@@ -9,6 +9,8 @@ variable "public_instances" {}
 variable "domain_tag" {}
 variable "vhost_tag" {}
 
+variable "dkim_public_key" {}
+
 data "external" "key2fp" {
   for_each = var.public_instances
   program  = ["bash", "${path.module}/key2fp.sh"]
@@ -24,6 +26,20 @@ locals {
     "ssh-ecdsa"   = "3"
     "ssh-ed25519" = "4"
   }
+
+  # Remove pre/post encapsulation boundary when
+  # the key is in rfc1421 format. If it is only
+  # encapsulated text portion, the transformation
+  # has no effect.
+  dkim_public_key = trimspace(
+    trimsuffix(
+      trimprefix(
+        replace(var.dkim_public_key, "\n", ""),
+        "-----BEGIN PUBLIC KEY-----"
+      ),
+      "-----END PUBLIC KEY-----"
+    )
+  )
 
   records = concat(
     [
@@ -85,8 +101,22 @@ locals {
       if contains(values["tags"], var.domain_tag)
     ]),
   )
+  mail_records = [
+    {
+      type  = "TXT"
+      name  = var.name
+      value = "v=spf1 a -all"
+      data  = null
+    },
+    {
+      type  = "TXT"
+      name  = local.dkim_public_key != "" ? "default._domainkey.${var.name}" : var.name
+      value = local.dkim_public_key != "" ? "v=DKIM1; k=rsa; p=${local.dkim_public_key}" : "No DKIM public key define for this domain"
+      data  = null
+    },
+  ]
 }
 
 output "records" {
-  value = local.records
+  value = concat(local.records, local.mail_records)
 }

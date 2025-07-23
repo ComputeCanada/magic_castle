@@ -27,3 +27,7 @@ variable "vhost_tag" {
 }
 
 variable "public_instances" {}
+
+variable "dkim_public_key" {
+  default = ""
+}

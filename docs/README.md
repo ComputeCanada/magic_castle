@@ -1236,6 +1236,50 @@ VerifyHostKeyDNS yes
 ```
 to its configuration file (i.e.: `~/.ssh/config`).
 
+### 6.6 DKIM record (optional)
+
+Magic Castle DNS module provides an optional input named `dkim_public_key` that enables
+the creation of a [DNS DKIM record](https://www.cloudflare.com/learning/dns/dns-records/dns-dkim-record/)
+that can be used to verify authenticity of emails sent from the cluster.
+
+The DKIM key can be generated with Terraform and the public key supplied to
+Magic Castle DNS module like this:
+
+```hcl
+resource "tls_private_key" "dkim_key" {
+  algorithm = "RSA"
+  rsa_bits  = 2048
+}
+
+module "dns" {
+  source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
+  name             = module.openstack.cluster_name
+  domain           = module.openstack.domain
+  public_instances = module.openstack.public_instances
+  dkim_public_key  = tls_private_key.dkim_key.public_key_pem
+}
+```
+
+The public and private key can also be generated with openssl command-line and supplied
+to the DNS module like this:
+```shell
+$ openssl rsa -in dkim_private.pem -pubout -out dkim_public.pem
+```
+```hcl
+module "dns" {
+  source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare"
+  name             = module.openstack.cluster_name
+  domain           = module.openstack.domain
+  public_instances = module.openstack.public_instances
+  dkim_public_key  = file("dkim_public.pem")
+}
+```
+
+
+The private half of the generated key should be [encrypted](#4152-encrypting-sensitive-properties)
+and provided to Puppet through the [hieradata variable](#413-hieradata-optional)
+of the Magic Castle cloud provider module.
+
 ## 7. Planning
 
 Once your initial cluster configuration is done, you can initiate

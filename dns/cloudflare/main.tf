@@ -13,6 +13,7 @@ module "record_generator" {
   vhosts           = var.vhosts
   domain_tag       = var.domain_tag
   vhost_tag        = var.vhost_tag
+  dkim_public_key  = var.dkim_public_key
 }
 
 resource "cloudflare_record" "records" {
