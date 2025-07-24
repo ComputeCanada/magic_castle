@@ -3848,7 +3848,8 @@ Magic Castle DNS module like this:</p>
 </code></pre></div>
 <p>The public and private key can also be generated with openssl command-line and supplied
 to the DNS module like this:
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>dkim_private.pem<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>dkim_public.pem
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>dkim_private.pem
+$<span class="w"> </span>openssl<span class="w"> </span>rsa<span class="w"> </span>-in<span class="w"> </span>dkim_private.pem<span class="w"> </span>-pubout<span class="w"> </span>-out<span class="w"> </span>dkim_public.pem
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;dns&quot;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="na">source</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;git::https://github.com/ComputeCanada/magic_castle.git//dns/cloudflare&quot;</span>
