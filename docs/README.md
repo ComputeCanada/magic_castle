@@ -1263,6 +1263,7 @@ module "dns" {
 The public and private key can also be generated with openssl command-line and supplied
 to the DNS module like this:
 ```shell
+$ openssl genrsa -out dkim_private.pem
 $ openssl rsa -in dkim_private.pem -pubout -out dkim_public.pem
 ```
 ```hcl

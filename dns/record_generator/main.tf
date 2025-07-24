@@ -105,13 +105,19 @@ locals {
     {
       type  = "TXT"
       name  = var.name
-      value = "v=spf1 a -all"
+      value = "\"v=spf1 a -all\""
       data  = null
     },
     {
       type  = "TXT"
       name  = local.dkim_public_key != "" ? "default._domainkey.${var.name}" : var.name
-      value = local.dkim_public_key != "" ? "v=DKIM1; k=rsa; p=${local.dkim_public_key}" : "No DKIM public key define for this domain"
+      value = local.dkim_public_key != "" ? "\"v=DKIM1; k=rsa; p=${local.dkim_public_key}\"" : "No DKIM public key defined for this domain"
+      data  = null
+    },
+    {
+      type  = "TXT"
+      name  = local.dkim_public_key != "" ? "_dmarc.${var.name}" : var.name
+      value = local.dkim_public_key != "" ? "\"v=DMARC1; p=reject\"" : "No DMARC policy defined for this domain"
       data  = null
     },
   ]
