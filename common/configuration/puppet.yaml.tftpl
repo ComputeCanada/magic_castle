@@ -107,6 +107,9 @@ runcmd:
 %{ if puppetfile != "" ~}
   - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/modules --puppetfile=/etc/puppetlabs/code/Puppetfile
 %{ endif ~}
+# Backport stdlib patch to support Puppet 8 json parsing until we update to stdlib >= 8.5.0
+# Patch origin: https://github.com/puppetlabs/puppetlabs-stdlib/commit/53a8ccf869aa49de7a77c8a35d89dd5aac8fa52d.patch
+  - sed -i -e 's/PSON/Puppet::Util::Json/' -e "/module Puppet/i require 'puppet/util/json'" /etc/puppetlabs/code/environments/production/modules/stdlib/lib/puppet/parser/functions/parsejson.rb
 # Wait for Terraform to scp its YAML data
 %{ if node_name != keys(puppetservers)[0] }
   - sed -e '/certificate-authority-service/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
