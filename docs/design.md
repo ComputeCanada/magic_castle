@@ -137,23 +137,24 @@ In the previous section, we have used generic resource name when writing HCL cod
 defines these resources. The following table indicate what resource is used for each
 provider based on its role in the cluster.
 
-| Resource    | [AWS](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | [Azure](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs) | [Google Cloud Platform](https://registry.terraform.io/providers/hashicorp/google/latest/docs) | [OpenStack](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/) | OVH                                |
-| ----------- | :-------------------- | :------------------------------------------- | :---------------------------- | ---------------------------------- | :--------------------------------- |
-| network     | [aws_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | [azurerm_virtual_network](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | [google_compute_network](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network) | prebuilt | openstack_networking_network_v2 |
-| subnet      | [aws_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | [azurerm_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | [google_compute_subnetwork](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork) | prebuilt | openstack_networking_subnet_v2 |
-| router      | [aws_route](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | not used | [google_compute_router](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router) | built-in | not used |
-| nat         | [aws_internet_gateway](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway) | not used | [google_compute_router_nat](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router_nat) | built-in | not used |
-| firewall    | [aws_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | [azurerm_network_security_group](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | [google_compute_firewall](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) | [openstack_compute_secgroup_v2](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_secgroup_v2) | openstack_compute_secgroup_v2 |
-| nic         | [aws_network_interface](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_interface) | [azurerm_network_interface](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface) | [google_compute_address](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) | [openstack_networking_port_v2](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/networking_port_v2) | openstack_networking_port_v2       |
-| public ip   | [aws_eip](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip) | [azurerm_public_ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | [google_compute_address](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) | [openstack_networking_floatingip_v2](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/networking_floatingip_v2) | openstack_networking_network_v2    |
-| instance    | [aws_instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | [azurerm_linux_virtual_machine](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine) | [google_compute_instance](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) | [openstack_compute_instance_v2](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_instance_v2) | openstack_compute_instance_v2 |
-| volume      | [aws_ebs_volume](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume) | [azurerm_managed_disk](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/managed_disk) | [google_compute_disk](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk) | [openstack_blockstorage_volume_v3](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/blockstorage_volume_v3)   | openstack_blockstorage_volume_v3   |
-| attachment  | [aws_volume_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/volume_attachment) | [azurerm_virtual_machine_data_disk_attachment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine_data_disk_attachment) | [google_compute_attached_disk](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_attached_disk)  | [openstack_compute_volume_attach_v2](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_volume_attach_v2) | openstack_compute_volume_attach_v2 |
+Resource | [AWS](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | [Azure](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs) | [Google Cloud Platform](https://registry.terraform.io/providers/hashicorp/google/latest/docs) | [Incus](https://registry.terraform.io/providers/lxc/incus/latest/docs) | [OpenStack](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/) | OVH
+--- | --- | --- | --- | --- | --- | ---
+network | [aws_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | [azurerm_virtual_network](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network) | [google_compute_network](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network) | [incus_network](https://registry.terraform.io/providers/lxc/incus/latest/docs/resources/network) | prebuilt | openstack_networking_network_v2
+subnet | [aws_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | [azurerm_subnet](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | [google_compute_subnetwork](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork) | [incus_network](https://registry.terraform.io/providers/lxc/incus/latest/docs/resources/network) | prebuilt | openstack_networking_subnet_v2
+router | [aws_route](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | not used | [google_compute_router](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router) | built-in | built-in | not used
+nat | [aws_internet_gateway](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway) | not used | [google_compute_router_nat](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router_nat) | built-in | built-in | not used
+firewall | [aws_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | [azurerm_network_security_group](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group) | [google_compute_firewall](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) | not implemented | [openstack_compute_secgroup_v2](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_secgroup_v2) | openstack_compute_secgroup_v2
+nic | [aws_network_interface](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_interface) | [azurerm_network_interface](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface) | [google_compute_address](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) | not available | [openstack_networking_port_v2](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/networking_port_v2) | openstack_networking_port_v2
+public ip | [aws_eip](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip) | [azurerm_public_ip](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/public_ip) | [google_compute_address](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) | not available | [openstack_networking_floatingip_v2](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/networking_floatingip_v2) | openstack_networking_network_v2
+instance | [aws_instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | [azurerm_linux_virtual_machine](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine) | [google_compute_instance](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance) | [incus_instance](https://registry.terraform.io/providers/lxc/incus/latest/docs/resources/instance) | [openstack_compute_instance_v2](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_instance_v2) | openstack_compute_instance_v2
+volume | [aws_ebs_volume](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume) | [azurerm_managed_disk](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/managed_disk) | [google_compute_disk](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk) | not implemented | [openstack_blockstorage_volume_v3](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/blockstorage_volume_v3) | openstack_blockstorage_volume_v3
+attachment | [aws_volume_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/volume_attachment) | [azurerm_virtual_machine_data_disk_attachment](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_machine_data_disk_attachment) | [google_compute_attached_disk](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_attached_disk) | not implemented | [openstack_compute_volume_attach_v2](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_volume_attach_v2) | openstack_compute_volume_attach_v2
+
 
 ## Using reference design to extend for a new cloud provider
 
-Magic Castle currently supports five cloud providers, but its design makes it easy to add
-new providers. This section presents a step-by-step guide to add a new cloud provider
+Magic Castle currently supports six providers, but its design makes it easy to add
+new ones. This section presents a step-by-step guide to add a new provider
 support to Magic Castle.
 
 1. **Identify the resources**. Using the _Resource per provider_ table, read the cloud provider
@@ -169,12 +170,25 @@ be compensated for somehow.
 two symlinks, one pointing to `common/variables.tf` and the other to `common/outputs.tf`. These
 files define the interface common to all providers supported by Magic Castle.
 
-4. **Define cloud provider specifics variables**. Create a file named after your provider
-`provider_name.tf` and define variables that are required by the provider but not common to all
-providers, for example the availability zone or the region. In this file, define two local
-variables named `cloud_provider` and `cloud_region`.
+4. **Specify the provider version to user**. Create a file named `versions.tf`. In this file, paste the
+`terraform` block content provided when clicking on "Use this provider" button in the Terraform provider
+documentation, i.e:
+    ```
+    terraform {
+      required_providers {
+        incus = {
+          source = "lxc/incus"
+          version = "0.3.1"
+        }
+      }
+    }
+    ```
 
-5. **Initialize the infrastructure**. Create a file named  `infrastructure.tf`. In this file:
+5. **Define cloud provider specifics variables**. Create a file named after your provider
+`provider_name.tf` and define variables that are required by the provider but not common to all
+providers, for example the availability zone or the region.
+
+6. **Initialize the infrastructure**. Create a file named  `infrastructure.tf`. In this file:
 
     1. define the provider block if it requires input parameters, i.e: var.region
         ```hcl
@@ -185,23 +199,26 @@ variables named `cloud_provider` and `cloud_region`.
     2. include the design module
         ```hcl
         module "design" {
-          source       = "../common/design"
-          cluster_name = var.cluster_name
-          domain       = var.domain
-          instances    = var.instances
-          pool         = var.pool
-          volumes      = var.volumes
+          source         = "../common/design"
+          cluster_name   = var.cluster_name
+          domain         = var.domain
+          image          = var.image
+          instances      = var.instances
+          min_disk_size  = 10
+          pool           = var.pool
+          volumes        = var.volumes
+          firewall_rules = var.firewall_rules
         }
         ```
 
-6. **Create the networking infrastructure**. Create a file named `network.tf`
+7. **Create the networking infrastructure**. Create a file named `network.tf`
 and define the network, subnet, router, nat, firewall, nic and public ip resources using
 the `module.design.instances` map.
 
-7. **Create the volumes**. In `infrastructure.tf`, define the `volumes` resource using
+8. **Create the volumes**. In `infrastructure.tf`, define the `volumes` resource using
 `module.design.volumes`.
 
-8. **Consolidate the instances' information**.  In `infrastructure.tf`, define a local variable named `inventory` that will be a map containing the following keys for each instance: `public_ip`, `local_ip`, `prefix`, `tags`, and `specs` (#cpu, #gpus, ram, volumes). For the volumes, you need to provide the paths under which the volumes will be found on the instances to which they are attached. This is typically derived from the volume id. Here is an example:
+9. **Consolidate the instances' information**.  In `infrastructure.tf`, define a local variable named `inventory` that will be a map containing the following keys for each instance: `public_ip`, `local_ip`, `prefix`, `tags`, and `specs` (#cpu, #gpus, ram, volumes). For the volumes, you need to provide the paths under which the volumes will be found on the instances to which they are attached. This is typically derived from the volume id. Here is an example:
   ```hcl
   volumes = contains(keys(module.design.volume_per_instance), x) ? {
     for pv_key, pv_values in var.volumes:
@@ -211,35 +228,49 @@ the `module.design.instances` map.
       } if contains(values.tags, pv_key)
     } : {}
   ```
+  If some of these values are only known after the instances are created, create a second data structure that will merge the original inventory
+  with these values. For example, in Incus, we only known the ip addresses after the instances creation:
+    ```hcl
+    post_inventory = { for host, values in local.inventory:
+      host => merge(values, {
+        local_ip  = try(incus_instance.instances[host].ipv4_address, "")
+        public_ip = try(incus_instance.instances[host].ipv4_address, "")
+      })
+    }
+    ```
 
-9. **Create the instance configurations**. In `infrastructure.tf`, include the
+10. **Create the instance configurations**. In `infrastructure.tf`, include the
 `common/configuration` module like this:
     ```hcl
     module "configuration" {
       source                = "../common/configuration"
       inventory             = local.inventory
+      #post_inventory        = local.post_inventory # uncomment if you have a post_inventory
       config_git_url        = var.config_git_url
       config_version        = var.config_version
       sudoer_username       = var.sudoer_username
       public_keys           = var.public_keys
       domain_name           = module.design.domain_name
+      bastion_tag           = module.design.bastion_tag
       cluster_name          = var.cluster_name
       guest_passwd          = var.guest_passwd
       nb_users              = var.nb_users
       software_stack        = var.software_stack
       cloud_provider        = local.cloud_provider
       cloud_region          = local.cloud_region
+      skip_upgrade          = var.skip_upgrade
+      puppetfile            = var.puppetfile
     }
     ```
-10. **Create the instances**. In `infrastructure.tf`, define the `instances` resource using
+11. **Create the instances**. In `infrastructure.tf`, define the `instances` resource using
 `module.design.instances_to_build` for the instance attributes and `module.configuration.user_data`
 for the initial configuration.
 
-11. **Attach the volumes**. In `infrastructure.tf`, define the `attachments` resource using
+12. **Attach the volumes**. In `infrastructure.tf`, define the `attachments` resource using
 `module.design.volumes` and refer to the attribute `each.value.instance` to retrieve the
 instance's id to which the volume needs to be attached.
 
-12. **Identify the public instances**. In `infrastructure.tf`, define a local variable named `public_instances`
+13. **Identify the public instances**. In `infrastructure.tf`, define a local variable named `public_instances`
 that contains the attributes of instances that are publicly accessible from Internet and their ids.
   ```hcl
   locals {
@@ -249,37 +280,41 @@ that contains the attributes of instances that are publicly accessible from Inte
     }
   }
   ```
+  Make sure you use the inventory output of the `configuration` module.
 
-13. **Include the provision module to transmit Terraform data to the Puppet server**. In `infrastructure.tf`, include the
+14. **Include the provision module to transmit Terraform data to the Puppet server**. In `infrastructure.tf`, include the
 `common/provision` module like this
   ```hcl
   module "provision" {
     source          = "../common/provision"
-    bastions        = local.public_instances
+    bastions        = module.configuration.bastions
     puppetservers   = module.configuration.puppetservers
     tf_ssh_key      = module.configuration.ssh_key
     terraform_data  = module.configuration.terraform_data
     terraform_facts = module.configuration.terraform_facts
     hieradata       = var.hieradata
-    sudoer_username = var.sudoer_username
+    hieradata_dir   = var.hieradata_dir
+    eyaml_key       = var.eyaml_key
+    puppetfile      = var.puppetfile
   }
   ```
 
 ### An example
 
 1. **Identify the resources**. For Digital Ocean, Oracle Cloud and Alibaba Cloud, we get the following resource mapping:
-    | Resource    | [Digital Ocean](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs) | [Oracle Cloud](https://registry.terraform.io/providers/hashicorp/oci/latest/docs) | [Alibaba Cloud](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs) |
-    | ----------- | :-------------------- |  :-------------------- |  :-------------------- |
-    | network     | [digitalocean_vpc](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/vpc) | [oci_core_vcn](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_vcn) | [alicloud_vpc](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/vpc) |
-    | subnet      | built in vpc | [oci_subnet](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_subnet) | [alicloud_vswitch](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/vswitch) |
-    | router      | n/a          | [oci_core_route_table](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_route_table) | built in vpc |
-    | nat         | n/a          | [oci_core_internet_gateway](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_internet_gateway) | [alicloud_nat_gateway](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/nat_gateway) |
-    | firewall    | [digitalocean_firewall](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/firewall) | [oci_core_security_list](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_security_list) | [alicloud_security_group](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/security_group) |
-    | nic         | n/a | built in instance | [alicloud_network_interface](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/network_interface) |
-    | public ip   | [digitalocean_floating_ip](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/floating_ip) | built in instance | [alicloud_eip](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/eip) |
-    | instance    | [digitalocean_droplet](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/droplet) | [oci_core_instance](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_instance) | [alicloud_instance](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/instance) |
-    | volume      | [digitalocean_volume](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/volume) | [oci_core_volume](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_volume) | [alicloud_disk](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/disk) |
-    | attachment  | [digitalocean_volume_attachment](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/volume_attachment) | [oci_core_volume_attachment](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_volume_attachment) | [alicloud_disk_attachment](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/disk_attachment) |
+
+| Resource | [Digital Ocean](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs) | [Oracle Cloud](https://registry.terraform.io/providers/hashicorp/oci/latest/docs) | [Alibaba Cloud](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs) |
+| ----------- | :-------------------- |  :-------------------- |  :-------------------- |
+| network | [digitalocean_vpc](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/vpc) | [oci_core_vcn](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_vcn) | [alicloud_vpc](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/vpc) |
+| subnet | built in vpc | [oci_subnet](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_subnet) | [alicloud_vswitch](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/vswitch) |
+| router | n/a | [oci_core_route_table](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_route_table) | built in vpc |
+| nat | n/a | [oci_core_internet_gateway](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_internet_gateway) | [alicloud_nat_gateway](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/nat_gateway) |
+| firewall | [digitalocean_firewall](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/firewall) | [oci_core_security_list](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_security_list) | [alicloud_security_group](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/security_group) |
+| nic | n/a | built in instance | [alicloud_network_interface](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/network_interface) |
+| public ip | [digitalocean_floating_ip](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/floating_ip) | built in instance | [alicloud_eip](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/eip) |
+| instance | [digitalocean_droplet](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/droplet) | [oci_core_instance](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_instance) | [alicloud_instance](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/instance) |
+| volume | [digitalocean_volume](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/volume) | [oci_core_volume](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_volume) | [alicloud_disk](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/disk) |
+| attachment | [digitalocean_volume_attachment](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/volume_attachment) | [oci_core_volume_attachment](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_volume_attachment) | [alicloud_disk_attachment](https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/disk_attachment) |
 
 2. **Check minimum requirements**. In the preceding table, we can see Digital Ocean does not have the ability
 to define a network interface. The documentation also leads us to conclude that it is not possible

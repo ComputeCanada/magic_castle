@@ -13,20 +13,20 @@ module "gcp" {
   nb_users     = 10
 
   instances = {
-    mgmt   = { type = "n1-standard-2", tags = ["puppet", "mgmt", "nfs"], count = 1 }
-    login  = { type = "n1-standard-2", tags = ["login", "public", "proxy"], count = 1 }
-    node   = {
-        tags  = ["node", "spot"],
-        type  = "n1-standard-2",
-        count = 1
+    mgmt  = { type = "n1-standard-2", tags = ["puppet", "mgmt", "nfs"], count = 1 }
+    login = { type = "n1-standard-2", tags = ["login", "public", "proxy"], count = 1 }
+    node = {
+      tags  = ["node", "spot"],
+      type  = "n1-standard-2",
+      count = 1
     }
   }
 
   volumes = {
     nfs = {
-      home     = { size = 10 }
-      project  = { size = 50 }
-      scratch  = { size = 50 }
+      home    = { size = 10 }
+      project = { size = 50 }
+      scratch = { size = 50 }
     }
   }
 

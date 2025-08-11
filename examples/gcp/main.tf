@@ -4,7 +4,7 @@ terraform {
 
 variable "pool" {
   description = "Slurm pool of compute nodes"
-  default = []
+  default     = []
 }
 
 module "gcp" {
@@ -17,14 +17,14 @@ module "gcp" {
   image        = "rocky-linux-9-optimized-gcp"
 
   instances = {
-    mgmt   = { type = "n2-standard-2", tags = ["puppet", "mgmt", "nfs"], count = 1 }
-    login  = { type = "n2-standard-2", tags = ["login", "public", "proxy"], count = 1 }
-    node   = { type = "n2-standard-2", tags = ["node"], count = 1 }
-    gpu    = {
-      type = "n1-standard-2",
-      tags = ["node"],
-      count = 1,
-      gpus = 1
+    mgmt  = { type = "n2-standard-2", tags = ["puppet", "mgmt", "nfs"], count = 1 }
+    login = { type = "n2-standard-2", tags = ["login", "public", "proxy"], count = 1 }
+    node  = { type = "n2-standard-2", tags = ["node"], count = 1 }
+    gpu = {
+      type     = "n1-standard-2",
+      tags     = ["node"],
+      count    = 1,
+      gpus     = 1
       gpu_type = "nvidia-tesla-t4",
     }
   }
@@ -37,15 +37,15 @@ module "gcp" {
 
   volumes = {
     nfs = {
-      home     = { size = 10 }
-      project  = { size = 50 }
-      scratch  = { size = 50 }
+      home    = { size = 10 }
+      project = { size = 50 }
+      scratch = { size = 50 }
     }
   }
 
   public_keys = [file("~/.ssh/id_rsa.pub")]
 
-  nb_users     = 10
+  nb_users = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
 

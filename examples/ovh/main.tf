@@ -4,7 +4,7 @@ terraform {
 
 variable "pool" {
   description = "Slurm pool of compute nodes"
-  default = []
+  default     = []
 }
 
 module "ovh" {
@@ -17,9 +17,9 @@ module "ovh" {
   image        = "Rocky Linux 9"
 
   instances = {
-    mgmt   = { type = "b2-7", tags = ["puppet", "mgmt", "nfs"], count = 1 }
-    login  = { type = "b2-7", tags = ["login", "public", "proxy"], count = 1 }
-    node   = { type = "b2-7", tags = ["node"], count = 1 }
+    mgmt  = { type = "b2-7", tags = ["puppet", "mgmt", "nfs"], count = 1 }
+    login = { type = "b2-7", tags = ["login", "public", "proxy"], count = 1 }
+    node  = { type = "b2-7", tags = ["node"], count = 1 }
   }
 
   # var.pool is managed by Slurm through Terraform REST API.
@@ -30,14 +30,14 @@ module "ovh" {
 
   volumes = {
     nfs = {
-      home     = { size = 10 }
-      project  = { size = 50 }
-      scratch  = { size = 50 }
+      home    = { size = 10 }
+      project = { size = 50 }
+      scratch = { size = 50 }
     }
   }
   public_keys = [file("~/.ssh/id_rsa.pub")]
 
-  nb_users     = 10
+  nb_users = 10
   # Shared password, randomly chosen if blank
   guest_passwd = ""
 

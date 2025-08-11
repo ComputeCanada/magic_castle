@@ -21,6 +21,7 @@ From these new possibilities emerged an open-source software project named Magic
   - [Microsoft Azure](azure/README.md)
   - [Google Cloud Platform (GCP)](gcp/README.md)
   - [OVH Public Cloud (OVH)](ovh/README.md)
+  - [Incus](incus/README.md)
 - For more details, refer to [Magic Castle Documentation](docs)
 
 ## How Magic Castle Works

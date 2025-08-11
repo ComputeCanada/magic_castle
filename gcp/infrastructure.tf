@@ -7,6 +7,7 @@ module "design" {
   source         = "../common/design"
   cluster_name   = var.cluster_name
   domain         = var.domain
+  image          = var.image
   instances      = var.instances
   min_disk_size  = 20
   pool           = var.pool
@@ -15,36 +16,32 @@ module "design" {
 }
 
 module "configuration" {
-  source                = "../common/configuration"
-  inventory             = local.inventory
-  config_git_url        = var.config_git_url
-  config_version        = var.config_version
-  sudoer_username       = var.sudoer_username
-  public_keys           = var.public_keys
-  domain_name           = module.design.domain_name
-  bastion_tag           = module.design.bastion_tag
-  cluster_name          = var.cluster_name
-  guest_passwd          = var.guest_passwd
-  nb_users              = var.nb_users
-  software_stack        = var.software_stack
-  cloud_provider        = local.cloud_provider
-  cloud_region          = local.cloud_region
-  skip_upgrade          = var.skip_upgrade
-  puppetfile            = var.puppetfile
+  source          = "../common/configuration"
+  inventory       = local.inventory
+  config_git_url  = var.config_git_url
+  config_version  = var.config_version
+  sudoer_username = var.sudoer_username
+  public_keys     = var.public_keys
+  domain_name     = module.design.domain_name
+  bastion_tag     = module.design.bastion_tag
+  cluster_name    = var.cluster_name
+  guest_passwd    = var.guest_passwd
+  nb_users        = var.nb_users
+  software_stack  = var.software_stack
+  cloud_provider  = local.cloud_provider
+  cloud_region    = local.cloud_region
+  skip_upgrade    = var.skip_upgrade
+  puppetfile      = var.puppetfile
 }
 
 module "provision" {
-  source          = "../common/provision"
-  bastions        = module.configuration.bastions
-  puppetservers   = module.configuration.puppetservers
-  tf_ssh_key      = module.configuration.ssh_key
-  terraform_data  = module.configuration.terraform_data
-  terraform_facts = module.configuration.terraform_facts
-  hieradata       = var.hieradata
-  hieradata_dir   = var.hieradata_dir
-  eyaml_key       = var.eyaml_key
-  puppetfile      = var.puppetfile
-  depends_on      = [ google_compute_instance.instances ]
+  source        = "../common/provision"
+  configuration = module.configuration
+  hieradata     = var.hieradata
+  hieradata_dir = var.hieradata_dir
+  eyaml_key     = var.eyaml_key
+  puppetfile    = var.puppetfile
+  depends_on    = [google_compute_instance.instances]
 }
 
 
@@ -71,20 +68,13 @@ locals {
 data "external" "machine_type" {
   for_each = var.instances
   program  = ["bash", "${path.module}/external/machine_type.sh"]
-  query    = {
+  query = {
     machine_type = each.value.type
   }
 }
 
-locals {
-  to_build_instances = {
-    for key, values in module.design.instances: key => values
-    if ! contains(values.tags, "pool") || contains(var.pool, key)
-   }
-}
-
 resource "google_compute_instance" "instances" {
-  for_each = local.to_build_instances
+  for_each = module.design.instances_to_build
   project  = var.project
   zone     = local.zone
 
@@ -94,7 +84,7 @@ resource "google_compute_instance" "instances" {
 
   boot_disk {
     initialize_params {
-      image = lookup(each.value, "image", var.image)
+      image = each.value.image
       type  = lookup(each.value, "disk_type", "pd-ssd")
       size  = each.value.disk_size
     }
@@ -167,25 +157,26 @@ locals {
       prefix    = values.prefix
       tags      = values.tags
       specs = merge({
-        cpus   = data.external.machine_type[values["prefix"]].result["vcpus"]
-        ram    = data.external.machine_type[values["prefix"]].result["ram"]
-        gpus   = try(data.external.machine_type[values["prefix"]].result["gpus"], 0)
+        cpus = data.external.machine_type[values["prefix"]].result["vcpus"]
+        ram  = data.external.machine_type[values["prefix"]].result["ram"]
+        gpus = try(data.external.machine_type[values["prefix"]].result["gpus"], 0)
       }, values.specs)
       volumes = contains(keys(module.design.volume_per_instance), x) ? {
-        for pv_key, pv_values in var.volumes:
-          pv_key => {
-            for name, specs in pv_values:
-              name => merge(
-                { glob = "/dev/disk/by-id/google-${var.cluster_name}-${x}-${pv_key}-${name}"},
-                specs,
-              )
-          } if contains(values.tags, pv_key)
+        for pv_key, pv_values in var.volumes :
+        pv_key => {
+          for name, specs in pv_values :
+          name => merge(
+            { glob = "/dev/disk/by-id/google-${var.cluster_name}-${x}-${pv_key}-${name}" },
+            specs,
+          )
+        } if contains(values.tags, pv_key)
       } : {}
     }
   }
 
-  public_instances = { for host in keys(module.design.instances_to_build):
-    host => merge(module.configuration.inventory[host], {id=google_compute_instance.instances[host].id})
-    if contains(module.configuration.inventory[host].tags, "public")
+  post_inventory = { for host, values in local.inventory :
+    host => merge(values, {
+      id = try(google_compute_instance.instances[host].id, "")
+    })
   }
 }

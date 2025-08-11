@@ -8,6 +8,7 @@ mounts:
 users:
   - name: tf
     system: true
+    passwd: '*'
     no_user_group: true
     homedir: /tmp
 %{ if contains(tags, "puppet") }
@@ -15,9 +16,13 @@ users:
 %{ endif ~}
   - name: ${sudoer_username}
     groups: adm, wheel, systemd-journal
+    passwd: '*'
     homedir: /${sudoer_username}
-    selinux_user: unconfined_u
     sudo: ALL=(ALL) NOPASSWD:ALL
+%{ if cloud_provider != "incus" }
+    # most container images do not have selinux pre-installed
+    selinux_user: unconfined_u
+%{ endif }
     ssh_authorized_keys:
 %{ for key in ssh_authorized_keys ~}
       - ${key}
@@ -26,15 +31,23 @@ users:
 runcmd:
   - chmod 755 /etc # avoid issue with Rocky 9.4
   - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
+%{ if cloud_provider != "incus" }
+    # most container images do not have selinux pre-installed
   - restorecon -R /${sudoer_username}
+%{ endif }
+  - dnf -y install openssh openssh-server rsync
   - echo -e "Include /etc/ssh/sshd_config.d/50-authenticationmethods.conf" >> /etc/ssh/sshd_config
   - sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
   - chmod 644 /etc/ssh/ssh_host_*_key.pub
   - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
   - systemctl restart sshd
 # Make sure puppet server can be reached by name early in the process if we need to debug.
+# For some provider, the ip address of the puppetserver is not known in advance, so we make
+# sure it is not empty before adding it to /etc/hosts
 %{ for host, ip in puppetservers ~}
+%{ if ip != "" ~}
   - echo "${ip} ${host}" >> /etc/hosts
+%{ endif ~}
 %{ endfor ~}
   # Enable fastest mirror for distribution using dnf package manager
   - dnf config-manager --setopt=fastestmirror=True --save
@@ -44,15 +57,15 @@ runcmd:
       # Install required packages in runcmd instead of packages to speedup configuration
       # of the admin user. This reduces the risk of Terraform timing out when trying to
       # upload the terraform_data.yaml
-      dnf -y install git pciutils unzip rsync
+      dnf -y install git pciutils unzip
       dnf -y remove cockpit\* firewalld --exclude=iptables
 %{ if ! skip_upgrade ~}
-      # Upgrade all packages except Puppet if already installed
-      dnf -y upgrade -x puppet*
+      # Upgrade all packages except openvox if already installed
+      dnf -y upgrade -x openvox*
 %{ endif ~}
       # Puppet agent configuration and install
-      dnf -y install https://yum.puppet.com/puppet7-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
-      dnf -y install puppet-agent-7.32.1
+      dnf -y install https://yum.voxpupuli.org/openvox7-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
+      dnf -y install openvox-agent-7.37.2
       install -m 700 /dev/null /opt/puppetlabs/bin/postrun
       # kernel configuration
       systemctl disable kdump
@@ -60,10 +73,8 @@ runcmd:
       grub2-mkconfig -o /boot/grub2/grub.cfg
     fi
 %{ if contains(tags, "puppet") }
-# Install Java 11 and puppetserver
-  - dnf -y install java-11-openjdk-headless puppetserver-7.17.2
-# Configure puppetserver to use Java 11
-  - sudo sed -i 's;\(JAVA_BIN=\).*;\1"/usr/lib/jvm/jre-11/bin/java";g' /etc/sysconfig/puppetserver
+# Install puppetserver
+  - dnf -y install openvox-server-7.18.2
 # Configure puppet-agent to start after puppetserver when on puppetserver
   - sed -i 's/^\(After=.*\)$/\1 puppetserver.service/' /usr/lib/systemd/system/puppet.service
   - systemctl daemon-reload
@@ -98,9 +109,6 @@ runcmd:
   - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/modules --puppetfile=/etc/puppetlabs/code/Puppetfile
 %{ endif ~}
 # Wait for Terraform to scp its YAML data
-%{ if ! include_tf_data ~}
-  - while [ ! -e "/etc/puppetlabs/data/terraform_data.yaml" ]; do echo "$(date -I'seconds') Waiting for terraform to scp terraform_data.yaml"; sleep 5; done
-%{ endif ~}
 %{ if node_name != keys(puppetservers)[0] }
   - sed -e '/certificate-authority-service/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
   - sed -e '/certificate-authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
@@ -134,7 +142,8 @@ runcmd:
   - test -f /etc/magic-castle-release && systemctl start puppet || true
 
 write_files:
-  - content: restrict%{ if contains(tags, "puppet") },pty%{ else }%{ for host, ip in puppetservers },permitopen="${ip}:22"%{ endfor },port-forwarding,command="/sbin/nologin"%{ endif } ${tf_ssh_public_key}
+  # If the ip addresses of the puppet servers are not known in advance, we cannot restrict the ssh connection to them.
+  - content: restrict,%{ if contains(tags, "puppet") }pty%{ else }%{if length(compact(values(puppetservers))) == length(keys(puppetservers)) }%{ for host, ip in puppetservers }permitopen="${ip}:22"%{ endfor }%{ else }pty%{ endif },port-forwarding,command="/sbin/nologin"%{ endif } ${tf_ssh_public_key}
     path: /etc/ssh/authorized_keys.tf
     permissions: "0644"
   - content: |
@@ -184,7 +193,7 @@ write_files:
       if [ -f /usr/local/bin/consul ] && [ -f /usr/bin/jq ]; then
           /usr/local/bin/consul event -token=$(jq -r .acl.tokens.agent /etc/consul/config.json) -name=puppet $(date +%s)
       fi
-    permissions: 0755
+    permissions: "0755"
     path: /usr/sbin/update_etc_puppetlabs.sh
   - content: |
       ---
@@ -199,16 +208,6 @@ write_files:
     permissions: "0640"
   - path: /var/log/autosign.log
     permissions: "0640"
-%{ if include_tf_data ~}
-  - path: /etc/puppetlabs/data/terraform_data.yaml
-    content: |
-      ${indent(6, terraform_data)}
-    permissions: "0640"
-  - path: /etc/puppetlabs/facts/terraform_facts.yaml
-    content: |
-      ${indent(6, terraform_facts)}
-    permissions: "0640"
-%{ endif ~}
 %{ if puppetfile != "" ~}
   - path: /etc/puppetlabs/code/Puppetfile
     content: |

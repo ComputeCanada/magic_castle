@@ -1,12 +1,8 @@
-variable "bastions" { }
-variable "puppetservers" { }
-variable "terraform_data" { }
-variable "terraform_facts" { }
-variable "hieradata" { }
-variable "hieradata_dir" { }
-variable "tf_ssh_key" { }
-variable "eyaml_key" { }
-variable "puppetfile" { }
+variable "configuration" {}
+variable "hieradata" {}
+variable "hieradata_dir" {}
+variable "eyaml_key" {}
+variable "puppetfile" {}
 
 locals {
   provision_folder = "etc_puppetlabs"
@@ -17,12 +13,12 @@ data "archive_file" "puppetserver_files" {
   output_path = "${path.module}/files/${local.provision_folder}.zip"
 
   source {
-    content  = var.terraform_data
+    content  = var.configuration.terraform_data
     filename = "${local.provision_folder}/data/terraform_data.yaml"
   }
 
   source {
-    content  = var.terraform_facts
+    content  = var.configuration.terraform_facts
     filename = "${local.provision_folder}/facts/terraform_facts.yaml"
   }
 
@@ -41,7 +37,7 @@ data "archive_file" "puppetserver_files" {
   }
 
   dynamic "source" {
-    for_each =  var.eyaml_key != "" ? [var.eyaml_key] : []
+    for_each = var.eyaml_key != "" ? [var.eyaml_key] : []
     content {
       content  = var.eyaml_key
       filename = "${local.provision_folder}/puppet/eyaml/private_key.pkcs7.pem"
@@ -49,7 +45,7 @@ data "archive_file" "puppetserver_files" {
   }
 
   dynamic "source" {
-    for_each = var.puppetfile != "" ? [var.puppetfile]: []
+    for_each = var.puppetfile != "" ? [var.puppetfile] : []
     iterator = filename
     content {
       content  = var.puppetfile
@@ -59,17 +55,17 @@ data "archive_file" "puppetserver_files" {
 }
 
 resource "terraform_data" "deploy_puppetserver_files" {
-  for_each = length(var.bastions) > 0  ? var.puppetservers : { }
+  for_each = length(var.configuration.bastions) > 0 ? var.configuration.puppetservers : {}
 
   connection {
     type                = "ssh"
     agent               = false
-    bastion_host        = var.bastions[keys(var.bastions)[0]].public_ip
+    bastion_host        = var.configuration.bastions[keys(var.configuration.bastions)[0]].public_ip
     bastion_user        = "tf"
-    bastion_private_key = var.tf_ssh_key.private
+    bastion_private_key = var.configuration.ssh_key.private
     user                = "tf"
     host                = each.value
-    private_key         = var.tf_ssh_key.private
+    private_key         = var.configuration.ssh_key.private
   }
 
   triggers_replace = {
