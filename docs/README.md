@@ -632,6 +632,10 @@ Each volume in map is defined a key corresponding to its and a map of attributes
   - GCP: `pd-ssd`
   - OpenStack: `null`
   - OVH: `null`
+- `managed` (optional, def: `true`): set to `false` to indicate that the volume already
+exists and should not be created by Terraform only mounted. When a volume is configured with `managed = false`,
+its name needs to match the following pattern `{cluster_name}-{mounting_hostname}-{tag}-{name}`,
+for example `phoenix-mgmt1-nfs-home`.
 
 Volumes with a tag that have no corresponding instance will not be created.
 
