@@ -3391,6 +3391,10 @@ with the tag, unique block devices are attached, no multi-instance attachment is
 <li>GCP: <code>pd-ssd</code></li>
 <li>OpenStack: <code>null</code></li>
 <li>OVH: <code>null</code></li>
+<li><code>managed</code> (optional, def: <code>true</code>): set to <code>false</code> to indicate that the volume already
+exists and should not be created by Terraform only mounted. When a volume is configured with <code>managed = false</code>,
+its name needs to match the following pattern <code>{cluster_name}-{mounting_hostname}-{tag}-{name}</code>,
+for example <code>phoenix-mgmt1-nfs-home</code>.</li>
 </ul>
 <p>Volumes with a tag that have no corresponding instance will not be created.</p>
 <p>In the following example:
