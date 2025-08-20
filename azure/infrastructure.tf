@@ -127,7 +127,9 @@ resource "azurerm_linux_virtual_machine" "instances" {
 }
 
 resource "azurerm_managed_disk" "volumes" {
-  for_each             = module.design.volumes
+  for_each = {
+    for x, values in module.design.volumes : x => values if lookup(values, "managed", true)
+  }
   name                 = format("%s-%s", var.cluster_name, each.key)
   location             = var.location
   resource_group_name  = local.resource_group_name
@@ -136,9 +138,24 @@ resource "azurerm_managed_disk" "volumes" {
   disk_size_gb         = each.value.size
 }
 
+data "azurerm_managed_disk" "existing_volumes" {
+  for_each = {
+    for x, values in module.design.volumes : x => values if !lookup(values, "managed", true)
+  }
+  name                = format("%s-%s", var.cluster_name, each.key)
+  resource_group_name = local.resource_group_name
+}
+
+locals {
+  volume_ids = {
+    for key, values in module.design.volumes :
+    key => lookup(values, "managed", true) ? azurerm_managed_disk.volumes[key].id : data.azurerm_managed_disk.existing_volumes[key].id
+  }
+}
+
 resource "azurerm_virtual_machine_data_disk_attachment" "attachments" {
   for_each           = module.design.volumes
-  managed_disk_id    = azurerm_managed_disk.volumes[each.key].id
+  managed_disk_id    = local.volume_ids[each.key]
   virtual_machine_id = azurerm_linux_virtual_machine.instances[each.value.instance].id
   lun                = index(module.design.volume_per_instance[each.value.instance], replace(each.key, "${each.value.instance}-", ""))
   caching            = "ReadWrite"

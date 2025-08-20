@@ -164,7 +164,9 @@ resource "aws_instance" "instances" {
 }
 
 resource "aws_ebs_volume" "volumes" {
-  for_each          = module.design.volumes
+  for_each = {
+    for x, values in module.design.volumes : x => values if lookup(values, "managed", true)
+  }
   availability_zone = local.availability_zone
   size              = each.value.size
   type              = lookup(each.value, "type", null)
@@ -175,17 +177,32 @@ resource "aws_ebs_volume" "volumes" {
   }
 }
 
+data "aws_ebs_volume" "existing_volumes" {
+  for_each = {
+    for x, values in module.design.volumes : x => values if !lookup(values, "managed", true)
+  }
+
+  filter {
+    name   = "tag:Name"
+    values = ["${var.cluster_name}-${each.key}"]
+  }
+}
+
 locals {
   device_names = [
     "/dev/sdf", "/dev/sdg", "/dev/sdh", "/dev/sdi", "/dev/sdj",
     "/dev/sdk", "/dev/sdl", "/dev/sdm", "/dev/sdn", "/dev/sdp"
   ]
+  volume_ids = {
+    for key, values in module.design.volumes :
+    key => lookup(values, "managed", true) ? aws_ebs_volume.volumes[key].id : data.aws_ebs_volume.existing_volumes[key].id
+  }
 }
 
 resource "aws_volume_attachment" "attachments" {
   for_each     = module.design.volumes
   device_name  = local.device_names[index(module.design.volume_per_instance[each.value.instance], replace(each.key, "${each.value.instance}-", ""))]
-  volume_id    = aws_ebs_volume.volumes[each.key].id
+  volume_id    = local.volume_ids[each.key]
   instance_id  = aws_instance.instances[each.value.instance].id
   skip_destroy = true
 }
@@ -207,7 +224,7 @@ locals {
         pv_key => {
           for name, specs in pv_values :
           name => merge(
-            { glob = "/dev/disk/by-id/*${replace(aws_ebs_volume.volumes["${x}-${pv_key}-${name}"].id, "-", "")}" },
+            { glob = "/dev/disk/by-id/*${replace(local.volume_ids["${x}-${pv_key}-${name}"], "-", "")}" },
             specs,
           )
         } if contains(values.tags, pv_key)
