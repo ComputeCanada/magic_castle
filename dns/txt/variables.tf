@@ -21,3 +21,7 @@ variable "vhosts" {
   type        = list(string)
   default     = ["ipa", "jupyter", "mokey", "explore"]
 }
+
+variable "dkim_public_key" {
+  default = ""
+}
