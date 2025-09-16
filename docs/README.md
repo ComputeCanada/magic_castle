@@ -1157,6 +1157,29 @@ that will be used to create the instance root disk and the shared filesystems.
 
 **Post build modification effect**: rebuild all instance and filesystems.
 
+### network_type (optional)
+
+**default value**: `"bridge"`
+
+Indicates the type of [Incus network](https://linuxcontainers.org/incus/docs/main/howto/network_create/#network-types).
+For OVN, the host must support the OVN network.
+
+**Possible values**: 'ovn' or 'bridge'
+
+### ovn_subnet (optional)
+**default value**: `"10.0.0.1/8"`
+
+The subnet used by the OVN network. When using an OVN network, the local IP addresses are assigned statically. The subnet must use a /8 mask to reduce the risk of collisions between IP addresses that are chosen randomly.
+
+**Only used for OVN network**
+
+### ovn_uplink_network (optional)
+**default value**: `"UPLINK"`
+
+[Uplink bridge network](https://linuxcontainers.org/incus/docs/main/howto/network_ovn_setup/#set-up-an-incus-cluster-on-ovn) configured with the `ipv4.ovn.ranges` option.
+
+**Only used for OVN network**
+
 ## 6. DNS Configuration
 
 Some functionalities in Magic Castle require the registration of DNS records under the
