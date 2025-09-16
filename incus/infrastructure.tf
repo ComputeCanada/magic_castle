@@ -77,6 +77,14 @@ resource "incus_storage_volume" "filesystems" {
   project      = random_id.project_name.hex
 }
 
+resource "random_integer" "ip_offset_ovn" {
+  for_each = module.design.instances
+  min      = 20       # skip low addresses (reserved)
+  max      = 16777100 # ~ usable hosts in /8 minus buffer
+  # There is a probablity of collision between IP addresses
+  # but it's relatively low with \8 subnet. (<0.03% for 100 hosts)
+}
+
 resource "incus_instance" "instances" {
   for_each = module.design.instances_to_build
 
@@ -94,10 +102,17 @@ resource "incus_instance" "instances" {
     name = "eth0"
     type = "nic"
 
-    properties = {
-      nictype = "bridged"
-      parent  = incus_network.network.name
-    }
+    properties = merge(
+      {
+        network = incus_network.network.name
+      },
+      var.network_type == "ovn" ? {
+        nictype        = incus_network.network.type
+        "ipv4.address" = local.inventory[each.key].local_ip
+        } : {
+        nictype = "bridged"
+      }
+    )
   }
 
   device {
@@ -141,12 +156,13 @@ resource "incus_instance" "instances" {
 }
 
 locals {
-  inventory = { for x, values in module.design.instances :
-    x => {
-      prefix  = values.prefix
-      tags    = values.tags
-      specs   = values.specs
-      volumes = {}
+  inventory = { for host, values in module.design.instances :
+    host => {
+      prefix   = values.prefix
+      tags     = values.tags
+      specs    = values.specs
+      local_ip = var.network_type == "ovn" ? cidrhost(var.ovn_subnet, random_integer.ip_offset_ovn[host].result) : ""
+      volumes  = {}
     }
   }
 
