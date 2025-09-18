@@ -64,7 +64,7 @@ runcmd:
       dnf -y upgrade -x openvox*
 %{ endif ~}
       # Puppet agent configuration and install
-      dnf -y install https://yum.voxpupuli.org/openvox8-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
+      dnf -y install https://yum.voxpupuli.org/openvox8-release-el-$(grep -oP 'VERSION_ID="\K\d*' /etc/os-release).noarch.rpm
       dnf -y install openvox-agent-8.19.2
       install -m 700 /dev/null /opt/puppetlabs/bin/postrun
       # kernel configuration
