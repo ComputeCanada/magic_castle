@@ -35,6 +35,11 @@ runcmd:
     # most container images do not have selinux pre-installed
   - restorecon -R /${sudoer_username}
 %{ endif }
+  # If the image has not openssh-server installed but sshd_config still exists
+  # installing the new RPM will not overwrite the file and depending on the file
+  # content it might catastrophic (some sshd_config are empty, some miss esential lines).
+  # Therefore when openssh-server is not installed, we remove sshd_config before installing it.
+  - "[ -z $(rpm -qa openssh-server) ] && rm -f /etc/ssh/sshd_config"
   - dnf -y install openssh openssh-server rsync
   - echo -e "Include /etc/ssh/sshd_config.d/50-authenticationmethods.conf" >> /etc/ssh/sshd_config
   - sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
