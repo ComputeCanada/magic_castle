@@ -116,7 +116,7 @@ runcmd:
 # Patch origin: https://github.com/puppetlabs/puppetlabs-stdlib/commit/53a8ccf869aa49de7a77c8a35d89dd5aac8fa52d.patch
   - sed -i -e 's/PSON/Puppet::Util::Json/' -e "/module Puppet/i require 'puppet/util/json'" /etc/puppetlabs/code/environments/production/modules/stdlib/lib/puppet/parser/functions/parsejson.rb
 # Wait for Terraform to scp its YAML data
-- while [ ! -e "/etc/puppetlabs/data/terraform_data.yaml" ]; do echo "$(date -I'seconds') Waiting for terraform to scp terraform_data.yaml"; sleep 5; done
+  - while [ ! -e "/etc/puppetlabs/data/terraform_data.yaml" ]; do echo "$(date -I'seconds') Waiting for terraform to scp terraform_data.yaml"; sleep 5; done
 %{ if node_name != keys(puppetservers)[0] }
   - sed -e '/certificate-authority-service/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
   - sed -e '/certificate-authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
