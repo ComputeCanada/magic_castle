@@ -72,8 +72,8 @@ locals {
       22 <= values.from_port && values.to_port <= 22 &&
       alltrue([
         for i, v in split(".", local.agent_ip) :
-        tonumber(split(".", cidrhost(values.cidr, 0))[i]) <= tonumber(v) &&
-        tonumber(v) <= tonumber(split(".", cidrhost(values.cidr, -1))[i])
+        tonumber(split(".", strcontains(values.cidr, "/") ? cidrhost(values.cidr, 0) : values.cidr)[i]) <= tonumber(v) &&
+        tonumber(split(".", strcontains(values.cidr, "/") ? cidrhost(values.cidr, -1) : values.cidr)[i]) >= tonumber(v)
       ])
       ],
     0),
