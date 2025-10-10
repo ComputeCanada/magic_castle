@@ -1,4 +1,9 @@
-variable "configuration" {}
+variable "configuration" {
+  validation {
+    condition     = length(var.configuration.bastions) > 0
+    error_message = "Firewall rules do not allow Terraform to SSH to at least one instance."
+  }
+}
 variable "hieradata" {}
 variable "hieradata_dir" {}
 variable "eyaml_key" {}
