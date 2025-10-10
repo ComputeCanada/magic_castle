@@ -169,3 +169,9 @@ variable "eyaml_key" {
     error_message = "Unsupported private key format"
   }
 }
+
+variable "bastion_tags" {
+  type        = list(string)
+  default     = []
+  description = "Tags identifying instances that can be used by Terraform as the first hop to transfer files to the Puppet server."
+}

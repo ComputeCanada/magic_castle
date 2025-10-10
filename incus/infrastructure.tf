@@ -8,6 +8,7 @@ module "design" {
   pool           = var.pool
   volumes        = var.volumes
   firewall_rules = var.firewall_rules
+  bastion_tags   = var.bastion_tags
 }
 
 module "configuration" {

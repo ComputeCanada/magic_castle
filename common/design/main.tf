@@ -56,7 +56,7 @@ locals {
   # and we memorize the corresponding tags so we can determine which instances can be used as a
   # first hop when transferring files or executing remote commands with Terraform.
   agent_ip = chomp(data.http.agent_ip.response_body)
-  bastion_tags = [
+  bastion_tags = distinct(concat(var.bastion_tags, [
     for rule, values in var.firewall_rules :
     values.tag
     if values.ethertype == "IPv4" &&
@@ -66,7 +66,7 @@ locals {
       tonumber(split(".", strcontains(values.cidr, "/") ? cidrhost(values.cidr, 0) : values.cidr)[i]) <= tonumber(v) &&
       tonumber(split(".", strcontains(values.cidr, "/") ? cidrhost(values.cidr, -1) : values.cidr)[i]) >= tonumber(v)
     ])
-  ]
+  ]))
 }
 
 check "disk_space_per_tag" {
