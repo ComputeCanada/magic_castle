@@ -162,7 +162,7 @@ output "ssh_key" {
 output "bastions" {
   value = {
     for host, values in local.final_inventory : host => values
-    if length(setintersection(values.tags, var.bastion_tags)) > 0 && contains(values.tags, "public") && (!contains(values.tags, "pool"))
+    if length(setintersection(values.tags, var.bastion_tags)) > 0 && (!contains(values.tags, "pool"))
   }
 }
 
