@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.2a3383ac.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.84d31ad4.min.css">
       
       
 
@@ -644,6 +644,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#incus" class="md-nav__link">
+    <span class="md-ellipsis">
+      Incus
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1033,6 +1042,24 @@
   <a href="#storage_pool-optional" class="md-nav__link">
     <span class="md-ellipsis">
       storage_pool (optional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#network_type-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      network_type (optional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ovn_uplink_network-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      ovn_uplink_network (optional)
     </span>
   </a>
   
@@ -2006,6 +2033,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#incus" class="md-nav__link">
+    <span class="md-ellipsis">
+      Incus
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2395,6 +2431,24 @@
   <a href="#storage_pool-optional" class="md-nav__link">
     <span class="md-ellipsis">
       storage_pool (optional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#network_type-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      network_type (optional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ovn_uplink_network-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      ovn_uplink_network (optional)
     </span>
   </a>
   
@@ -3374,6 +3428,10 @@ For more information on these attributes, refer to
 available models per region</li>
 <li><code>gpus</code>: number of GPUs of the <code>gpu_type</code> model to attach to the instance</li>
 </ul>
+<h5 id="incus">Incus</h5>
+<ul>
+<li><code>target</code>: name of the <a href="https://linuxcontainers.org/incus/docs/main/howto/cluster_manage_instance/#launch-an-instance-on-a-specific-cluster-member">specific cluster member</a> to deploy the instance. <strong>Only use with Incus cluster.</strong> </li>
+</ul>
 <h4 id="473-post-build-modification-effect">4.7.3 Post build modification effect</h4>
 <p>Modifying any part of the map after the cluster is built will only affect
 the type of instances associated with what was modified at the
@@ -3755,6 +3813,15 @@ NFS mount does not work.</p>
 <p>Indicate the name of the <a href="https://linuxcontainers.org/incus/docs/main/howto/storage_pools/">Incus storage pool</a>
 that will be used to create the instance root disk and the shared filesystems.</p>
 <p><strong>Post build modification effect</strong>: rebuild all instance and filesystems.</p>
+<h3 id="network_type-optional">network_type (optional)</h3>
+<p><strong>default value</strong>: <code>"bridge"</code></p>
+<p>Indicates the type of <a href="https://linuxcontainers.org/incus/docs/main/howto/network_create/#network-types">Incus network</a>.
+For OVN, the host must support the OVN network.</p>
+<p><strong>Possible values</strong>: 'ovn' or 'bridge'</p>
+<h3 id="ovn_uplink_network-optional">ovn_uplink_network (optional)</h3>
+<p><strong>default value</strong>: <code>"UPLINK"</code></p>
+<p><a href="https://linuxcontainers.org/incus/docs/main/howto/network_ovn_setup/#set-up-an-incus-cluster-on-ovn">Uplink bridge network</a> configured with the <code>ipv4.ovn.ranges</code> option.</p>
+<p><strong>Only used for OVN network</strong></p>
 <h2 id="6-dns-configuration">6. DNS Configuration</h2>
 <p>Some functionalities in Magic Castle require the registration of DNS records under the
 <a href="#44-cluster_name">cluster name</a> in the selected <a href="#45-domain">domain</a>. This includes
