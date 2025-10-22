@@ -822,6 +822,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#422-bastion_tags-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.22 bastion_tags (optional)
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2206,6 +2215,15 @@
   <a href="#421-puppetfile-optional" class="md-nav__link">
     <span class="md-ellipsis">
       4.21 puppetfile (optional)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#422-bastion_tags-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      4.22 bastion_tags (optional)
     </span>
   </a>
   
@@ -3685,6 +3703,13 @@ whether they should upgrade the base image packages or not.</p>
 install complementary modules with <a href="https://github.com/puppetlabs/r10k">r10k</a>.</p>
 <p><strong>Post build modification effect</strong>: trigger scp of Puppetfile at next <code>terraform apply</code>.
 Each instance's Puppet agent will be reloaded following the installation of the new modules.</p>
+<h3 id="422-bastion_tags-optional">4.22 bastion_tags (optional)</h3>
+<p><strong>default_value</strong> = <code>[]</code></p>
+<p>Defines a list of tags identifying instances that can be used by Terraform as the first hop
+to transfer files to the Puppet server. By default, this list is infered from the list of
+<a href="#416-firewall_rules-optional">firewall rules</a> and the public ip address of the agent calling
+<code>terraform apply</code>. Providing an explicit list of tags allow to bypass the firewall rule inference,
+which can be useful when the agent is in the same network as the cluster.</p>
 <h2 id="5-cloud-specific-configuration">5. Cloud Specific Configuration</h2>
 <h3 id="51-amazon-web-services">5.1 Amazon Web Services</h3>
 <h4 id="511-region">5.1.1 region</h4>
