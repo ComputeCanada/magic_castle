@@ -3,6 +3,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [15.0.0] UNRELEASED
+
+### Added
+- Added support for Incus as a provider for Magic Castle (PR #365, #369, #370, #377)
+- Added DKIM records (PR #346, #373s)
+
+### Changed
+- Replaced local variable by output from common.design (PR #366)
+- Replaced provision inputs linked to configuration by configuration directly (PR #367)
+- Replaced local.public_instances by post_inventory (PR #368)
+- Replaced puppetlabs-puppet by OpenVox (PR #374)
+- Upgraded to OpenVox 8 (PR #375)
+- Added support for volumes not managed by Magic Castle (i.e: existing ones) (PR #339)
+- Added usage of all potential bastion tags instead of only the first match (PR #382)
+
 ## [14.3.0] 2025-05-22
 
 ### Added
