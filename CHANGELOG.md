@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [15.0.0] UNRELEASED
+## [15.0.0] 2025-10-22
 
 ### Added
 - Added support for Incus as a provider for Magic Castle (PR #365, #369, #370, #377)
