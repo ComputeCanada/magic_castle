@@ -8,6 +8,7 @@ module "design" {
   pool           = var.pool
   volumes        = var.volumes
   firewall_rules = var.firewall_rules
+  bastion_tags   = var.bastion_tags
 }
 
 module "configuration" {
@@ -19,7 +20,7 @@ module "configuration" {
   sudoer_username = var.sudoer_username
   public_keys     = var.public_keys
   domain_name     = module.design.domain_name
-  bastion_tag     = module.design.bastion_tag
+  bastion_tags    = module.design.bastion_tags
   cluster_name    = var.cluster_name
   guest_passwd    = var.guest_passwd
   nb_users        = var.nb_users
@@ -153,8 +154,8 @@ locals {
 
   post_inventory = { for host, values in local.inventory :
     host => merge(values, {
-      local_ip  = try(incus_instance.instances[host].ipv4_address, "")
-      public_ip = try(incus_instance.instances[host].ipv4_address, "")
+      local_ip  = incus_instance.instances[host].ipv4_address,
+      public_ip = incus_instance.instances[host].ipv4_address,
     })
   }
 

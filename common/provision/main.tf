@@ -1,4 +1,9 @@
-variable "configuration" {}
+variable "configuration" {
+  validation {
+    condition     = length(var.configuration.bastions) > 0
+    error_message = "Firewall rules do not allow Terraform to SSH to at least one instance."
+  }
+}
 variable "hieradata" {}
 variable "hieradata_dir" {}
 variable "eyaml_key" {}
@@ -54,13 +59,17 @@ data "archive_file" "puppetserver_files" {
   }
 }
 
+locals {
+  bastion_host = length(var.configuration.bastions) > 0 ? var.configuration.bastions[keys(var.configuration.bastions)[0]] : null
+}
+
 resource "terraform_data" "deploy_puppetserver_files" {
-  for_each = length(var.configuration.bastions) > 0 ? var.configuration.puppetservers : {}
+  for_each = local.bastion_host != null ? var.configuration.puppetservers : {}
 
   connection {
     type                = "ssh"
     agent               = false
-    bastion_host        = var.configuration.bastions[keys(var.configuration.bastions)[0]].public_ip
+    bastion_host        = contains(local.bastion_host.tags, "public") ? local.bastion_host.public_ip : local.bastion_host.local_ip
     bastion_user        = "tf"
     bastion_private_key = var.configuration.ssh_key.private
     user                = "tf"

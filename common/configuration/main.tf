@@ -24,7 +24,7 @@ variable "public_keys" {}
 
 variable "skip_upgrade" {}
 variable "puppetfile" {}
-variable "bastion_tag" {}
+variable "bastion_tags" {}
 
 resource "tls_private_key" "ssh" {
   algorithm = "ED25519"
@@ -162,7 +162,7 @@ output "ssh_key" {
 output "bastions" {
   value = {
     for host, values in local.final_inventory : host => values
-    if contains(values.tags, var.bastion_tag) && contains(values.tags, "public") && (!contains(values.tags, "pool"))
+    if length(setintersection(values.tags, var.bastion_tags)) > 0 && (!contains(values.tags, "pool"))
   }
 }
 

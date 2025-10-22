@@ -18,6 +18,6 @@ output "domain_name" {
   value = local.domain_name
 }
 
-output "bastion_tag" {
-  value = local.bastion_tag
+output "bastion_tags" {
+  value = local.bastion_tags
 }

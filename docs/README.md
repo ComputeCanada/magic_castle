@@ -964,6 +964,16 @@ install complementary modules with [r10k](https://github.com/puppetlabs/r10k).
 **Post build modification effect**: trigger scp of Puppetfile at next `terraform apply`.
 Each instance's Puppet agent will be reloaded following the installation of the new modules.
 
+### 4.22 bastion_tags (optional)
+
+**default_value** = `[]`
+
+Defines a list of tags identifying instances that can be used by Terraform as the first hop
+to transfer files to the Puppet server. By default, this list is infered from the list of
+[firewall rules](#416-firewall_rules-optional) and the public ip address of the agent calling
+`terraform apply`. Providing an explicit list of tags allow to bypass the firewall rule inference,
+which can be useful when the agent is in the same network as the cluster.
+
 ## 5. Cloud Specific Configuration
 
 ### 5.1 Amazon Web Services
