@@ -2,6 +2,19 @@
 
 Thank you for your interest in contributing to Magic Castle!
 
+## What kind of contributions can I make?
+
+### Improving documentation
+
+[TODO]
+
+### Improving code
+
+[TODO]
+
+### Improving tests
+
+[TODO]
 
 ## How to Contribute
 
