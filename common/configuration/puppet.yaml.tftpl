@@ -102,7 +102,7 @@ runcmd:
   - rm -rf /etc/puppetlabs/code/environments/production
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/main
   - ln -s /etc/puppetlabs/code/environments/main /etc/puppetlabs/code/environments/production
-  - "(cd /etc/puppetlabs/code/environments/production; git checkout ${puppetenv_rev})"
+  - "(cd /etc/puppetlabs/code/environments/production; git fetch origin ${puppetenv_rev}; git switch -C ${puppetenv_rev} FETCH_HEAD)"
   - mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts
   - chgrp -R puppet /etc/puppetlabs/data /etc/puppetlabs/facts
   - ln -sf /etc/puppetlabs/data/{user_data,user_data.yaml,terraform_data.yaml} /etc/puppetlabs/code/environments/production/data/
