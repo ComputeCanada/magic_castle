@@ -9,7 +9,7 @@ magic_castle::site::all:
   - profile::freeipa
   - profile::users::local
   - profile::sssd::client
-  - profile::metrics::node_exporter
+  - profile::prometheus::node_exporter
   - profile::rsyslog::client
   - profile::volumes
 # - swap_file

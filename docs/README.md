@@ -611,6 +611,10 @@ For more information on these attributes, refer to
 available models per region
 - `gpus`: number of GPUs of the `gpu_type` model to attach to the instance
 
+##### Incus
+
+- `target`: name of the [specific cluster member](https://linuxcontainers.org/incus/docs/main/howto/cluster_manage_instance/#launch-an-instance-on-a-specific-cluster-member) to deploy the instance. **Only use with Incus cluster.** 
+
 #### 4.7.3 Post build modification effect
 
 Modifying any part of the map after the cluster is built will only affect
@@ -960,6 +964,16 @@ install complementary modules with [r10k](https://github.com/puppetlabs/r10k).
 **Post build modification effect**: trigger scp of Puppetfile at next `terraform apply`.
 Each instance's Puppet agent will be reloaded following the installation of the new modules.
 
+### 4.22 bastion_tags (optional)
+
+**default_value** = `[]`
+
+Defines a list of tags identifying instances that can be used by Terraform as the first hop
+to transfer files to the Puppet server. By default, this list is infered from the list of
+[firewall rules](#416-firewall_rules-optional) and the public ip address of the agent calling
+`terraform apply`. Providing an explicit list of tags allow to bypass the firewall rule inference,
+which can be useful when the agent is in the same network as the cluster.
+
 ## 5. Cloud Specific Configuration
 
 ### 5.1 Amazon Web Services
@@ -1156,6 +1170,22 @@ Indicate the name of the [Incus storage pool](https://linuxcontainers.org/incus/
 that will be used to create the instance root disk and the shared filesystems.
 
 **Post build modification effect**: rebuild all instance and filesystems.
+
+### network_type (optional)
+
+**default value**: `"bridge"`
+
+Indicates the type of [Incus network](https://linuxcontainers.org/incus/docs/main/howto/network_create/#network-types).
+For OVN, the host must support the OVN network.
+
+**Possible values**: 'ovn' or 'bridge'
+
+### ovn_uplink_network (optional)
+**default value**: `"UPLINK"`
+
+[Uplink bridge network](https://linuxcontainers.org/incus/docs/main/howto/network_ovn_setup/#set-up-an-incus-cluster-on-ovn) configured with the `ipv4.ovn.ranges` option.
+
+**Only used for OVN network**
 
 ## 6. DNS Configuration
 

@@ -13,9 +13,15 @@ module "incus" {
 
   instances = {
     mgmt  = { type = "container", cpus = 4, ram = 6000, gpus = 0, tags = ["puppet", "mgmt", "nfs"], count = 1 }
-    login = { type = "container", cpus = 2, ram = 3000, gpus = 0, tags = ["login", "public", "proxy"], count = 1 }
+    login = { type = "container", cpus = 2, ram = 3000, gpus = 0, tags = ["login", "proxy"], count = 1 }
     node  = { type = "container", cpus = 2, ram = 3000, gpus = 0, tags = ["node"], count = 1 }
   }
+
+  firewall_rules = {
+    http  = { "from_port" = 80, "to_port" = 80, tag = "proxy", "cidr" = "0.0.0.0/0" },
+    https = { "from_port" = 443, "to_port" = 443, tag = "proxy", "cidr" = "0.0.0.0/0" },
+  }
+  bastion_tags = ["login"]
 
   volumes = {}
 
