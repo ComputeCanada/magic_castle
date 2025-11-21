@@ -564,6 +564,10 @@ recommended minimum size per tag as specified in the following table.
     This is only functional with [MIG supported GPUs](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-gpus),
     and with x86-64 processors (see [NVIDIA/mig-parted issue #30](https://github.com/NVIDIA/mig-parted/issues/30)).
 6. `shard`: total number of [Sharding](https://slurm.schedmd.com/gres.html#Sharding) on the node. Sharding allows sharing the same GPU on multiple jobs. The total number of shards is evenly distributed across all GPUs on the node.
+7. `features`: list of [features](https://slurm.schedmd.com/slurm.conf.html#OPT_Features) on the node. This allows to select nodes based on the `--constraint` option. Example:
+    ```
+    features = ["skylake", "nvidia"]
+    ```
 
 The instance specifications are retrieved from the cloud provider data source, but it is possible to explicitly specify them.
 
