@@ -3,6 +3,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [15.1.0] UNRELEASED
+
+### Added
+- Document the optional features attribute to instances (PR #389)
+
+### Changed
+
+- Fixed node_exporter class name in incus example's data.yaml
+- Moved dnf commands and ssh config under test magic-castle-release (PR #383)
+- Bumped incus provider to 1.0.0 (PR #387)
+- Replaced git checkout by git fetch + git switch in puppet.yaml (PR #388)
+- Added az_metadata, cloud.provider and hypervisor to facter blocklist (PR #390)
+
+
 ## [15.0.1] 2025-11-07
 
 No changes to infrastructure code.
