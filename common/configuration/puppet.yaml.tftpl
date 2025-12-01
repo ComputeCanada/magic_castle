@@ -59,6 +59,11 @@ runcmd:
       chmod 644 /etc/ssh/ssh_host_*_key.pub
       chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
       systemctl restart sshd
+      # kernel configuration: disable crashkernel and kdump
+      # remove kexec-tools rpm to avoid crashkernel being enabled for future installed kernels
+      dnf remove -y kexec-tools --noautoremove
+      grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0 crashkernel=0M"
+      grub2-mkconfig -o /boot/grub2/grub.cfg
       # Install required packages in runcmd instead of packages to speedup configuration
       # of the admin user. This reduces the risk of Terraform timing out when trying to
       # upload the terraform_data.yaml
@@ -72,11 +77,6 @@ runcmd:
       dnf -y install https://yum.voxpupuli.org/openvox8-release-el-$(grep -oP 'VERSION_ID="\K\d*' /etc/os-release).noarch.rpm
       dnf -y install openvox-agent-8.23.1
       install -m 700 /dev/null /opt/puppetlabs/bin/postrun
-      # kernel configuration: disable crashkernel and kdump
-      # remove kexec-tools rpm to avoid crashkernel being enabled for future installed kernels
-      dnf remove -y kexec-tools --noautoremove
-      grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0 crashkernel=0M"
-      grub2-mkconfig -o /boot/grub2/grub.cfg
     fi
 %{ if contains(tags, "puppet") }
 # Install puppetserver
