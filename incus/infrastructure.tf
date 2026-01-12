@@ -91,6 +91,8 @@ resource "incus_instance" "instances" {
   config = {
     "cloud-init.user-data" = module.configuration.user_data[each.key]
     "security.privileged"  = var.privileged
+    # nvidia.runtime is incompatible with privileged containers
+    "nvidia.runtime" = length(try(each.value.gpu_pci, [])) > 0 ? !var.privileged : false
   }
 
   device {
@@ -137,6 +139,20 @@ resource "incus_instance" "instances" {
     }
   }
 
+  dynamic "device" {
+    for_each = length(try(each.value.gpu_pci, [])) > 0 ? { for idx, pci in each.value.gpu_pci : idx => pci } : {}
+
+
+    content {
+      name = "gpu${device.key}"
+      type = "gpu"
+      properties = {
+        gputype : "physical"
+        pci = device.value
+      }
+    }
+  }
+
   wait_for {
     type = "ipv4"
   }
@@ -145,9 +161,14 @@ resource "incus_instance" "instances" {
 locals {
   inventory = { for host, values in module.design.instances :
     host => {
-      prefix  = values.prefix
-      tags    = values.tags
-      specs   = values.specs
+      prefix = values.prefix
+      tags   = values.tags
+      specs = merge(
+        values.specs,
+        {
+          gpus = length(try(values.gpu_pci, []))
+        }
+      )
       volumes = {}
     }
   }
