@@ -3,6 +3,41 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [15.1.0] UNRELEASED
+
+### Added
+- Document the optional features attribute to instances (PR #389)
+
+### Changed
+
+- Fixed node_exporter class name in incus example's data.yaml
+- Moved dnf commands and ssh config under test magic-castle-release (PR #383)
+- Bumped incus provider to 1.0.0 (PR #387)
+- Replaced git checkout by git fetch + git switch in puppet.yaml (PR #388)
+- Added az_metadata, cloud.provider and hypervisor to facter blocklist (PR #390)
+
+
+## [15.0.1] 2025-11-07
+
+No changes to infrastructure code.
+
+Refer to [puppet-magic_castle changelog](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/CHANGELOG.md)
+
+## [15.0.0] 2025-10-22
+
+### Added
+- Added support for Incus as a provider for Magic Castle (PR #365, #369, #370, #377)
+- Added DKIM records (PR #346, #373s)
+
+### Changed
+- Replaced local variable by output from common.design (PR #366)
+- Replaced provision inputs linked to configuration by configuration directly (PR #367)
+- Replaced local.public_instances by post_inventory (PR #368)
+- Replaced puppetlabs-puppet by OpenVox (PR #374)
+- Upgraded to OpenVox 8 (PR #375)
+- Added support for volumes not managed by Magic Castle (i.e: existing ones) (PR #339)
+- Added usage of all potential bastion tags instead of only the first match (PR #382)
+
 ## [14.3.0] 2025-05-22
 
 ### Added

@@ -35,12 +35,6 @@ runcmd:
     # most container images do not have selinux pre-installed
   - restorecon -R /${sudoer_username}
 %{ endif }
-  - dnf -y install openssh openssh-server rsync
-  - echo -e "Include /etc/ssh/sshd_config.d/50-authenticationmethods.conf" >> /etc/ssh/sshd_config
-  - sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
-  - chmod 644 /etc/ssh/ssh_host_*_key.pub
-  - chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
-  - systemctl restart sshd
 # Make sure puppet server can be reached by name early in the process if we need to debug.
 # For some provider, the ip address of the puppetserver is not known in advance, so we make
 # sure it is not empty before adding it to /etc/hosts
@@ -49,11 +43,22 @@ runcmd:
   - echo "${ip} ${host}" >> /etc/hosts
 %{ endif ~}
 %{ endfor ~}
-  # Enable fastest mirror for distribution using dnf package manager
-  - dnf config-manager --setopt=fastestmirror=True --save
   # Install package and configure kernel only if building from a "vanilla" linux image
   - |
     if ! test -f /etc/magic-castle-release; then
+      # Enable fastest mirror for distribution using dnf package manager
+      dnf config-manager --setopt=fastestmirror=True --save
+      # If the image has not openssh-server installed but sshd_config still exists
+      # installing the new RPM will not overwrite the file and depending on the file
+      # content it might catastrophic (some sshd_config are empty, some miss esential lines).
+      # Therefore when openssh-server is not installed, we remove sshd_config before installing it.
+      "[ -z $(rpm -qa openssh-server) ] && rm -f /etc/ssh/sshd_config"
+      dnf -y install openssh openssh-server rsync
+      echo -e "Include /etc/ssh/sshd_config.d/50-authenticationmethods.conf" >> /etc/ssh/sshd_config
+      sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
+      chmod 644 /etc/ssh/ssh_host_*_key.pub
+      chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
+      systemctl restart sshd
       # Install required packages in runcmd instead of packages to speedup configuration
       # of the admin user. This reduces the risk of Terraform timing out when trying to
       # upload the terraform_data.yaml
@@ -64,17 +69,17 @@ runcmd:
       dnf -y upgrade -x openvox*
 %{ endif ~}
       # Puppet agent configuration and install
-      dnf -y install https://yum.voxpupuli.org/openvox8-release-el-$(grep -oP 'VERSION_ID="\K[^"]' /etc/os-release).noarch.rpm
-      dnf -y install openvox-agent-8.19.2
+      dnf -y install https://yum.voxpupuli.org/openvox8-release-el-$(grep -oP 'VERSION_ID="\K\d*' /etc/os-release).noarch.rpm
+      dnf -y install openvox-agent-8.23.1
       install -m 700 /dev/null /opt/puppetlabs/bin/postrun
       # kernel configuration
       systemctl disable kdump
-      grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0"
+      grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0 crashkernel=0M"
       grub2-mkconfig -o /boot/grub2/grub.cfg
     fi
 %{ if contains(tags, "puppet") }
 # Install puppetserver
-  - dnf -y install openvox-server-8.8.1
+  - dnf -y install openvox-server-8.11.0
 # Configure puppet-agent to start after puppetserver when on puppetserver
   - sed -i 's/^\(After=.*\)$/\1 puppetserver.service/' /usr/lib/systemd/system/puppet.service
   - systemctl daemon-reload
@@ -97,7 +102,7 @@ runcmd:
   - rm -rf /etc/puppetlabs/code/environments/production
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/main
   - ln -s /etc/puppetlabs/code/environments/main /etc/puppetlabs/code/environments/production
-  - "(cd /etc/puppetlabs/code/environments/production; git checkout ${puppetenv_rev})"
+  - "(cd /etc/puppetlabs/code/environments/production; git fetch origin ${puppetenv_rev}; git switch -C ${puppetenv_rev} FETCH_HEAD)"
   - mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts
   - chgrp -R puppet /etc/puppetlabs/data /etc/puppetlabs/facts
   - ln -sf /etc/puppetlabs/data/{user_data,user_data.yaml,terraform_data.yaml} /etc/puppetlabs/code/environments/production/data/
@@ -111,6 +116,7 @@ runcmd:
 # Patch origin: https://github.com/puppetlabs/puppetlabs-stdlib/commit/53a8ccf869aa49de7a77c8a35d89dd5aac8fa52d.patch
   - sed -i -e 's/PSON/Puppet::Util::Json/' -e "/module Puppet/i require 'puppet/util/json'" /etc/puppetlabs/code/environments/production/modules/stdlib/lib/puppet/parser/functions/parsejson.rb
 # Wait for Terraform to scp its YAML data
+  - while [ ! -e "/etc/puppetlabs/data/terraform_data.yaml" ]; do echo "$(date -I'seconds') Waiting for terraform to scp terraform_data.yaml"; sleep 5; done
 %{ if node_name != keys(puppetservers)[0] }
   - sed -e '/certificate-authority-service/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
   - sed -e '/certificate-authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
@@ -157,8 +163,8 @@ write_files:
   - content: |
       facts : {
         blocklist : [
-          "EC2",
-          %{ if cloud_provider != "gcp" } "GCE", %{ endif }
+          "EC2", "az_metadata", "cloud.provider", "hypervisors"
+          %{ if cloud_provider != "gcp" },"GCE",%{ endif }
         ],
       }
     path: /etc/puppetlabs/facter/facter.conf
