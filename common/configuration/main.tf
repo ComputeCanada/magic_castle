@@ -99,7 +99,7 @@ locals {
       {
         cloud_provider        = var.cloud_provider
         cloud_region          = var.cloud_region
-        dnf_proxy             = var.var.dnf_proxy
+        dnf_proxy             = var.dnf_proxy
         tags                  = values.tags
         node_name             = key,
         node_prefix           = values.prefix,
