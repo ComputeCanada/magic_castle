@@ -29,6 +29,11 @@ users:
 %{ endfor ~}
 
 runcmd:
+%{ if dnf_proxy != "" ~}
+  - echo "proxy=${dnf_proxy}" >> /etc/dnf/dnf.conf
+  - sed -i '/#baseurl=/s/^#//g' /etc/yum.repos.d/*.repo
+  - sed -i '/mirrorlist=/s/^/#/g' /etc/yum.repos.d/*.repo
+%{ endif }
   - chmod 755 /etc # avoid issue with Rocky 9.4
   - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
 %{ if cloud_provider != "incus" }

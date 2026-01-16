@@ -9,6 +9,7 @@ locals {
 
 variable "config_git_url" {}
 variable "config_version" {}
+variable "dnf_proxy" { default = "" }
 
 variable "sudoer_username" {}
 
@@ -98,6 +99,7 @@ locals {
       {
         cloud_provider        = var.cloud_provider
         cloud_region          = var.cloud_region
+        dnf_proxy             = var.var.dnf_proxy
         tags                  = values.tags
         node_name             = key,
         node_prefix           = values.prefix,

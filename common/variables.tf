@@ -175,3 +175,8 @@ variable "bastion_tags" {
   default     = []
   description = "Tags identifying instances that can be used by Terraform as the first hop to transfer files to the Puppet server."
 }
+
+variable "dnf_proxy" {
+  type    = string
+  default = ""
+}
