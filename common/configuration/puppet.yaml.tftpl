@@ -51,8 +51,6 @@ runcmd:
   # Install package and configure kernel only if building from a "vanilla" linux image
   - |
     if ! test -f /etc/magic-castle-release; then
-      # Enable fastest mirror for distribution using dnf package manager
-      dnf config-manager --setopt=fastestmirror=True --save
       # If the image has not openssh-server installed but sshd_config still exists
       # installing the new RPM will not overwrite the file and depending on the file
       # content it might catastrophic (some sshd_config are empty, some miss esential lines).
@@ -74,7 +72,8 @@ runcmd:
       dnf -y upgrade -x openvox*
 %{ endif ~}
       # Puppet agent configuration and install
-      dnf -y install https://yum.voxpupuli.org/openvox8-release-el-$(grep -oP 'VERSION_ID="\K\d*' /etc/os-release).noarch.rpm
+      dnf -y install http://yum.voxpupuli.org/openvox8-release-el-$(grep -oP 'VERSION_ID="\K\d*' /etc/os-release).noarch.rpm
+      sed -i '/baseurl=https:/s/https:/http:/g' /etc/yum.repos.d/openvox8-release.repo
       dnf -y install openvox-agent-8.23.1
       install -m 700 /dev/null /opt/puppetlabs/bin/postrun
       # kernel configuration
