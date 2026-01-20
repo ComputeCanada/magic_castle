@@ -1,7 +1,3 @@
-data "http" "agent_ip" {
-  url = "http://ipv4.icanhazip.com"
-}
-
 locals {
   domain_name = "${lower(var.cluster_name)}.${lower(var.domain)}"
 
@@ -52,21 +48,7 @@ locals {
 
   volume_per_instance = transpose({ for key, value in local.instance_per_volume : key => value["instances"] })
 
-  # We look for firewall rules that allow SSH connection from the Terraform agent's ip
-  # and we memorize the corresponding tags so we can determine which instances can be used as a
-  # first hop when transferring files or executing remote commands with Terraform.
-  agent_ip = chomp(data.http.agent_ip.response_body)
-  bastion_tags = distinct(concat(var.bastion_tags, [
-    for rule, values in var.firewall_rules :
-    values.tag
-    if values.ethertype == "IPv4" &&
-    22 <= values.from_port && values.to_port <= 22 &&
-    alltrue([
-      for i, v in split(".", local.agent_ip) :
-      tonumber(split(".", strcontains(values.cidr, "/") ? cidrhost(values.cidr, 0) : values.cidr)[i]) <= tonumber(v) &&
-      tonumber(split(".", strcontains(values.cidr, "/") ? cidrhost(values.cidr, -1) : values.cidr)[i]) >= tonumber(v)
-    ])
-  ]))
+  bastion_tags = [for rule, values in var.firewall_rules : values.tag if values.from_port == 22 && values.cidr == "0.0.0.0/0"]
 }
 
 check "disk_space_per_tag" {

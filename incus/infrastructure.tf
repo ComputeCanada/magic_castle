@@ -32,12 +32,13 @@ module "configuration" {
 }
 
 module "provision" {
-  source        = "../common/provision"
-  configuration = module.configuration
-  hieradata     = var.hieradata
-  hieradata_dir = var.hieradata_dir
-  eyaml_key     = var.eyaml_key
-  puppetfile    = var.puppetfile
+  source         = "../common/provision"
+  configuration  = module.configuration
+  hieradata      = var.hieradata
+  hieradata_dir  = var.hieradata_dir
+  eyaml_key      = var.eyaml_key
+  puppetfile     = var.puppetfile
+  bastion_remote = var.bastion_remote
 }
 
 resource "random_id" "project_name" {
