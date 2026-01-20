@@ -618,7 +618,7 @@ available models per region
 ##### Incus
 
 - `target`: name of the [specific cluster member](https://linuxcontainers.org/incus/docs/main/howto/cluster_manage_instance/#launch-an-instance-on-a-specific-cluster-member) to deploy the instance. **Only use with Incus cluster.** 
-* `gpus_pci`: list of [PCI addresses of the GPU devices](https://linuxcontainers.org/incus/docs/main/reference/devices_gpu/#devices-gpu_physical:pci) to pass through to instances on the node. The node `count` **must be 1**. Use `incus info --resources` to list available resources.
+* `gpus_pci`: list of [PCI addresses of the GPU devices](https://linuxcontainers.org/incus/docs/main/reference/devices_gpu/#devices-gpu_physical:pci) to pass through to instances on the node. Use `incus info --resources` to list available resources. **Limitation:** The node `count` **must be 1** and the container **must be unprivileged**.
 
 #### 4.7.3 Post build modification effect
 
