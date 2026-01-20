@@ -17,11 +17,6 @@ module "incus" {
     node  = { type = "container", cpus = 2, ram = 3000, gpus = 0, tags = ["node"], count = 1 }
   }
 
-  firewall_rules = {
-    http  = { "from_port" = 80, "to_port" = 80, tag = "proxy", "cidr" = "0.0.0.0/0" },
-    https = { "from_port" = 443, "to_port" = 443, tag = "proxy", "cidr" = "0.0.0.0/0" },
-  }
-  bastion_tags = ["login"]
 
   volumes = {}
 
@@ -40,6 +35,18 @@ module "incus" {
   # Set to true to make port 80 and 443 of the proxy container forwarded on the host
   # There is a maximum of 1 cluster with forward_proxy = true per incus server.
   forward_proxy = false
+
+  # Use the Incus host as bastion (useful when deploying using Incus remote)
+  # bastion_remote = {
+  #   host        = "<host ip>"
+  #   user        = "<user>"
+  #   private_key = file("<path to private key>")
+  # }
+
+  # Use the local ip as bastion (when deploying Terraform directly from the Incus host)
+  bastion_remote = {
+    host = chomp(data.http.agent_ip.response_body)
+  }
 }
 
 output "accounts" {
@@ -55,9 +62,10 @@ output "public_ip" {
 }
 
 
-# data "http" "agent_ip" {
-#   url = "http://ipv4.icanhazip.com"
-# }
+data "http" "agent_ip" {
+  url = "http://ipv4.icanhazip.com"
+}
+
 # locals {
 #   public_instances = { for host, values in module.incus.public_instances: host => merge(values, { "public_ip" = chomp(data.http.agent_ip.response_body) }) }
 # }
