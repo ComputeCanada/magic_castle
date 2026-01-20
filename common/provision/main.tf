@@ -9,6 +9,10 @@ variable "hieradata_dir" {}
 variable "eyaml_key" {}
 variable "puppetfile" {}
 
+variable "bastion_remote" {
+  default = {}
+}
+
 locals {
   provision_folder = "etc_puppetlabs"
 }
@@ -69,9 +73,9 @@ resource "terraform_data" "deploy_puppetserver_files" {
   connection {
     type                = "ssh"
     agent               = false
-    bastion_host        = contains(local.bastion_host.tags, "public") ? local.bastion_host.public_ip : local.bastion_host.local_ip
-    bastion_user        = "tf"
-    bastion_private_key = var.configuration.ssh_key.private
+    bastion_host        = coalesce(var.bastion_remote.host, contains(local.bastion_host.tags, "public") ? local.bastion_host.public_ip : local.bastion_host.local_ip)
+    bastion_user        = coalesce(var.bastion_remote.user, "tf")
+    bastion_private_key = coalesce(var.bastion_remote.private_key, var.configuration.ssh_key.private)
     user                = "tf"
     host                = each.value
     private_key         = var.configuration.ssh_key.private
