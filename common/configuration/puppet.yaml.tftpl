@@ -74,7 +74,7 @@ runcmd:
       install -m 700 /dev/null /opt/puppetlabs/bin/postrun
       # kernel configuration
       systemctl disable kdump
-      grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0"
+      grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0 crashkernel=0M"
       grub2-mkconfig -o /boot/grub2/grub.cfg
     fi
 %{ if contains(tags, "puppet") }
@@ -163,8 +163,8 @@ write_files:
   - content: |
       facts : {
         blocklist : [
-          "EC2",
-          %{ if cloud_provider != "gcp" } "GCE", %{ endif }
+          "EC2", "az_metadata", "cloud.provider", "hypervisors"
+          %{ if cloud_provider != "gcp" },"GCE",%{ endif }
         ],
       }
     path: /etc/puppetlabs/facter/facter.conf
