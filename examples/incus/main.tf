@@ -15,6 +15,9 @@ module "incus" {
     mgmt  = { type = "container", cpus = 4, ram = 6000, gpus = 0, tags = ["puppet", "mgmt", "nfs"], count = 1 }
     login = { type = "container", cpus = 2, ram = 3000, gpus = 0, tags = ["login", "proxy"], count = 1 }
     node  = { type = "container", cpus = 2, ram = 3000, gpus = 0, tags = ["node"], count = 1 }
+    # Uncomment the folowing line to mount a GPU. The PCI id must match with the GPU and the container must be unprivileged
+    # Do not use the gpu tag, as it would install the NVIDIA driver. We use the host’s driver instead.
+    # node_gpu = { type = "container", cpus = 2, ram = 3000, gpus = 0, tags = ["node"], count = 1, gpu_pci = ["0000:00:06.0"] }
   }
 
   firewall_rules = {

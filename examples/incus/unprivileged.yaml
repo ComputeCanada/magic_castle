@@ -6,6 +6,9 @@ lookup_options:
 
 jupyterhub::kernel::venv::python: "3.12"
 
+profile::cvmfs::local_user::uid: 40001
+profile::cvmfs::local_user::gid: 40001
+
 magic_castle::site::all:
   - profile::base
   - profile::consul
