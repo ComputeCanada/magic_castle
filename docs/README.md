@@ -621,7 +621,7 @@ available models per region
 
 ##### Incus
 
-- `target`: name of the [specific cluster member](https://linuxcontainers.org/incus/docs/main/howto/cluster_manage_instance/#launch-an-instance-on-a-specific-cluster-member) to deploy the instance. **Only use with Incus cluster.** 
+- `target`: name of the [specific cluster member](https://linuxcontainers.org/incus/docs/main/howto/cluster_manage_instance/#launch-an-instance-on-a-specific-cluster-member) to deploy the instance. **Only use with Incus cluster.**
 
 #### 4.7.3 Post build modification effect
 
@@ -1409,13 +1409,24 @@ first phase of the cluster-building process. The configuration: the
 creation of the user accounts, installation of FreeIPA, Slurm, configuration
 of JupyterHub, etc.; takes around 15 minutes after the instances are created.
 
-Once it is booted, you can follow an instance configuration process by looking at:
+Once booted, instances follow a two stage configuration process:
 
-* `/var/log/cloud-init-output.log`
-* `journalctl -u puppet`
+1. Using cloud-init, upgrade operating system packages and install puppet.
+2. Using puppet, install and configure software specific to the instance roles as defined by tags (i.e.: `node`).
 
-If unexpected problems occur during configuration, you can provide these
-logs to the authors of Magic Castle to help you debug.
+The log for each are available under :
+
+1. cloud-init: `/var/log/cloud-init-output.log`
+2. puppet: `journalctl -u puppet`
+
+When an issue happen during an instance first stage, a warning is logged in its `/etc/motd`.
+The configuration commands that had issue are logged `/run/cloud-init-failed`. Because the
+first stage completion is essential to the second stage, the configuration process is halted
+when issues arise during the first stage. You may relaunch the configuration
+process by running manually the commands that have failed and that are listed in
+`/run/cloud-init-failed`. Issues during the first stage are rare events and most often the
+result of issue with external dependencies i.e.: github is unavailable,
+rpm repo is not responsive.
 
 ### 8.1 Deployment Customization
 
