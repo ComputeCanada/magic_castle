@@ -335,10 +335,14 @@ destroy the cluster or change it manually on the Puppet server.
 
 Since Magic Cluster configuration is managed with git, it is possible to specify
 which version of the configuration you wish to use. Typically, it will match the
-version number of the release you have downloaded (i.e: `9.3`).
+version number of the release you have downloaded (i.e: `15.1.0`).
 
 **Requirement**: Must refer to a git commit, tag or branch existing
-in the git repository pointed by `config_git_url`.
+in the git repository pointed by `config_git_url`. It cannot be an empty string.
+
+**Warning**: The validity of the string as a git reference is not verified. In the
+event it is invalid, Magic Castle defaults to using the latest release tag available
+and logs a warning in the puppet server message of the day (`/etc/motd`).
 
 **Post build modification effect**: none. To change the Puppet configuration version,
 destroy the cluster or change it manually on the Puppet server.
