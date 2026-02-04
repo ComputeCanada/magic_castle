@@ -178,7 +178,8 @@ write_files:
       facts : {
         blocklist : [
           "EC2", "az_metadata", "cloud.provider", "hypervisors"
-          %{ if cloud_provider != "gcp" },"GCE",%{ endif }
+          %{ if cloud_provider != "gcp" },"GCE"%{ endif }
+          %{ if cloud_provider == "incus" },"kmods"%{ endif }
         ],
       }
     path: /etc/puppetlabs/facter/facter.conf
