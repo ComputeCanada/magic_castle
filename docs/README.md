@@ -1387,46 +1387,59 @@ for more information.
 
 ## 8. Deployment
 
-To create the resources defined by your main, enter the following command
-```
+To create the resources defined in your Terraform configuration, run:
+
+```bash
 terraform apply
 ```
 
-The command will produce the same output as the `plan` command, but after
-the output it will ask for a confirmation to perform the proposed actions.
-Enter `yes`.
+This command will first display the execution plan (equivalent to `terraform plan`) and then prompt you to confirm the proposed actions. Type `yes` to proceed.
 
-Terraform will then proceed to create the resources defined by the
-configuration file. It should take a few minutes. Once the creation process
-is completed, Terraform will output the guest account usernames and password,
-the sudoer username and the floating ip of the login
-node.
+Terraform will then create the infrastructure resources defined in the configuration. This step typically takes a few minutes. Once completed, Terraform will output:
 
-**Warning**: although the instance creation process is finished once Terraform
-outputs the connection information, you will not be able to
-connect and use the cluster immediately. The instance creation is only the
-first phase of the cluster-building process. The configuration: the
-creation of the user accounts, installation of FreeIPA, Slurm, configuration
-of JupyterHub, etc.; takes around 15 minutes after the instances are created.
+- Guest account usernames and passwords
+- The sudo-enabled username
+- The floating IP address of the login node
 
-Once booted, instances follow a two stage configuration process:
+### Important: Cluster Readiness
 
-1. Using cloud-init, upgrade operating system packages and install puppet.
-2. Using puppet, install and configure software specific to the instance roles as defined by tags (i.e.: `node`).
+Although Terraform reports completion once the connection information is displayed,
+**the cluster is not immediately ready for use**.
 
-The log for each are available under :
+Instance creation is only the first phase of the cluster build. A second, automated configuration phase follows, during which Magic Castle installs and configures core services such as:
+user accounts, FreeIPA, Slurm, JupyterHub, etc.
 
-1. cloud-init: `/var/log/cloud-init-output.log`
-2. puppet: `journalctl -u puppet`
+This configuration phase typically takes **approximately 15 minutes** after the instances are created.
 
-When an issue happen during an instance first stage, a warning is logged in its `/etc/motd`.
-The configuration commands that had issue are logged `/run/cloud-init-failed`. Because the
-first stage completion is essential to the second stage, the configuration process is halted
-when issues arise during the first stage. You may relaunch the configuration
-process by running manually the commands that have failed and that are listed in
-`/run/cloud-init-failed`. Issues during the first stage are rare events and most often the
-result of issue with external dependencies i.e.: github is unavailable,
-rpm repo is not responsive.
+### Instance Configuration Process
+
+Each instance goes through a two-stage configuration process:
+
+1. **cloud-init**
+   - Upgrades operating system packages
+   - Installs Puppet
+2. **Puppet**
+   - Installs and configures software based on the instance role, as defined by instance tags (e.g. `node`)
+
+####  Logs and Troubleshooting
+
+Logs for each stage are available at:
+
+1. **cloud-init**: `/var/log/cloud-init-output.log`
+2. **Puppet**: `journalctl -u puppet`
+
+If an error occurs during the first (cloud-init) stage, a warning is displayed in the instance
+message of the day (e.g.: `/etc/motd`). The failed commands are recorded in:
+
+```
+/run/cloud-init-failed
+```
+
+Because successful completion of the first stage is required for the second stage to proceed, the configuration process halts if cloud-init fails.
+
+You may resume the configuration by manually re-running the failed commands listed in `/run/cloud-init-failed` once the underlying issue has been resolved.
+
+Failures during the first stage are rare and are most often caused by external dependencies, such as temporary unavailability of GitHub or package repositories.
 
 ### 8.1 Deployment Customization
 
