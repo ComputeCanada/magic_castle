@@ -102,12 +102,21 @@ runcmd:
   - rm -rf /etc/puppetlabs/code/environments/production
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/main
   - ln -s /etc/puppetlabs/code/environments/main /etc/puppetlabs/code/environments/production
-  - "(cd /etc/puppetlabs/code/environments/production; git fetch origin ${puppetenv_rev}; git switch -C ${puppetenv_rev} FETCH_HEAD)"
+  - |
+    (
+    cd /etc/puppetlabs/code/environments/production
+    if git fetch origin ${puppetenv_rev} 2> /dev/null; then
+      git switch -C ${puppetenv_rev} FETCH_HEAD
+    elif ! git checkout ${puppetenv_rev}; then
+      echo 'WARNING - config_version=${puppetenv_rev} is invalid. puppet environment defaulted to latest tag' | tee -a /etc/motd
+      git checkout $(git tag | sort -n | tail -n1)
+    fi
+    )
   - mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts
   - chgrp -R puppet /etc/puppetlabs/data /etc/puppetlabs/facts
   - ln -sf /etc/puppetlabs/data/{user_data,user_data.yaml,terraform_data.yaml} /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/facts/terraform_facts.yaml /etc/puppetlabs/code/environments/production/site/profile/facts.d
-# We use r10k solely to install the modules of the main branch environment.
+# We use r10k solely to install the modules of the production puppet environment.
   - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/environments/production/modules --puppetfile=/etc/puppetlabs/code/environments/production/Puppetfile
 %{ if puppetfile != "" ~}
   - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/modules --puppetfile=/etc/puppetlabs/code/Puppetfile
