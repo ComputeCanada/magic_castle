@@ -6,8 +6,5 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = ">= 5.16.0, < 6.0.0"
     }
-    tls = {
-      source = "hashicorp/tls"
-    }
   }
 }
