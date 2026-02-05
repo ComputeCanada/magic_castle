@@ -17,10 +17,10 @@ resource "cloudflare_dns_record" "records" {
   count   = length(module.record_generator.records)
   zone_id = data.cloudflare_zones.domain.result[0].id
   name    = module.record_generator.records[count.index].name
-  content = module.record_generator.records[count.index].value
+  content = lookup(module.record_generator.records[count.index], "value", null)
   type    = module.record_generator.records[count.index].type
   ttl     = 1
-  data    = module.record_generator.records[count.index].data
+  data    = lookup(module.record_generator.records[count.index], "data", null)
 }
 
 output "hostnames" {
