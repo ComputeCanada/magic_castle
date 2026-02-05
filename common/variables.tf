@@ -20,15 +20,15 @@ variable "instances" {
     error_message = "Instances' prefix plus index must be at most 63 lowercase alphanumeric characters and start with a letter. It can include dashes."
   }
   validation {
-    condition     = alltrue(concat([for key, values in var.instances : [contains(keys(values), "type"), contains(keys(values), "tags")]]...))
+    condition     = length(var.instances) == 0 || alltrue(concat([for key, values in var.instances : [contains(keys(values), "type"), contains(keys(values), "tags")]]...))
     error_message = "Each entry in var.instances needs to have at least a type and a list of tags."
   }
   validation {
-    condition     = sum([for key, values in var.instances : contains(values["tags"], "proxy") ? lookup(values, "count", 1) : 0]) < 2
+    condition     = length(var.instances) == 0 || sum([for key, values in var.instances : contains(values["tags"], "proxy") ? lookup(values, "count", 1) : 0]) < 2
     error_message = "At most one instance in var.instances can have the _proxy_ tag"
   }
   validation {
-    condition     = sum([for key, values in var.instances : contains(values["tags"], "login") ? 1 : 0]) < 2
+    condition     = length(var.instances) == 0 || sum([for key, values in var.instances : contains(values["tags"], "login") ? 1 : 0]) < 2
     error_message = "At most one type of instances in var.instances can have the _login_ tag"
   }
 }
