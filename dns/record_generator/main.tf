@@ -76,7 +76,7 @@ locals {
           data = {
             algorithm   = local.SSHFP_SPEC["ssh-${alg}"]
             type        = 2 # SHA256
-            fingerprint = data.external.key2fp[key].result["ssh-${alg}"]
+            fingerprint = upper(data.external.key2fp[key].result["ssh-${alg}"])
           }
         }
       ]
@@ -89,7 +89,7 @@ locals {
           data = {
             algorithm   = local.SSHFP_SPEC["ssh-${alg}"]
             type        = 2 # SHA256
-            fingerprint = data.external.key2fp[key].result["ssh-${alg}"]
+            fingerprint = upper(data.external.key2fp[key].result["ssh-${alg}"])
           }
         }
       ]
