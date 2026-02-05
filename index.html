@@ -1385,6 +1385,45 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#important-cluster-readiness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Important: Cluster Readiness
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instance-configuration-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instance Configuration Process
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Instance Configuration Process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#logs-and-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logs and Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#81-deployment-customization" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3052,6 +3091,45 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#important-cluster-readiness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Important: Cluster Readiness
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instance-configuration-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instance Configuration Process
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Instance Configuration Process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#logs-and-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logs and Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#81-deployment-customization" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3704,9 +3782,12 @@ destroy the cluster or change it manually on the Puppet server.</p>
 <h3 id="43-config_version">4.3 config_version</h3>
 <p>Since Magic Cluster configuration is managed with git, it is possible to specify
 which version of the configuration you wish to use. Typically, it will match the
-version number of the release you have downloaded (i.e: <code>9.3</code>).</p>
+version number of the release you have downloaded (i.e: <code>15.1.0</code>).</p>
 <p><strong>Requirement</strong>: Must refer to a git commit, tag or branch existing
-in the git repository pointed by <code>config_git_url</code>.</p>
+in the git repository pointed by <code>config_git_url</code>. It cannot be an empty string.</p>
+<p><strong>Warning</strong>: The validity of the string as a git reference is not verified. In the
+event it is invalid, Magic Castle defaults to using the latest release tag available
+and logs a warning in the puppet server message of the day (<code>/etc/motd</code>).</p>
 <p><strong>Post build modification effect</strong>: none. To change the Puppet configuration version,
 destroy the cluster or change it manually on the Puppet server.</p>
 <h3 id="44-cluster_name">4.4 cluster_name</h3>
@@ -3977,7 +4058,7 @@ available models per region</li>
 </ul>
 <h5 id="incus">Incus</h5>
 <ul>
-<li><code>target</code>: name of the <a href="https://linuxcontainers.org/incus/docs/main/howto/cluster_manage_instance/#launch-an-instance-on-a-specific-cluster-member">specific cluster member</a> to deploy the instance. <strong>Only use with Incus cluster.</strong> </li>
+<li><code>target</code>: name of the <a href="https://linuxcontainers.org/incus/docs/main/howto/cluster_manage_instance/#launch-an-instance-on-a-specific-cluster-member">specific cluster member</a> to deploy the instance. <strong>Only use with Incus cluster.</strong></li>
 </ul>
 <h4 id="473-post-build-modification-effect">4.7.3 Post build modification effect</h4>
 <p>Modifying any part of the map after the cluster is built will only affect
@@ -4538,30 +4619,44 @@ public internet. If you know which IP addresses should have access to the cluste
 you can harden the firewall rules. Refer to section <a href="#416-firewall_rules-optional">4.16 firewall_rules</a>
 for more information.</p>
 <h2 id="8-deployment">8. Deployment</h2>
-<p>To create the resources defined by your main, enter the following command
-<div class="highlight"><pre><span></span><code>terraform apply
-</code></pre></div></p>
-<p>The command will produce the same output as the <code>plan</code> command, but after
-the output it will ask for a confirmation to perform the proposed actions.
-Enter <code>yes</code>.</p>
-<p>Terraform will then proceed to create the resources defined by the
-configuration file. It should take a few minutes. Once the creation process
-is completed, Terraform will output the guest account usernames and password,
-the sudoer username and the floating ip of the login
-node.</p>
-<p><strong>Warning</strong>: although the instance creation process is finished once Terraform
-outputs the connection information, you will not be able to
-connect and use the cluster immediately. The instance creation is only the
-first phase of the cluster-building process. The configuration: the
-creation of the user accounts, installation of FreeIPA, Slurm, configuration
-of JupyterHub, etc.; takes around 15 minutes after the instances are created.</p>
-<p>Once it is booted, you can follow an instance configuration process by looking at:</p>
+<p>To create the resources defined in your Terraform configuration, run:</p>
+<div class="highlight"><pre><span></span><code>terraform<span class="w"> </span>apply
+</code></pre></div>
+<p>This command will first display the execution plan (equivalent to <code>terraform plan</code>) and then prompt you to confirm the proposed actions. Type <code>yes</code> to proceed.</p>
+<p>Terraform will then create the infrastructure resources defined in the configuration. This step typically takes a few minutes. Once completed, Terraform will output:</p>
 <ul>
-<li><code>/var/log/cloud-init-output.log</code></li>
-<li><code>journalctl -u puppet</code></li>
+<li>Guest account usernames and passwords</li>
+<li>The sudo-enabled username</li>
+<li>The floating IP address of the login node</li>
 </ul>
-<p>If unexpected problems occur during configuration, you can provide these
-logs to the authors of Magic Castle to help you debug.</p>
+<h3 id="important-cluster-readiness">Important: Cluster Readiness</h3>
+<p>Although Terraform reports completion once the connection information is displayed,
+<strong>the cluster is not immediately ready for use</strong>.</p>
+<p>Instance creation is only the first phase of the cluster build. A second, automated configuration phase follows, during which Magic Castle installs and configures core services such as:
+user accounts, FreeIPA, Slurm, JupyterHub, etc.</p>
+<p>This configuration phase typically takes <strong>approximately 15 minutes</strong> after the instances are created.</p>
+<h3 id="instance-configuration-process">Instance Configuration Process</h3>
+<p>Each instance goes through a two-stage configuration process:</p>
+<ol>
+<li><strong>cloud-init</strong></li>
+<li>Upgrades operating system packages</li>
+<li>Installs Puppet</li>
+<li><strong>Puppet</strong></li>
+<li>Installs and configures software based on the instance role, as defined by instance tags (e.g. <code>node</code>)</li>
+</ol>
+<h4 id="logs-and-troubleshooting">Logs and Troubleshooting</h4>
+<p>Logs for each stage are available at:</p>
+<ol>
+<li><strong>cloud-init</strong>: <code>/var/log/cloud-init-output.log</code></li>
+<li><strong>Puppet</strong>: <code>journalctl -u puppet</code></li>
+</ol>
+<p>If an error occurs during the first (cloud-init) stage, a warning is displayed in the instance
+message of the day (e.g.: <code>/etc/motd</code>). The failed commands are recorded in:</p>
+<div class="highlight"><pre><span></span><code>/run/cloud-init-failed
+</code></pre></div>
+<p>Because successful completion of the first stage is required for the second stage to proceed, the configuration process halts if cloud-init fails.</p>
+<p>You may resume the configuration by manually re-running the failed commands listed in <code>/run/cloud-init-failed</code> once the underlying issue has been resolved.</p>
+<p>Failures during the first stage are rare and are most often caused by external dependencies, such as temporary unavailability of GitHub or package repositories.</p>
 <h3 id="81-deployment-customization">8.1 Deployment Customization</h3>
 <p>You can modify the <code>main.tf</code> at any point of your cluster's life and
 apply the modifications while it is running.</p>
