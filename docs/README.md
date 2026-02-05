@@ -335,10 +335,14 @@ destroy the cluster or change it manually on the Puppet server.
 
 Since Magic Cluster configuration is managed with git, it is possible to specify
 which version of the configuration you wish to use. Typically, it will match the
-version number of the release you have downloaded (i.e: `9.3`).
+version number of the release you have downloaded (i.e: `15.1.0`).
 
 **Requirement**: Must refer to a git commit, tag or branch existing
-in the git repository pointed by `config_git_url`.
+in the git repository pointed by `config_git_url`. It cannot be an empty string.
+
+**Warning**: The validity of the string as a git reference is not verified. In the
+event it is invalid, Magic Castle defaults to using the latest release tag available
+and logs a warning in the puppet server message of the day (`/etc/motd`).
 
 **Post build modification effect**: none. To change the Puppet configuration version,
 destroy the cluster or change it manually on the Puppet server.
@@ -617,7 +621,7 @@ available models per region
 
 ##### Incus
 
-- `target`: name of the [specific cluster member](https://linuxcontainers.org/incus/docs/main/howto/cluster_manage_instance/#launch-an-instance-on-a-specific-cluster-member) to deploy the instance. **Only use with Incus cluster.** 
+- `target`: name of the [specific cluster member](https://linuxcontainers.org/incus/docs/main/howto/cluster_manage_instance/#launch-an-instance-on-a-specific-cluster-member) to deploy the instance. **Only use with Incus cluster.**
 
 #### 4.7.3 Post build modification effect
 
@@ -1383,35 +1387,59 @@ for more information.
 
 ## 8. Deployment
 
-To create the resources defined by your main, enter the following command
-```
+To create the resources defined in your Terraform configuration, run:
+
+```bash
 terraform apply
 ```
 
-The command will produce the same output as the `plan` command, but after
-the output it will ask for a confirmation to perform the proposed actions.
-Enter `yes`.
+This command will first display the execution plan (equivalent to `terraform plan`) and then prompt you to confirm the proposed actions. Type `yes` to proceed.
 
-Terraform will then proceed to create the resources defined by the
-configuration file. It should take a few minutes. Once the creation process
-is completed, Terraform will output the guest account usernames and password,
-the sudoer username and the floating ip of the login
-node.
+Terraform will then create the infrastructure resources defined in the configuration. This step typically takes a few minutes. Once completed, Terraform will output:
 
-**Warning**: although the instance creation process is finished once Terraform
-outputs the connection information, you will not be able to
-connect and use the cluster immediately. The instance creation is only the
-first phase of the cluster-building process. The configuration: the
-creation of the user accounts, installation of FreeIPA, Slurm, configuration
-of JupyterHub, etc.; takes around 15 minutes after the instances are created.
+- Guest account usernames and passwords
+- The sudo-enabled username
+- The floating IP address of the login node
 
-Once it is booted, you can follow an instance configuration process by looking at:
+### Important: Cluster Readiness
 
-* `/var/log/cloud-init-output.log`
-* `journalctl -u puppet`
+Although Terraform reports completion once the connection information is displayed,
+**the cluster is not immediately ready for use**.
 
-If unexpected problems occur during configuration, you can provide these
-logs to the authors of Magic Castle to help you debug.
+Instance creation is only the first phase of the cluster build. A second, automated configuration phase follows, during which Magic Castle installs and configures core services such as:
+user accounts, FreeIPA, Slurm, JupyterHub, etc.
+
+This configuration phase typically takes **approximately 15 minutes** after the instances are created.
+
+### Instance Configuration Process
+
+Each instance goes through a two-stage configuration process:
+
+1. **cloud-init**
+   - Upgrades operating system packages
+   - Installs Puppet
+2. **Puppet**
+   - Installs and configures software based on the instance role, as defined by instance tags (e.g. `node`)
+
+####  Logs and Troubleshooting
+
+Logs for each stage are available at:
+
+1. **cloud-init**: `/var/log/cloud-init-output.log`
+2. **Puppet**: `journalctl -u puppet`
+
+If an error occurs during the first (cloud-init) stage, a warning is displayed in the instance
+message of the day (e.g.: `/etc/motd`). The failed commands are recorded in:
+
+```
+/run/cloud-init-failed
+```
+
+Because successful completion of the first stage is required for the second stage to proceed, the configuration process halts if cloud-init fails.
+
+You may resume the configuration by manually re-running the failed commands listed in `/run/cloud-init-failed` once the underlying issue has been resolved.
+
+Failures during the first stage are rare and are most often caused by external dependencies, such as temporary unavailability of GitHub or package repositories.
 
 ### 8.1 Deployment Customization
 

@@ -82,6 +82,10 @@ variable "config_git_url" {
 variable "config_version" {
   type        = string
   description = "Tag, branch, or commit that specifies which Puppet configuration revision is to be used"
+  validation {
+    condition     = length(var.config_version) >= 1
+    error_message = "The config_version variable cannot be an empty string. It must match a commit hash, a tag or a branch."
+  }
 }
 
 variable "hieradata" {
