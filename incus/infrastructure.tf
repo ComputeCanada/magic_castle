@@ -13,8 +13,8 @@ module "design" {
 
 locals {
   config_git_url_is_local   = can(regex("^(file://|/)", var.config_git_url))
-  config_git_url_host_path  = local.config_git_url_is_local ? (startswith(var.config_git_url, "file://") ? replace(var.config_git_url, "file://", "") : var.config_git_url) : ""
-  config_git_url_mount_path = "/opt/magic-castle/puppetenv"
+  config_git_url_host_path  = local.config_git_url_is_local ? replace(var.config_git_url, "file://", "") : null
+  config_git_url_mount_path = local.config_git_url_is_local ? "/opt/magic-castle/puppetenv" : null
   config_git_url_effective  = local.config_git_url_is_local ? "file://${local.config_git_url_mount_path}" : var.config_git_url
 }
 
