@@ -105,6 +105,10 @@ runcmd:
   - chmod 0640 /etc/puppetlabs/puppet/eyaml/boot_private_key.pkcs7.pem
 # Setup puppet environment code and modules
   - rm -rf /etc/puppetlabs/code/environments/production
+%{ if cloud_provider == "incus" && startswith(puppetenv_git, "file://") ~}
+  # Incus mounts can have host ownership; allow git to read the repo safely.
+  - git config --system --add safe.directory /opt/magic-castle/puppetenv/.git
+%{ endif ~}
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/main
   - ln -s /etc/puppetlabs/code/environments/main /etc/puppetlabs/code/environments/production
   - |
