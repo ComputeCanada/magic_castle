@@ -34,3 +34,13 @@ variable "network_type" {
     error_message = "network_type must be either 'bridge' or 'ovn'."
   }
 }
+
+variable "bastion_remote" {
+  default     = {}
+  description = "Optional bastion SSH connection configuration. Useful for remote Incus deployments when no instance is publicly accessible."
+  type = object({
+    host        = optional(string)
+    user        = optional(string)
+    private_key = optional(string)
+  })
+}
