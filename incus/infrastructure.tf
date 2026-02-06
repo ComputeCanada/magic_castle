@@ -123,7 +123,7 @@ resource "incus_instance" "instances" {
   }
 
   dynamic "device" {
-    for_each = local.config_git_url_is_local && contains(each.value.tags, "puppet") ? { puppetenv = local.config_git_url_host_path } : {}
+    for_each = contains(each.value.tags, "puppet") && local.config_git_url_is_local ? { puppetenv = local.config_git_url_host_path } : {}
     content {
       type = "disk"
       name = "puppetenv"
