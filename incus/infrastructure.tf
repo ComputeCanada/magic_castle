@@ -128,8 +128,9 @@ resource "incus_instance" "instances" {
       type = "disk"
       name = "puppetenv"
       properties = {
-        source = device.value
-        path   = local.config_git_url_mount_path
+        source   = device.value
+        path     = local.config_git_url_mount_path
+        readonly = true
       }
     }
   }
