@@ -303,7 +303,7 @@ repository. Refer to [Terraform documentation on module source](https://www.terr
 
 **Post build modification effect**: `terraform init` will have to be
 called again and the next `terraform apply` might propose changes if the infrastructure
-describe by the new module is different.
+described by the new module is different.
 
 ### 4.2 config_git_url
 
@@ -333,7 +333,7 @@ destroy the cluster or change it manually on the Puppet server.
 
 ### 4.3 config_version
 
-Since Magic Cluster configuration is managed with git, it is possible to specify
+Since Magic Castle configuration is managed with git, it is possible to specify
 which version of the configuration you wish to use. Typically, it will match the
 version number of the release you have downloaded (i.e: `15.1.0`).
 
@@ -473,7 +473,7 @@ created using the process documented in section
 ### 4.7 instances
 
 The `instances` variable is a map that defines the virtual machines that will form
-the cluster. The map' keys define the hostnames and the values are the attributes
+the cluster. The map's keys define the hostnames and the values are the attributes
 of the virtual machines.
 
 Each instance is identified by a unique hostname. An instance's hostname is written as
@@ -580,7 +580,7 @@ The instance specifications are retrieved from the cloud provider data source, b
 9. `gpus`: number of graphical processor on the node - [`Gres=gpu:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
 10. `gpu_type`: type of graphical processor on the node - [`Gres=gpu:<gpu_type>:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
 
-For some cloud providers, it possible to define additional attributes.
+For some cloud providers, it is possible to define additional attributes.
 The following sections present the available attributes per provider.
 
 ##### AWS
@@ -678,7 +678,7 @@ volumes = {}
 ```
 
 **Post build modification effect**: destruction of the corresponding volumes and attachments,
-and creation of new empty volumes and attachments. If an no instance with a corresponding tag
+and creation of new empty volumes and attachments. If no instance with a corresponding tag
 exist following modifications, the volumes will be deleted.
 
 ### 4.9 public_keys
@@ -698,7 +698,7 @@ FreeIPA. Each user account shares the same randomly generated password.
 The usernames are defined as `userX` where `X` is a number between 1 and
 the value of `nb_users` (zero-padded, i.e.: `user01 if X < 100`, `user1 if X < 10`).
 
-If an NFS NFS `home` volume is defined, each user will have a home folder
+If an NFS `home` volume is defined, each user will have a home folder
 on a shared NFS storage hosted on the NFS server node.
 
 User accounts do not have sudoer privileges. If you wish to use `sudo`,
@@ -977,9 +977,9 @@ Each instance's Puppet agent will be reloaded following the installation of the 
 **default_value** = `[]`
 
 Defines a list of tags identifying instances that can be used by Terraform as the first hop
-to transfer files to the Puppet server. By default, this list is infered from the list of
+to transfer files to the Puppet server. By default, this list is inferred from the list of
 [firewall rules](#416-firewall_rules-optional) and the public ip address of the agent calling
-`terraform apply`. Providing an explicit list of tags allow to bypass the firewall rule inference,
+`terraform apply`. Providing an explicit list of tags allows bypassing the firewall rule inference,
 which can be useful when the agent is in the same network as the cluster.
 
 ## 5. Cloud Specific Configuration
@@ -999,7 +999,7 @@ Defines the label of the AWS EC2 region where the cluster will be created (i.e.:
 **default value**: None
 
 Defines the label of the data center inside the AWS region where the cluster will be created (i.e.: `us-east-2a`).
-If left blank, it chosen at random amongst the availability zones of the selected region.
+If left blank, it is chosen at random amongst the availability zones of the selected region.
 
 **Requirement**: Must be in a valid availability zone for the selected region. Refer to
 [AWS documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#using-regions-availability-zones-describe)
@@ -1041,7 +1041,7 @@ create and destroy resource groups.
 ```
 
 Purchase plan information for Azure Marketplace image. Certain images from Azure Marketplace
-requires a terms acceptance or a fee to be used. When using this kind of image, you must supply
+require terms acceptance or a fee to be used. When using this kind of image, you must supply
 the plan details.
 
 For example, to use the official [AlmaLinux image](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/almalinux.almalinux-x86_64?tab=Overview), you have to first add it to your
@@ -1059,7 +1059,7 @@ plan = {
 #### 5.3.1 project
 
 Defines the label of the unique identifier associated with the Google Cloud project in which the resources will be created.
-It needs to corresponds to GCP project ID, which is composed of the project name and a randomly
+It needs to correspond to GCP project ID, which is composed of the project name and a randomly
 assigned number.
 
 **Requirement**: Must be a valid Google Cloud project ID.
@@ -1105,7 +1105,7 @@ a floating ip managed by Terraform.
 not be assigned a floating ip.
 
 This variable can be useful if you manage your DNS manually and
-you would like the keep the same domain name for your cluster at each
+you would like to keep the same domain name for your cluster at each
 build.
 
 **Post build modification effect**: change the floating ips assigned
@@ -1125,7 +1125,7 @@ external networks, otherwise, Terraform can find it automatically.
 
 **default value**: None
 
-Defines the ID of the internal IPV4 subnet to which the instances are
+Defines the ID of the internal IPv4 subnet to which the instances are
 connected. Define this if you have or intend to have more than one
 subnets defined in your OpenStack project. Otherwise, Terraform can
 find it automatically. Can be used to force a v4 subnet when both v4 and v6 exist.
@@ -1272,7 +1272,7 @@ For more information on how to activate DNSSEC, refer to your DNS provider docum
 - [CloudFlare - Enable DNSSEC](https://developers.cloudflare.com/dns/dnssec/#enable-dnssec)
 - [Google Cloud - Manage DNSSEC configuration](https://cloud.google.com/dns/docs/dnssec-config#enabling)
 
-To setup an SSH client to use SSHFP records, add
+To set up an SSH client to use SSHFP records, add
 ```
 VerifyHostKeyDNS yes
 ```
@@ -1550,7 +1550,7 @@ New LDAP users are automatically assigned a home folder on NFS.
 
 Magic Castle determines if an LDAP user should be member of a Slurm account
 based on its POSIX groups. When a user is added to a POSIX group, a daemon
-try to match the group name to the following regular expression:
+tries to match the group name to the following regular expression:
 ```
 (ctb|def|rpp|rrg)-[a-z0-9_-]*
 ```
@@ -1688,7 +1688,7 @@ sudo /opt/puppetlabs/bin/puppetserver ca sign --certname NAME[,NAME]
 
 Login nodes run [fail2ban](https://www.fail2ban.org/wiki/index.php/Main_Page), an intrusion
 prevention software that protects login nodes from brute-force attacks. fail2ban is configured
-to ban ip addresses that attempted to login 20 times and failed in a window of 60 minutes. The
+to ban ip addresses that attempted to log in 20 times and failed in a window of 60 minutes. The
 ban time is 24 hours.
 
 
@@ -1717,13 +1717,13 @@ terraform apply
 
 #### 10.9.2 Remove fail2ban ssh-route jail
 
-fail2ban rule that banned ip addresses that failed to connect
+fail2ban rule that bans ip addresses that failed to connect
 with SSH can be disabled. To do so, add the following line
 to the variable `hieradata` in `main.tf`:
 ```yaml
 fail2ban::jails: ['ssh-ban-root']
 ```
-This will keep the jail that automatically ban any ip that tries to
+This will keep the jail that automatically bans any ip that tries to
 login as root, and remove the ssh failed password jail.
 
 Once the line is added, call:
@@ -1733,7 +1733,7 @@ terraform apply
 
 #### 10.9.3 Unban ip addresses
 
-fail2ban ban ip addresses by adding rules to iptables. To remove these rules, you need to
+fail2ban bans ip addresses by adding rules to iptables. To remove these rules, you need to
 tell fail2ban to unban the ips.
 
 To list the ip addresses that are banned, execute the following command:
@@ -1914,12 +1914,12 @@ extended by Puppet.
 ### 10.15 Access Prometheus' expression browser
 
 Prometheus is an open-source systems monitoring and alerting toolkit. It is installed by default
-in Magic Castle. Every instance exposes their usage metrics and some services do to. To explore
-and visualize this data, it possible to access the [expression browser](https://prometheus.io/docs/visualization/browser/).
+in Magic Castle. Every instance exposes their usage metrics and some services do too. To explore
+and visualize this data, it is possible to access the [expression browser](https://prometheus.io/docs/visualization/browser/).
 
 From inside the cluster, it is typically available at `http://mgmt1:9090`. Given DNS is configured
-for your cluster, you can add the following snippet to your [hieradata](#413-hieradata-optional). to access the expression browser
-from Internet.
+for your cluster, you can add the following snippet to your [hieradata](#413-hieradata-optional) to access the expression browser
+from the Internet.
 
 ```yaml
 lookup_options:
