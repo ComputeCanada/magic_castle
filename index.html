@@ -3759,7 +3759,7 @@ Terraform files for the cloud provider of your choice. It can also be a git
 repository. Refer to <a href="https://www.terraform.io/language/modules/sources#generic-git-repository">Terraform documentation on module source</a> for more information.</p>
 <p><strong>Post build modification effect</strong>: <code>terraform init</code> will have to be
 called again and the next <code>terraform apply</code> might propose changes if the infrastructure
-describe by the new module is different.</p>
+described by the new module is different.</p>
 <h3 id="42-config_git_url">4.2 config_git_url</h3>
 <p>Magic Castle configuration management is handled by
 <a href="https://en.wikipedia.org/wiki/Puppet_(software)">Puppet</a>. The Puppet
@@ -3780,7 +3780,7 @@ This works for GitHub and GitLab (including community edition).</p>
 <p><strong>Post build modification effect</strong>: no effect. To change the Puppet configuration source,
 destroy the cluster or change it manually on the Puppet server.</p>
 <h3 id="43-config_version">4.3 config_version</h3>
-<p>Since Magic Cluster configuration is managed with git, it is possible to specify
+<p>Since Magic Castle configuration is managed with git, it is possible to specify
 which version of the configuration you wish to use. Typically, it will match the
 version number of the release you have downloaded (i.e: <code>15.1.0</code>).</p>
 <p><strong>Requirement</strong>: Must refer to a git commit, tag or branch existing
@@ -3884,7 +3884,7 @@ created using the process documented in section
 <a href="#1012-create-a-compute-node-image">10.12 - Create a compute node image</a>.</p>
 <h3 id="47-instances">4.7 instances</h3>
 <p>The <code>instances</code> variable is a map that defines the virtual machines that will form
-the cluster. The map' keys define the hostnames and the values are the attributes
+the cluster. The map's keys define the hostnames and the values are the attributes
 of the virtual machines.</p>
 <p>Each instance is identified by a unique hostname. An instance's hostname is written as
 the key followed by its index (1-based). The following map:
@@ -4022,7 +4022,7 @@ recommended minimum size per tag as specified in the following table.</p>
 <li><code>gpus</code>: number of graphical processor on the node - <a href="https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1"><code>Gres=gpu:&lt;gpus&gt;</code> in slurm.conf</a></li>
 <li><code>gpu_type</code>: type of graphical processor on the node - <a href="https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1"><code>Gres=gpu:&lt;gpu_type&gt;:&lt;gpus&gt;</code> in slurm.conf</a></li>
 </ol>
-<p>For some cloud providers, it possible to define additional attributes.
+<p>For some cloud providers, it is possible to define additional attributes.
 The following sections present the available attributes per provider.</p>
 <h5 id="aws">AWS</h5>
 <p>For instances with the <code>spot</code> tags, these attributes can also be set:</p>
@@ -4105,7 +4105,7 @@ not created since no instances have the corresponding tag.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">volumes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
 </code></pre></div></p>
 <p><strong>Post build modification effect</strong>: destruction of the corresponding volumes and attachments,
-and creation of new empty volumes and attachments. If an no instance with a corresponding tag
+and creation of new empty volumes and attachments. If no instance with a corresponding tag
 exist following modifications, the volumes will be deleted.</p>
 <h3 id="49-public_keys">4.9 public_keys</h3>
 <p>List of SSH public keys that will have access to your cluster sudoer account.</p>
@@ -4118,7 +4118,7 @@ following the copy of the hieradata files.</p>
 FreeIPA. Each user account shares the same randomly generated password.
 The usernames are defined as <code>userX</code> where <code>X</code> is a number between 1 and
 the value of <code>nb_users</code> (zero-padded, i.e.: <code>user01 if X &lt; 100</code>, <code>user1 if X &lt; 10</code>).</p>
-<p>If an NFS NFS <code>home</code> volume is defined, each user will have a home folder
+<p>If an NFS <code>home</code> volume is defined, each user will have a home folder
 on a shared NFS storage hosted on the NFS server node.</p>
 <p>User accounts do not have sudoer privileges. If you wish to use <code>sudo</code>,
 you will have to login using the sudoer account and the SSH keys listed
@@ -4316,9 +4316,9 @@ Each instance's Puppet agent will be reloaded following the installation of the 
 <h3 id="422-bastion_tags-optional">4.22 bastion_tags (optional)</h3>
 <p><strong>default_value</strong> = <code>[]</code></p>
 <p>Defines a list of tags identifying instances that can be used by Terraform as the first hop
-to transfer files to the Puppet server. By default, this list is infered from the list of
+to transfer files to the Puppet server. By default, this list is inferred from the list of
 <a href="#416-firewall_rules-optional">firewall rules</a> and the public ip address of the agent calling
-<code>terraform apply</code>. Providing an explicit list of tags allow to bypass the firewall rule inference,
+<code>terraform apply</code>. Providing an explicit list of tags allows bypassing the firewall rule inference,
 which can be useful when the agent is in the same network as the cluster.</p>
 <h2 id="5-cloud-specific-configuration">5. Cloud Specific Configuration</h2>
 <h3 id="51-amazon-web-services">5.1 Amazon Web Services</h3>
@@ -4329,7 +4329,7 @@ which can be useful when the agent is in the same network as the cluster.</p>
 <h4 id="512-availability_zone-optional">5.1.2 availability_zone (optional)</h4>
 <p><strong>default value</strong>: None</p>
 <p>Defines the label of the data center inside the AWS region where the cluster will be created (i.e.: <code>us-east-2a</code>).
-If left blank, it chosen at random amongst the availability zones of the selected region.</p>
+If left blank, it is chosen at random amongst the availability zones of the selected region.</p>
 <p><strong>Requirement</strong>: Must be in a valid availability zone for the selected region. Refer to
 <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#using-regions-availability-zones-describe">AWS documentation</a>
 to find out how list the availability zones.</p>
@@ -4357,7 +4357,7 @@ create and destroy resource groups.</p>
 <span class="p">}</span>
 </code></pre></div></p>
 <p>Purchase plan information for Azure Marketplace image. Certain images from Azure Marketplace
-requires a terms acceptance or a fee to be used. When using this kind of image, you must supply
+require terms acceptance or a fee to be used. When using this kind of image, you must supply
 the plan details.</p>
 <p>For example, to use the official <a href="https://azuremarketplace.microsoft.com/en-us/marketplace/apps/almalinux.almalinux-x86_64?tab=Overview">AlmaLinux image</a>, you have to first add it to your
 account. Then to use it with Magic Castle, you must supply the following plan information:
@@ -4370,7 +4370,7 @@ account. Then to use it with Magic Castle, you must supply the following plan in
 <h3 id="53-google-cloud">5.3 Google Cloud</h3>
 <h4 id="531-project">5.3.1 project</h4>
 <p>Defines the label of the unique identifier associated with the Google Cloud project in which the resources will be created.
-It needs to corresponds to GCP project ID, which is composed of the project name and a randomly
+It needs to correspond to GCP project ID, which is composed of the project name and a randomly
 assigned number.</p>
 <p><strong>Requirement</strong>: Must be a valid Google Cloud project ID.</p>
 <p><strong>Post build modification effect</strong>: rebuild of all resources at next <code>terraform apply</code>.</p>
@@ -4402,7 +4402,7 @@ a floating ip managed by Terraform.</li>
 not be assigned a floating ip.</li>
 </ul>
 <p>This variable can be useful if you manage your DNS manually and
-you would like the keep the same domain name for your cluster at each
+you would like to keep the same domain name for your cluster at each
 build.</p>
 <p><strong>Post build modification effect</strong>: change the floating ips assigned
 to the public instances.</p>
@@ -4414,7 +4414,7 @@ external networks, otherwise, Terraform can find it automatically.</p>
 <p><strong>Post build modification effect</strong>: change the floating ips assigned to the public nodes.</p>
 <h4 id="544-subnet_id-optional">5.4.4 subnet_id (optional)</h4>
 <p><strong>default value</strong>: None</p>
-<p>Defines the ID of the internal IPV4 subnet to which the instances are
+<p>Defines the ID of the internal IPv4 subnet to which the instances are
 connected. Define this if you have or intend to have more than one
 subnets defined in your OpenStack project. Otherwise, Terraform can
 find it automatically. Can be used to force a v4 subnet when both v4 and v6 exist.</p>
@@ -4529,7 +4529,7 @@ no host key confirmation will be prompted when connecting to the server.</p>
 <li><a href="https://developers.cloudflare.com/dns/dnssec/#enable-dnssec">CloudFlare - Enable DNSSEC</a></li>
 <li><a href="https://cloud.google.com/dns/docs/dnssec-config#enabling">Google Cloud - Manage DNSSEC configuration</a></li>
 </ul>
-<p>To setup an SSH client to use SSHFP records, add
+<p>To set up an SSH client to use SSHFP records, add
 <div class="highlight"><pre><span></span><code>VerifyHostKeyDNS yes
 </code></pre></div>
 to its configuration file (i.e.: <code>~/.ssh/config</code>).</p>
@@ -4734,7 +4734,7 @@ method is presented in the following subsections.</p>
 <p>New LDAP users are automatically assigned a home folder on NFS.</p>
 <p>Magic Castle determines if an LDAP user should be member of a Slurm account
 based on its POSIX groups. When a user is added to a POSIX group, a daemon
-try to match the group name to the following regular expression:
+tries to match the group name to the following regular expression:
 <div class="highlight"><pre><span></span><code>(ctb|def|rpp|rrg)-[a-z0-9_-]*
 </code></pre></div></p>
 <p>If there is a match, the user will be added to a Slurm account with the same
@@ -4829,7 +4829,7 @@ instances. First, you can list the requests:
 <h3 id="109-dealing-with-banned-ip-addresses-fail2ban">10.9 Dealing with banned ip addresses (fail2ban)</h3>
 <p>Login nodes run <a href="https://www.fail2ban.org/wiki/index.php/Main_Page">fail2ban</a>, an intrusion
 prevention software that protects login nodes from brute-force attacks. fail2ban is configured
-to ban ip addresses that attempted to login 20 times and failed in a window of 60 minutes. The
+to ban ip addresses that attempted to log in 20 times and failed in a window of 60 minutes. The
 ban time is 24 hours.</p>
 <p>In the context of a workshop with SSH novices, the 20-attempt rule might be triggered,
 resulting in participants banned and puzzled, which is a bad start for a workshop. There are
@@ -4849,18 +4849,18 @@ The ignore ip list on Magic Castle already includes <code>127.0.0.1/8</code> and
 <div class="highlight"><pre><span></span><code>terraform apply
 </code></pre></div></p>
 <h4 id="1092-remove-fail2ban-ssh-route-jail">10.9.2 Remove fail2ban ssh-route jail</h4>
-<p>fail2ban rule that banned ip addresses that failed to connect
+<p>fail2ban rule that bans ip addresses that failed to connect
 with SSH can be disabled. To do so, add the following line
 to the variable <code>hieradata</code> in <code>main.tf</code>:
 <div class="highlight"><pre><span></span><code><span class="nt">fail2ban::jails</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;ssh-ban-root&#39;</span><span class="p p-Indicator">]</span>
 </code></pre></div>
-This will keep the jail that automatically ban any ip that tries to
+This will keep the jail that automatically bans any ip that tries to
 login as root, and remove the ssh failed password jail.</p>
 <p>Once the line is added, call:
 <div class="highlight"><pre><span></span><code>terraform apply
 </code></pre></div></p>
 <h4 id="1093-unban-ip-addresses">10.9.3 Unban ip addresses</h4>
-<p>fail2ban ban ip addresses by adding rules to iptables. To remove these rules, you need to
+<p>fail2ban bans ip addresses by adding rules to iptables. To remove these rules, you need to
 tell fail2ban to unban the ips.</p>
 <p>To list the ip addresses that are banned, execute the following command:
 <div class="highlight"><pre><span></span><code>sudo fail2ban-client status ssh-route
@@ -5002,11 +5002,11 @@ The corresponding volume will be expanded by the cloud provider and the filesyst
 extended by Puppet.</p>
 <h3 id="1015-access-prometheus-expression-browser">10.15 Access Prometheus' expression browser</h3>
 <p>Prometheus is an open-source systems monitoring and alerting toolkit. It is installed by default
-in Magic Castle. Every instance exposes their usage metrics and some services do to. To explore
-and visualize this data, it possible to access the <a href="https://prometheus.io/docs/visualization/browser/">expression browser</a>.</p>
+in Magic Castle. Every instance exposes their usage metrics and some services do too. To explore
+and visualize this data, it is possible to access the <a href="https://prometheus.io/docs/visualization/browser/">expression browser</a>.</p>
 <p>From inside the cluster, it is typically available at <code>http://mgmt1:9090</code>. Given DNS is configured
-for your cluster, you can add the following snippet to your <a href="#413-hieradata-optional">hieradata</a>. to access the expression browser
-from Internet.</p>
+for your cluster, you can add the following snippet to your <a href="#413-hieradata-optional">hieradata</a> to access the expression browser
+from the Internet.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">lookup_options</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">profile::reverse_proxy::subdomains</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">merge</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;hash&#39;</span>
