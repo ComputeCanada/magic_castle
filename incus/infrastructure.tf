@@ -88,9 +88,12 @@ resource "incus_instance" "instances" {
 
   target = try(each.value.target, null)
 
+  description = jsonencode(each.value.tags)
+
   config = {
     "cloud-init.user-data" = module.configuration.user_data[each.key]
     "security.privileged"  = var.privileged
+    "security.nesting"     = var.privileged
   }
 
   device {
@@ -154,8 +157,8 @@ locals {
 
   post_inventory = { for host, values in local.inventory :
     host => merge(values, {
-      local_ip  = incus_instance.instances[host].ipv4_address,
-      public_ip = incus_instance.instances[host].ipv4_address,
+      local_ip  = try(incus_instance.instances[host].ipv4_address, ""),
+      public_ip = try(incus_instance.instances[host].ipv4_address, ""),
     })
   }
 

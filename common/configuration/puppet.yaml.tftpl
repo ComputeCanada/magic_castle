@@ -29,6 +29,8 @@ users:
 %{ endfor ~}
 
 runcmd:
+  - "flag_cloud_init_failed () { echo \"$${BASH_COMMAND}\" >> /run/cloud-init-failed; }"
+  - trap 'flag_cloud_init_failed' ERR
   - chmod 755 /etc # avoid issue with Rocky 9.4
   - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
 %{ if cloud_provider != "incus" }
@@ -47,12 +49,13 @@ runcmd:
   - |
     if ! test -f /etc/magic-castle-release; then
       # Enable fastest mirror for distribution using dnf package manager
+      dnf -y install dnf-plugins-core
       dnf config-manager --setopt=fastestmirror=True --save
       # If the image has not openssh-server installed but sshd_config still exists
       # installing the new RPM will not overwrite the file and depending on the file
       # content it might catastrophic (some sshd_config are empty, some miss esential lines).
       # Therefore when openssh-server is not installed, we remove sshd_config before installing it.
-      "[ -z $(rpm -qa openssh-server) ] && rm -f /etc/ssh/sshd_config"
+      [ -z "$(rpm -qa openssh-server)" ] && rm -f /etc/ssh/sshd_config
       dnf -y install openssh openssh-server rsync
       echo -e "Include /etc/ssh/sshd_config.d/50-authenticationmethods.conf" >> /etc/ssh/sshd_config
       sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
@@ -73,9 +76,11 @@ runcmd:
       dnf -y install openvox-agent-8.23.1
       install -m 700 /dev/null /opt/puppetlabs/bin/postrun
       # kernel configuration
+%{ if cloud_provider != "incus" ~}
       systemctl disable kdump
       grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0 crashkernel=0M"
       grub2-mkconfig -o /boot/grub2/grub.cfg
+%{ endif ~}
     fi
 %{ if contains(tags, "puppet") }
 # Install puppetserver
@@ -102,12 +107,21 @@ runcmd:
   - rm -rf /etc/puppetlabs/code/environments/production
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/main
   - ln -s /etc/puppetlabs/code/environments/main /etc/puppetlabs/code/environments/production
-  - "(cd /etc/puppetlabs/code/environments/production; git checkout ${puppetenv_rev})"
+  - |
+    (
+    cd /etc/puppetlabs/code/environments/production
+    if git fetch origin ${puppetenv_rev} 2> /dev/null; then
+      git switch -C ${puppetenv_rev} FETCH_HEAD
+    elif ! git checkout ${puppetenv_rev}; then
+      echo 'WARNING - config_version=${puppetenv_rev} is invalid. puppet environment defaulted to latest tag' | tee -a /etc/motd
+      git checkout $(git tag | sort -n | tail -n1)
+    fi
+    )
   - mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts
   - chgrp -R puppet /etc/puppetlabs/data /etc/puppetlabs/facts
   - ln -sf /etc/puppetlabs/data/{user_data,user_data.yaml,terraform_data.yaml} /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/facts/terraform_facts.yaml /etc/puppetlabs/code/environments/production/site/profile/facts.d
-# We use r10k solely to install the modules of the main branch environment.
+# We use r10k solely to install the modules of the production puppet environment.
   - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/environments/production/modules --puppetfile=/etc/puppetlabs/code/environments/production/Puppetfile
 %{ if puppetfile != "" ~}
   - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/modules --puppetfile=/etc/puppetlabs/code/Puppetfile
@@ -148,6 +162,7 @@ runcmd:
   # If the current image has already been configured with Magic Castle Puppet environment,
   # we can start puppet and skip reboot, reducing the delay for bringing the node up.
   - test -f /etc/magic-castle-release && systemctl start puppet || true
+  - test -f /run/cloud-init-failed && echo 'WARNING - some steps cloud-init runcmd failed, listed in /run/cloud-init-failed. Manual fixing and rebooting required. ' | tee /etc/motd || true
 
 write_files:
   # If the ip addresses of the puppet servers are not known in advance, we cannot restrict the ssh connection to them.
@@ -164,7 +179,8 @@ write_files:
       facts : {
         blocklist : [
           "EC2", "az_metadata", "cloud.provider", "hypervisors"
-          %{ if cloud_provider != "gcp" },"GCE",%{ endif }
+          %{ if cloud_provider != "gcp" },"GCE"%{ endif }
+          %{ if cloud_provider == "incus" },"kmods"%{ endif }
         ],
       }
     path: /etc/puppetlabs/facter/facter.conf
@@ -247,7 +263,7 @@ output: { all: "| tee -a /var/log/cloud-init-output.log" }
 power_state:
   delay: now
   mode: reboot
-  condition: test ! -f /etc/magic-castle-release
+  condition: test ! -f /etc/magic-castle-release && test ! -f /run/cloud-init-failed
 
 # Configure owner of /var/log/cloud-init.log
 syslog_fix_perms: root:systemd-journal

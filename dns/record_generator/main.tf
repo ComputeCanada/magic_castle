@@ -111,7 +111,7 @@ locals {
     {
       type  = "TXT"
       name  = local.dkim_public_key != "" ? "default._domainkey.${var.name}" : var.name
-      value = local.dkim_public_key != "" ? "\"v=DKIM1; k=rsa; p=${local.dkim_public_key}\"" : "No DKIM public key defined for this domain"
+      value = local.dkim_public_key != "" ? join(" ", formatlist("\"%s\"", regexall(".{1,255}", "v=DKIM1; k=rsa; p=${local.dkim_public_key}"))) : "No DKIM public key defined for this domain"
       data  = null
     },
     {
