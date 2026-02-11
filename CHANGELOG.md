@@ -6,13 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [15.2.0] UNRELEASED
 
 ### Added
--
+- Added crashkernel=0M to kernel args (PR #391)
+- Added tags to incus instance description (PR #401)
 
 ### Changed
--
+- Fixed issue #396 "Error when using pool instance with incus provider" (PR #397)
+- Fixed issue #399 "PR #388 introduced a regression when using commit hash with config_version" (PR #402)
+- Enabled incus security.nesting when privileged is enabled (PR #400)
+- Improved cloud-init failure handling (PR #403)
+- Fixed validation to allow var.instances to be an empty map (PR #405)
+- Limited dkim record to 255 characters per chunk (Issue #408, PR #409)
 
-### Removed
--
 
 ## [15.1.0] 2025-11-28
 
