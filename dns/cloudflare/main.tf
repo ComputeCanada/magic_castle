@@ -1,9 +1,6 @@
 data "cloudflare_zones" "domain" {
-  filter {
-    name   = var.domain
-    status = "active"
-    paused = false
-  }
+  name   = var.domain
+  status = "active"
 }
 
 module "record_generator" {
@@ -16,20 +13,14 @@ module "record_generator" {
   dkim_public_key  = var.dkim_public_key
 }
 
-resource "cloudflare_record" "records" {
+resource "cloudflare_dns_record" "records" {
   count   = length(module.record_generator.records)
-  zone_id = data.cloudflare_zones.domain.zones[0].id
+  zone_id = data.cloudflare_zones.domain.result[0].id
   name    = module.record_generator.records[count.index].name
-  content = module.record_generator.records[count.index].value
+  content = lookup(module.record_generator.records[count.index], "value", null)
   type    = module.record_generator.records[count.index].type
-  dynamic "data" {
-    for_each = module.record_generator.records[count.index].data != null ? [module.record_generator.records[count.index].data] : []
-    content {
-      algorithm   = data.value["algorithm"]
-      fingerprint = upper(data.value["fingerprint"])
-      type        = data.value["type"]
-    }
-  }
+  ttl     = 1
+  data    = lookup(module.record_generator.records[count.index], "data", null)
 }
 
 output "hostnames" {
