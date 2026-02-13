@@ -32,6 +32,7 @@ module "configuration" {
   software_stack  = var.software_stack
   cloud_provider  = local.cloud_provider
   cloud_region    = local.cloud_region
+  network_cidr    = aws_vpc.network.cidr_block
   skip_upgrade    = var.skip_upgrade
   puppetfile      = var.puppetfile
 }

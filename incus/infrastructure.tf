@@ -27,6 +27,7 @@ module "configuration" {
   software_stack  = var.software_stack
   cloud_provider  = "incus"
   cloud_region    = "local"
+  network_cidr    = incus_network.network.config["ipv4.address"]
   skip_upgrade    = var.skip_upgrade
   puppetfile      = var.puppetfile
 }

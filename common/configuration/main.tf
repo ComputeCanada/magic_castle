@@ -16,6 +16,7 @@ variable "nb_users" {}
 variable "software_stack" {}
 variable "cloud_provider" {}
 variable "cloud_region" {}
+variable "network_cidr" {}
 variable "domain_name" {}
 variable "cluster_name" {}
 variable "guest_passwd" {}
@@ -76,6 +77,9 @@ locals {
     terraform = {
       instances = local.final_inventory
       tag_ip    = local.tag_ip
+      network = {
+        cidr = var.network_cidr
+      }
       data = {
         sudoer_username = var.sudoer_username
         tf_public_key   = chomp(tls_private_key.ssh.public_key_openssh)
