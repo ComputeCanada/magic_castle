@@ -982,6 +982,28 @@ to transfer files to the Puppet server. By default, this list is inferred from t
 `terraform apply`. Providing an explicit list of tags allows bypassing the firewall rule inference,
 which can be useful when the agent is in the same network as the cluster.
 
+### 4.23 Internal module inputs (advanced)
+
+The following variables are inputs to internal modules (`common/design`, `common/configuration`,
+`common/provision`). They are set by the cloud provider modules and are not meant to be configured
+directly in a typical `main.tf`.
+
+- `min_disk_size`: Minimum root disk size (in GB) enforced by the provider module when building the
+  instance design. It is used to validate `instances.*.disk_size` against provider defaults.
+  Typical values are 10 (Incus/OpenStack), 20 (AWS/GCP), and 30 (Azure).
+- `inventory`: Map of instances with computed metadata (IPs, tags, specs, volumes) used to generate
+  cloud-init and Puppet configuration.
+- `post_inventory`: Map like `inventory` with provider-specific data added after resources are created
+  (for example instance IDs). Default value is `{}`.
+- `cloud_provider`: Cloud provider identifier string (for example `aws`, `gcp`, `azure`, `openstack`,
+  `incus`) used in Puppet facts and cloud-init templates.
+- `cloud_region`: Provider region identifier string (for example `us-east-1`, `eastus`, `europe-west1`)
+  used in Puppet facts and cloud-init templates.
+- `domain_name`: Fully qualified cluster domain name computed from `cluster_name` and `domain`
+  (for example `${cluster_name}.${domain}`).
+- `configuration`: Output object from `common/configuration` passed into `common/provision`. It contains
+  values such as rendered user data, Terraform facts, SSH keys, inventory, and bastion information.
+
 ## 5. Cloud Specific Configuration
 
 ### 5.1 Amazon Web Services
@@ -1258,6 +1280,23 @@ if not OpenStack (i.e: `aws`, `gcp`, etc.).
 
 The file will be created after the `terraform apply` in the same folder as your `main.tf`
 and will be named as `${name}.${domain}.txt`.
+
+### 6.4 DNS module inputs
+
+The DNS modules (`dns/cloudflare`, `dns/gcloud`, `dns/txt`) share a common set of inputs:
+
+- `name`: Cluster name used as the DNS label. In the examples, this is typically
+  `module.<provider>.cluster_name`.
+- `domain`: Base domain name. In the examples, this is typically `module.<provider>.domain`.
+- `public_instances`: Map of instances with the `public` tag returned by the cloud provider module.
+  DNS A and SSHFP records are created for these instances.
+- `vhosts`: List of virtual hostnames to create as `vhost.name.domain`. Default values differ by module:
+  Cloudflare uses `["*"]`, while Google Cloud and TXT use `["ipa", "jupyter", "mokey", "explore"]`.
+- `domain_tag`: Tag that identifies which instances are pointed by the `name.domain` A record.
+  **default value**: `"login"`.
+- `vhost_tag`: Tag that identifies which instances are pointed by the `vhost.name.domain` A records.
+  **default value**: `"proxy"`.
+- `dkim_public_key`: Optional public key used to create a DKIM record. See [6.6 DKIM record (optional)](#66-dkim-record-optional).
 
 ### 6.5 SSHFP records and DNSSEC
 
