@@ -6,16 +6,6 @@ lookup_options:
 
 jupyterhub::kernel::venv::python: "3.12"
 
-magic_castle::site::all:
-  - profile::base
-  - profile::consul
-  - profile::freeipa
-  - profile::users::local
-  - profile::sssd::client
-  - profile::metrics::node_exporter
-  - profile::rsyslog::client
-  - profile::volumes
-
 magic_castle::site::tags:
   dtn: []
   login:
