@@ -99,6 +99,7 @@ locals {
         cloud_provider        = var.cloud_provider
         cloud_region          = var.cloud_region
         tags                  = values.tags
+        bastion_tags          = var.bastion_tags
         node_name             = key,
         node_prefix           = values.prefix,
         domain_name           = var.domain_name
