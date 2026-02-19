@@ -6,6 +6,7 @@ mounts:
  - [ ephemeral0, /mnt/ephemeral0 ]
 
 users:
+%{ if contains(tags, "puppet") || length(setintersection(tags, bastion_tags)) > 0 ~}
   - name: tf
     system: true
     passwd: '*'
@@ -13,6 +14,7 @@ users:
     homedir: /tmp
 %{ if contains(tags, "puppet") }
     sudo: "ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh *.zip"
+%{ endif ~}
 %{ endif ~}
   - name: ${sudoer_username}
     groups: adm, wheel, systemd-journal
