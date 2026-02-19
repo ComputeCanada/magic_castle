@@ -109,7 +109,7 @@ locals {
         puppetserver_password = local.puppet_passwd,
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = local.public_keys
-        tf_ssh_public_key     = tls_private_key.ssh.public_key_openssh
+        tf_ssh_public_key     = chomp(tls_private_key.ssh.public_key_openssh)
         terraform_facts       = local.terraform_facts
         skip_upgrade          = var.skip_upgrade
         puppetfile            = var.puppetfile
