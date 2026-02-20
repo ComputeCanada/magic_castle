@@ -142,7 +142,7 @@ output "terraform_facts" {
 }
 
 output "puppetservers" {
-  value = { for host, values in local.final_inventory : host => values.local_ip if contains(values.tags, "puppet") }
+  value = { for host, values in local.final_inventory : host => { local_ip = values.local_ip, public_ip = values.public_ip } if contains(values.tags, "puppet") }
 }
 
 output "guest_passwd" {
