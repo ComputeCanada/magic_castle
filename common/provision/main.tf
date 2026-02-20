@@ -60,7 +60,8 @@ data "archive_file" "puppetserver_files" {
 }
 
 locals {
-  bastion_host = length(var.configuration.bastions) > 0 ? var.configuration.bastions[keys(var.configuration.bastions)[0]] : null
+  puppetservers_are_bastion = length(setintersection(keys(var.configuration.bastions), keys(var.configuration.puppetservers))) == length(var.configuration.puppetservers)
+  bastion_host              = length(var.configuration.bastions) > 0 ? var.configuration.bastions[keys(var.configuration.bastions)[0]] : null
 }
 
 resource "terraform_data" "deploy_puppetserver_files" {
@@ -69,11 +70,11 @@ resource "terraform_data" "deploy_puppetserver_files" {
   connection {
     type                = "ssh"
     agent               = false
-    bastion_host        = contains(local.bastion_host.tags, "public") ? local.bastion_host.public_ip : local.bastion_host.local_ip
+    bastion_host        = local.puppetservers_are_bastion ? null : (contains(local.bastion_host.tags, "public") ? local.bastion_host.public_ip : local.bastion_host.local_ip)
     bastion_user        = "tf"
     bastion_private_key = var.configuration.ssh_key.private
     user                = "tf"
-    host                = each.value
+    host                = local.puppetservers_are_bastion && each.value.public_ip != "" ? each.value.public_ip : each.value.local_ip
     private_key         = var.configuration.ssh_key.private
   }
 

@@ -99,6 +99,7 @@ locals {
         cloud_provider        = var.cloud_provider
         cloud_region          = var.cloud_region
         tags                  = values.tags
+        bastion_tags          = var.bastion_tags
         node_name             = key,
         node_prefix           = values.prefix,
         domain_name           = var.domain_name
@@ -108,7 +109,7 @@ locals {
         puppetserver_password = local.puppet_passwd,
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = local.public_keys
-        tf_ssh_public_key     = tls_private_key.ssh.public_key_openssh
+        tf_ssh_public_key     = chomp(tls_private_key.ssh.public_key_openssh)
         terraform_facts       = local.terraform_facts
         skip_upgrade          = var.skip_upgrade
         puppetfile            = var.puppetfile
@@ -141,7 +142,7 @@ output "terraform_facts" {
 }
 
 output "puppetservers" {
-  value = { for host, values in local.final_inventory : host => values.local_ip if contains(values.tags, "puppet") }
+  value = { for host, values in local.final_inventory : host => { local_ip = values.local_ip, public_ip = values.public_ip } if contains(values.tags, "puppet") }
 }
 
 output "guest_passwd" {

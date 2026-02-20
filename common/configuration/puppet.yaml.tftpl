@@ -6,6 +6,7 @@ mounts:
  - [ ephemeral0, /mnt/ephemeral0 ]
 
 users:
+%{ if contains(tags, "puppet") || length(setintersection(tags, bastion_tags)) > 0 ~}
   - name: tf
     system: true
     passwd: '*'
@@ -13,6 +14,7 @@ users:
     homedir: /tmp
 %{ if contains(tags, "puppet") }
     sudo: "ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh *.zip"
+%{ endif ~}
 %{ endif ~}
   - name: ${sudoer_username}
     groups: adm, wheel, systemd-journal
@@ -164,16 +166,26 @@ runcmd:
   - test -f /run/cloud-init-failed && echo 'WARNING - some steps cloud-init runcmd failed, listed in /run/cloud-init-failed. Manual fixing and rebooting required. ' | tee /etc/motd || true
 
 write_files:
-  # If the ip addresses of the puppet servers are not known in advance, we cannot restrict the ssh connection to them.
-  - content: restrict,%{ if contains(tags, "puppet") }pty%{ else }%{if length(compact(values(puppetservers))) == length(keys(puppetservers)) }%{ for host, ip in puppetservers }permitopen="${ip}:22"%{ endfor }%{ else }pty%{ endif },port-forwarding,command="/sbin/nologin"%{ endif } ${tf_ssh_public_key}
-    path: /etc/ssh/authorized_keys.tf
-    permissions: "0644"
+%{ if contains(tags, "puppet") || length(setintersection(tags, bastion_tags)) > 0 ~}
   - content: |
       Match User tf
         AuthorizedKeysFile /etc/ssh/authorized_keys.%u
         AuthenticationMethods publickey
     path: /etc/ssh/sshd_config.d/50-authenticationmethods.conf
     permissions: "0600"
+%{ endif ~}
+%{ if contains(tags, "puppet") ~}
+  - content: restrict,pty ${tf_ssh_public_key}
+    path: /etc/ssh/authorized_keys.tf
+    permissions: "0644"
+%{ else ~}
+%{ if length(setintersection(tags, bastion_tags)) > 0 ~}
+  # If the ip addresses of the puppet servers are not known in advance, we cannot restrict the ssh connection to them.
+  - content: restrict,%{if length(compact(values(puppetservers))) == length(keys(puppetservers)) }%{ for host, ip in puppetservers }permitopen="${ip}:22"%{ endfor }%{ else }pty%{ endif },port-forwarding,command="/sbin/nologin" ${tf_ssh_public_key}
+    path: /etc/ssh/authorized_keys.tf
+    permissions: "0644"
+%{ endif ~}
+%{ endif ~}
   - content: |
       facts : {
         blocklist : [
