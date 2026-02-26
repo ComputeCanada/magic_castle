@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [15.2.1] UNRELEASED
 
+### Changed
+- Disabled weak deps install by dnf to avoid running unnecessary packages like pulseaudio on the IPA server (PR #415)
+- Restricted tf user from jumping out of puppetserver (PR #414)
+- Skip bastion_host provision when puppetservers are bastion (PR #414)
+- Created user tf only on puppetserver and bastions (PR #414)
+- Chomped tf's openssh public key in puppet.yaml (PR #414)
+- Consider bastion tag when configuring tf ssh access (PR #414)
+
 ## [15.2.0] 2026-02-11
 
 ### Added
