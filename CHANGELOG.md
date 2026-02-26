@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [15.2.0] UNRELEASED
+## [15.2.1] UNRELEASED
+
+## [15.2.0] 2026-02-11
 
 ### Added
 - Added crashkernel=0M to kernel args (PR #391)
