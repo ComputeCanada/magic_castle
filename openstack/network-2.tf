@@ -3,29 +3,10 @@ resource "openstack_networking_secgroup_v2" "global" {
   description = "${var.cluster_name} global security group"
 }
 
-resource "openstack_networking_secgroup_rule_v2" "icmp" {
+resource "openstack_networking_secgroup_rule_v2" "all" {
   direction         = "ingress"
   ethertype         = "IPv4"
-  protocol          = "icmp"
-  description       = "internal allow all icmp"
-  security_group_id = openstack_networking_secgroup_v2.global.id
-  remote_group_id   = openstack_networking_secgroup_v2.global.id
-}
-
-resource "openstack_networking_secgroup_rule_v2" "tcp" {
-  direction         = "ingress"
-  ethertype         = "IPv4"
-  protocol          = "tcp"
-  description       = "internal allow all tcp"
-  security_group_id = openstack_networking_secgroup_v2.global.id
-  remote_group_id   = openstack_networking_secgroup_v2.global.id
-}
-
-resource "openstack_networking_secgroup_rule_v2" "udp" {
-  direction         = "ingress"
-  ethertype         = "IPv4"
-  protocol          = "udp"
-  description       = "internal allow all udp"
+  description       = "internal allow all"
   security_group_id = openstack_networking_secgroup_v2.global.id
   remote_group_id   = openstack_networking_secgroup_v2.global.id
 }
