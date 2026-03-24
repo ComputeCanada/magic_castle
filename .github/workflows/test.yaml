@@ -120,7 +120,7 @@ jobs:
           sed -i 's;git::https://github.com/ComputeCanada/magic_castle.git//;../../;g' examples/*/*.tf
 
       - name: Manual Trivy Setup
-        uses: aquasecurity/setup-trivy@v0.2.2
+        uses: aquasecurity/setup-trivy@v0.2.6
         with:
           version: v0.61.1
           cache: true
