@@ -33,17 +33,8 @@ resource "google_compute_firewall" "allow_all_internal" {
   source_ranges = [google_compute_subnetwork.subnet.ip_cidr_range]
 
   allow {
-    protocol = "tcp"
+    protocol = "all"
   }
-
-  allow {
-    protocol = "udp"
-  }
-
-  allow {
-    protocol = "icmp"
-  }
-
 }
 
 locals {
