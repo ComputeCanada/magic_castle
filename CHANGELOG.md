@@ -3,7 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [15.2.1] UNRELEASED
+## [15.3.0] 2026-03-24
+
+### Changed
+
+- Uniformized how internal security groups are configured across providers by replacing the allowed protocol list by `all` for OpenStack and GCP
+
+## [15.2.1] 2026-02-26
 
 ### Changed
 - Disabled weak deps install by dnf to avoid running unnecessary packages like pulseaudio on the IPA server (PR #415)
