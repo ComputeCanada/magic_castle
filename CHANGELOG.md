@@ -3,11 +3,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [15.3.0] 2026-03-24
+## [15.3.1] 2026-03-24
 
 ### Changed
 
 - Uniformized how internal security groups are configured across providers by replacing the allowed protocol list by `all` for OpenStack and GCP
+
+## [15.3.0] 2026-03-24
+
+No changes to infrastructure code.
+
+Refer to [puppet-magic_castle changelog](https://github.com/ComputeCanada/puppet-magic_castle/blob/main/CHANGELOG.md)
 
 ## [15.2.1] 2026-02-26
 
