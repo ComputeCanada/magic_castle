@@ -4,8 +4,9 @@ data "openstack_networking_network_v2" "ext_network" {
 }
 
 data "openstack_networking_subnet_v2" "subnet" {
-  subnet_id  = var.subnet_id
-  ip_version = 4
+  subnet_id    = var.subnet_id
+  ip_version   = 4
+  dhcp_enabled = true
 }
 
 data "openstack_networking_network_v2" "int_network" {
