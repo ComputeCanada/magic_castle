@@ -2,6 +2,11 @@ import json
 import os
 
 from os.path import expanduser, exists
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    # Python2
+    from urlparse import urlparse
 
 try:
     from yaml import safe_load
@@ -47,8 +52,7 @@ elif 'OS_CLOUD' in os.environ:
                         search_level = cur_level + 1
 
 if 'auth_url' in cloudmap:
-    parsed_url = cloudmap['auth_url']
-    cloudmap['name'] = parsed_url[8:].split('.')[0]
+    cloudmap['name'] = urlparse(cloudmap['auth_url']).hostname
 else:
     cloudmap['auth_url'] = ''
     cloudmap['name'] = ''
