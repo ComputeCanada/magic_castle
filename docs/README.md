@@ -1159,6 +1159,16 @@ the following features have to be disabled when running with `privileged = false
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
+### nesting (optional)
+
+**default value**: true
+
+By default, the LXC containers created by Magic Castle have nesting enabled. 
+This allows containers to run workloads that require features such as docker or systemd inside the container.
+It is possible, for security or isolation reasons, to disable this by setting `nesting = false` in the Incus module. 
+
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
+
 ### shared_filesystems (optional)
 
 **default value**: `[]`
