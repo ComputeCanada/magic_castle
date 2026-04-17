@@ -1152,10 +1152,13 @@ This setting can be enabled on at most one cluster per incus host.
 **default value**: true
 
 By default, the LXC containers created by Magic Castle are privileged. It is possible for security reasons
-to turn this off by provider `privileged = false` to the Incus module. However, due to kernel restrictions
+to turn this off by provider `privileged = false` to the Incus module. However, due to kernel restrictions
 designed to prevent unprivileged users from performing privileged operations like initiating mounts,
 the following features have to be disabled when running with `privileged = false`:
 - NFS server and mounts (`profile::nfs`)
+
+Also make sure that the line `root:1000000:1000000000` exists in both
+`/etc/subuid` and `/etc/subgid` when running with `privileged = false`.
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
