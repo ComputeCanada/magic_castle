@@ -1207,6 +1207,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#nesting-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nesting (optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#shared_filesystems-optional" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2913,6 +2924,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#nesting-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nesting (optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#shared_filesystems-optional" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4431,10 +4453,18 @@ is added to the instance for each port.</p>
 <h3 id="privileged-optional">privileged (optional)</h3>
 <p><strong>default value</strong>: true</p>
 <p>By default, the LXC containers created by Magic Castle are privileged. It is possible for security reasons
-to turn this off by provider <code>privileged = false</code> to the Incus module. However, due to kernel restrictions
+to turn this off by provider <code>privileged = false</code> to the Incus module. However, due to kernel restrictions
 designed to prevent unprivileged users from performing privileged operations like initiating mounts,
 the following features have to be disabled when running with <code>privileged = false</code>:
 - NFS server and mounts (<code>profile::nfs</code>)</p>
+<p>Also make sure that the line <code>root:1000000:1000000000</code> exists in both
+<code>/etc/subuid</code> and <code>/etc/subgid</code> when running with <code>privileged = false</code>.</p>
+<p><strong>Post build modification effect</strong>: rebuild of all instances at next <code>terraform apply</code>.</p>
+<h3 id="nesting-optional">nesting (optional)</h3>
+<p><strong>default value</strong>: true</p>
+<p>By default, the LXC containers created by Magic Castle have nesting enabled. 
+This allows containers to run workloads that require features such as docker or systemd inside the container.
+It is possible, for security or isolation reasons, to disable this by setting <code>nesting = false</code> in the Incus module. </p>
 <p><strong>Post build modification effect</strong>: rebuild of all instances at next <code>terraform apply</code>.</p>
 <h3 id="shared_filesystems-optional">shared_filesystems (optional)</h3>
 <p><strong>default value</strong>: <code>[]</code></p>
