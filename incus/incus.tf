@@ -13,6 +13,11 @@ variable "privileged" {
   default     = true
 }
 
+variable "nesting" {
+  description = "When using container, set the config security.nesting to this value"
+  default     = true
+}
+
 variable "shared_filesystems" {
   description = "Name of filesystems that need to be created and mounted in every instance"
   default     = []
