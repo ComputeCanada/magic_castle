@@ -15,7 +15,7 @@ To use Magic Castle you will need:
 
 To install Terraform, follow the
 [tutorial](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-or go directly on [Terraform download page](https://www.terraform.io/downloads).
+or go directly to the [Terraform download page](https://www.terraform.io/downloads).
 
 You can verify Terraform was properly installed by looking at the version in a terminal:
 ```
@@ -28,7 +28,7 @@ terraform version
 <!-- markdown-link-check-disable -->
 1. Go to [AWS - My Security Credentials](https://console.aws.amazon.com/iam/home?#/security_credentials)
 2. Create a new access key.
-3. In a terminal, export `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, environment variables, representing your AWS Access Key and AWS Secret Key:
+3. In a terminal, export the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables, representing your AWS Access Key and AWS Secret Key:
     ```shell
     export AWS_ACCESS_KEY_ID="an-access-key"
     export AWS_SECRET_ACCESS_KEY="a-secret-key"
@@ -40,14 +40,14 @@ Reference: [AWS Provider - Environment Variables](https://registry.terraform.io/
 #### 1.2.2 Google Cloud
 
 1. Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/downloads-interactive)
-2. In a terminal, enter : `gcloud auth application-default login`
+2. In a terminal, enter: `gcloud auth application-default login`
 
 #### 1.2.3 Microsoft Azure
 
 1. Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
-2. In a terminal, enter : `az login`
+2. In a terminal, enter: `az login`
 
-Reference : [Azure Provider: Authenticating using the Azure CLI](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/azure_cli)
+Reference: [Azure Provider: Authenticating using the Azure CLI](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/azure_cli)
 
 #### 1.2.4 OpenStack / OVH
 
@@ -182,7 +182,7 @@ with the following content:
 
 The default quotas set by Amazon are sufficient to build the Magic Castle
 AWS examples. To increase the limits, or request access to special
-resources like GPUs or high performance network interface, refer to
+resources like GPUs or high performance network interfaces, refer to
 [Amazon EC2 service quotas](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html).
 
 #### 1.4.2 Google Cloud
@@ -196,7 +196,7 @@ resources like GPUs, refer to
 
 The default quotas set by Microsoft Azure are sufficient to build the Magic Castle
 Azure examples. To increase the limits, or request access to special
-resources like GPUs or high performance network interface, refer to
+resources like GPUs or high performance network interfaces, refer to
 [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits).
 
 #### 1.4.4 OpenStack
@@ -243,7 +243,7 @@ resources like GPUs, refer to
 3. Open a Terminal.
 4. Uncompress the release: `tar xvf magic_castle*.tar.gz`
 5. Rename the release folder after your favourite superhero: `mv magic_castle* hulk`
-3. Move inside the folder: `cd hulk`
+6. Move inside the folder: `cd hulk`
 
 The file `main.tf` contains Terraform modules and outputs. Modules are files that define a set of
 resources that will be configured based on the inputs provided in the module block.
@@ -251,7 +251,7 @@ Outputs are used to tell Terraform which variables of
 our module we would like to be shown on the screen once the resources have been instantiated.
 
 This file will be our main canvas to design our new clusters. As long as the module block
-parameters suffice to our need, we will be able to limit our configuration to this sole
+parameters meet our needs, we will be able to limit our configuration to this sole
 file. Further customization will be addressed during the second part of the workshop.
 
 ### 3.2 Terraform
@@ -285,7 +285,7 @@ In the `main.tf` file, there is a module named after your cloud provider,
 i.e.: `module "openstack"`. This module corresponds to the high-level infrastructure
 of your cluster.
 
-The following sections describes each variable that can be used to customize
+The following sections describe each variable that can be used to customize
 the deployed infrastructure and its configuration. Optional variables can be
 absent from the example module. The order of the variables does not matter,
 but the following sections are ordered as the variables appear in the examples.
@@ -377,7 +377,7 @@ for more details.
 Valid format is a series of labels 1-63 characters long matching the
 regular expression `[a-z]([-a-z0-9]*[a-z0-9])`, concatenated with periods.
 - No wildcard record A of the form `*.domain. IN A x.x.x.x` exists for that
-domain. You can verify no such record exist with `dig`:
+domain. You can verify no such record exists with `dig`:
     ```
     dig +short '*.${domain}'
     ```
@@ -396,7 +396,7 @@ security patches and OS updates in advance.
 To specify a different image for an instance type, use the
 [`image` instance attribute](#472-optional-attributes)
 
-**Requirements**: the operating system on the image must be from the RedHat family.
+**Requirements**: the operating system on the image must be from the Red Hat family.
 This includes CentOS (8, 9), Rocky Linux (8, 9), and AlmaLinux (8, 9).
 
 **Warning**: Avoid "with LVM" or "LVM-partitioned" images as Magic Castle is currently
@@ -553,7 +553,7 @@ be leveraged to accelerate compute node configuration.
     | OVH      | `null`      | 10                |
 
 4. `disk_size`: size in gibibytes (GiB) of the instance's root disk containing
-the operating system and service software. The default value is computed has the
+the operating system and service software. The default value is computed as the
 maximum between the cloud provider default size (see previous table) and the
 recommended minimum size per tag as specified in the following table.
 
@@ -567,7 +567,7 @@ recommended minimum size per tag as specified in the following table.
     ```
     This is only functional with [MIG supported GPUs](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/index.html#supported-gpus),
     and with x86-64 processors (see [NVIDIA/mig-parted issue #30](https://github.com/NVIDIA/mig-parted/issues/30)).
-6. `shard`: total number of [Sharding](https://slurm.schedmd.com/gres.html#Sharding) on the node. Sharding allows sharing the same GPU on multiple jobs. The total number of shards is evenly distributed across all GPUs on the node.
+6. `shard`: total number of [shards](https://slurm.schedmd.com/gres.html#Sharding) on the node. Sharding allows sharing the same GPU on multiple jobs. The total number of shards is evenly distributed across all GPUs on the node.
 7. `features`: list of [features](https://slurm.schedmd.com/slurm.conf.html#OPT_Features) on the node. This allows to select nodes based on the `--constraint` option. Example:
     ```
     features = ["skylake", "nvidia"]
@@ -577,8 +577,8 @@ The instance specifications are retrieved from the cloud provider data source, b
 
 7. `cpus`: number of logical processors on the node - [`CPUs` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_CPUs)
 8. `ram`: size of real memory on the node in megabyte - [`RealMemory` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_RealMemory)
-9. `gpus`: number of graphical processor on the node - [`Gres=gpu:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
-10. `gpu_type`: type of graphical processor on the node - [`Gres=gpu:<gpu_type>:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
+9. `gpus`: number of graphics processors on the node - [`Gres=gpu:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
+10. `gpu_type`: type of graphics processor on the node - [`Gres=gpu:<gpu_type>:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
 
 For some cloud providers, it is possible to define additional attributes.
 The following sections present the available attributes per provider.
@@ -635,7 +635,7 @@ The `volumes` variable is a map that defines the block devices that should be at
 to instances that have the corresponding key in their list of tags. To each instance
 with the tag, unique block devices are attached, no multi-instance attachment is supported.
 
-Each volume in map is defined a key corresponding to its and a map of attributes:
+Each volume in the map is defined by a key corresponding to its name and a map of attributes:
 
 - `size`: size of the block device in GB.
 - `type` (optional): type of volume to use. Default value per provider:
@@ -679,7 +679,7 @@ volumes = {}
 
 **Post build modification effect**: destruction of the corresponding volumes and attachments,
 and creation of new empty volumes and attachments. If no instance with a corresponding tag
-exist following modifications, the volumes will be deleted.
+exists following modifications, the volumes will be deleted.
 
 ### 4.9 public_keys
 
@@ -729,7 +729,7 @@ The password can be provided in a PKCS7 encrypted form. Refer to sub-section
 for instructions on how to encrypt the password.
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
-Password of all guest accounts will be changed to match the new password value.
+Passwords of all guest accounts will be changed to match the new password value.
 
 ### 4.12 sudoer_username (optional)
 
@@ -840,7 +840,7 @@ it would be a good idea to encrypt the sensitive property values.
 Magic Castle uses [hiera-eyaml](https://github.com/voxpupuli/hiera-eyaml) to provide a
 per-value encryption of sensitive properties to be used by Puppet.
 
-The private key and its corresponding public key wrapped in a X509 certificate can be generated with `openssl`:
+The private key and its corresponding public key wrapped in an X.509 certificate can be generated with `openssl`:
 
 ```shell
 openssl req -x509 -nodes -newkey rsa:2048 -keyout private_key.pkcs7.pem -out public_key.pkcs7.pem -batch
@@ -1003,7 +1003,7 @@ If left blank, it is chosen at random amongst the availability zones of the sele
 
 **Requirement**: Must be in a valid availability zone for the selected region. Refer to
 [AWS documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#using-regions-availability-zones-describe)
-to find out how list the availability zones.
+to find out how to list the availability zones.
 
 ### 5.2 Microsoft Azure
 
@@ -1011,8 +1011,8 @@ to find out how list the availability zones.
 
 Defines the label of the Azure location where the cluster will be created (i.e.: `eastus`).
 
-**Requirement**: Must be a valid Azure location. To get the list of available location, you can
-use Azure CLI : `az account list-locations -o table`.
+**Requirement**: Must be a valid Azure location. To get the list of available locations, you can
+use Azure CLI: `az account list-locations -o table`.
 
 **Post build modification effect**: rebuild of all resources at next `terraform apply`.
 
@@ -1152,7 +1152,7 @@ This setting can be enabled on at most one cluster per incus host.
 **default value**: true
 
 By default, the LXC containers created by Magic Castle are privileged. It is possible for security reasons
-to turn this off by provider `privileged = false` to the Incus module. However, due to kernel restrictions
+to turn this off by providing `privileged = false` to the Incus module. However, due to kernel restrictions
 designed to prevent unprivileged users from performing privileged operations like initiating mounts,
 the following features have to be disabled when running with `privileged = false`:
 - NFS server and mounts (`profile::nfs`)
@@ -1166,9 +1166,9 @@ Also make sure that the line `root:1000000:1000000000` exists in both
 
 **default value**: true
 
-By default, the LXC containers created by Magic Castle have nesting enabled. 
+By default, the LXC containers created by Magic Castle have nesting enabled.
 This allows containers to run workloads that require features such as docker or systemd inside the container.
-It is possible, for security or isolation reasons, to disable this by setting `nesting = false` in the Incus module. 
+It is possible, for security or isolation reasons, to disable this by setting `nesting = false` in the Incus module.
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
@@ -1187,7 +1187,7 @@ NFS mount does not work.
 
 **default value**: `"default"`
 
-Indicate the name of the [Incus storage pool](https://linuxcontainers.org/incus/docs/main/howto/storage_pools/)
+Indicates the name of the [Incus storage pool](https://linuxcontainers.org/incus/docs/main/howto/storage_pools/)
 that will be used to create the instance root disk and the shared filesystems.
 
 **Post build modification effect**: rebuild all instance and filesystems.
@@ -1212,7 +1212,7 @@ For OVN, the host must support the OVN network.
 
 Some functionalities in Magic Castle require the registration of DNS records under the
 [cluster name](#44-cluster_name) in the selected [domain](#45-domain). This includes
-web services like JupyterHub, Mokey and FreeIPA web portal.
+web services like JupyterHub, Mokey, and the FreeIPA web portal.
 
 If your domain DNS records are managed by one of the supported providers,
 follow the instructions in the corresponding sections to have the cluster's
@@ -1242,7 +1242,7 @@ Instead of step 5, export only `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ZONE_API_TOKE
 
 **requirement**: Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/downloads-interactive)
 
-1. Login to your Google account with gcloud CLI : `gcloud auth application-default login`
+1. Log in to your Google account with gcloud CLI: `gcloud auth application-default login`
 2. Uncomment the `dns` module for Google Cloud in your `main.tf`.
 3. Uncomment the `output "hostnames"` block.
 4. In `main.tf`'s `dns` module, configure the variables `project` and `zone_name`
@@ -1315,7 +1315,7 @@ module "dns" {
 }
 ```
 
-The public and private key can also be generated with openssl command-line and supplied
+The public and private keys can also be generated with the openssl command line and supplied
 to the DNS module like this:
 ```shell
 $ openssl genrsa -out dkim_private.pem
@@ -1362,7 +1362,7 @@ that scans Terraform files (code and plan) and reports about potential issues.
 Magic Castle development team has integrated Trivy in its
 [CI/CD pipeline](https://github.com/ComputeCanada/magic_castle/blob/main/.github/workflows/trivy_scan.yaml)
 to prevent misconfiguration and security issues that could be introduced
-by commits or a pull-requests. You too can use Trivy to verify your Terraform plan
+by commits or pull requests. You too can use Trivy to verify your Terraform plan
 before applying it.
 
 After [installing Trivy](https://trivy.dev/latest/getting-started/), you can
@@ -1393,8 +1393,8 @@ See https://avd.aquasec.com/misconfig/avd-opnstk-0003
 ```
 
 The most common configuration issues identified by Trivy in Magic Castle plans
-(illustrated in the previous output example), are firewall rules allowing access to port from
-public internet. If you know which IP addresses should have access to the cluster,
+(illustrated in the previous output example), are firewall rules allowing access to ports from
+the public internet. If you know which IP addresses should have access to the cluster,
 you can harden the firewall rules. Refer to section [4.16 firewall_rules](#416-firewall_rules-optional)
 for more information.
 
@@ -1434,7 +1434,7 @@ Each instance goes through a two-stage configuration process:
 2. **Puppet**
    - Installs and configures software based on the instance role, as defined by instance tags (e.g. `node`)
 
-####  Logs and Troubleshooting
+#### Logs and Troubleshooting
 
 Logs for each stage are available at:
 
@@ -1463,8 +1463,8 @@ apply the modifications while it is running.
 some or all resources, and create new ones. The effects of modifying each
 variable are detailed in the subsections of **Configuration**.
 
-For example, to increase the number of computes nodes by one. Open
-`main.tf`, add 1 to `node`'s `count` , save the document and call
+For example, to increase the number of compute nodes by one, open
+`main.tf`, add 1 to `node`'s `count`, save the document and call
 ```
 terraform apply
 ```
@@ -1472,7 +1472,7 @@ terraform apply
 Terraform will analyze the difference between the current state and
 the future state, and plan the creation of a single new instance. If
 you accept the action plan, the instance will be created, provisioned
-and eventually automatically add to the Slurm cluster configuration.
+and eventually automatically added to the Slurm cluster configuration.
 
 You could do the opposite and reduce the number of compute nodes to 0.
 
@@ -1509,7 +1509,7 @@ the count value of the instance type you wish to destroy to 0.
 
 On some occasions, it is desirable to rebuild some of the instances from scratch.
 Using the `-replace` option of `terraform apply`, you can designate resources
-that will be rebuilt at next application of the plan.
+that will be rebuilt at the next application of the plan.
 
 For example, to rebuild the first login node :
 ```
@@ -1534,7 +1534,7 @@ different.
 **Note on Google Cloud**: In GCP, [OS Login](https://cloud.google.com/compute/docs/instances/managing-instance-access)
 lets you use Compute Engine IAM roles to manage SSH access to Linux instances.
 This feature is incompatible with Magic Castle. Therefore, it is turned off in
-the instances metadata (`enable-oslogin="FALSE"`). The only account with sudoer rights
+the instance metadata (`enable-oslogin="FALSE"`). The only account with sudoer rights
 that can log in the cluster is configured by the variable `sudoer_username`
 (default: `centos`).
 
@@ -1561,7 +1561,7 @@ method is presented in the following subsections.
 
 New LDAP users are automatically assigned a home folder on NFS.
 
-Magic Castle determines if an LDAP user should be member of a Slurm account
+Magic Castle determines if an LDAP user should be a member of a Slurm account
 based on its POSIX groups. When a user is added to a POSIX group, a daemon
 tries to match the group name to the following regular expression:
 ```
@@ -1599,7 +1599,7 @@ kdestroy
 1. Once connected to a login node, access `mgmt1` with `[centos@login1 ~]$ ssh mgmt1`.
 2. Retrieve the `profile::freeipa::server::admin_password` encrypted value following instructions in section [10.13](#1013-read-and-edit-secret-values-generated-at-boot) (you only need the value in between '[...]' brackets).
 3. Log in to FreeIPA with `kinit admin` using the password retrieved in step 2.
-4. The `ipa` command now is available to accomplish administrator tasks, here's a [detailed guide](https://www.freeipa.org/page/Administrators_Guide.html).
+4. The `ipa` command is now available to accomplish administrator tasks; here's a [detailed guide](https://www.freeipa.org/page/Administrators_Guide.html).
 
 </details>
 
@@ -1640,7 +1640,7 @@ we strongly recommend that you limit the access to port 22 to this range.
 
 To limit the access to port 22, refer to [section 4.16 firewall_rules](#416-firewall_rules-optional),
 and replace the `cidr` of the `ssh` rule to match the range of ip addresses that
-have be the allowed to connect to the cluster. If there are more than one range, create multiple rules
+are allowed to connect to the cluster. If there is more than one range, create multiple rules
 with distinct names.
 
 ### 10.6 Add Packages to Jupyter Default Python Kernel
@@ -1786,7 +1786,7 @@ selinux::mode: 'permissive'
 When scaling the compute node pool, either manually by changing the count or
 automatically with [Slurm autoscale](./terraform_cloud.md#enable-magic-castle-autoscaling),
 it can become beneficial to reduce the time spent configuring the machine
-when it boots for the first time, hence reducing the time requires before it becomes
+when it boots for the first time, hence reducing the time required before it becomes
 available in Slurm. One way to achieve this is to clone the root disk of a fully
 configured compute node and use it as the base image of future compute nodes.
 
@@ -1799,8 +1799,8 @@ This process has three steps:
 The following subsection explains how to accomplish each step.
 
 **Warning**: While it will work in most cases, avoid reusing the compute node image of a
-previous deployment. The preparation steps cleans most
-of the deployment specific configuration and secrets, but there is no guarantee
+previous deployment. The preparation steps clean most
+of the deployment-specific configuration and secrets, but there is no guarantee
 that the configuration will be entirely compatible with a different deployment.
 
 #### 10.12.1 Prepare the volume for cloning
@@ -1841,7 +1841,7 @@ The script `prepare4image.sh` executes the following steps in order:
   12. Remove cloud-init's logs and artifacts so it can re-run
   13. Power off the machine
 
-**Warning**: When using Incus, running `prepare4image.sh` on instance is an irreversible process.
+**Warning**: When using Incus, running `prepare4image.sh` on an instance is an irreversible process.
 The script removes `/var/lib/cloud` which is only created when the instance is created. Therefore,
 to make the instance work properly again, you will either have to taint it or change its image
 attribute to the one you have just created.
