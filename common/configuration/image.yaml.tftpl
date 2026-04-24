@@ -52,7 +52,7 @@ runcmd:
 %{ endif ~}
   - ln -sf /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/data/user_data.yaml /etc/puppetlabs/code/environments/production/data/
-  - /opt/puppetlabs/puppet/bin/puppet apply -l /etc/puppetlabs/code/environments/production/manifests/site.pp
+  - /opt/puppetlabs/puppet/bin/puppet apply /etc/puppetlabs/code/environments/production/manifests/site.pp
   - test -f /run/cloud-init-failed || /usr/bin/prepare4image.sh
 
 write_files:
