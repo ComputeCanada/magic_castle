@@ -80,9 +80,17 @@ write_files:
             "hostkeys":
               "ed25519": "${hostkeys["ed25519"]["public"]}"
             "local_ip": "${local_ip}"
-            "tags": ${tags}
+            "tags":
+%{ for tag in tags ~}
+              - ${tag}
+%{ endfor ~}
+            ${tags}
             "volumes": {}
-            "specs": ${specs}
+            "specs":
+%{ for key, value in specs ~}
+              ${key}: ${value}
+%{ endfor ~}
+            ${specs}
         "tag_ip":
           "puppet": []
     path : /etc/puppetlabs/data/terraform_data.yaml
