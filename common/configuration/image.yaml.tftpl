@@ -84,13 +84,11 @@ write_files:
 %{ for tag in tags ~}
               - ${tag}
 %{ endfor ~}
-            ${tags}
             "volumes": {}
             "specs":
 %{ for key, value in specs ~}
               ${key}: ${value}
 %{ endfor ~}
-            ${specs}
         "tag_ip":
           "puppet": []
     path : /etc/puppetlabs/data/terraform_data.yaml
