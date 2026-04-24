@@ -3,6 +3,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [15.4.0] 2026-04-25
+
+### Added
+
+- Added a dedicated `nesting` variable to the Incus provider to control `security.nesting` independently from `privileged` (PR #420)
+
+### Changed
+
+- Set explicit `defaults,nofail` mount options for ephemeral storage in cloud-init configuration (PR #417)
+- Filter OpenStack subnet lookups to DHCP-enabled IPv4 subnets (PR #418)
+- Derived the OpenStack cloud name from the parsed `auth_url` hostname in `keystone.py` (PR #419)
+- Bumped GitHub Actions workflow dependencies for MkDocs, Trivy, and Node 24 compatibility
+- Fixed documentation typos and updated Incus provider documentation
+
 ## [15.3.1] 2026-03-24
 
 ### Changed
