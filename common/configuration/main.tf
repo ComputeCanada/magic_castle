@@ -94,12 +94,14 @@ locals {
 
   user_data = {
     for key, values in var.inventory : key =>
-    templatefile("${path.module}/puppet.yaml.tftpl",
+    templatefile(contains(values.tags, "image") ? "${path.module}/image.yaml.tftpl" : "${path.module}/puppet.yaml.tftpl",
       {
         cloud_provider        = var.cloud_provider
         cloud_region          = var.cloud_region
         tags                  = values.tags
         bastion_tags          = var.bastion_tags
+        specs                 = try(values.specs, {})
+        local_ip              = try(values.local_ip, "")
         node_name             = key,
         node_prefix           = values.prefix,
         domain_name           = var.domain_name
