@@ -11,11 +11,18 @@ module "design" {
   bastion_tags   = var.bastion_tags
 }
 
+locals {
+  config_git_url_is_local   = can(regex("^(file://|/)", var.config_git_url))
+  config_git_url_host_path  = local.config_git_url_is_local ? replace(var.config_git_url, "file://", "") : null
+  config_git_url_mount_path = local.config_git_url_is_local ? "/opt/magic-castle/puppetenv" : null
+  config_git_url_effective  = local.config_git_url_is_local ? "file://${local.config_git_url_mount_path}" : var.config_git_url
+}
+
 module "configuration" {
   source          = "../common/configuration"
   inventory       = local.inventory
   post_inventory  = local.post_inventory
-  config_git_url  = var.config_git_url
+  config_git_url  = local.config_git_url_effective
   config_version  = var.config_version
   sudoer_username = var.sudoer_username
   public_keys     = var.public_keys
@@ -112,6 +119,19 @@ resource "incus_instance" "instances" {
     properties = {
       pool = var.storage_pool
       path = "/"
+    }
+  }
+
+  dynamic "device" {
+    for_each = contains(each.value.tags, "puppet") && local.config_git_url_is_local ? { puppetenv = local.config_git_url_host_path } : {}
+    content {
+      type = "disk"
+      name = "puppetenv"
+      properties = {
+        source   = device.value
+        path     = local.config_git_url_mount_path
+        readonly = true
+      }
     }
   }
 
