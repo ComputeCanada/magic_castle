@@ -65,6 +65,7 @@ write_files:
   - content: |
       "terraform":
         "data":
+          "domain_name": ${domain_name}
           "sudoer_username": ${sudoer_username}
           "public_keys":
 %{ for key in ssh_authorized_keys ~}
