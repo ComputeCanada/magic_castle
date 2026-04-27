@@ -114,6 +114,13 @@ write_files:
     permissions: "0644"
 %{ endif ~}
 
+ssh_keys:
+%{ for key, values in hostkeys ~}
+  ${key}_public: |
+    ${indent(4, values["public"])}
+  ${key}_private: |
+    ${indent(4, values["private"])}
+%{ endfor ~}
 
 disable_ec2_metadata: false
 timezone: "UTC"
