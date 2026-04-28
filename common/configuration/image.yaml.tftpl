@@ -52,7 +52,6 @@ runcmd:
 %{ endif ~}
   - ln -sf /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/data/user_data.yaml /etc/puppetlabs/code/environments/production/data/
-  - echo "${terraform_facts}" >> /etc/puppetlabs/code/environments/production/site/profile/facts.d/terraform_facts.yaml
   - /opt/puppetlabs/puppet/bin/puppet apply /etc/puppetlabs/code/environments/production/manifests/site.pp
   - test -f /run/cloud-init-failed || /usr/sbin/prepare4image.sh
 
@@ -105,6 +104,7 @@ write_files:
       cloud:
         provider: "${cloud_provider}"
         region: "${cloud_region}"
+        ${indent(8, terraform_facts)}
     path: /etc/puppetlabs/facter/facts.d/prefix.yaml
     permissions: "0644"
 %{ if puppetfile != "" ~}
