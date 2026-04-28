@@ -104,7 +104,7 @@ write_files:
       cloud:
         provider: "${cloud_provider}"
         region: "${cloud_region}"
-        ${indent(8, terraform_facts)}
+      ${indent(6, terraform_facts)}
     path: /etc/puppetlabs/facter/facts.d/prefix.yaml
     permissions: "0644"
 %{ if puppetfile != "" ~}
