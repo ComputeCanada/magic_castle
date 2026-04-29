@@ -42,6 +42,17 @@ runcmd:
   - systemctl disable kdump
   - grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0 crashkernel=0M"
   - grub2-mkconfig -o /boot/grub2/grub.cfg
+# Make sure puppet server can be reached by name early in the process if we need to debug.
+# For some provider, the ip address of the puppetserver is not known in advance, so we make
+# sure it is not empty before adding it to /etc/hosts
+%{ for host, ip in puppetservers ~}
+%{ if ip != "" ~}
+  - echo "${ip} ${host}" >> /etc/hosts
+%{ endif ~}
+%{ endfor ~}%{ if length(puppetservers) > 0 ~}
+  - /opt/puppetlabs/bin/puppet config set server ${keys(puppetservers)[0]}
+  - /opt/puppetlabs/bin/puppet agent --onetime --no-daemonize --logdest console
+%{ else }
   - /opt/puppetlabs/puppet/bin/gem install r10k:5.0.2
   - rm -rf /etc/puppetlabs/code/environments/production/
   - git clone https://github.com/ComputeCanada/puppet-magic_castle.git /etc/puppetlabs/code/environments/production
@@ -53,8 +64,10 @@ runcmd:
   - ln -sf /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/data/user_data.yaml /etc/puppetlabs/code/environments/production/data/
   - /opt/puppetlabs/puppet/bin/puppet apply /etc/puppetlabs/code/environments/production/manifests/site.pp
+%{ endif ~}
   - test -f /run/cloud-init-failed || /usr/sbin/prepare4image.sh
 
+%{ if length(puppetservers) == 0 ~}
 write_files:
   - content: |
       profile::freeipa::client::skip_ipa_install: true
@@ -113,6 +126,7 @@ write_files:
     content: |
       ${indent(6, puppetfile)}
     permissions: "0644"
+%{ endif ~}
 %{ endif ~}
 
 ssh_keys:
