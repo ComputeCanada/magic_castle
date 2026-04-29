@@ -65,6 +65,7 @@ write_files:
   - content: |
       "terraform":
         "data":
+          "cluster_name": ${cluster_name}
           "domain_name": ${domain_name}
           "sudoer_username": ${sudoer_username}
           "public_keys":

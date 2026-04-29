@@ -96,6 +96,7 @@ locals {
     for key, values in var.inventory : key =>
     templatefile(contains(values.tags, "image") ? "${path.module}/image.yaml.tftpl" : "${path.module}/puppet.yaml.tftpl",
       {
+        cluster_name          = var.cluster_name
         cloud_provider        = var.cloud_provider
         cloud_region          = var.cloud_region
         tags                  = values.tags
