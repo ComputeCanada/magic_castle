@@ -82,7 +82,7 @@ runcmd:
       # kernel configuration
 %{ if cloud_provider != "incus" ~}
       systemctl disable kdump
-      grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0 crashkernel=0M"
+      grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0 crashkernel=0M initcall_blacklist=algif_aead_init"
       grub2-mkconfig -o /boot/grub2/grub.cfg
 %{ endif ~}
     fi
