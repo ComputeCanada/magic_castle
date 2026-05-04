@@ -18,7 +18,7 @@ runcmd:
   - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
   # Install package and configure kernel only if building from a "vanilla" linux image
   # Enable fastest mirror for distribution using dnf package manager
-  - dnf -y install dnf-plugins-core
+  - dnf -y install dnf-plugins-core yum-utils
   - dnf config-manager --setopt=fastestmirror=True --save
     # Disable weak dependencies' installation (example: pipewire-pulseaudio is a weak dependency of ipa-dns-server)
   - dnf config-manager --setopt=install_weak_deps=False --save
