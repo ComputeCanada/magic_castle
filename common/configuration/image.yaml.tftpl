@@ -74,6 +74,7 @@ write_files:
       profile::sssd::client::ensure: 'stopped'
       profile::slurm::node::ensure: 'stopped'
       consul::service_ensure: 'stopped'
+      profile::gpu::type: 'vgpu'
     path : /etc/puppetlabs/data/user_data.yaml
   - content: |
       "terraform":
