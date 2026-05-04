@@ -67,8 +67,8 @@ runcmd:
 %{ endif ~}
   - test -f /run/cloud-init-failed || /usr/sbin/prepare4image.sh
 
-%{ if length(puppetservers) == 0 ~}
 write_files:
+%{ if length(puppetservers) == 0 ~}
   - content: |
       profile::freeipa::client::skip_ipa_install: true
       profile::sssd::client::ensure: 'stopped'
@@ -128,6 +128,14 @@ write_files:
       ${indent(6, puppetfile)}
     permissions: "0644"
 %{ endif ~}
+%{ else }
+  - content: |
+      ---
+      custom_attributes:
+        1.2.840.113549.1.9.7: "${puppetserver_password}"
+    path: /etc/puppetlabs/puppet/csr_attributes.yaml
+    permissions: "0644"
+    owner: root:root
 %{ endif ~}
 
 ssh_keys:
