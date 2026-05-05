@@ -1,21 +1,17 @@
 #cloud-config
 
 users:
-  - name: ${sudoer_username}
-    groups: adm, wheel, systemd-journal
+  - name: tf
+    system: true
     passwd: '*'
-    homedir: /${sudoer_username}
-    sudo: ALL=(ALL) NOPASSWD:ALL
-    selinux_user: unconfined_u
-    ssh_authorized_keys:
-%{ for key in ssh_authorized_keys ~}
-      - ${key}
-%{ endfor ~}
+    no_user_group: true
+    homedir: /tmp
+    sudo: "ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh *.zip"
 
 runcmd:
   - "flag_cloud_init_failed () { echo \"$${BASH_COMMAND}\" >> /run/cloud-init-failed; }"
   - trap 'flag_cloud_init_failed' ERR
-  - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
+  # - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
   - restorecon -R /${sudoer_username}
   # Install package and configure kernel only if building from a "vanilla" linux image
   # Enable fastest mirror for distribution using dnf package manager
@@ -36,102 +32,43 @@ runcmd:
   - systemctl disable kdump
   - grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0 crashkernel=0M"
   - grub2-mkconfig -o /boot/grub2/grub.cfg
-# Make sure puppet server can be reached by name early in the process if we need to debug.
-# For some provider, the ip address of the puppetserver is not known in advance, so we make
-# sure it is not empty before adding it to /etc/hosts
-%{ for host, ip in puppetservers ~}
-%{ if ip != "" ~}
-  - echo "${ip} ${host}" >> /etc/hosts
-%{ endif ~}
-%{ endfor ~}%{ if length(puppetservers) > 0 ~}
-  - /opt/puppetlabs/bin/puppet config set server ${keys(puppetservers)[0]}
-  - /opt/puppetlabs/bin/puppet agent --onetime --no-daemonize --logdest console
-%{ else }
   - /opt/puppetlabs/puppet/bin/gem install r10k:5.0.2
   - rm -rf /etc/puppetlabs/code/environments/production/
   - git clone https://github.com/ComputeCanada/puppet-magic_castle.git /etc/puppetlabs/code/environments/production
   - ( cd /etc/puppetlabs/code/environments/production/; git checkout ${puppetenv_rev} )
   - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/environments/production/modules --puppetfile=/etc/puppetlabs/code/environments/production/Puppetfile
-%{ if puppetfile != "" ~}
-  - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/modules --puppetfile=/etc/puppetlabs/code/Puppetfile
-%{ endif ~}
+  - while [ ! -e "/etc/puppetlabs/data/terraform_data.yaml" ]; do echo "$(date -I'seconds') Waiting for terraform to scp terraform_data.yaml"; sleep 5; done
+  - cat /etc/puppetlabs/data/user_data_image.yaml >> /etc/puppetlabs/data/user_data.yaml
+  - test -f /etc/puppetlabs/code/Puppetfile && /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/modules --puppetfile=/etc/puppetlabs/code/Puppetfile
   - ln -sf /etc/puppetlabs/data/terraform_data.yaml /etc/puppetlabs/code/environments/production/data/
   - ln -sf /etc/puppetlabs/data/user_data.yaml /etc/puppetlabs/code/environments/production/data/
   - /opt/puppetlabs/puppet/bin/puppet apply /etc/puppetlabs/code/environments/production/manifests/site.pp
-%{ endif ~}
   - test -f /run/cloud-init-failed || /usr/sbin/prepare4image.sh
 
 write_files:
-%{ if length(puppetservers) == 0 ~}
   - content: |
       profile::freeipa::client::skip_ipa_install: true
       profile::sssd::client::ensure: 'stopped'
       profile::slurm::node::ensure: 'stopped'
       consul::service_ensure: 'stopped'
-      profile::gpu::type: 'vgpu'
-    path : /etc/puppetlabs/data/user_data.yaml
+    path : /etc/puppetlabs/data/user_data_image.yaml
   - content: |
-      "terraform":
-        "data":
-          "cluster_name": ${cluster_name}
-          "domain_name": ${domain_name}
-          "sudoer_username": ${sudoer_username}
-          "public_keys":
-%{ for key in ssh_authorized_keys ~}
-            - ${key}
-%{ endfor ~}
-        "instances":
-          "${node_name}":
-            "hostkeys":
-              "ed25519": "${hostkeys["ed25519"]["public"]}"
-            "local_ip": "${local_ip}"
-            "tags":
-%{ for tag in tags ~}
-              - ${tag}
-%{ endfor ~}
-            "volumes": {}
-            "specs":
-%{ for key, value in specs ~}
-              ${key}: ${value}
-%{ endfor ~}
-        "tag_ip":
-          "puppet": []
-    path : /etc/puppetlabs/data/terraform_data.yaml
-  - content: |
-      facts : {
-        blocklist : [
-          "EC2", "az_metadata", "cloud.provider", "hypervisors"
-          %{ if cloud_provider != "gcp" },"GCE"%{ endif }
-          %{ if cloud_provider == "incus" },"kmods"%{ endif }
-        ],
-      }
-    path: /etc/puppetlabs/facter/facter.conf
-    permissions: "0644"
-  - content: |
-      ---
-      prefix : "${node_prefix}"
-      cloud:
-        provider: "${cloud_provider}"
-        region: "${cloud_region}"
-      ${indent(6, terraform_facts)}
-    path: /etc/puppetlabs/facter/facts.d/prefix.yaml
-    permissions: "0644"
-%{ if puppetfile != "" ~}
-  - path: /etc/puppetlabs/code/Puppetfile
-    content: |
-      ${indent(6, puppetfile)}
-    permissions: "0644"
-%{ endif ~}
-%{ else }
-  - content: |
-      ---
-      custom_attributes:
-        1.2.840.113549.1.9.7: "${puppetserver_password}"
-    path: /etc/puppetlabs/puppet/csr_attributes.yaml
-    permissions: "0644"
-    owner: root:root
-%{ endif ~}
+      #!/bin/bash
+      ZIP_FILE=$${1}
+      ZIP_DIR=$${ZIP_FILE%.zip}
 
+      # unzip is not necessarily installed when connecting, but python is.
+      /usr/libexec/platform-python -c "import zipfile; zipfile.ZipFile('$${ZIP_FILE}').extractall()"
+
+      chmod g-w,o-rwx $(find $${ZIP_DIR}/ -type f ! -path $${ZIP_DIR}/code/*)
+      chown -R root:52 $${ZIP_DIR}
+      mkdir -p -m 755 /etc/puppetlabs/
+      rsync -avh --no-t --exclude 'data' $${ZIP_DIR}/ /etc/puppetlabs/
+      rsync -avh --no-t --del $${ZIP_DIR}/data/ /etc/puppetlabs/data/
+      rm -rf $${ZIP_DIR}/
+    permissions: "0755"
+    path: /usr/sbin/update_etc_puppetlabs.sh
+    
 ssh_keys:
 %{ for key, values in hostkeys ~}
   ${key}_public: |
