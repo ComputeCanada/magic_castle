@@ -16,17 +16,14 @@ runcmd:
   - "flag_cloud_init_failed () { echo \"$${BASH_COMMAND}\" >> /run/cloud-init-failed; }"
   - trap 'flag_cloud_init_failed' ERR
   - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
+  - restorecon -R /${sudoer_username}
   # Install package and configure kernel only if building from a "vanilla" linux image
   # Enable fastest mirror for distribution using dnf package manager
   - dnf -y install dnf-plugins-core
   - dnf config-manager --setopt=fastestmirror=True --save
-    # Disable weak dependencies' installation (example: pipewire-pulseaudio is a weak dependency of ipa-dns-server)
+  # Disable weak dependencies' installation (example: pipewire-pulseaudio is a weak dependency of ipa-dns-server)
   - dnf config-manager --setopt=install_weak_deps=False --save
   - dnf -y install openssh openssh-server rsync
-  - systemctl restart sshd
-    # Install required packages in runcmd instead of packages to speedup configuration
-    # of the admin user. This reduces the risk of Terraform timing out when trying to
-    # upload the terraform_data.yaml
   - dnf -y install git pciutils unzip
   - dnf -y remove cockpit\* firewalld --exclude=iptables
   - dnf -y upgrade
