@@ -111,6 +111,7 @@ runcmd:
   - rm -rf /etc/puppetlabs/code/environments/production
   - git clone ${puppetenv_git} /etc/puppetlabs/code/environments/main
   - ln -s /etc/puppetlabs/code/environments/main /etc/puppetlabs/code/environments/production
+  - ln -s /etc/puppetlabs/code/environments/main /etc/puppetlabs/code/environments/image
   - |
     (
     cd /etc/puppetlabs/code/environments/production
@@ -148,6 +149,10 @@ runcmd:
   - /opt/puppetlabs/bin/puppet config set waitforcert 15s
   - /opt/puppetlabs/bin/puppet config set report true
   - /opt/puppetlabs/bin/puppet config set postrun_command /opt/puppetlabs/bin/postrun
+%{ if contains(tags, "image") }
+  - /opt/puppetlabs/bin/puppet config set environment image
+  - /opt/puppetlabs/bin/puppet config set postrun_command /usr/sbin/prepare4image.sh
+%{ endif }
   - systemctl enable puppet
 # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
   - for i in /etc/sysconfig/network-scripts/ifcfg-*; do if ! ip link show | grep -q "$${i##*-}:"; then rm -f $i; fi; done

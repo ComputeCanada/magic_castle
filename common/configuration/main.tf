@@ -94,7 +94,8 @@ locals {
 
   user_data = {
     for key, values in var.inventory : key =>
-    templatefile(contains(values.tags, "image") ? "${path.module}/image.yaml.tftpl" : "${path.module}/puppet.yaml.tftpl",
+    # templatefile(contains(values.tags, "image") ? "${path.module}/image.yaml.tftpl" : "${path.module}/puppet.yaml.tftpl",
+    templatefile("${path.module}/puppet.yaml.tftpl",
       {
         cluster_name          = var.cluster_name
         cloud_provider        = var.cloud_provider
