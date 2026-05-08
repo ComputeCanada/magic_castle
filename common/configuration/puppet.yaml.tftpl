@@ -150,7 +150,7 @@ runcmd:
   - /opt/puppetlabs/bin/puppet config set report true
   - /opt/puppetlabs/bin/puppet config set postrun_command /opt/puppetlabs/bin/postrun
 %{ if contains(tags, "image") }
-  - /opt/puppetlabs/bin/puppet config set environment image
+  - /opt/puppetlabs/bin/puppet config --section agent set environment image
   - /opt/puppetlabs/bin/puppet config set postrun_command /usr/sbin/prepare4image.sh
 %{ endif }
   - systemctl enable puppet
