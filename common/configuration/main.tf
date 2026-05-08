@@ -111,6 +111,7 @@ locals {
         tf_ssh_public_key     = chomp(tls_private_key.ssh.public_key_openssh)
         terraform_facts       = local.terraform_facts
         skip_upgrade          = var.skip_upgrade
+        module_path           = path.module
         hostkeys = {
           rsa = {
             private = chomp(tls_private_key.rsa[values.prefix].private_key_openssh)
