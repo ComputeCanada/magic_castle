@@ -119,7 +119,7 @@ runcmd:
   - ln -sf /etc/puppetlabs/facts/terraform_facts.yaml /etc/puppetlabs/code/environments/production/site/profile/facts.d
 # We use r10k solely to install the modules of the production puppet environment.
   - /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/environments/production/modules --puppetfile=/etc/puppetlabs/code/environments/production/Puppetfile
-
+  - test -f /etc/puppetlabs/code/Puppetfile && /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/modules --puppetfile=/etc/puppetlabs/code/Puppetfile
 %{ if node_name != keys(puppetservers)[0] }
   - sed -e '/certificate-authority-service/ s/^/#/' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
   - sed -e '/certificate-authority-disabled-service/ s/^#//' -i /etc/puppetlabs/puppetserver/services.d/ca.cfg
