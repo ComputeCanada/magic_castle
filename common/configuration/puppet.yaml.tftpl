@@ -39,14 +39,6 @@ runcmd:
     # most container images do not have selinux pre-installed
   - restorecon -R /${sudoer_username}
 %{ endif }
-# Make sure puppet server can be reached by name early in the process if we need to debug.
-# For some provider, the ip address of the puppetserver is not known in advance, so we make
-# sure it is not empty before adding it to /etc/hosts
-%{ for host, ip in puppetservers ~}
-%{ if ip != "" ~}
-  - echo "${ip} ${host}" >> /etc/hosts
-%{ endif ~}
-%{ endfor ~}
   # Install package and configure kernel only if building from a "vanilla" linux image
   - |
     if ! test -f /etc/magic-castle-release; then
@@ -163,6 +155,14 @@ runcmd:
   - test -f /run/cloud-init-failed && echo 'WARNING - some steps cloud-init runcmd failed, listed in /run/cloud-init-failed. Manual fixing and rebooting required. ' | tee /etc/motd || true
 
 write_files:
+  - content: |
+%{ for host, ip in puppetservers ~}
+%{ if ip != "" ~}
+      ${ip} ${host}
+%{ endif ~}
+%{ endfor ~}
+    path: /etc/hosts
+    append: true
 %{ if contains(tags, "puppet") || length(setintersection(tags, bastion_tags)) > 0 ~}
   - content: |
       Match User tf
