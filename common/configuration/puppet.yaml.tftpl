@@ -139,7 +139,7 @@ runcmd:
   - ${jsonencode(["/opt/puppetlabs/bin/puppet", "config", "set", conf.key, conf.value, "--section", conf.section])}
 %{ endfor ~}
 %{ if contains(tags, "image") }
-  - /opt/puppetlabs/bin/puppet config set environment image
+  - /opt/puppetlabs/bin/puppet config --section agent set environment image
   - /opt/puppetlabs/bin/puppet config set postrun_command /usr/sbin/prepare4image.sh
 %{ endif }
   - systemctl enable puppet
