@@ -28,7 +28,6 @@ module "configuration" {
   cloud_provider  = local.cloud_provider
   cloud_region    = local.cloud_region
   skip_upgrade    = var.skip_upgrade
-  puppetfile      = var.puppetfile
 }
 
 module "provision" {
