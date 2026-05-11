@@ -6,7 +6,7 @@ mounts:
  - [ ephemeral0, /mnt/ephemeral0, auto, "defaults,nofail" ]
 
 users:
-%{ if contains(tags, "puppet") || length(setintersection(tags, bastion_tags)) > 0 ~}
+%{ if user_tf_required ~}
   - name: tf
     system: true
     passwd: '*'
@@ -163,24 +163,24 @@ write_files:
 %{ endfor ~}
     path: /etc/hosts
     append: true
-%{ if contains(tags, "puppet") || length(setintersection(tags, bastion_tags)) > 0 ~}
-  - content: |
+%{ if user_tf_required ~}
+  - path: /etc/ssh/sshd_config.d/50-authenticationmethods.conf
+    permissions: "0600"
+    content: |
       Match User tf
         AuthorizedKeysFile /etc/ssh/authorized_keys.%u
         AuthenticationMethods publickey
-    path: /etc/ssh/sshd_config.d/50-authenticationmethods.conf
-    permissions: "0600"
-%{ endif ~}
+  - path: /etc/ssh/authorized_keys.tf
+    permissions: "0644"
+    content: |
 %{ if contains(tags, "puppet") ~}
-  - content: restrict,pty ${tf_ssh_public_key}
-    path: /etc/ssh/authorized_keys.tf
-    permissions: "0644"
+      restrict,pty ${tf_ssh_public_key}
 %{ else ~}
-%{ if length(setintersection(tags, bastion_tags)) > 0 ~}
-  # If the ip addresses of the puppet servers are not known in advance, we cannot restrict the ssh connection to them.
-  - content: restrict,%{if length(compact(values(puppetservers))) == length(keys(puppetservers)) }%{ for host, ip in puppetservers }permitopen="${ip}:22"%{ endfor }%{ else }pty%{ endif },port-forwarding,command="/sbin/nologin" ${tf_ssh_public_key}
-    path: /etc/ssh/authorized_keys.tf
-    permissions: "0644"
+%{ if length(compact(values(puppetservers))) != length(keys(puppetservers)) ~}
+      restrict,pty,port-forwarding,command="/sbin/nologin" ${tf_ssh_public_key}
+%{ else ~}
+      restrict,%{ for host, ip in puppetservers }permitopen="${ip}:22",%{ endfor }port-forwarding,command="/sbin/nologin" ${tf_ssh_public_key}
+%{ endif ~}
 %{ endif ~}
 %{ endif ~}
   - content: |

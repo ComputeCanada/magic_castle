@@ -112,6 +112,7 @@ locals {
         terraform_facts       = local.terraform_facts
         skip_upgrade          = var.skip_upgrade
         module_path           = path.module
+        user_tf_required      = contains(values.tags, "puppet") || length(setintersection(values.tags, var.bastion_tags)) > 0
         hostkeys = {
           rsa = {
             private = chomp(tls_private_key.rsa[values.prefix].private_key_openssh)
