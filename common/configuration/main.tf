@@ -83,6 +83,7 @@ locals {
         domain_name     = var.domain_name
         guest_passwd    = local.guest_passwd
         nb_users        = var.nb_users
+        bastion_tags    = var.bastion_tags
       }
     }
   })
