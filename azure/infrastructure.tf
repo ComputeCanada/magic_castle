@@ -60,6 +60,15 @@ resource "azurerm_resource_group" "group" {
   location = var.location
 }
 
+# Create an availability set for the execution nodes
+resource "azurerm_availability_set" "avset" {
+  name                = "${var.cluster_name}_availability_set"
+  location            = var.location
+  resource_group_name = local.resource_group_name
+  platform_update_domain_count = 1
+  platform_fault_domain_count  = 1
+}
+
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "instances" {
   for_each              = module.design.instances_to_build
@@ -68,6 +77,7 @@ resource "azurerm_linux_virtual_machine" "instances" {
   location              = var.location
   resource_group_name   = local.resource_group_name
   network_interface_ids = [azurerm_network_interface.nic[each.key].id]
+  availability_set_id   = contains(each.value["tags"], "node") ? azurerm_availability_set.avset.id : null
 
   os_disk {
     name                 = format("%s-%s-disk", var.cluster_name, each.key)
