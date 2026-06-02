@@ -23,7 +23,6 @@ variable "guest_passwd" {}
 variable "public_keys" {}
 
 variable "skip_upgrade" {}
-variable "puppetfile" {}
 variable "bastion_tags" {}
 
 resource "tls_private_key" "ssh" {
@@ -84,6 +83,7 @@ locals {
         domain_name     = var.domain_name
         guest_passwd    = local.guest_passwd
         nb_users        = var.nb_users
+        bastion_tags    = var.bastion_tags
       }
     }
   })
@@ -112,7 +112,8 @@ locals {
         tf_ssh_public_key     = chomp(tls_private_key.ssh.public_key_openssh)
         terraform_facts       = local.terraform_facts
         skip_upgrade          = var.skip_upgrade
-        puppetfile            = var.puppetfile
+        module_path           = path.module
+        user_tf_required      = contains(values.tags, "puppet") || length(setintersection(values.tags, var.bastion_tags)) > 0
         hostkeys = {
           rsa = {
             private = chomp(tls_private_key.rsa[values.prefix].private_key_openssh)

@@ -28,7 +28,6 @@ module "configuration" {
   cloud_provider  = "incus"
   cloud_region    = "local"
   skip_upgrade    = var.skip_upgrade
-  puppetfile      = var.puppetfile
 }
 
 module "provision" {
