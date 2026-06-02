@@ -35,6 +35,7 @@ runcmd:
   - trap 'flag_cloud_init_failed' ERR
   - chmod 755 /etc # avoid issue with Rocky 9.4
   - test ! -d /${sudoer_username} && userdel -f -r ${sudoer_username} && cloud-init clean -r
+  - blkid -L ephemeral0 &>/dev/null || sed -i -E '\;^[[:space:]]*ephemeral0[[:space:]]+/mnt/ephemeral0[[:space:]];s;^;#;' /etc/fstab
 %{ if cloud_provider != "incus" ~}
   # most container images do not have selinux pre-installed
   - restorecon -R /${sudoer_username}
