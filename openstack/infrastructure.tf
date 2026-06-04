@@ -157,8 +157,6 @@ locals {
   }
 
   post_inventory = { for host, values in local.inventory :
-    host => merge(values, {
-      id = try(openstack_compute_instance_v2.instances[host].id, "")
-    })
+    host => merge(values, {})
   }
 }
