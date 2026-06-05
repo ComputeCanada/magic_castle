@@ -84,7 +84,7 @@ resource "terraform_data" "deploy_puppetserver_files" {
     hieradata = sha256(var.hieradata)
     eyaml_key = sha256(var.eyaml_key)
     puppetfile = sha256(var.puppetfile)
-    hieradata_dir = var.hieradata_dir != "" ? sha256(yamlencode([for filename in fileset("${var.hieradata_dir}", "**/*.yaml"): file("${var.hieradata_dir}/${filename}")])) : sha256("")
+    hieradata_dir = var.hieradata_dir != "" ? sha256(yamlencode([for filename in fileset("${var.hieradata_dir}", "**/*.yaml"): {"key" = filename, "value" = file("${var.hieradata_dir}/${filename}")}])) : sha256("")
   }
 
   depends_on = [data.archive_file.puppetserver_files]
