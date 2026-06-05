@@ -14,6 +14,8 @@ locals {
   provision_folder = "etc_puppetlabs"
 }
 
+# When adding archive_file sources, also add matching sha256 to
+# deploy_puppetserver_files' triggers_replace.
 data "archive_file" "puppetserver_files" {
   type        = "zip"
   output_path = "${path.module}/files/${local.provision_folder}.zip"
@@ -79,6 +81,9 @@ resource "terraform_data" "deploy_puppetserver_files" {
     private_key         = var.configuration.ssh_key.private
   }
 
+  # Use individual hashes instead of archive_file.output_sha256
+  # because when using output_sha256 Terraform would trigger a deployment even when the sha256 was unchanged.
+  # Make sure to mirror the content of archive file.
   triggers_replace = {
     puppetserver_ids = var.puppetserver_ids
     terraform_data   = sha256(var.configuration.terraform_data)
