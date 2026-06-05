@@ -79,7 +79,12 @@ resource "terraform_data" "deploy_puppetserver_files" {
   }
 
   triggers_replace = {
-    archive = data.archive_file.puppetserver_files.output_sha256
+    terraform_data = sha256(var.configuration.terraform_data)
+    terraform_facts = sha256(var.configuration.terraform_facts)
+    hieradata = sha256(var.hieradata)
+    eyaml_key = sha256(var.eyaml_key)
+    puppetfile = sha256(var.puppetfile)
+    hieradata_dir = var.hieradata_dir != "" ? sha256(yamlencode([for filename in fileset("${var.hieradata_dir}", "**/*.yaml"): file("${var.hieradata_dir}/${filename}")])) : sha256("")
   }
 
   provisioner "file" {
