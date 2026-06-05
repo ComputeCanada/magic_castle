@@ -190,8 +190,6 @@ locals {
   }
 
   post_inventory = { for host, values in local.inventory :
-    host => merge(values, {
-      id = try(azurerm_linux_virtual_machine.instances[host].id, "")
-    })
+    host => merge(values, {})
   }
 }

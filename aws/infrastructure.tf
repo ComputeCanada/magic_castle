@@ -233,8 +233,6 @@ locals {
   }
 
   post_inventory = { for host, values in local.inventory :
-    host => merge(values, {
-      id = try(aws_instance.instances[host].id, "")
-    })
+    host => merge(values, {})
   }
 }
