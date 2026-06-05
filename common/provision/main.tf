@@ -8,6 +8,7 @@ variable "hieradata" {}
 variable "hieradata_dir" {}
 variable "eyaml_key" {}
 variable "puppetfile" {}
+variable "puppetserver_ids" {}
 
 locals {
   provision_folder = "etc_puppetlabs"
@@ -79,12 +80,13 @@ resource "terraform_data" "deploy_puppetserver_files" {
   }
 
   triggers_replace = {
-    terraform_data  = sha256(var.configuration.terraform_data)
-    terraform_facts = sha256(var.configuration.terraform_facts)
-    hieradata       = sha256(var.hieradata)
-    eyaml_key       = sha256(var.eyaml_key)
-    puppetfile      = sha256(var.puppetfile)
-    hieradata_dir   = var.hieradata_dir != "" ? sha256(yamlencode([for filename in fileset("${var.hieradata_dir}", "**/*.yaml") : { "key" = filename, "value" = file("${var.hieradata_dir}/${filename}") }])) : sha256("")
+    puppetserver_ids = var.puppetserver_ids
+    terraform_data   = sha256(var.configuration.terraform_data)
+    terraform_facts  = sha256(var.configuration.terraform_facts)
+    hieradata        = sha256(var.hieradata)
+    eyaml_key        = sha256(var.eyaml_key)
+    puppetfile       = sha256(var.puppetfile)
+    hieradata_dir    = var.hieradata_dir != "" ? sha256(yamlencode([for filename in fileset("${var.hieradata_dir}", "**/*.yaml") : { "key" = filename, "value" = file("${var.hieradata_dir}/${filename}") }])) : sha256("")
   }
 
   depends_on = [data.archive_file.puppetserver_files]

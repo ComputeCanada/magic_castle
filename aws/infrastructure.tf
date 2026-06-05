@@ -19,7 +19,6 @@ module "design" {
 module "configuration" {
   source          = "../common/configuration"
   inventory       = local.inventory
-  post_inventory  = local.post_inventory
   config_git_url  = var.config_git_url
   config_version  = var.config_version
   sudoer_username = var.sudoer_username
@@ -36,13 +35,14 @@ module "configuration" {
 }
 
 module "provision" {
-  source        = "../common/provision"
-  configuration = module.configuration
-  hieradata     = var.hieradata
-  hieradata_dir = var.hieradata_dir
-  eyaml_key     = var.eyaml_key
-  puppetfile    = var.puppetfile
-  depends_on    = [aws_instance.instances, aws_eip.public_ip]
+  source           = "../common/provision"
+  configuration    = module.configuration
+  hieradata        = var.hieradata
+  hieradata_dir    = var.hieradata_dir
+  eyaml_key        = var.eyaml_key
+  puppetfile       = var.puppetfile
+  puppetserver_ids = local.puppetserver_ids
+  depends_on       = [aws_instance.instances, aws_eip.public_ip]
 }
 
 data "aws_availability_zones" "available" {
@@ -232,7 +232,5 @@ locals {
     }
   }
 
-  post_inventory = { for host, values in local.inventory :
-    host => merge(values, {})
-  }
+  puppetserver_ids = { for host, values in local.inventory : host => try(aws_instance.instances[host].id, "") if contains(values.tags, "puppet") }
 }
