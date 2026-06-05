@@ -87,6 +87,8 @@ resource "terraform_data" "deploy_puppetserver_files" {
     hieradata_dir = var.hieradata_dir != "" ? sha256(yamlencode([for filename in fileset("${var.hieradata_dir}", "**/*.yaml"): file("${var.hieradata_dir}/${filename}")])) : sha256("")
   }
 
+  depends_on = [data.archive_file.puppetserver_files]
+
   provisioner "file" {
     source      = "${path.module}/files/${local.provision_folder}.zip"
     destination = "${local.provision_folder}.zip"
