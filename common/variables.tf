@@ -74,8 +74,8 @@ variable "config_git_url" {
   type        = string
   description = "URL to the Magic Castle Puppet configuration git repo"
   validation {
-    condition     = can(regex("^https://.*\\.git$", var.config_git_url))
-    error_message = "The config_git_url variable must be an https url to a git repo."
+    condition     = can(regex("^(https://.*\\.git|/.*|file:///.+)$", var.config_git_url))
+    error_message = "The config_git_url variable must be an https url to a git repo or an absolute local path (optionally prefixed with file://)."
   }
 }
 
