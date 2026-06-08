@@ -3,6 +3,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [15.5.0] 2026-06-08
+
+### Added
+
+- Added `bastion_tags` to Terraform facts data. (PR #424)
+- Added puppetserver instance IDs to provisioning triggers so Puppet data redeploys when a puppetserver is replaced. (PR #429)
+
+### Changed
+
+- Cleaned up cloud-init templating, including `/etc/hosts` updates, `tf` SSH configuration, ephemeral volume handling, and the `update_etc_puppetlabs.sh` script. (PR #424)
+- Removed provider instance IDs from `terraform_data.yaml`. (PR #429)
+- Replaced the puppetserver deployment archive trigger with per-input hashes for Terraform data, facts, hieradata, eyaml keys, Puppetfile, and hieradata directory contents. (PR #429)
+- Installed custom Puppetfile modules only when `/etc/puppetlabs/code/Puppetfile` exists. (PR #424)
+
 ## [15.4.1] 2026-05-01
 
 ### Added
