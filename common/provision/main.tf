@@ -8,11 +8,14 @@ variable "hieradata" {}
 variable "hieradata_dir" {}
 variable "eyaml_key" {}
 variable "puppetfile" {}
+variable "puppetserver_ids" {}
 
 locals {
   provision_folder = "etc_puppetlabs"
 }
 
+# When adding archive_file sources, also add matching sha256 to
+# deploy_puppetserver_files' triggers_replace.
 data "archive_file" "puppetserver_files" {
   type        = "zip"
   output_path = "${path.module}/files/${local.provision_folder}.zip"
@@ -78,9 +81,20 @@ resource "terraform_data" "deploy_puppetserver_files" {
     private_key         = var.configuration.ssh_key.private
   }
 
+  # Use individual hashes instead of archive_file.output_sha256
+  # because when using output_sha256 Terraform would trigger a deployment even when the sha256 was unchanged.
+  # Make sure to mirror the content of archive file.
   triggers_replace = {
-    archive = data.archive_file.puppetserver_files.output_sha256
+    puppetserver_ids = var.puppetserver_ids
+    terraform_data   = sha256(var.configuration.terraform_data)
+    terraform_facts  = sha256(var.configuration.terraform_facts)
+    hieradata        = sha256(var.hieradata)
+    eyaml_key        = sha256(var.eyaml_key)
+    puppetfile       = sha256(var.puppetfile)
+    hieradata_dir    = var.hieradata_dir != "" ? sha256(yamlencode([for filename in fileset("${var.hieradata_dir}", "**/*.yaml") : { "key" = filename, "value" = file("${var.hieradata_dir}/${filename}") }])) : sha256("")
   }
+
+  depends_on = [data.archive_file.puppetserver_files]
 
   provisioner "file" {
     source      = "${path.module}/files/${local.provision_folder}.zip"

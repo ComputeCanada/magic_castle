@@ -35,13 +35,14 @@ module "configuration" {
 }
 
 module "provision" {
-  source        = "../common/provision"
-  configuration = module.configuration
-  hieradata     = var.hieradata
-  hieradata_dir = var.hieradata_dir
-  eyaml_key     = var.eyaml_key
-  puppetfile    = var.puppetfile
-  depends_on    = [google_compute_instance.instances]
+  source           = "../common/provision"
+  configuration    = module.configuration
+  hieradata        = var.hieradata
+  hieradata_dir    = var.hieradata_dir
+  eyaml_key        = var.eyaml_key
+  puppetfile       = var.puppetfile
+  puppetserver_ids = local.puppetserver_ids
+  depends_on       = [google_compute_instance.instances]
 }
 
 
@@ -194,9 +195,5 @@ locals {
     }
   }
 
-  post_inventory = { for host, values in local.inventory :
-    host => merge(values, {
-      id = try(google_compute_instance.instances[host].id, "")
-    })
-  }
+  puppetserver_ids = { for host, values in local.inventory : host => try(google_compute_instance.instances[host].id, "") if contains(values.tags, "puppet") }
 }

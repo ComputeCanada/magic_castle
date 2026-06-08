@@ -31,12 +31,13 @@ module "configuration" {
 }
 
 module "provision" {
-  source        = "../common/provision"
-  configuration = module.configuration
-  hieradata     = var.hieradata
-  hieradata_dir = var.hieradata_dir
-  eyaml_key     = var.eyaml_key
-  puppetfile    = var.puppetfile
+  source           = "../common/provision"
+  configuration    = module.configuration
+  hieradata        = var.hieradata
+  hieradata_dir    = var.hieradata_dir
+  eyaml_key        = var.eyaml_key
+  puppetfile       = var.puppetfile
+  puppetserver_ids = local.puppetserver_ids
 }
 
 resource "random_id" "project_name" {
@@ -162,6 +163,7 @@ locals {
   }
 
   public_instances = { for host, values in module.configuration.inventory : host => values if contains(values.tags, "public") }
+  puppetserver_ids = { for host, values in local.inventory : host => try(incus_instance.instances[host].id, "") if contains(values.tags, "puppet") }
 }
 
 output "project" {
