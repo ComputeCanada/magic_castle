@@ -90,11 +90,14 @@ resource "incus_instance" "instances" {
 
   description = jsonencode(each.value.tags)
 
-  config = {
-    "cloud-init.user-data" = module.configuration.user_data[each.key]
-    "security.privileged"  = var.privileged
-    "security.nesting"     = var.nesting
-  }
+  config = merge(
+    {
+      "cloud-init.user-data" = module.configuration.user_data[each.key]
+      "security.privileged"  = var.privileged
+      "security.nesting"     = var.nesting
+    },
+    try(each.value.config, {})
+  )
 
   device {
     name = "eth0"
