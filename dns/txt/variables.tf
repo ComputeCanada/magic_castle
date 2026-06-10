@@ -19,7 +19,7 @@ variable "vhost_tag" {
 variable "vhosts" {
   description = "List of vhost records A to create."
   type        = list(string)
-  default     = ["ipa", "jupyter", "mokey", "explore"]
+  default     = ["*"]
 }
 
 variable "dkim_public_key" {

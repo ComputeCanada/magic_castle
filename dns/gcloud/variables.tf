@@ -13,7 +13,7 @@ variable "domain" {
 variable "vhosts" {
   description = "List of vhost dns records to create as vhost.name.domain_name."
   type        = list(string)
-  default     = ["ipa", "jupyter", "mokey", "explore"]
+  default     = ["*"]
 }
 
 variable "domain_tag" {
