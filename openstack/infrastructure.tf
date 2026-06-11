@@ -143,7 +143,7 @@ locals {
           parseint(split(":", lookup(data.openstack_compute_flavor_v2.flavors[values.type].extra_specs, "pci_passthrough:alias", "gpu:0"))[1], 10)
         ])
       }, values.specs)
-      volumes = contains(keys(module.design.volume_per_instance), x) ? {
+      volumes = {
         for pv_key, pv_values in var.volumes :
         pv_key => {
           for name, specs in pv_values :
@@ -152,7 +152,7 @@ locals {
             specs,
           )
         } if contains(values.tags, pv_key)
-      } : {}
+      }
     }
   }
 

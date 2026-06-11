@@ -219,7 +219,7 @@ locals {
         ram  = data.aws_ec2_instance_type.instance_type[values.prefix].memory_size
         gpus = try(one(data.aws_ec2_instance_type.instance_type[values.prefix].gpus).count, 0)
       }, values.specs)
-      volumes = contains(keys(module.design.volume_per_instance), x) ? {
+      volumes = {
         for pv_key, pv_values in var.volumes :
         pv_key => {
           for name, specs in pv_values :
@@ -228,7 +228,7 @@ locals {
             specs,
           )
         } if contains(values.tags, pv_key)
-      } : {}
+      }
     }
   }
 
