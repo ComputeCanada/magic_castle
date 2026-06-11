@@ -176,7 +176,7 @@ locals {
         ram  = local.vmsizes[values.type].ram
         gpus = local.vmsizes[values.type].gpus
       }, values.specs)
-      volumes = contains(keys(module.design.volume_per_instance), x) ? {
+      volumes = {
         for pv_key, pv_values in var.volumes :
         pv_key => {
           for name, specs in pv_values :
@@ -185,7 +185,7 @@ locals {
             specs,
           )
         } if contains(values.tags, pv_key)
-      } : {}
+      }
     }
   }
 
