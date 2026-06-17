@@ -982,6 +982,32 @@ to transfer files to the Puppet server. By default, this list is inferred from t
 `terraform apply`. Providing an explicit list of tags allows bypassing the firewall rule inference,
 which can be useful when the agent is in the same network as the cluster.
 
+### 4.23 puppet_conf (optional)
+
+**default_value** = `[]`
+
+Defines additional Puppet agent settings to write to `/etc/puppetlabs/puppet/puppet.conf`
+on each instance during cloud-init. Each entry is an object with the following attributes:
+
+- `key`: Puppet setting name.
+- `value`: Puppet setting value.
+- `section`: Puppet configuration section. Defaults to `"main"` when omitted.
+
+Example:
+
+```hcl
+puppet_conf = [
+  { key = "runinterval", value = "15m" },
+  { key = "log_level", value = "notice", section = "agent" }
+]
+```
+
+For more information on available settings, refer to the
+[Puppet configuration reference](https://help.puppet.com/core/current/Content/PuppetCore/Markdown/configuration.htm).
+
+**Post build modification effect**: none. To change Puppet agent settings on existing
+instances, edit `/etc/puppetlabs/puppet/puppet.conf` manually or rebuild the instances.
+
 ## 5. Cloud Specific Configuration
 
 ### 5.1 Amazon Web Services
