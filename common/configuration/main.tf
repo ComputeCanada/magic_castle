@@ -9,6 +9,7 @@ locals {
 
 variable "config_git_url" {}
 variable "config_version" {}
+variable "puppet_conf" {}
 
 variable "sudoer_username" {}
 
@@ -92,6 +93,20 @@ locals {
     software_stack = var.software_stack,
   })
 
+  puppetservers = {
+    for host, values in var.inventory : host => try(values.local_ip, "") if contains(values.tags, "puppet")
+  }
+  puppet_conf = concat(
+    length(local.puppetservers) > 0 ? [
+      { key = "server", value = keys(local.puppetservers)[0], section = "main" }
+    ] : [],
+    [
+      { key = "waitforcert", value = "15s", section = "main" },
+      { key = "report", value = "true", section = "main" },
+      { key = "postrun_command", value = "/opt/puppetlabs/bin/postrun", section = "main" }
+    ],
+  )
+
   user_data = {
     for key, values in var.inventory : key =>
     templatefile("${path.module}/puppet.yaml.tftpl",
@@ -105,8 +120,9 @@ locals {
         domain_name           = var.domain_name
         puppetenv_git         = var.config_git_url,
         puppetenv_rev         = var.config_version,
-        puppetservers         = { for host, values in var.inventory : host => try(values.local_ip, "") if contains(values.tags, "puppet") }
+        puppetservers         = local.puppetservers
         puppetserver_password = local.puppet_passwd,
+        puppet_conf           = concat(local.puppet_conf, var.puppet_conf, [{ key = "certname", value = key, section = "main" }])
         sudoer_username       = var.sudoer_username,
         ssh_authorized_keys   = local.public_keys
         tf_ssh_public_key     = chomp(tls_private_key.ssh.public_key_openssh)

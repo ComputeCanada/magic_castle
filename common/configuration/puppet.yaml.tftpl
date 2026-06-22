@@ -134,13 +134,9 @@ runcmd:
 %{ endif ~}
   - chgrp puppet /etc/puppetlabs/puppet/csr_attributes.yaml
 %{ endif ~}
-%{ if length(puppetservers) > 0 ~}
-  - /opt/puppetlabs/bin/puppet config set server ${keys(puppetservers)[0]}
-%{ endif ~}
-  - /opt/puppetlabs/bin/puppet config set certname ${node_name}
-  - /opt/puppetlabs/bin/puppet config set waitforcert 15s
-  - /opt/puppetlabs/bin/puppet config set report true
-  - /opt/puppetlabs/bin/puppet config set postrun_command /opt/puppetlabs/bin/postrun
+%{ for conf in puppet_conf ~}
+  - ${jsonencode(["/opt/puppetlabs/bin/puppet", "config", "set", conf.key, conf.value, "--section", conf.section])}
+%{ endfor ~}
   - systemctl enable puppet
 # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
   - for i in /etc/sysconfig/network-scripts/ifcfg-*; do if ! ip link show | grep -q "$${i##*-}:"; then rm -f $i; fi; done

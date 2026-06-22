@@ -179,3 +179,13 @@ variable "bastion_tags" {
   default     = []
   description = "Tags identifying instances that can be used by Terraform as the first hop to transfer files to the Puppet server."
 }
+
+variable "puppet_conf" {
+  type = list(object({
+    key     = string
+    value   = string
+    section = optional(string, "main")
+  }))
+  default     = []
+  description = "List of additional settings for Puppet agent https://help.puppet.com/core/current/Content/PuppetCore/Markdown/configuration.htm"
+}
