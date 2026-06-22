@@ -961,6 +961,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#423-puppet_conf-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.23 puppet_conf (optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2678,6 +2689,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#423-puppet_conf-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.23 puppet_conf (optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4342,6 +4364,25 @@ to transfer files to the Puppet server. By default, this list is inferred from t
 <a href="#416-firewall_rules-optional">firewall rules</a> and the public ip address of the agent calling
 <code>terraform apply</code>. Providing an explicit list of tags allows bypassing the firewall rule inference,
 which can be useful when the agent is in the same network as the cluster.</p>
+<h3 id="423-puppet_conf-optional">4.23 puppet_conf (optional)</h3>
+<p><strong>default_value</strong> = <code>[]</code></p>
+<p>Defines additional Puppet agent settings to write to <code>/etc/puppetlabs/puppet/puppet.conf</code>
+on each instance during cloud-init. Each entry is an object with the following attributes:</p>
+<ul>
+<li><code>key</code>: Puppet setting name.</li>
+<li><code>value</code>: Puppet setting value.</li>
+<li><code>section</code>: Puppet configuration section. Defaults to <code>"main"</code> when omitted.</li>
+</ul>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="na">puppet_conf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="na">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;runinterval&quot;, value = &quot;15m&quot;</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="na">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;log_level&quot;, value = &quot;notice&quot;, section = &quot;agent&quot;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>For more information on available settings, refer to the
+<a href="https://help.puppet.com/core/current/Content/PuppetCore/Markdown/configuration.htm">Puppet configuration reference</a>.</p>
+<p><strong>Post build modification effect</strong>: none. To change Puppet agent settings on existing
+instances, edit <code>/etc/puppetlabs/puppet/puppet.conf</code> manually or rebuild the instances.</p>
 <h2 id="5-cloud-specific-configuration">5. Cloud Specific Configuration</h2>
 <h3 id="51-amazon-web-services">5.1 Amazon Web Services</h3>
 <h4 id="511-region">5.1.1 region</h4>
