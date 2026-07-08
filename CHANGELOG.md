@@ -3,6 +3,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [15.6.0] UNRELEASED
+
+### Added
+
+- Added support for per-instance Incus configuration. (PR #428)
+
+### Changed
+
+- Changed default vhost DNS records to wildcard entries for GCloud and TXT DNS providers. (PR #430)
+- Fixed volume handling across providers by removing a redundant volume lookup. (PR #432)
+
 ## [15.5.0] 2026-06-08
 
 ### Added
