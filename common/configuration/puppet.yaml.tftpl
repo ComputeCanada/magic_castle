@@ -57,7 +57,7 @@ runcmd:
       echo -e "Include /etc/ssh/sshd_config.d/50-authenticationmethods.conf" >> /etc/ssh/sshd_config
       sed -i '/HostKey \/etc\/ssh\/ssh_host_ecdsa_key/ s/^#*/#/' /etc/ssh/sshd_config
       chmod 644 /etc/ssh/ssh_host_*_key.pub
-      chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
+      getent group ssh_keys && chgrp ssh_keys /etc/ssh/ssh_host_*_key.pub
       systemctl restart sshd
       # Install required packages in runcmd instead of packages to speedup configuration
       # of the admin user. This reduces the risk of Terraform timing out when trying to
