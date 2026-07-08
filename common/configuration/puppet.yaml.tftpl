@@ -64,6 +64,8 @@ runcmd:
       # upload the terraform_data.yaml
       dnf -y install git pciutils unzip
       dnf -y remove cockpit\* firewalld --exclude=iptables
+      # dhcpcd is a dependency of cloud-init but it is not used
+      rpm -e --nodeps dhcpcd
 %{ if ! skip_upgrade ~}
       # Upgrade all packages except openvox if already installed
       dnf -y upgrade -x openvox*
