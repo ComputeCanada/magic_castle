@@ -951,16 +951,21 @@ managed by the workload scheduler through Terraform API. For more information, r
 will be instantiated, others will stay uninstantiated or will be destroyed
 if previously instantiated.
 
-### 4.20 skip_upgrade (optional)
+### 4.20 upgrade (optional)
 
-**default_value** = `false`
+**default_value** = `"vanilla-all"`
 
-If true, the base image packages will not be upgraded during the first boot. By default,
-all packages are upgraded.
+Defines if base image packages are upgraded during the first boot. Possible values are:
+
+- `"all"`: upgrade all packages
+- `"none"`: do not upgrade packages
+- `"security"`: upgrade security packages only
+- `"vanilla-all"`: upgrade all packages only when booting from a vanilla base image
+- `"vanilla-security"`: upgrade security packages only when booting from a vanilla base image
 
 **Post build modification effect**: No effect on currently built instances. Ones created
 after the modification will take into consideration the new value of the parameter to determine
-whether they should upgrade the base image packages or not.
+how they should upgrade the base image packages.
 
 ### 4.21 puppetfile (optional)
 

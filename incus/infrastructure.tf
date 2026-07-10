@@ -27,7 +27,7 @@ module "configuration" {
   software_stack  = var.software_stack
   cloud_provider  = "incus"
   cloud_region    = "local"
-  skip_upgrade    = var.skip_upgrade
+  upgrade         = var.upgrade
   puppet_conf     = var.puppet_conf
 }
 

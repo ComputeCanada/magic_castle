@@ -64,10 +64,13 @@ runcmd:
       # upload the terraform_data.yaml
       dnf -y install git pciutils unzip
       dnf -y remove cockpit\* firewalld --exclude=iptables
-%{ if ! skip_upgrade ~}
-      # Upgrade all packages except openvox if already installed
-      dnf -y upgrade -x openvox*
-%{ endif ~}
+    fi
+    # Upgrade all packages except openvox if already installed
+%{ if upgrade != "none" ~}
+  - %{ if startswith(upgrade, "vanilla") }test -f /etc/magic-castle-release || %{ endif }dnf -y upgrade -x openvox* %{ if strcontains(upgrade, "security") }--security%{ endif }
+%{ endif }
+  - |
+    if ! test -f /etc/magic-castle-release; then
       # dhcpcd is a dependency of cloud-init but it is not used
       rpm -e --nodeps dhcpcd
       # Puppet agent configuration and install
@@ -150,7 +153,7 @@ runcmd:
 %{ endif ~}
   # If the current image has already been configured with Magic Castle Puppet environment,
   # we can start puppet and skip reboot, reducing the delay for bringing the node up.
-  - test -f /etc/magic-castle-release && systemctl start puppet || true
+  - dnf needs-restarting -r && test -f /etc/magic-castle-release && systemctl start puppet || true
   - test -f /run/cloud-init-failed && echo 'WARNING - some steps cloud-init runcmd failed, listed in /run/cloud-init-failed. Manual fixing and rebooting required. ' | tee /etc/motd || true
 
 write_files:
@@ -243,7 +246,7 @@ output: { all: "| tee -a /var/log/cloud-init-output.log" }
 power_state:
   delay: now
   mode: reboot
-  condition: test ! -f /etc/magic-castle-release && test ! -f /run/cloud-init-failed
+  condition: "! dnf needs-restarting -r || (test ! -f /etc/magic-castle-release && test ! -f /run/cloud-init-failed)"
 
 # Configure owner of /var/log/cloud-init.log
 syslog_fix_perms: root:systemd-journal

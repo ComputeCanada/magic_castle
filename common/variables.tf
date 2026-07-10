@@ -150,10 +150,14 @@ variable "pool" {
   default = []
 }
 
-variable "skip_upgrade" {
-  type        = bool
-  default     = false
-  description = "If set to true, the packages already installed in the base image will not be upgraded on first boot."
+variable "upgrade" {
+  type        = string
+  default     = "vanilla-all"
+  description = "If set to all, all base packages are upgraded on first boot. When prefixed with `vanilla-`, upgrade only happen with vanilla based image."
+  validation {
+    condition     = contains(["all", "none", "security", "vanilla-all", "vanilla-security"], var.upgrade)
+    error_message = "Upgrade options are: all, none, security, vanilla-all, vanilla-security"
+  }
 }
 
 variable "puppetfile" {
