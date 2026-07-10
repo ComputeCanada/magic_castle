@@ -9,6 +9,7 @@ module "design" {
   volumes        = var.volumes
   firewall_rules = var.firewall_rules
   bastion_tags   = var.bastion_tags
+  upgrade        = var.upgrade
 }
 
 module "configuration" {
@@ -27,7 +28,6 @@ module "configuration" {
   software_stack  = var.software_stack
   cloud_provider  = "incus"
   cloud_region    = "local"
-  upgrade         = var.upgrade
   puppet_conf     = var.puppet_conf
 }
 
@@ -154,6 +154,7 @@ locals {
     host => {
       prefix  = values.prefix
       tags    = values.tags
+      upgrade = values.upgrade
       specs   = values.specs
       volumes = {}
     }
