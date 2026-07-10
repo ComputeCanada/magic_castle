@@ -77,12 +77,6 @@ runcmd:
       dnf -y install https://yum.voxpupuli.org/openvox8-release-el-$(grep -oP 'VERSION_ID="\K\d*' /etc/os-release).noarch.rpm
       dnf -y install openvox-agent-8.23.1
       install -m 700 /dev/null /opt/puppetlabs/bin/postrun
-      # kernel configuration
-%{ if cloud_provider != "incus" ~}
-      test -f /usr/lib/systemd/system/kdump.service && systemctl disable kdump
-      grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0 crashkernel=0M initcall_blacklist=algif_aead_init"
-      grub2-mkconfig -o /boot/grub2/grub.cfg
-%{ endif ~}
 %{ if cloud_provider == "gcp" ~}
       # Google Cloud user-data fact generates a warning because its size is greater than what is allowed (<4096 bytes).
       # We have no use for it, so we remove startup-script, user-data and user-data-encoding when running in GCE.
@@ -91,6 +85,15 @@ runcmd:
       sed -i "/gce_data\['instance'\] = instance_data/i \ \ \ \ \ \ \ \ \ \ instance_data['attributes'].delete('user-data-encoding')" /opt/puppetlabs/puppet/lib/ruby/vendor_ruby/facter/resolvers/gce.rb
 %{ endif ~}
     fi
+%{ if cloud_provider != "incus" ~}
+  # Kernel configuration
+  - |
+    if ! test -f /etc/magic-castle-release || ! dnf needs-restarting -r; then
+      test -f /usr/lib/systemd/system/kdump.service && systemctl disable kdump
+      grubby --update-kernel=ALL --args="rd.driver.blacklist=nouveau nouveau.modeset=0 crashkernel=0M initcall_blacklist=algif_aead_init"
+      grub2-mkconfig -o /boot/grub2/grub.cfg
+    fi
+%{ endif ~}
 %{ if contains(tags, "puppet") ~}
 # Install puppetserver
   - dnf -y install openvox-server-8.11.0
