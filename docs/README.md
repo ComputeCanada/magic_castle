@@ -572,13 +572,14 @@ recommended minimum size per tag as specified in the following table.
     ```
     features = ["skylake", "nvidia"]
     ```
+8. `upgrade`: specification of the package upgrade behavior to use for this instance type (default: global [`upgrade`](#420-upgrade-optional) value, whose default is `"vanilla-all"`).
 
 The instance specifications are retrieved from the cloud provider data source, but it is possible to explicitly specify them.
 
-7. `cpus`: number of logical processors on the node - [`CPUs` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_CPUs)
-8. `ram`: size of real memory on the node in megabyte - [`RealMemory` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_RealMemory)
-9. `gpus`: number of graphics processors on the node - [`Gres=gpu:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
-10. `gpu_type`: type of graphics processor on the node - [`Gres=gpu:<gpu_type>:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
+9. `cpus`: number of logical processors on the node - [`CPUs` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_CPUs)
+10. `ram`: size of real memory on the node in megabyte - [`RealMemory` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_RealMemory)
+11. `gpus`: number of graphics processors on the node - [`Gres=gpu:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
+12. `gpu_type`: type of graphics processor on the node - [`Gres=gpu:<gpu_type>:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
 
 For some cloud providers, it is possible to define additional attributes.
 The following sections present the available attributes per provider.

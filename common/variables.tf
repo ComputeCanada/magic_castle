@@ -31,6 +31,10 @@ variable "instances" {
     condition     = length(var.instances) == 0 || sum([for key, values in var.instances : contains(values["tags"], "login") ? 1 : 0]) < 2
     error_message = "At most one type of instances in var.instances can have the _login_ tag"
   }
+  validation {
+    condition     = alltrue(flatten([for key, values in var.instances : contains(["all", "none", "security", "vanilla-all", "vanilla-security"], lookup(values, "upgrade", "vanilla-all"))]))
+    error_message = "At least one instance's `upgrade` is invalid. Valid values are: all, none, security, vanilla-all, vanilla-security."
+  }
 }
 
 variable "image" {
