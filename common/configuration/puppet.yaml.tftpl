@@ -249,7 +249,7 @@ output: { all: "| tee -a /var/log/cloud-init-output.log" }
 power_state:
   delay: now
   mode: reboot
-  condition: "! dnf needs-restarting -r || (test ! -f /etc/magic-castle-release && test ! -f /run/cloud-init-failed)"
+  condition: "test ! -f /run/cloud-init-failed && (! dnf needs-restarting -r || test ! -f /etc/magic-castle-release)"
 
 # Configure owner of /var/log/cloud-init.log
 syslog_fix_perms: root:systemd-journal
