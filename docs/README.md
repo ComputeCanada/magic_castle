@@ -572,13 +572,14 @@ recommended minimum size per tag as specified in the following table.
     ```
     features = ["skylake", "nvidia"]
     ```
+8. `upgrade`: specification of the package upgrade behavior to use for this instance type (default: global [`upgrade`](#420-upgrade-optional) value, whose default is `"vanilla-all"`).
 
 The instance specifications are retrieved from the cloud provider data source, but it is possible to explicitly specify them.
 
-7. `cpus`: number of logical processors on the node - [`CPUs` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_CPUs)
-8. `ram`: size of real memory on the node in megabyte - [`RealMemory` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_RealMemory)
-9. `gpus`: number of graphics processors on the node - [`Gres=gpu:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
-10. `gpu_type`: type of graphics processor on the node - [`Gres=gpu:<gpu_type>:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
+9. `cpus`: number of logical processors on the node - [`CPUs` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_CPUs)
+10. `ram`: size of real memory on the node in megabyte - [`RealMemory` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_RealMemory)
+11. `gpus`: number of graphics processors on the node - [`Gres=gpu:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
+12. `gpu_type`: type of graphics processor on the node - [`Gres=gpu:<gpu_type>:<gpus>` in slurm.conf](https://slurm.schedmd.com/slurm.conf.html#OPT_Gres_1)
 
 For some cloud providers, it is possible to define additional attributes.
 The following sections present the available attributes per provider.
@@ -951,16 +952,21 @@ managed by the workload scheduler through Terraform API. For more information, r
 will be instantiated, others will stay uninstantiated or will be destroyed
 if previously instantiated.
 
-### 4.20 skip_upgrade (optional)
+### 4.20 upgrade (optional)
 
-**default_value** = `false`
+**default_value** = `"vanilla-all"`
 
-If true, the base image packages will not be upgraded during the first boot. By default,
-all packages are upgraded.
+Defines if base image packages are upgraded during the first boot. Possible values are:
+
+- `"all"`: upgrade all packages
+- `"none"`: do not upgrade packages
+- `"security"`: upgrade security packages only
+- `"vanilla-all"`: upgrade all packages only when booting from a vanilla base image
+- `"vanilla-security"`: upgrade security packages only when booting from a vanilla base image
 
 **Post build modification effect**: No effect on currently built instances. Ones created
 after the modification will take into consideration the new value of the parameter to determine
-whether they should upgrade the base image packages or not.
+how they should upgrade the base image packages.
 
 ### 4.21 puppetfile (optional)
 

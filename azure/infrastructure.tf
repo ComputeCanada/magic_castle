@@ -14,6 +14,7 @@ module "design" {
   volumes        = var.volumes
   firewall_rules = var.firewall_rules
   bastion_tags   = var.bastion_tags
+  upgrade        = var.upgrade
 }
 
 module "configuration" {
@@ -31,7 +32,6 @@ module "configuration" {
   software_stack  = var.software_stack
   cloud_provider  = local.cloud_provider
   cloud_region    = local.cloud_region
-  skip_upgrade    = var.skip_upgrade
   puppet_conf     = var.puppet_conf
 }
 
@@ -172,6 +172,7 @@ locals {
       local_ip  = azurerm_network_interface.nic[x].private_ip_address
       prefix    = values.prefix
       tags      = values.tags
+      upgrade   = values.upgrade
       specs = merge({
         cpus = local.vmsizes[values.type].vcpus
         ram  = local.vmsizes[values.type].ram
