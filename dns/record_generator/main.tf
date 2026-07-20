@@ -47,7 +47,6 @@ locals {
         type  = "A"
         name  = join(".", [key, var.name])
         value = values["public_ip"]
-        data  = null
       }
     ],
     flatten([
@@ -57,7 +56,6 @@ locals {
           type  = "A"
           name  = join(".", [vhost, var.name])
           value = values["public_ip"]
-          data  = null
         }
       ]
       if contains(values["tags"], var.vhost_tag)
@@ -67,20 +65,18 @@ locals {
         type  = "A"
         name  = var.name
         value = values["public_ip"]
-        data  = null
       }
       if contains(values["tags"], var.domain_tag)
     ],
     flatten([
       for key, values in var.public_instances : [
         for alg in keys(values["hostkeys"]) : {
-          type  = "SSHFP"
-          name  = join(".", [key, var.name])
-          value = null
+          type = "SSHFP"
+          name = join(".", [key, var.name])
           data = {
             algorithm   = local.SSHFP_SPEC["ssh-${alg}"]
             type        = 2 # SHA256
-            fingerprint = data.external.key2fp[key].result["ssh-${alg}"]
+            fingerprint = upper(data.external.key2fp[key].result["ssh-${alg}"])
           }
         }
       ]
@@ -88,13 +84,12 @@ locals {
     flatten([
       for key, values in var.public_instances : [
         for alg in keys(values["hostkeys"]) : {
-          type  = "SSHFP"
-          name  = var.name
-          value = null
+          type = "SSHFP"
+          name = var.name
           data = {
             algorithm   = local.SSHFP_SPEC["ssh-${alg}"]
             type        = 2 # SHA256
-            fingerprint = data.external.key2fp[key].result["ssh-${alg}"]
+            fingerprint = upper(data.external.key2fp[key].result["ssh-${alg}"])
           }
         }
       ]
@@ -106,19 +101,16 @@ locals {
       type  = "TXT"
       name  = var.name
       value = "\"v=spf1 a -all\""
-      data  = null
     },
     {
       type  = "TXT"
       name  = local.dkim_public_key != "" ? "default._domainkey.${var.name}" : var.name
       value = local.dkim_public_key != "" ? join(" ", formatlist("\"%s\"", regexall(".{1,255}", "v=DKIM1; k=rsa; p=${local.dkim_public_key}"))) : "No DKIM public key defined for this domain"
-      data  = null
     },
     {
       type  = "TXT"
       name  = local.dkim_public_key != "" ? "_dmarc.${var.name}" : var.name
       value = local.dkim_public_key != "" ? "\"v=DMARC1; p=reject\"" : "No DMARC policy defined for this domain"
-      data  = null
     },
   ]
 }
