@@ -929,10 +929,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#420-skip_upgrade-optional" class="md-nav__link">
+  <a href="#420-upgrade-optional" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.20 skip_upgrade (optional)
+        4.20 upgrade (optional)
       
     </span>
   </a>
@@ -2657,10 +2657,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#420-skip_upgrade-optional" class="md-nav__link">
+  <a href="#420-upgrade-optional" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.20 skip_upgrade (optional)
+        4.20 upgrade (optional)
       
     </span>
   </a>
@@ -4058,6 +4058,7 @@ recommended minimum size per tag as specified in the following table.</p>
 <li><code>features</code>: list of <a href="https://slurm.schedmd.com/slurm.conf.html#OPT_Features">features</a> on the node. This allows to select nodes based on the <code>--constraint</code> option. Example:
     <div class="highlight"><pre><span></span><code>features = [&quot;skylake&quot;, &quot;nvidia&quot;]
 </code></pre></div></li>
+<li><code>upgrade</code>: specification of the package upgrade behavior to use for this instance type (default: global <a href="#420-upgrade-optional"><code>upgrade</code></a> value, whose default is <code>"vanilla-all"</code>).</li>
 </ol>
 <p>The instance specifications are retrieved from the cloud provider data source, but it is possible to explicitly specify them.</p>
 <ol>
@@ -4344,13 +4345,19 @@ managed by the workload scheduler through Terraform API. For more information, r
 <p><strong>Post build modification effect</strong>: <code>pool</code> tagged hosts with name present in the list
 will be instantiated, others will stay uninstantiated or will be destroyed
 if previously instantiated.</p>
-<h3 id="420-skip_upgrade-optional">4.20 skip_upgrade (optional)</h3>
-<p><strong>default_value</strong> = <code>false</code></p>
-<p>If true, the base image packages will not be upgraded during the first boot. By default,
-all packages are upgraded.</p>
+<h3 id="420-upgrade-optional">4.20 upgrade (optional)</h3>
+<p><strong>default_value</strong> = <code>"vanilla-all"</code></p>
+<p>Defines if base image packages are upgraded during the first boot. Possible values are:</p>
+<ul>
+<li><code>"all"</code>: upgrade all packages</li>
+<li><code>"none"</code>: do not upgrade packages</li>
+<li><code>"security"</code>: upgrade security packages only</li>
+<li><code>"vanilla-all"</code>: upgrade all packages only when booting from a vanilla base image</li>
+<li><code>"vanilla-security"</code>: upgrade security packages only when booting from a vanilla base image</li>
+</ul>
 <p><strong>Post build modification effect</strong>: No effect on currently built instances. Ones created
 after the modification will take into consideration the new value of the parameter to determine
-whether they should upgrade the base image packages or not.</p>
+how they should upgrade the base image packages.</p>
 <h3 id="421-puppetfile-optional">4.21 puppetfile (optional)</h3>
 <p><strong>default_value</strong> = <code>""</code></p>
 <p>Defines a second <a href="https://www.puppet.com/docs/pe/2023.2/puppetfile.html">Puppetfile</a> used to
