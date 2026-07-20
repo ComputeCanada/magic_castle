@@ -1689,7 +1689,10 @@ terraform apply
 
 ### 10.7 Activate Globus Endpoint
 
-No longer supported
+Activating a Globus v5 endpoint is now supported since Magic Castle version 15.6.0.
+This requires adding an instance with the tags `["public", "dtn"]`. It will use one IP address. It also
+requires registering for service credentials. For more details, refer to the [`profile::globus` documentation](https://github.com/ComputeCanada/puppet-magic_castle#profileglobus).
+
 
 ### 10.8 Recovering from puppet rebuild
 
