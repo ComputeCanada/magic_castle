@@ -4874,7 +4874,9 @@ Then call:
 <div class="highlight"><pre><span></span><code>terraform apply
 </code></pre></div></p>
 <h3 id="107-activate-globus-endpoint">10.7 Activate Globus Endpoint</h3>
-<p>No longer supported</p>
+<p>Activating a Globus v5 endpoint is now supported since Magic Castle version 15.6.0.
+This requires adding an instance with the tags <code>["public", "dtn"]</code>. It will use one IP address. It also
+requires registering for service credentials. For more details, refer to the <a href="https://github.com/ComputeCanada/puppet-magic_castle#profileglobus"><code>profile::globus</code> documentation</a>.</p>
 <h3 id="108-recovering-from-puppet-rebuild">10.8 Recovering from puppet rebuild</h3>
 <p>The modifications of some of the parameters in the <code>main.tf</code> file can trigger the
 rebuild of the <code>puppet</code> instance. This instance hosts the Puppet Server on which
