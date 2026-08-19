@@ -397,7 +397,7 @@ To specify a different image for an instance type, use the
 [`image` instance attribute](#472-optional-attributes)
 
 **Requirements**: the operating system on the image must be from the Red Hat family.
-This includes CentOS (8, 9), Rocky Linux (8, 9), and AlmaLinux (8, 9).
+This includes CentOS (9), Rocky Linux (9, 10), and AlmaLinux (9, 10).
 
 **Warning**: Avoid "with LVM" or "LVM-partitioned" images as Magic Castle is currently
 unable to detect that the root disk has unallocated free space available and grow the
