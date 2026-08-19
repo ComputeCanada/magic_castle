@@ -811,27 +811,27 @@ through the <code>main.tf</code> file. The file has the following structure:
 <div class="highlight"><pre><span></span><code><span class="nn">---</span>
 <span class="nt">terraform</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">data</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">cluster_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">    </span><span class="nt">domain_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">    </span><span class="nt">guest_passwd</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">    </span><span class="nt">nb_users</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">cluster_name</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
+<span class="w">    </span><span class="nt">domain_name</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
+<span class="w">    </span><span class="nt">guest_passwd</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
+<span class="w">    </span><span class="nt">nb_users</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
 <span class="w">    </span><span class="nt">public_keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
-<span class="w">    </span><span class="nt">sudoer_username</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="nt">sudoer_username</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
 <span class="w">  </span><span class="nt">instances</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">host1</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">hostkeys</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">rsa</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">        </span><span class="nt">ed25519</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">      </span><span class="nt">local_ip</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;x.x.x.x&quot;</span>
-<span class="w">      </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;host&quot;</span>
-<span class="w">      </span><span class="nt">public_ip</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">        </span><span class="nt">rsa</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
+<span class="w">        </span><span class="nt">ed25519</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
+<span class="w">      </span><span class="nt">local_ip</span><span class="p">:</span><span class="w"> </span><span class="s">"x.x.x.x"</span>
+<span class="w">      </span><span class="nt">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">"host"</span>
+<span class="w">      </span><span class="nt">public_ip</span><span class="p">:</span><span class="w"> </span><span class="s">""</span>
 <span class="w">      </span><span class="nt">specs</span><span class="p">:</span>
-<span class="w">        </span><span class="s">&quot;cpus&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<span class="w">        </span><span class="s">&quot;gpus&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<span class="w">        </span><span class="s">&quot;ram&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">        </span><span class="s">"cpus"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">        </span><span class="s">"gpus"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">        </span><span class="s">"ram"</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
 <span class="w">      </span><span class="nt">tags</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;tag_1&quot;</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;tag_2&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"tag_1"</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"tag_2"</span>
 <span class="w">  </span><span class="nt">tag_ip</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">tag_1</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">x.x.x.x</span>
@@ -840,28 +840,28 @@ through the <code>main.tf</code> file. The file has the following structure:
 <span class="w">  </span><span class="nt">volumes</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">volume_tag1</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">volume_1</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/dev/disk/by-id/123-*&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/dev/disk/by-id/123-*"</span>
 <span class="w">      </span><span class="nt">volume_2</span><span class="p">:</span>
-<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/dev/disk/by-id/123-abc-*&quot;</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/dev/disk/by-id/123-abc-*"</span>
 </code></pre></div></p>
 <p>The values provided by <code>terraform_data.yaml</code> can be accessed in Puppet by using the
 <code>lookup()</code> function. For example, to access an instance's list of tags:
-<div class="highlight"><pre><span></span><code><span class="na">lookup</span><span class="p">(</span><span class="s">&quot;terraform.instances.${::hostname}.tags&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="na">lookup</span><span class="p">(</span><span class="s">"terraform.instances.${::hostname}.tags"</span><span class="p">)</span>
 </code></pre></div>
 The data source can also be used to define a key in another data source YAML file by using the
 <code>alias()</code> function. For example, to define the number of guest accounts using the value of <code>nb_users</code>,
 we could add this to <code>common.yaml</code>
-<div class="highlight"><pre><span></span><code><span class="nt">profile::accounts::guests::nb_accounts</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%{alias(&#39;terraform.data.nb_users&#39;)}&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="nt">profile::accounts::guests::nb_accounts</span><span class="p">:</span><span class="w"> </span><span class="s">"%{alias('terraform.data.nb_users')}"</span>
 </code></pre></div></p>
 <h3 id="configuring-instances-sitepp-and-classes">Configuring instances: site.pp and classes</h3>
 <p>The configuration of each instance is defined in <code>manifests/site.pp</code> file of the Puppet environment.
 In this file, it is possible to define a configuration based on an instance hostname
-<div class="highlight"><pre><span></span><code>node &quot;mgmt1&quot; { }
+<div class="highlight"><pre><span></span><code>node "mgmt1" { }
 </code></pre></div>
 or using the instance tags by defining the configuration for the <code>default</code> node :
 <div class="highlight"><pre><span></span><code>node default {
-  $instance_tags = lookup(&quot;terraform.instances.${::hostname}.tags&quot;)
-  if &#39;tag_1&#39; in $instances_tags { }
+  $instance_tags = lookup("terraform.instances.${::hostname}.tags")
+  if 'tag_1' in $instances_tags { }
 }
 </code></pre></div></p>
 <p>It is possible to define <a href="https://puppet.com/docs/puppet/6/type.html">Puppet resource</a> directly

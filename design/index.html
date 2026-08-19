@@ -545,9 +545,9 @@ resources. The figure can be read as a flow-chart from top to bottom. Some resou
 <ol>
 <li><code>main.tf</code>: User provides the instances and volumes structure they wants as _map_s.
     <div class="highlight"><pre><span></span><code><span class="nb">instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nb">mgmt</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p4-7.5gb&quot;, tags = [&quot;puppet&quot;, &quot;mgmt&quot;, &quot;nfs&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
-<span class="w">  </span><span class="nb">login</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p2-3.75gb&quot;, tags = [&quot;login&quot;, &quot;public&quot;, &quot;proxy&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
-<span class="w">  </span><span class="nb">node</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p2-3.75gb&quot;, tags = [&quot;node&quot;</span><span class="p">],</span><span class="w"> </span><span class="na">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nb">mgmt</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"p4-7.5gb", tags = ["puppet", "mgmt", "nfs"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nb">login</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"p2-3.75gb", tags = ["login", "public", "proxy"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="nb">node</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"p2-3.75gb", tags = ["node"</span><span class="p">],</span><span class="w"> </span><span class="na">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
 
 <span class="nb">volumes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
@@ -564,20 +564,20 @@ resources. The figure can be read as a flow-chart from top to bottom. Some resou
 <li>the <code>instances</code> map is expanded to form a new map where each entry represents a single host.
     <div class="highlight"><pre><span></span><code><span class="nb">instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nb">mgmt1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p2-3.75gb&quot;</span>
-<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;puppet&quot;, &quot;mgmt&quot;, &quot;nfs&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"p2-3.75gb"</span>
+<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"puppet", "mgmt", "nfs"</span><span class="p">]</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="w">  </span><span class="nb">login1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p2-3.75gb&quot;</span>
-<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;login&quot;, &quot;public&quot;, &quot;proxy&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"p2-3.75gb"</span>
+<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"login", "public", "proxy"</span><span class="p">]</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="w">  </span><span class="nb">node1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p2-3.75gb&quot;</span>
-<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"p2-3.75gb"</span>
+<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"node"</span><span class="p">]</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="w">  </span><span class="nb">node2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;p2-3.75gb&quot;</span>
-<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"p2-3.75gb"</span>
+<span class="w">    </span><span class="na">tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"node"</span><span class="p">]</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></li>
@@ -593,7 +593,7 @@ resources. The figure can be read as a flow-chart from top to bottom. Some resou
 <li>
 <p><code>network.tf</code>: the <code>instances</code> map from <code>common/design</code> is used to generate a network interface (nic)
 for each host, and a public ip address for each host with the <code>public</code> tag.
-    <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;provider_network_interface&quot;</span><span class="w"> </span><span class="nv">&quot;nic&quot;</span><span class="w"> </span><span class="p">{</span>
+    <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"provider_network_interface"</span><span class="w"> </span><span class="nv">"nic"</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.instances</span>
 <span class="w">  </span><span class="p">...</span>
 <span class="p">}</span>
@@ -605,7 +605,7 @@ for each host, and a public ip address for each host with the <code>public</code
 the hostnames.
     <div class="highlight"><pre><span></span><code><span class="nb">user_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="err">for</span><span class="w"> </span><span class="err">key</span><span class="p">,</span><span class="w"> </span><span class="err">values</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.instances</span><span class="w"> </span><span class="p">:</span>
-<span class="w">    </span><span class="na">key</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">&quot;${path.module}/puppet.yaml&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">})</span>
+<span class="w">    </span><span class="na">key</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="nf">templatefile</span><span class="p">(</span><span class="s2">"${path.module}/puppet.yaml"</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">})</span>
 <span class="p">}</span>
 </code></pre></div></p>
 </li>
@@ -613,7 +613,7 @@ the hostnames.
 <p><code>infrastructure.tf</code>: for each host in <code>instances</code>, an instance resource as defined by the selected
 cloud provider is generated. Each instance is initially configured by its <code>user_data</code> cloud-init
 yaml config.
-    <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;provider_instance&quot;</span><span class="w"> </span><span class="nv">&quot;instances&quot;</span><span class="w"> </span><span class="p">{</span>
+    <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"provider_instance"</span><span class="w"> </span><span class="nv">"instances"</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="na">for_each</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.instance</span>
 <span class="w">  </span><span class="na">user_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.instance_config.user_data[each.key</span><span class="p">]</span>
 <span class="w">  </span><span class="p">...</span>
@@ -623,12 +623,12 @@ yaml config.
 <li>
 <p><code>infrastructure.tf</code>: for each volume in <code>volumes</code>, a block device as defined by the selected
 cloud provider is generated and attached it to its matching instance using an <code>attachment</code> resource.
-    <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;provider_volume&quot;</span><span class="w"> </span><span class="nv">&quot;volumes&quot;</span><span class="w"> </span><span class="p">{</span>
+    <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"provider_volume"</span><span class="w"> </span><span class="nv">"volumes"</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.volumes</span>
 <span class="w">  </span><span class="na">size</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.size</span>
 <span class="w">  </span><span class="p">...</span>
 <span class="p">}</span>
-<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;provider_attachment&quot;</span><span class="w"> </span><span class="nv">&quot;attachments&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"provider_attachment"</span><span class="w"> </span><span class="nv">"attachments"</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="na">for_each</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.volumes</span>
 <span class="w">  </span><span class="na">instance_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">provider_instance.instances[each.value.instance].id</span>
 <span class="w">  </span><span class="na">volume_id</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">provider_volume.volumes[each.key].id</span>
@@ -641,10 +641,10 @@ cloud provider is generated and attached it to its matching instance using an <c
 named <code>inventory</code>.
     <div class="highlight"><pre><span></span><code><span class="nb">inventory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nb">mgmt1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="na">public_ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
-<span class="w">    </span><span class="na">local_ip</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;10.0.0.1&quot;</span>
-<span class="w">    </span><span class="na">id</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;abc1213-123-1231&quot;</span>
-<span class="w">    </span><span class="na">tags</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;mgmt&quot;, &quot;puppet&quot;, &quot;nfs&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="na">public_ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span>
+<span class="w">    </span><span class="na">local_ip</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"10.0.0.1"</span>
+<span class="w">    </span><span class="na">id</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"abc1213-123-1231"</span>
+<span class="w">    </span><span class="na">tags</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"mgmt", "puppet", "nfs"</span><span class="p">]</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="w">  </span><span class="p">...</span>
 <span class="p">}</span>
@@ -654,11 +654,11 @@ named <code>inventory</code>.
 <p><code>common/provision</code>: the information from created instances is consolidated
 and written in a yaml file named<code>terraform_data.yaml</code> that is uploaded on
 the Puppet server as part of the hieradata.
-    <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;terraform_data&quot;</span><span class="w"> </span><span class="nv">&quot;deploy_puppetserver_files&quot;</span><span class="w"> </span><span class="p">{</span>
+    <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"terraform_data"</span><span class="w"> </span><span class="nv">"deploy_puppetserver_files"</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="p">...</span>
-<span class="w">  </span><span class="kr">provisioner</span><span class="w"> </span><span class="nv">&quot;file&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kr">provisioner</span><span class="w"> </span><span class="nv">"file"</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="na">content</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">var.terraform_data</span>
-<span class="w">    </span><span class="na">destination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;terraform_data.yaml&quot;</span>
+<span class="w">    </span><span class="na">destination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform_data.yaml"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="w">  </span><span class="p">...</span>
 <span class="p">}</span>
@@ -806,8 +806,8 @@ documentation, i.e:
     <div class="highlight"><pre><span></span><code>terraform {
   required_providers {
     incus = {
-      source = &quot;lxc/incus&quot;
-      version = &quot;0.3.1&quot;
+      source = "lxc/incus"
+      version = "0.3.1"
     }
   }
 }
@@ -822,13 +822,13 @@ providers, for example the availability zone or the region.</p>
 <p><strong>Initialize the infrastructure</strong>. Create a file named  <code>infrastructure.tf</code>. In this file:</p>
 <ol>
 <li>define the provider block if it requires input parameters, i.e: var.region
-    <div class="highlight"><pre><span></span><code><span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;provider_name&quot;</span><span class="w"> </span><span class="p">{</span>
+    <div class="highlight"><pre><span></span><code><span class="kr">provider</span><span class="w"> </span><span class="nv">"provider_name"</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.region</span>
 <span class="p">}</span>
 </code></pre></div></li>
 <li>include the design module
-    <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;design&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="na">source</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/design&quot;</span>
+    <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">"design"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"../common/design"</span>
 <span class="w">  </span><span class="na">cluster_name</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">var.cluster_name</span>
 <span class="w">  </span><span class="na">domain</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">var.domain</span>
 <span class="w">  </span><span class="na">image</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">var.image</span>
@@ -856,7 +856,7 @@ the <code>module.design.instances</code> map.</p>
 <span class="w">  </span><span class="err">for</span><span class="w"> </span><span class="err">pv_key</span><span class="p">,</span><span class="w"> </span><span class="err">pv_values</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.volumes</span><span class="p">:</span>
 <span class="w">    </span><span class="na">pv_key</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="err">for</span><span class="w"> </span><span class="err">name</span><span class="p">,</span><span class="w"> </span><span class="err">specs</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">pv_values</span><span class="p">:</span>
-<span class="w">        </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/dev/disk/by-id/*${substr(provider.volumes[&quot;${x}-${pv_key}-${name}&quot;].id, 0, 20)}&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">[</span><span class="s2">"/dev/disk/by-id/*${substr(provider.volumes["${x}-${pv_key}-${name}"].id, 0, 20)}"</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="err">if</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nv">values.tags</span><span class="p">,</span><span class="w"> </span><span class="err">pv_key</span><span class="p">)</span>
 <span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
 </code></pre></div>
@@ -864,8 +864,8 @@ the <code>module.design.instances</code> map.</p>
   with these values. For example, in Incus, we only known the ip addresses after the instances creation:
     <div class="highlight"><pre><span></span><code><span class="nb">post_inventory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">host</span><span class="p">,</span><span class="w"> </span><span class="err">values</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">local.inventory</span><span class="p">:</span>
 <span class="w">  </span><span class="na">host</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="err">values</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="na">local_ip</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">try</span><span class="p">(</span><span class="nv">incus_instance.instances[host].ipv4_address</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="na">public_ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">try</span><span class="p">(</span><span class="nv">incus_instance.instances[host].ipv4_address</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="na">local_ip</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nf">try</span><span class="p">(</span><span class="nv">incus_instance.instances[host].ipv4_address</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span>
+<span class="w">    </span><span class="na">public_ip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">try</span><span class="p">(</span><span class="nv">incus_instance.instances[host].ipv4_address</span><span class="p">,</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="p">}</span>
 </code></pre></div></p>
@@ -873,8 +873,8 @@ the <code>module.design.instances</code> map.</p>
 <li>
 <p><strong>Create the instance configurations</strong>. In <code>infrastructure.tf</code>, include the
 <code>common/configuration</code> module like this:
-    <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;configuration&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="na">source</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/configuration&quot;</span>
+    <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">"configuration"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"../common/configuration"</span>
 <span class="w">  </span><span class="na">inventory</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">local.inventory</span>
 <span class="c1">  #post_inventory        = local.post_inventory # uncomment if you have a post_inventory</span>
 <span class="w">  </span><span class="na">config_git_url</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.config_git_url</span>
@@ -910,7 +910,7 @@ that contains the attributes of instances that are publicly accessible from Inte
   <div class="highlight"><pre><span></span><code><span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nb">public_instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">host</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="nv">module.design.instances_to_build</span><span class="p">):</span>
 <span class="w">    </span><span class="na">host</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="nv">module.configuration.inventory[host</span><span class="p">],</span><span class="w"> </span><span class="p">{</span><span class="na">id</span><span class="o">=</span><span class="nv">cloud_provider_instance_resource.instances[host].id</span><span class="p">})</span>
-<span class="w">    </span><span class="err">if</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nv">module.configuration.inventory[host].tags</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;public&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="err">if</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nv">module.configuration.inventory[host].tags</span><span class="p">,</span><span class="w"> </span><span class="s2">"public"</span><span class="p">)</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -919,8 +919,8 @@ that contains the attributes of instances that are publicly accessible from Inte
 <li>
 <p><strong>Include the provision module to transmit Terraform data to the Puppet server</strong>. In <code>infrastructure.tf</code>, include the
 <code>common/provision</code> module like this
-  <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;provision&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="na">source</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/provision&quot;</span>
+  <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">"provision"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"../common/provision"</span>
 <span class="w">  </span><span class="na">bastions</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.bastions</span>
 <span class="w">  </span><span class="na">puppetservers</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.puppetservers</span>
 <span class="w">  </span><span class="na">tf_ssh_key</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.ssh_key</span>
@@ -1036,21 +1036,21 @@ ln<span class="w"> </span>-s<span class="w"> </span>../common/<span class="o">{<
 </li>
 <li>
 <p><strong>Define cloud provider specifics variables</strong>. Add the following to a new file <code>alicloud.tf</code>:
-  <div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;region&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+  <div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"region"</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
 <span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="na">cloud_provider</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;alicloud&quot;</span>
+<span class="w">  </span><span class="na">cloud_provider</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"alicloud"</span>
 <span class="w">  </span><span class="na">cloud_region</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.region</span>
 <span class="p">}</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Initialize the infrastructure</strong>. Add the following to a new file <code>infrastructure.tf</code>:
-  <div class="highlight"><pre><span></span><code><span class="kr">provider</span><span class="w"> </span><span class="nv">&quot;alicloud&quot;</span><span class="w"> </span><span class="p">{</span>
+  <div class="highlight"><pre><span></span><code><span class="kr">provider</span><span class="w"> </span><span class="nv">"alicloud"</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="na">region</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.region</span>
 <span class="p">}</span>
 
-<span class="kr">module</span><span class="w"> </span><span class="nv">&quot;design&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="na">source</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/design&quot;</span>
+<span class="kr">module</span><span class="w"> </span><span class="nv">"design"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"../common/design"</span>
 <span class="w">  </span><span class="na">cluster_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.cluster_name</span>
 <span class="w">  </span><span class="na">domain</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nv">var.domain</span>
 <span class="w">  </span><span class="na">instances</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">var.instances</span>
@@ -1061,22 +1061,22 @@ ln<span class="w"> </span>-s<span class="w"> </span>../common/<span class="o">{<
 </li>
 <li>
 <p><strong>Create the networking infrastructure</strong>. <code>network.tf</code> base template:
-  <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_vpc&quot;</span><span class="w"> </span><span class="nv">&quot;network&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_vswitch&quot;</span><span class="w"> </span><span class="nv">&quot;subnet&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_nat_gateway&quot;</span><span class="w"> </span><span class="nv">&quot;nat&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_security_group&quot;</span><span class="w"> </span><span class="nv">&quot;firewall&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_security_group_rule&quot;</span><span class="w"> </span><span class="nv">&quot;allow_in_services&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_security_group&quot;</span><span class="w"> </span><span class="nv">&quot;allow_any_inside_vpc&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_security_group_rule&quot;</span><span class="w"> </span><span class="nv">&quot;allow_ingress_inside_vpc&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_security_group_rule&quot;</span><span class="w"> </span><span class="nv">&quot;allow_egress_inside_vpc&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_network_interface&quot;</span><span class="w"> </span><span class="nv">&quot;nic&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_eip&quot;</span><span class="w"> </span><span class="nv">&quot;public_ip&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-<span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_eip_association&quot;</span><span class="w"> </span><span class="nv">&quot;eip_asso&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+  <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_vpc"</span><span class="w"> </span><span class="nv">"network"</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_vswitch"</span><span class="w"> </span><span class="nv">"subnet"</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_nat_gateway"</span><span class="w"> </span><span class="nv">"nat"</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_security_group"</span><span class="w"> </span><span class="nv">"firewall"</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_security_group_rule"</span><span class="w"> </span><span class="nv">"allow_in_services"</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_security_group"</span><span class="w"> </span><span class="nv">"allow_any_inside_vpc"</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_security_group_rule"</span><span class="w"> </span><span class="nv">"allow_ingress_inside_vpc"</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_security_group_rule"</span><span class="w"> </span><span class="nv">"allow_egress_inside_vpc"</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_network_interface"</span><span class="w"> </span><span class="nv">"nic"</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_eip"</span><span class="w"> </span><span class="nv">"public_ip"</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_eip_association"</span><span class="w"> </span><span class="nv">"eip_asso"</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Create the volumes</strong>. Add and complete the following snippet to <code>infrastructure.tf</code>:
-  <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_disk&quot;</span><span class="w"> </span><span class="nv">&quot;volumes&quot;</span><span class="w"> </span><span class="p">{</span>
+  <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_disk"</span><span class="w"> </span><span class="nv">"volumes"</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.volumes</span>
 <span class="p">}</span>
 </code></pre></div></p>
@@ -1086,9 +1086,9 @@ ln<span class="w"> </span>-s<span class="w"> </span>../common/<span class="o">{<
   <div class="highlight"><pre><span></span><code><span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nb">inventory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">x</span><span class="p">,</span><span class="w"> </span><span class="err">values</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">module.design.instances</span><span class="w"> </span><span class="p">:</span>
 <span class="w">    </span><span class="na">x</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="na">public_ip</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="err">values</span><span class="p">[</span><span class="s2">&quot;tags&quot;], &quot;public&quot;) ? alicloud_eip.public_ip[x].public_ip : &quot;&quot;</span>
+<span class="w">      </span><span class="na">public_ip</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="err">values</span><span class="p">[</span><span class="s2">"tags"], "public") ? alicloud_eip.public_ip[x].public_ip : ""</span>
 <span class="w">      </span><span class="na">local_ip</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nv">alicloud_network_interface.nic[x].private_ip</span>
-<span class="w">      </span><span class="na">tags</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="err">values</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="na">tags</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="err">values</span><span class="p">[</span><span class="s2">"tags"</span><span class="p">]</span>
 <span class="w">      </span><span class="na">id</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="nv">alicloud_instance.instances[x].id</span>
 <span class="w">      </span><span class="nb">specs</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="na">cpus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...</span>
@@ -1098,7 +1098,7 @@ ln<span class="w"> </span>-s<span class="w"> </span>../common/<span class="o">{<
 <span class="w">          </span><span class="err">for</span><span class="w"> </span><span class="err">pv_key</span><span class="p">,</span><span class="w"> </span><span class="err">pv_values</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">var.volumes</span><span class="p">:</span>
 <span class="w">            </span><span class="na">pv_key</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">              </span><span class="err">for</span><span class="w"> </span><span class="err">name</span><span class="p">,</span><span class="w"> </span><span class="err">specs</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">pv_values</span><span class="p">:</span>
-<span class="w">                </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;/dev/disk/by-id/virtio-${replace(alicloud_disk.volumes[&quot;${x}-${pv_key}-${name}&quot;].id, &quot;d-&quot;, &quot;&quot;)}&quot;</span><span class="p">]</span>
+<span class="w">                </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="p">[</span><span class="s2">"/dev/disk/by-id/virtio-${replace(alicloud_disk.volumes["${x}-${pv_key}-${name}"].id, "d-", "")}"</span><span class="p">]</span>
 <span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="err">if</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nv">values.tags</span><span class="p">,</span><span class="w"> </span><span class="err">pv_key</span><span class="p">)</span>
 <span class="w">          </span><span class="p">}</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
 <span class="w">      </span><span class="p">}</span>
@@ -1110,8 +1110,8 @@ ln<span class="w"> </span>-s<span class="w"> </span>../common/<span class="o">{<
 <li>
 <p><strong>Create the instance configurations</strong>. In <code>infrastructure.tf</code>, include the
 <code>common/configuration</code> module like this:
-    <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;configuration&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="na">source</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/configuration&quot;</span>
+    <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">"configuration"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="s2">"../common/configuration"</span>
 <span class="w">  </span><span class="na">inventory</span><span class="w">             </span><span class="o">=</span><span class="w"> </span><span class="nv">local.inventory</span>
 <span class="w">  </span><span class="na">config_git_url</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.config_git_url</span>
 <span class="w">  </span><span class="na">config_version</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">var.config_version</span>
@@ -1129,14 +1129,14 @@ ln<span class="w"> </span>-s<span class="w"> </span>../common/<span class="o">{<
 </li>
 <li>
 <p><strong>Create the instances</strong>. Add and complete the following snippet to <code>infrastructure.tf</code>:
-  <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_instance&quot;</span><span class="w"> </span><span class="nv">&quot;instances&quot;</span><span class="w"> </span><span class="p">{</span>
+  <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_instance"</span><span class="w"> </span><span class="nv">"instances"</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.instances</span>
 <span class="p">}</span>
 </code></pre></div></p>
 </li>
 <li>
 <p><strong>Attach the volumes</strong>. Add and complete the following snippet to <code>infrastructure.tf</code>:
-  <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">&quot;alicloud_disk_attachment&quot;</span><span class="w"> </span><span class="nv">&quot;attachments&quot;</span><span class="w"> </span><span class="p">{</span>
+  <div class="highlight"><pre><span></span><code><span class="kr">resource</span><span class="w"> </span><span class="nc">"alicloud_disk_attachment"</span><span class="w"> </span><span class="nv">"attachments"</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.design.volumes</span>
 <span class="p">}</span>
 </code></pre></div></p>
@@ -1147,7 +1147,7 @@ that contains the attributes of instances that are publicly accessible from Inte
   <div class="highlight"><pre><span></span><code><span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nb">public_instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">host</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nf">keys</span><span class="p">(</span><span class="nv">module.design.instances_to_build</span><span class="p">):</span>
 <span class="w">    </span><span class="na">host</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="nv">module.configuration.inventory[host</span><span class="p">],</span><span class="w"> </span><span class="p">{</span><span class="na">id</span><span class="o">=</span><span class="nv">alicloud_instance.instances[host].id</span><span class="p">})</span>
-<span class="w">    </span><span class="err">if</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nv">module.configuration.inventory[host].tags</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;public&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="err">if</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nv">module.configuration.inventory[host].tags</span><span class="p">,</span><span class="w"> </span><span class="s2">"public"</span><span class="p">)</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></p>
@@ -1155,8 +1155,8 @@ that contains the attributes of instances that are publicly accessible from Inte
 <li>
 <p><strong>Include the provision module to transmit Terraform data to the Puppet server</strong>. In <code>infrastructure.tf</code>, include the
 <code>common/provision</code> module like this
-  <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;provision&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="na">source</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;../common/provision&quot;</span>
+  <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">"provision"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="s2">"../common/provision"</span>
 <span class="w">  </span><span class="na">bastions</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="nv">local.public_instances</span>
 <span class="w">  </span><span class="na">puppetservers</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.puppetservers</span>
 <span class="w">  </span><span class="na">tf_ssh_key</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="nv">module.configuration.ssh_key</span>
@@ -1169,20 +1169,20 @@ that contains the attributes of instances that are publicly accessible from Inte
 </ol>
 <p>Once your new provider is written, you can write an example that will use the module
 to spawn a Magic Castle cluster with that provider.
-  <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">&quot;alicloud&quot;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="na">source</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;./alicloud&quot;</span>
-<span class="w">  </span><span class="na">config_git_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/ComputeCanada/puppet-magic_castle.git&quot;</span>
-<span class="w">  </span><span class="na">config_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;main&quot;</span>
+  <div class="highlight"><pre><span></span><code><span class="kr">module</span><span class="w"> </span><span class="nv">"alicloud"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">source</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">"./alicloud"</span>
+<span class="w">  </span><span class="na">config_git_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://github.com/ComputeCanada/puppet-magic_castle.git"</span>
+<span class="w">  </span><span class="na">config_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"main"</span>
 
-<span class="w">  </span><span class="na">cluster_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;new&quot;</span>
-<span class="w">  </span><span class="na">domain</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my.cloud&quot;</span>
-<span class="w">  </span><span class="na">image</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;centos_7_9_x64_20G_alibase_20210318.vhd&quot;</span>
+<span class="w">  </span><span class="na">cluster_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"new"</span>
+<span class="w">  </span><span class="na">domain</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">"my.cloud"</span>
+<span class="w">  </span><span class="na">image</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="s2">"centos_7_9_x64_20G_alibase_20210318.vhd"</span>
 <span class="w">  </span><span class="na">nb_users</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="m">10</span>
 
 <span class="w">  </span><span class="nb">instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nb">mgmt</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ecs.g6.large&quot;, tags = [&quot;puppet&quot;, &quot;mgmt&quot;, &quot;nfs&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
-<span class="w">    </span><span class="nb">login</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ecs.g6.large&quot;, tags = [&quot;login&quot;, &quot;public&quot;, &quot;proxy&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
-<span class="w">    </span><span class="nb">node</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;ecs.g6.large&quot;, tags = [&quot;node&quot;</span><span class="p">],</span><span class="w"> </span><span class="na">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="nb">mgmt</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ecs.g6.large", tags = ["puppet", "mgmt", "nfs"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="nb">login</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ecs.g6.large", tags = ["login", "public", "proxy"</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="nb">node</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ecs.g6.large", tags = ["node"</span><span class="p">],</span><span class="w"> </span><span class="na">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="nb">volumes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
@@ -1193,10 +1193,10 @@ to spawn a Magic Castle cluster with that provider.
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 
-<span class="w">  </span><span class="na">public_keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nf">file</span><span class="p">(</span><span class="s2">&quot;~/.ssh/id_rsa.pub&quot;</span><span class="p">)]</span>
+<span class="w">  </span><span class="na">public_keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="nf">file</span><span class="p">(</span><span class="s2">"~/.ssh/id_rsa.pub"</span><span class="p">)]</span>
 
 <span class="c1">  # Alicloud specifics</span>
-<span class="w">  </span><span class="na">region</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;us-west-1&quot;</span>
+<span class="w">  </span><span class="na">region</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"us-west-1"</span>
 <span class="p">}</span>
 </code></pre></div></p>
 

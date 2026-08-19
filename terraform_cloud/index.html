@@ -976,7 +976,7 @@ know how to create a Service Principal and retrieve the values for these environ
 - <code>GOOGLE_CLOUD_KEYFILE_JSON</code> (sensitive)</p>
 <p>The value of the variable will be the content of a <a href="https://cloud.google.com/iam/docs/creating-managing-service-accounts">Google Cloud service account</a>
 JSON key file expressed a single line string. Example:
-<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;service_account&quot;</span><span class="p">,</span><span class="nt">&quot;project_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;project-id-1234&quot;</span><span class="p">,</span><span class="nt">&quot;private_key_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;abcd1234&quot;</span><span class="p">,</span><span class="err">...</span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"service_account"</span><span class="p">,</span><span class="nt">"project_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"project-id-1234"</span><span class="p">,</span><span class="nt">"private_key_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"abcd1234"</span><span class="p">,</span><span class="err">...</span><span class="p">}</span>
 </code></pre></div></p>
 <p>You can use <a href="https://stedolan.github.io/jq/"><code>jq</code></a> to format the string from the JSON
 file provided by Google:
@@ -1029,15 +1029,15 @@ to define the variables you want to manage. In the following example,
 we want to manage the number of nodes and the guest password.</p>
 <div class="highlight"><pre><span></span><code>Add the variables at the beginning of the `main.tf`:
   ```hcl
-  variable &quot;nb_nodes&quot; {}
-  variable &quot;password&quot; {}
+  variable "nb_nodes" {}
+  variable "password" {}
   ```
 
 Then replace the static value by the variable in our `main.tf`,
 
 compute node count
   ```hcl
-  node = { type = &quot;p2-3gb&quot;, tags = [&quot;node&quot;], count = var.nb_nodes }
+  node = { type = "p2-3gb", tags = ["node"], count = var.nb_nodes }
   ```
 guest password
   ```hcl
@@ -1084,9 +1084,9 @@ and then use the CLI on it.</p>
 <p>Create a file named <code>cloud.tf</code> with the following content in your cluster folder:
 <div class="highlight"><pre><span></span><code><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="nb">cloud</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="na">organization</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;REPLACE-BY-YOUR-TF-CLOUD-ORG&quot;</span>
+<span class="w">    </span><span class="na">organization</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"REPLACE-BY-YOUR-TF-CLOUD-ORG"</span>
 <span class="w">    </span><span class="nb">workspaces</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;REPLACE-BY-THE-NAME-OF-YOUR-WORKSPACE&quot;</span>
+<span class="w">      </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"REPLACE-BY-THE-NAME-OF-YOUR-WORKSPACE"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -1150,7 +1150,7 @@ restricted to the minimum required for autoscale purpose.
 <ol>
 <li>If not already present, add the following definition of the pool variable at the beginning of your <code>main.tf</code>.</li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">&quot;pool&quot;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Slurm pool of compute nodes&quot;</span><span class="w"> </span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"pool"</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Slurm pool of compute nodes"</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
 <ol>
 <li>Add instances to <code>instances</code> with the tags <code>pool</code> and <code>node</code>. These are
@@ -1199,7 +1199,7 @@ Slurm tried to boot the listed nodes, but they would not show up before the time
 therefore Slurm marked them as down. It can happen if your cloud provider is slow to build
 the instances, or following a configuration problem like in 2. When Slurm marks a node as
 down, a trace is left in slurmctld's log - using zgrep on the slurm controller node (typically <code>mgmt1</code>):
-    <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>zgrep<span class="w"> </span><span class="s2">&quot;marking down&quot;</span><span class="w"> </span>/var/log/slurm/slurmctld.log*
+    <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>zgrep<span class="w"> </span><span class="s2">"marking down"</span><span class="w"> </span>/var/log/slurm/slurmctld.log*
 </code></pre></div>
     To tell Slurm these nodes are available again, enter the following command:
     <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>/opt/software/slurm/bin/scontrol<span class="w"> </span>update<span class="w"> </span><span class="nv">nodename</span><span class="o">=</span>node<span class="o">[</span>Y-Z<span class="o">]</span><span class="w"> </span><span class="nv">state</span><span class="o">=</span>IDLE
