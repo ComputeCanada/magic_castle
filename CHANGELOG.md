@@ -3,6 +3,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [16.0.0] UNRELEASED
+
+### Added
+
+- Added support for automated image preparation through instances tagged with `image`. (PR #427)
+- Added global and per-instance package upgrade modes. (PR #436)
+
+### Changed
+
+- Replaced the `skip_upgrade` boolean variable with the `upgrade` variable, which supports `all`, `none`, `security`, `vanilla-all`, and `vanilla-security` modes. (PR #436)
+- Upgraded the Cloudflare provider to version 5.16 or later and migrated DNS records to the `cloudflare_dns_record` resource. (PR #407)
+- Improved cloud-init handling for image-based deployments and Enterprise Linux 10. (PR #436)
+- Added `modprobe.blacklist=nouveau` to kernel arguments. (PR #440)
+- Documented support for Globus v5 endpoints. (PR #439)
+- Updated the documented supported operating systems to CentOS 9 and Rocky Linux and AlmaLinux 9 and 10.
+
 ## [15.6.1] 2026-07-08
 
 No changes to infrastructure code.
