@@ -148,7 +148,7 @@ runcmd:
 %{ endfor ~}
 %{ if contains(tags, "image") }
   - /opt/puppetlabs/bin/puppet config --section agent set environment image
-  - /opt/puppetlabs/bin/puppet config set postrun_command /usr/sbin/prepare4image.sh
+  - /opt/puppetlabs/bin/puppet config set postrun_command "systemd-run --unit=prepare4image --collect --no-block /usr/sbin/prepare4image.sh"
 %{ endif }
   - systemctl enable puppet
 # Remove all ifcfg configuration files that have no corresponding network interface in ip link show.
