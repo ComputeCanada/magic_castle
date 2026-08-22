@@ -328,6 +328,11 @@ config_git_url = "https://oauth2:${oauth-key-goes-here}@domain.com/username/repo
 ```
 This works for GitHub and GitLab (including community edition).
 
+For the `incus` provider only, `config_git_url` can also be an absolute local
+path (or `file:///...`) to a git repository on the host running Incus. The
+repository is mounted into the puppet server at `/opt/magic-castle/puppetenv`
+and cloned via `file:///opt/magic-castle/puppetenv`.
+
 **Post build modification effect**: no effect. To change the Puppet configuration source,
 destroy the cluster or change it manually on the Puppet server.
 
