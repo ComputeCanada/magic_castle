@@ -157,6 +157,9 @@ locals {
       }
     }
   }
-
   puppetserver_ids = { for host, values in local.inventory : host => try(openstack_compute_instance_v2.instances[host].id, "") if contains(values.tags, "puppet") }
+}
+
+output "assets" {
+  value = { for host, values in module.configuration.inventory : host => merge(values, { uuid = try(openstack_compute_instance_v2.instances[host].id, "") }) }
 }
