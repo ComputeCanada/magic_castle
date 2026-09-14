@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [16.0.0] UNRELEASED
+## [16.0.0] 2026-09-14
 
 ### Added
 
@@ -13,11 +13,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - Replaced the `skip_upgrade` boolean variable with the `upgrade` variable, which supports `all`, `none`, `security`, `vanilla-all`, and `vanilla-security` modes. (PR #436)
-- Upgraded the Cloudflare provider to version 5.16 or later and migrated DNS records to the `cloudflare_dns_record` resource. (PR #407)
-- Improved cloud-init handling for image-based deployments and Enterprise Linux 10. (PR #436)
+- Upgraded the Cloudflare provider to version 5.16 or later (below 6.0) and migrated DNS records to the `cloudflare_dns_record` resource. (PR #407)
+- Simplified generated DNS records and normalized SSHFP fingerprints to uppercase for all DNS providers. (PR #407)
+- Updated cloud-init to reapply kernel arguments and reboot image-based deployments when package upgrades require it. (PR #436)
+- Guarded SSH key group ownership changes and kdump disabling when the group or service is absent. (PR #436)
+- Removed unused `dhcpcd` after package upgrades to avoid Enterprise Linux 10 log pollution, with a check for its presence on earlier releases. (PR #436)
+- Changed image preparation to launch `prepare4image.sh` through `systemd-run` so the Puppet run can complete and its report is available for checking success. (PR #442)
 - Added `modprobe.blacklist=nouveau` to kernel arguments. (PR #440)
 - Documented support for Globus v5 endpoints. (PR #439)
 - Updated the documented supported operating systems to CentOS 9 and Rocky Linux and AlmaLinux 9 and 10.
+
+### Removed
+
+- Removed unused `hashicorp/tls` provider requirements from the Cloudflare and GCloud DNS modules. (PR #407)
 
 ## [15.6.1] 2026-07-08
 
