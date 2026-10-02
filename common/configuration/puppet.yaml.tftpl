@@ -135,7 +135,7 @@ runcmd:
 %{ if contains(tags, "puppet") ~}
 # Wait for Terraform to scp its YAML data
   - while [ ! -e "/tmp/etc_puppetlabs.zip" ]; do echo "$(date -I'seconds') Waiting for terraform to scp data file"; sleep 5; done
-  - /usr/sbin/update_etc_puppetlabs.sh ${puppetenv_git} $ ${puppetenv_rev} "cloud-init"
+  - /usr/sbin/update_etc_puppetlabs.sh ${puppetenv_git} ${puppetenv_rev} "cloud-init"
 %{ endif ~}
   # If the current image has already been configured with Magic Castle Puppet environment,
   # we can start puppet and skip reboot, reducing the delay for bringing the node up.
