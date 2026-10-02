@@ -17,7 +17,7 @@ fi
 
 if [ ! -e "/etc/puppetlabs/code/environments/${GIT_REF}" ]; then
     rm -rf /etc/puppetlabs/code/environments/production
-    /usr/bin/go-getter git:://${GIT_URL}?ref=${GIT_REF} /etc/puppetlabs/code/environments/${GIT_REF}
+    /usr/bin/go-getter git::${GIT_URL}?ref=${GIT_REF} /etc/puppetlabs/code/environments/${GIT_REF}
     ln -s /etc/puppetlabs/code/environments/${GIT_REF} /etc/puppetlabs/code/environments/production
     ln -s /etc/puppetlabs/code/environments/production /etc/puppetlabs/code/environments/image
     mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts
