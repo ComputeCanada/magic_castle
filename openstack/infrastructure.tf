@@ -33,6 +33,8 @@ module "configuration" {
 module "provision" {
   source           = "../common/provision"
   configuration    = module.configuration
+  config_git_url  = var.config_git_url
+  config_version  = var.config_version
   hieradata        = var.hieradata
   hieradata_dir    = var.hieradata_dir
   eyaml_key        = var.eyaml_key
