@@ -1,8 +1,9 @@
 #!/bin/bash
-ZIP_FILE=${1}
+ZIP_FILE="etc_puppetlabs.zip"
 ZIP_DIR=${ZIP_FILE%.zip}
-GIT_URL="${2}"
-GIT_REF="${3}"
+GIT_URL="${1}"
+GIT_REF="${2}"
+ORIGIN="${3}"
 
 if [ ! -f /usr/bin/go-getter ]; then
     curl -L -O https://releases.hashicorp.com/go-getter/1.8.9/go-getter_1.8.9_linux_amd64.zip
@@ -10,7 +11,9 @@ if [ ! -f /usr/bin/go-getter ]; then
     rm -f go-getter_1.8.9_linux_amd64.zip
 fi
 
-while [ ! -e "/etc/puppetlabs/code/environments/.ready" ]; do echo "$(date -I'seconds') Waiting for cloud-init to be done"; sleep 5; done
+if [[ "${ORIGIN}" == "tf" ]] && [[ $(cloud-init status) != "status: done" ]]; then
+    exit
+fi
 
 if [ ! -e "/etc/puppetlabs/code/environments/${GIT_REF}" ]; then
     rm -rf /etc/puppetlabs/code/environments/production

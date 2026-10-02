@@ -13,7 +13,7 @@ users:
     no_user_group: true
     homedir: /tmp
 %{ if contains(tags, "puppet") ~}
-    sudo: "ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh .*"
+    sudo: "ALL = NOPASSWD: ALL"
 %{ endif ~}
 %{ endif ~}
   - name: ${sudoer_username}
@@ -134,8 +134,8 @@ runcmd:
   - for i in /etc/sysconfig/network-scripts/ifcfg-*; do if ! ip link show | grep -q "$${i##*-}:"; then rm -f $i; fi; done
 %{ if contains(tags, "puppet") ~}
 # Wait for Terraform to scp its YAML data
-  - touch /etc/puppetlabs/code/environments/.ready
-  - while [ ! -e "/etc/puppetlabs/code/environments/production/.bootstrapped" ]; do echo "$(date -I'seconds') Waiting for terraform to bootstrap puppet environment"; sleep 5; done
+  - while [ ! -e "/tmp/etc_puppetlabs.zip" ]; do echo "$(date -I'seconds') Waiting for terraform to scp data file"; sleep 5; done
+  - /usr/sbin/update_etc_puppetlabs.sh ${puppetenv_git} $ ${puppetenv_rev} "cloud-init"
 %{ endif ~}
   # If the current image has already been configured with Magic Castle Puppet environment,
   # we can start puppet and skip reboot, reducing the delay for bringing the node up.
