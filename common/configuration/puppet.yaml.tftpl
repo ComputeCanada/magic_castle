@@ -13,7 +13,7 @@ users:
     no_user_group: true
     homedir: /tmp
 %{ if contains(tags, "puppet") ~}
-    sudo: "ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh *.zip"
+    sudo: "ALL = NOPASSWD: /usr/sbin/update_etc_puppetlabs.sh .*"
 %{ endif ~}
 %{ endif ~}
   - name: ${sudoer_username}
