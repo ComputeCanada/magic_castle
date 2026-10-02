@@ -9,6 +9,8 @@ variable "hieradata_dir" {}
 variable "eyaml_key" {}
 variable "puppetfile" {}
 variable "puppetserver_ids" {}
+variable "config_git_url" {}
+variable "config_version" {}
 
 locals {
   provision_folder = "etc_puppetlabs"
@@ -103,7 +105,7 @@ resource "terraform_data" "deploy_puppetserver_files" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo /usr/sbin/update_etc_puppetlabs.sh ${local.provision_folder}.zip",
+      "sudo /usr/sbin/update_etc_puppetlabs.sh ${local.provision_folder}.zip ${var.config_git_url} ${var.config_version}",
       "rm ${local.provision_folder}.zip"
     ]
   }
