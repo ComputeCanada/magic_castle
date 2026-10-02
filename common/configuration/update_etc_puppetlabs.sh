@@ -1,9 +1,11 @@
 #!/bin/bash
-ZIP_FILE="etc_puppetlabs.zip"
+ZIP_FILE="/tmp/etc_puppetlabs.zip"
 ZIP_DIR=${ZIP_FILE%.zip}
 GIT_URL="${1}"
 GIT_REF="${2}"
 ORIGIN="${3}"
+
+cd /tmp
 
 if [[ "${ORIGIN}" == "tf" ]] && [[ $(cloud-init status) != "status: done" ]]; then
     exit
