@@ -5,14 +5,14 @@ GIT_URL="${1}"
 GIT_REF="${2}"
 ORIGIN="${3}"
 
+if [[ "${ORIGIN}" == "tf" ]] && [[ $(cloud-init status) != "status: done" ]]; then
+    exit
+fi
+
 if [ ! -f /usr/bin/go-getter ]; then
     curl -L -O https://releases.hashicorp.com/go-getter/1.8.9/go-getter_1.8.9_linux_amd64.zip
     unzip go-getter_1.8.9_linux_amd64.zip go-getter -d /usr/bin
     rm -f go-getter_1.8.9_linux_amd64.zip
-fi
-
-if [[ "${ORIGIN}" == "tf" ]] && [[ $(cloud-init status) != "status: done" ]]; then
-    exit
 fi
 
 if [ ! -e "/etc/puppetlabs/code/environments/${GIT_REF}" ]; then
