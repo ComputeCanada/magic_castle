@@ -25,8 +25,8 @@ if [ /etc/puppetlabs/code/Puppetfile -nt /etc/puppetlabs/code/modules ]; then
 fi
 
 PUPPET_ENV="/etc/puppetlabs/code/environments/${GIT_REF}"
-ln -sf ${PUPPET_ENV} /etc/puppetlabs/code/environments/production
-ln -sf ${PUPPET_ENV} /etc/puppetlabs/code/environments/image
+ln -snf ${PUPPET_ENV} /etc/puppetlabs/code/environments/production
+ln -snf ${PUPPET_ENV} /etc/puppetlabs/code/environments/image
 if [ ! -e "${PUPPET_ENV}" ]; then
     /usr/bin/go-getter git::${GIT_URL}?ref=${GIT_REF} ${PUPPET_ENV}
     ln -sf /etc/puppetlabs/data/{user_data,user_data.yaml,terraform_data.yaml} ${PUPPET_ENV}/data/
