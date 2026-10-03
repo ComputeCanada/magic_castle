@@ -97,6 +97,15 @@ runcmd:
 %{ if contains(tags, "puppet") ~}
 # Install puppetserver
   - dnf -y install openvox-server-8.11.0
+# Download and install go-getter
+  - curl -L -O https://releases.hashicorp.com/go-getter/1.8.9/go-getter_1.8.9_linux_amd64.zip
+  - unzip go-getter_1.8.9_linux_amd64.zip go-getter -d /usr/bin
+  - rm -f go-getter_1.8.9_linux_amd64.zip
+# Remove default puppet environment
+  - rm -rf /etc/puppetlabs/code/environments/production
+# Make essential puppet directories exist
+  - mkdir -p /etc/puppetlabs/data /etc/puppetlabs/facts
+  - chgrp -R puppet /etc/puppetlabs/data /etc/puppetlabs/facts
 # Configure puppet-agent to start after puppetserver when on puppetserver
   - sed -i 's/^\(After=.*\)$/\1 puppetserver.service/' /usr/lib/systemd/system/puppet.service
   - systemctl daemon-reload
