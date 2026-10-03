@@ -43,7 +43,7 @@ rsync -avh --no-t --exclude 'data' ${ZIP_DIR}/ /etc/puppetlabs/
 rsync -avh --no-t --del ${ZIP_DIR}/data/ /etc/puppetlabs/data/
 rm -rf ${ZIP_DIR}/
 
-if [ -f /opt/puppetlabs/puppet/bin/r10k ] && [ /etc/puppetlabs/code/Puppetfile -nt /etc/puppetlabs/code/modules ]; then
+if [ /etc/puppetlabs/code/Puppetfile -nt /etc/puppetlabs/code/modules ]; then
     /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=/etc/puppetlabs/code/modules --puppetfile=/etc/puppetlabs/code/Puppetfile
     touch /etc/puppetlabs/code/modules
 fi

@@ -87,6 +87,8 @@ resource "terraform_data" "deploy_puppetserver_files" {
   # because when using output_sha256 Terraform would trigger a deployment even when the sha256 was unchanged.
   # Make sure to mirror the content of archive file.
   triggers_replace = {
+    config_git_url   = var.config_git_url
+    config_version   = var.config_version
     puppetserver_ids = var.puppetserver_ids
     terraform_data   = sha256(var.configuration.terraform_data)
     terraform_facts  = sha256(var.configuration.terraform_facts)
