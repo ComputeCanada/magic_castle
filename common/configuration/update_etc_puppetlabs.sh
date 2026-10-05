@@ -4,6 +4,8 @@ GIT_URL="${1}"
 GIT_REF="${2}"
 ORIGIN="${3}"
 
+set -e
+
 if [[ "${ORIGIN}" == "tf" ]] && [[ $(cloud-init status) != "status: done" ]]; then
     exit
 fi
@@ -25,15 +27,21 @@ if [ /etc/puppetlabs/code/Puppetfile -nt /etc/puppetlabs/code/modules ]; then
 fi
 
 PUPPET_ENV="/etc/puppetlabs/code/environments/${GIT_REF}"
+if [ ! -e "${PUPPET_ENV}" ]; then
+    TEMP_ENV_DIR=$(mktemp -d)
+    /usr/bin/go-getter git::${GIT_URL}?ref=${GIT_REF} ${TEMP_ENV_DIR}
+    ln -sf /etc/puppetlabs/data/{user_data,user_data.yaml,terraform_data.yaml} ${TEMP_ENV_DIR}/data/
+    ln -sf /etc/puppetlabs/facts/terraform_facts.yaml ${TEMP_ENV_DIR}/site/profile/facts.d
+    /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=${TEMP_ENV_DIR}/modules --puppetfile=${TEMP_ENV_DIR}/Puppetfile
+    chown -R root:root ${TEMP_ENV_DIR}
+    mv ${TEMP_ENV_DIR} ${PUPPET_ENV}
+    if [ -e ${PUPPET_ENV}/bootstrap.sh ]; then
+        ${PUPPET_ENV}/bootstrap.sh
+    fi
+fi
+
 ln -snf ${PUPPET_ENV} /etc/puppetlabs/code/environments/production
 ln -snf ${PUPPET_ENV} /etc/puppetlabs/code/environments/image
-if [ ! -e "${PUPPET_ENV}" ]; then
-    /usr/bin/go-getter git::${GIT_URL}?ref=${GIT_REF} ${PUPPET_ENV}
-    ln -sf /etc/puppetlabs/data/{user_data,user_data.yaml,terraform_data.yaml} ${PUPPET_ENV}/data/
-    ln -sf /etc/puppetlabs/facts/terraform_facts.yaml ${PUPPET_ENV}/site/profile/facts.d
-    /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=${PUPPET_ENV}/modules --puppetfile=${PUPPET_ENV}/Puppetfile
-    test -e ${PUPPET_ENV}/bootstrap.sh && ${PUPPET_ENV}/bootstrap.sh
-fi
 
 if [ -f /usr/local/bin/consul ] && [ -f /usr/bin/jq ]; then
     /usr/local/bin/consul event -token=$(jq -r .acl.tokens.agent /etc/consul/config.json) -name=puppet $(date +%s)
