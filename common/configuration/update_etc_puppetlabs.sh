@@ -29,15 +29,17 @@ fi
 PUPPET_ENV="/etc/puppetlabs/code/environments/${GIT_REF}"
 if [ ! -e "${PUPPET_ENV}" ]; then
     TEMP_ENV_DIR=$(mktemp -d)
+    chown root:puppet $TEMP_ENV_DIR
+    chmod 0750 $TEMP_ENV_DIR
     /usr/bin/go-getter git::${GIT_URL}?ref=${GIT_REF} ${TEMP_ENV_DIR}
     ln -sf /etc/puppetlabs/data/{user_data,user_data.yaml,terraform_data.yaml} ${TEMP_ENV_DIR}/data/
     ln -sf /etc/puppetlabs/facts/terraform_facts.yaml ${TEMP_ENV_DIR}/site/profile/facts.d
     /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=${TEMP_ENV_DIR}/modules --puppetfile=${TEMP_ENV_DIR}/Puppetfile
     chown -R root:root ${TEMP_ENV_DIR}
-    mv ${TEMP_ENV_DIR} ${PUPPET_ENV}
-    if [ -e ${PUPPET_ENV}/bootstrap.sh ]; then
-        ${PUPPET_ENV}/bootstrap.sh
+    if [ -e ${TEMP_ENV_DIR}/bootstrap.sh ]; then
+        ${TEMP_ENV_DIR}/bootstrap.sh
     fi
+    mv ${TEMP_ENV_DIR} ${PUPPET_ENV}
 fi
 
 ln -snf ${PUPPET_ENV} /etc/puppetlabs/code/environments/production
