@@ -33,17 +33,25 @@ if [ ! -e "${PUPPET_ENV}" ]; then
     chmod 0750 $TEMP_ENV_DIR
     /usr/bin/go-getter git::${GIT_URL}?ref=${GIT_REF} ${TEMP_ENV_DIR}
     ln -sf /etc/puppetlabs/data/{user_data,user_data.yaml,terraform_data.yaml} ${TEMP_ENV_DIR}/data/
+    ln -sf /etc/puppetlabs/puppet/data/credentials.yaml ${TEMP_ENV_DIR}/data/
     ln -sf /etc/puppetlabs/facts/terraform_facts.yaml ${TEMP_ENV_DIR}/site/profile/facts.d
     /opt/puppetlabs/puppet/bin/r10k puppetfile install --moduledir=${TEMP_ENV_DIR}/modules --puppetfile=${TEMP_ENV_DIR}/Puppetfile
-    chown -R root:root ${TEMP_ENV_DIR}
-    if [ -e ${TEMP_ENV_DIR}/bootstrap.sh ]; then
-        ${TEMP_ENV_DIR}/bootstrap.sh
-    fi
     mv ${TEMP_ENV_DIR} ${PUPPET_ENV}
+    NEW_PUPPET_ENV="true"
 fi
 
-ln -snf ${PUPPET_ENV} /etc/puppetlabs/code/environments/production
-ln -snf ${PUPPET_ENV} /etc/puppetlabs/code/environments/image
+if [ ! "$(readlink "/etc/puppetlabs/code/environments/production")" = "$PUPPET_ENV" ]; then
+    ln -snf ${PUPPET_ENV} /etc/puppetlabs/code/environments/production
+    ln -snf ${PUPPET_ENV} /etc/puppetlabs/code/environments/image
+fi
+
+if [ ! -e /etc/puppetlabs/puppet/data/credentials.yaml ]; then
+    ${PUPPET_ENV}/generate_credentials.sh
+fi
+
+if [[ "${NEW_PUPPET_ENV}" == "true" ]]; then
+    /opt/puppetlabs/puppet/bin/puppet apply /etc/puppetlabs/code/environments/production/manifests/site.pp  --tags mc_bootstrap
+fi
 
 if [ -f /usr/local/bin/consul ] && [ -f /usr/bin/jq ]; then
     /usr/local/bin/consul event -token=$(jq -r .acl.tokens.agent /etc/consul/config.json) -name=puppet $(date +%s)
