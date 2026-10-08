@@ -16,8 +16,8 @@ data "aws_subnet" "subnet" {
 }
 
 locals {
-  subnet_id         = var.subnet_id == null ? aws_subnet.subnet[0].id : var.subnet_id
-  vpc_id            = var.subnet_id == null ? aws_vpc.network[0].id : data.aws_subnet.subnet[0].vpc_id
+  subnet_id = var.subnet_id == null ? aws_subnet.subnet[0].id : var.subnet_id
+  vpc_id    = var.subnet_id == null ? aws_vpc.network[0].id : data.aws_subnet.subnet[0].vpc_id
 }
 
 # Internet gateway to give our VPC access to the outside world
@@ -100,17 +100,17 @@ resource "aws_security_group" "allow_any_inside_sg" {
   vpc_id = local.vpc_id
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    self        = true
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
   }
 
   ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    self        = true
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
   }
 
   lifecycle {

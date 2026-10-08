@@ -84,7 +84,7 @@ resource "random_shuffle" "random_az" {
 }
 
 locals {
-  subnet_av_zone = var.subnet_id != null ? data.aws_subnet.subnet[0].availability_zone : ""
+  subnet_av_zone    = var.subnet_id != null ? data.aws_subnet.subnet[0].availability_zone : ""
   availability_zone = local.pick_random_az ? random_shuffle.random_az[0].result[0] : coalesce(local.subnet_av_zone, var.availability_zone)
 }
 

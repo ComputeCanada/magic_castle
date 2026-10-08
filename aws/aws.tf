@@ -14,7 +14,7 @@ locals {
 }
 
 variable "subnet_id" {
-  type    = string
-  default = null
+  type        = string
+  default     = null
   description = "UUID of the cluster's subnet. If left blank, a new VPC and a new subnet are created."
 }
