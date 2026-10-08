@@ -26,7 +26,8 @@ if [ /etc/puppetlabs/code/Puppetfile -nt /etc/puppetlabs/code/modules ]; then
     touch /etc/puppetlabs/code/modules
 fi
 
-PUPPET_ENV="/etc/puppetlabs/code/environments/${GIT_REF}"
+ENV_HASH=$(printf '%s\n' "git::${GIT_URL}?ref=${GIT_REF}" | sha256sum | cut -c 1-8)
+PUPPET_ENV="/etc/puppetlabs/code/environments/${GIT_REF}_${ENV_HASH}"
 if [ ! -e "${PUPPET_ENV}" ]; then
     TEMP_ENV_DIR=$(mktemp -d)
     chown root:puppet $TEMP_ENV_DIR
