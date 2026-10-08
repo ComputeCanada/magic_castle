@@ -50,7 +50,7 @@ data "aws_availability_zones" "available" {
   state = "available"
   lifecycle {
     postcondition {
-      condition     = var.availability_zone == "" || contains(self.names, var.availability_zone)
+      condition     = var.subnet_id != null || var.availability_zone == "" || contains(self.names, var.availability_zone)
       error_message = "var.availability_zone must be one of ${jsonencode(self.names)}"
     }
   }
@@ -74,32 +74,45 @@ locals {
       if data.aws_ec2_instance_type_offerings.inst_az.instance_types[idx] == type
     ]
   })...)
-}
-
-resource "terraform_data" "az_check" {
-  lifecycle {
-    precondition {
-      condition     = length(local.az_choices) > 0
-      error_message = "There is not a single availability zone in ${var.region} that provides all instance types you have selected."
-    }
-    precondition {
-      condition     = var.availability_zone == "" || contains(local.az_choices, var.availability_zone)
-      error_message = <<EOT
-      The selected availability zone "${var.availability_zone}" does not provide all instance types you have selected.
-Pick one of these zone instead ${jsonencode(local.az_choices)} or leave var.availability_zone undefined."
-EOT
-    }
-  }
+  pick_random_az = var.availability_zone == "" && var.subnet_id == null
 }
 
 resource "random_shuffle" "random_az" {
-  count        = var.availability_zone == "" ? 1 : 0
+  count        = local.pick_random_az ? 1 : 0
   input        = local.az_choices
   result_count = 1
 }
 
 locals {
-  availability_zone = var.availability_zone != "" ? var.availability_zone : random_shuffle.random_az[0].result[0]
+  subnet_av_zone = var.subnet_id != null ? data.aws_subnet.subnet[0].availability_zone : ""
+  availability_zone = local.pick_random_az ? random_shuffle.random_az[0].result[0] : coalesce(local.subnet_av_zone, var.availability_zone)
+}
+
+resource "terraform_data" "az_check" {
+  lifecycle {
+    precondition {
+      condition     = var.subnet_id == null || var.availability_zone == ""
+      error_message = "Set either subnet_id or availability_zone, not both. Leave both undefined to select an availability zone automatically."
+    }
+    precondition {
+      condition     = length(local.az_choices) > 0
+      error_message = "There is not a single availability zone in ${var.region} that provides all instance types you have selected."
+    }
+    precondition {
+      condition     = local.subnet_av_zone != "" || var.availability_zone == "" || contains(local.az_choices, var.availability_zone)
+      error_message = <<EOT
+      The selected availability zone "${var.availability_zone}" does not provide all instance types you have selected.
+Pick one of these zone instead ${jsonencode(local.az_choices)} or leave var.availability_zone undefined."
+EOT
+    }
+    precondition {
+      condition     = local.subnet_av_zone == "" || contains(local.az_choices, local.subnet_av_zone)
+      error_message = <<EOT
+      The subnet availability zone "${local.subnet_av_zone}" does not provide all instance types you have selected.
+Change the subnet availability zone or leave var.subnet_id undefined."
+EOT
+    }
+  }
 }
 
 resource "aws_placement_group" "efa_group" {

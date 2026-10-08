@@ -1037,6 +1037,22 @@ If left blank, it is chosen at random amongst the availability zones of the sele
 [AWS documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#using-regions-availability-zones-describe)
 to find out how to list the availability zones.
 
+#### 5.1.3 subnet_id (optional)
+
+**default value**: None
+
+Defines the ID of an already created IPv4 subnet to which the instances are
+connected. If left blank, a new VPC and a new subnet are created. When defined,
+Terraform uses the subnet's VPC and availability zone, and does not manage its
+internet gateway or routes. Set either `subnet_id` or `availability_zone`, not
+both. Leave both undefined to select an availability zone automatically.
+
+**Requirement**: Must be a subnet in the selected region, in an availability zone
+that provides all selected instance types. The existing network must provide
+internet access, including a route to an internet gateway for public instances.
+
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
+
 ### 5.2 Microsoft Azure
 
 #### 5.2.1 location
