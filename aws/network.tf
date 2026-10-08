@@ -17,7 +17,6 @@ data "aws_subnet" "subnet" {
 
 locals {
   subnet_id         = var.subnet_id == null ? aws_subnet.subnet[0].id : var.subnet_id
-  subnet_cidr_block = var.subnet_id == null ? aws_subnet.subnet[0].cidr_block : data.aws_subnet.subnet[0].cidr_block
   vpc_id            = var.subnet_id == null ? aws_vpc.network[0].id : data.aws_subnet.subnet[0].vpc_id
 }
 
@@ -95,8 +94,8 @@ resource "aws_security_group" "external" {
   }
 }
 
-resource "aws_security_group" "allow_any_inside_subnet" {
-  name = "${var.cluster_name}-allow_any_inside_subnet"
+resource "aws_security_group" "allow_any_inside_sg" {
+  name = "${var.cluster_name}-allow_any_inside_sg"
 
   vpc_id = local.vpc_id
 
@@ -104,7 +103,6 @@ resource "aws_security_group" "allow_any_inside_subnet" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [local.subnet_cidr_block]
     self        = true
   }
 
@@ -112,7 +110,6 @@ resource "aws_security_group" "allow_any_inside_subnet" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [local.subnet_cidr_block]
     self        = true
   }
 
@@ -121,13 +118,13 @@ resource "aws_security_group" "allow_any_inside_subnet" {
   }
 
   tags = {
-    Name = "${var.cluster_name}-allow_any_inside_subnet"
+    Name = "${var.cluster_name}-allow_any_inside_sg"
   }
 }
 
 moved {
   from = aws_security_group.allow_any_inside_vpc
-  to   = aws_security_group.allow_any_inside_subnet
+  to   = aws_security_group.allow_any_inside_sg
 }
 
 resource "aws_network_interface" "nic" {
@@ -137,7 +134,7 @@ resource "aws_network_interface" "nic" {
 
   security_groups = concat(
     [
-      aws_security_group.allow_any_inside_subnet.id,
+      aws_security_group.allow_any_inside_sg.id,
       aws_security_group.allow_out_any.id,
     ],
     [
