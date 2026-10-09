@@ -196,3 +196,9 @@ variable "puppet_conf" {
   default     = []
   description = "List of additional settings for Puppet agent https://help.puppet.com/core/current/Content/PuppetCore/Markdown/configuration.htm"
 }
+
+variable "subnet_cidr" {
+  type        = string
+  default     = "10.0.0.0/24"
+  description = "IPv4 CIDR block of the subnet that interconnects all of the cluster's instances."
+}
