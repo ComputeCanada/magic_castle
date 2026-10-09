@@ -1031,11 +1031,35 @@ Defines the label of the AWS EC2 region where the cluster will be created (i.e.:
 **default value**: None
 
 Defines the label of the data center inside the AWS region where the cluster will be created (i.e.: `us-east-2a`).
-If left blank, it is chosen at random amongst the availability zones of the selected region.
+If both `availability_zone` and `subnet_id` are omitted, an availability zone
+supporting all selected instance types is chosen at random. When `subnet_id`
+is supplied, the cluster uses the subnet's availability zone. These parameters
+cannot both be set.
 
 **Requirement**: Must be in a valid availability zone for the selected region. Refer to
 [AWS documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#using-regions-availability-zones-describe)
 to find out how to list the availability zones.
+
+#### 5.1.3 subnet_id (optional)
+
+**default value**: None
+
+Defines the ID of an already created IPv4 subnet to which the instances are
+connected. If left blank, a new VPC and a new subnet are created. When defined,
+Terraform uses the subnet's VPC and availability zone, and does not manage its
+internet gateway or routes. Set either `subnet_id` or `availability_zone`, not
+both. Leave both undefined to select an availability zone automatically.
+
+Multiple clusters can share the same subnet. Unrestricted internal traffic is
+allowed only between instances sharing the cluster's internal security group.
+Sharing a subnet does not itself grant access between clusters; additional
+access is controlled by the configured firewall rules.
+
+**Requirement**: Must be a subnet in the selected region, in an availability zone
+that provides all selected instance types. The existing network must provide
+internet access, including a route to an internet gateway for public instances.
+
+**Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
 ### 5.2 Microsoft Azure
 
