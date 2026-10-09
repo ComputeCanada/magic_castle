@@ -1,6 +1,6 @@
 resource "aws_vpc" "network" {
   count      = var.subnet_id == null ? 1 : 0
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.subnet_cidr
 
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -40,7 +40,7 @@ resource "aws_route" "internet_access" {
 resource "aws_subnet" "subnet" {
   count                   = var.subnet_id == null ? 1 : 0
   vpc_id                  = local.vpc_id
-  cidr_block              = "10.0.0.0/24"
+  cidr_block              = var.subnet_cidr
   availability_zone       = local.availability_zone
   map_public_ip_on_launch = true
 

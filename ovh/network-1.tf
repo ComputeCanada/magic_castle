@@ -11,7 +11,7 @@ resource "openstack_networking_subnet_v2" "subnet" {
   name        = "${var.cluster_name}_subnet"
   network_id  = openstack_networking_network_v2.int_network.id
   ip_version  = 4
-  cidr        = "10.0.1.0/24"
+  cidr        = var.subnet_cidr
   no_gateway  = true
   enable_dhcp = true
 }

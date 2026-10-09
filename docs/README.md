@@ -690,7 +690,26 @@ List of SSH public keys that will have access to your cluster sudoer account.
 The sudoer account `authorized_keys` file will be updated by each instance's Puppet agent
 following the copy of the hieradata files.
 
-### 4.10 nb_users (optional)
+### 4.10 subnet_cidr (optional)
+
+**default_value** = `"10.0.0.0/24"`
+
+Defines the IPv4 CIDR block of the subnet that interconnects all of the cluster's
+instances. Used by AWS, Microsoft Azure, Google Cloud and OVH when creating the
+cluster's subnet. Since Magic Castle defines a single network and a single subnet,
+on AWS and Microsoft Azure, this value also defines the address range of the
+VPC or virtual network.
+
+On AWS, this variable is ignored when [subnet_id](#513-subnet_id-optional) is defined.
+It has no effect on OpenStack or Incus.
+
+**Requirement**: Must be a valid IPv4 CIDR block supported by the cloud provider,
+with enough available addresses for all of the cluster's instances.
+
+**Post build modification effect**: may require rebuilding the network and instances,
+depending on the cloud provider.
+
+### 4.11 nb_users (optional)
 
 **default value**: 0
 
@@ -716,7 +735,7 @@ If `nb_users` is increased, new guest accounts will be created during the follow
 Puppet run on `mgmt1`. If `nb_users` is decreased, it will have no effect: the guest accounts
 already created will be left intact.
 
-### 4.11 guest_passwd (optional)
+### 4.12 guest_passwd (optional)
 
 **default value**: 4 random words separated by dots
 
@@ -726,13 +745,13 @@ randomly generated one.
 **Requirement**: Minimum length **8 characters**.
 
 The password can be provided in a PKCS7 encrypted form. Refer to sub-section
-[4.15 eyaml_key](#415-eyaml_key-optional)
+[4.16 eyaml_key](#416-eyaml_key-optional)
 for instructions on how to encrypt the password.
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 Passwords of all guest accounts will be changed to match the new password value.
 
-### 4.12 sudoer_username (optional)
+### 4.13 sudoer_username (optional)
 
 **default value**: `centos`
 
@@ -745,7 +764,7 @@ destroy the cluster or redefine the value of
 [`profile::base::sudoer_username`](https://github.com/computecanada/puppet-magic_castle#profilebase)
 in `hieradata`.
 
-### 4.13 hieradata (optional)
+### 4.14 hieradata (optional)
 
 **default value**: empty string
 
@@ -801,7 +820,7 @@ The file created from this string can be found on the Puppet server as `/etc/pup
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 Each instance's Puppet agent will be reloaded following the copy of the hieradata files.
 
-### 4.14 hieradata_dir (optional)
+### 4.15 hieradata_dir (optional)
 
 **default_value:** Empty string
 
@@ -818,13 +837,13 @@ The hierarchy is copied on the Puppet server in `/etc/puppetlabs/data/user_data`
   - `<dir>/prefixes/<prefix>.yaml`
 - all nodes: `<dir>/*.yaml`
 
-For more information on hieradata, refer to section [4.13 hieradata (optional)](#413-hieradata-optional).
+For more information on hieradata, refer to section [4.14 hieradata (optional)](#414-hieradata-optional).
 
 **Post build modification effect**: trigger scp of hieradata files at next `terraform apply`.
 Each instance's Puppet agent will be reloaded following the copy of the hieradata files.
 
 
-### 4.15 eyaml_key (optional)
+### 4.16 eyaml_key (optional)
 
 **default value**: empty string
 
@@ -833,7 +852,7 @@ This key will be copied on the Puppet server.
 
 **Post build modification effect**: trigger scp of private key file at next `terraform apply`.
 
-#### 4.15.1 Generate eyaml encryption keys
+#### 4.16.1 Generate eyaml encryption keys
 
 If you plan to track the cluster configuration files in git (i.e:`main.tf`, `user_data.yaml`),
 it would be a good idea to encrypt the sensitive property values.
@@ -853,7 +872,7 @@ or with `eyaml`:
 eyaml createkeys --pkcs7-public-key=public_key.pkcs7.pem --pkcs7-private-key=private_key.pkcs7.pem
 ```
 
-#### 4.15.2 Encrypting sensitive properties
+#### 4.16.2 Encrypting sensitive properties
 
 To encrypt a sensitive property with openssl:
 ```sh
@@ -865,7 +884,7 @@ To encrypt a sensitive property with eyaml:
 eyaml encrypt -s 'your-secret' --pkcs7-public-key=public_key.pkcs7.pem -o string
 ```
 
-#### 4.15.3 Terraform cloud
+#### 4.16.3 Terraform cloud
 
 To provide the value of this variable via Terraform Cloud, encode the private key content with base64:
 
@@ -893,7 +912,7 @@ module "openstack" {
 }
 ```
 
-### 4.16 firewall_rules (optional)
+### 4.17 firewall_rules (optional)
 
 **default value**:
 ```hcl
@@ -984,7 +1003,7 @@ Each instance's Puppet agent will be reloaded following the installation of the 
 
 Defines a list of tags identifying instances that can be used by Terraform as the first hop
 to transfer files to the Puppet server. By default, this list is inferred from the list of
-[firewall rules](#416-firewall_rules-optional) and the public ip address of the agent calling
+[firewall rules](#417-firewall_rules-optional) and the public ip address of the agent calling
 `terraform apply`. Providing an explicit list of tags allows bypassing the firewall rule inference,
 which can be useful when the agent is in the same network as the cluster.
 
@@ -1407,8 +1426,8 @@ module "dns" {
 ```
 
 
-The private half of the generated key should be [encrypted](#4152-encrypting-sensitive-properties)
-and provided to Puppet through the [hieradata variable](#413-hieradata-optional)
+The private half of the generated key should be [encrypted](#4162-encrypting-sensitive-properties)
+and provided to Puppet through the [hieradata variable](#414-hieradata-optional)
 of the Magic Castle cloud provider module.
 
 ## 7. Planning
@@ -1470,7 +1489,7 @@ See https://avd.aquasec.com/misconfig/avd-opnstk-0003
 The most common configuration issues identified by Trivy in Magic Castle plans
 (illustrated in the previous output example), are firewall rules allowing access to ports from
 the public internet. If you know which IP addresses should have access to the cluster,
-you can harden the firewall rules. Refer to section [4.16 firewall_rules](#416-firewall_rules-optional)
+you can harden the firewall rules. Refer to section [4.17 firewall_rules](#417-firewall_rules-optional)
 for more information.
 
 ## 8. Deployment
@@ -1626,7 +1645,7 @@ sudo puppet agent --disable "<MESSAGE>"
 
 ### 10.2 Replace the Guest Account Password
 
-Refer to section [4.11](#411-guest_passwd-optional).
+Refer to section [4.12](#412-guest_passwd-optional).
 
 ### 10.3 Add LDAP Users
 
@@ -1652,7 +1671,7 @@ allocation. The regular expression can be redefined, see
 
 #### 10.3.1 hieradata
 
-Using the [hieradata variable](#413-hieradata-optional) in the `main.tf`, it is possible to define LDAP users.
+Using the [hieradata variable](#414-hieradata-optional) in the `main.tf`, it is possible to define LDAP users.
 
 Examples of LDAP user definition with hieradata are provided in
 [puppet-magic_castle documentation](https://github.com/computecanada/puppet-magic_castle#profileusersldapusers).
@@ -1713,7 +1732,7 @@ By default, instances tagged `login` have their port 22 opened to entire world.
 If you know the range of ip addresses that will connect to your cluster,
 we strongly recommend that you limit the access to port 22 to this range.
 
-To limit the access to port 22, refer to [section 4.16 firewall_rules](#416-firewall_rules-optional),
+To limit the access to port 22, refer to [section 4.17 firewall_rules](#417-firewall_rules-optional),
 and replace the `cidr` of the `ssh` rule to match the range of ip addresses that
 are allowed to connect to the cluster. If there is more than one range, create multiple rules
 with distinct names.
@@ -1991,7 +2010,7 @@ sudo /opt/puppetlabs/puppet/bin/eyaml edit \
 ```
 
 It is also possible to redefine the values of these keys by adding the key-value pair to
-the hieradata configuration file. Refer to section [4.13 hieradata](#413-hieradata-optional).
+the hieradata configuration file. Refer to section [4.14 hieradata](#414-hieradata-optional).
 User defined values take precedence over boot generated values in the Magic Castle
 Puppet data hierarchy.
 
@@ -2009,7 +2028,7 @@ in Magic Castle. Every instance exposes their usage metrics and some services do
 and visualize this data, it is possible to access the [expression browser](https://prometheus.io/docs/visualization/browser/).
 
 From inside the cluster, it is typically available at `http://mgmt1:9090`. Given DNS is configured
-for your cluster, you can add the following snippet to your [hieradata](#413-hieradata-optional) to access the expression browser
+for your cluster, you can add the following snippet to your [hieradata](#414-hieradata-optional) to access the expression browser
 from the Internet.
 
 ```yaml
