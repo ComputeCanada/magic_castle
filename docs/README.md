@@ -1061,6 +1061,25 @@ internet access, including a route to an internet gateway for public instances.
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
+#### 5.1.4 default_tags (optional)
+
+**default value**: `{}`
+
+Defines a map of tag names to string values to apply to all AWS resources
+created by Magic Castle that support tags. This maps directly to AWS
+provider [`default_tags`](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/guides/resource-tagging#propagating-tags-to-all-resources)
+
+Example:
+
+```hcl
+default_tags = {
+  Project = "research"
+  Owner   = "hpc-team"
+}
+```
+
+**Post build modification effect**: update resource tags at next `terraform apply`.
+
 ### 5.2 Microsoft Azure
 
 #### 5.2.1 location
