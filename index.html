@@ -1034,6 +1034,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#514-default_tags-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1.4 default_tags (optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2773,6 +2784,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#514-default_tags-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1.4 default_tags (optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4443,6 +4465,18 @@ access is controlled by the configured firewall rules.</p>
 that provides all selected instance types. The existing network must provide
 internet access, including a route to an internet gateway for public instances.</p>
 <p><strong>Post build modification effect</strong>: rebuild of all instances at next <code>terraform apply</code>.</p>
+<h4 id="514-default_tags-optional">5.1.4 default_tags (optional)</h4>
+<p><strong>default value</strong>: <code>{}</code></p>
+<p>Defines a map of tag names to string values to apply to all AWS resources
+created by Magic Castle that support tags. This maps directly to AWS
+provider <a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/guides/resource-tagging#propagating-tags-to-all-resources"><code>default_tags</code></a></p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">default_tags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">Project</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"research"</span>
+<span class="w">  </span><span class="na">Owner</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s2">"hpc-team"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Post build modification effect</strong>: update resource tags at next <code>terraform apply</code>.</p>
 <h3 id="52-microsoft-azure">5.2 Microsoft Azure</h3>
 <h4 id="521-location">5.2.1 location</h4>
 <p>Defines the label of the Azure location where the cluster will be created (i.e.: <code>eastus</code>).</p>
