@@ -1366,6 +1366,22 @@ if not OpenStack (i.e: `aws`, `gcp`, etc.).
 The file will be created after the `terraform apply` in the same folder as your `main.tf`
 and will be named as `${name}.${domain}.txt`.
 
+### 6.4 OpenStack Designate
+
+If your OpenStack cloud runs the DNS service Designate and your project owns
+a zone for the [domain](#45-domain), Magic Castle can create the records in that zone.
+
+1. Uncomment the `dns` module for Designate in your `main.tf`.
+2. Uncomment the `output "hostnames"` block.
+3. Download and install the module providers: `terraform init`.
+
+The module uses the same OpenStack credentials as the `openstack` module. It looks
+up the zone named after the domain followed by a dot (for example `example.org.`).
+Set the variable `zone_name` if the zone has another name, and `ttl` to change the
+record time to live (default: 300 seconds). Records that share a name and a type,
+like the SSHFP records of one host or the A records of two or more login nodes, go
+into a single Designate record set.
+
 ### 6.5 SSHFP records and DNSSEC
 
 Magic Castle DNS module creates SSHFP records for all instances with a public ip address.

@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        provider: ['cloudflare', 'gcloud', 'txt']
+        provider: ['cloudflare', 'designate', 'gcloud', 'txt']
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

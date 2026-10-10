@@ -69,6 +69,14 @@ output "public_ip" {
 #   public_instances = module.openstack.public_instances
 # }
 
+## Uncomment to register your domain name with OpenStack Designate
+# module "dns" {
+#   source           = "git::https://github.com/ComputeCanada/magic_castle.git//dns/designate"
+#   name             = module.openstack.cluster_name
+#   domain           = module.openstack.domain
+#   public_instances = module.openstack.public_instances
+# }
+
 # output "hostnames" {
 #   value = module.dns.hostnames
 # }
