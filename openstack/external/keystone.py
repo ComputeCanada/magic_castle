@@ -19,11 +19,15 @@ cloudmap = { }
 if 'OS_AUTH_URL' in os.environ:
     cloudmap['auth_url'] = os.environ['OS_AUTH_URL']
 elif 'OS_CLOUD' in os.environ:
-    clouds = os.environ.get(
-        'OS_CLIENT_CONFIG_FILE',
-        expanduser("~/.config/openstack/clouds.yaml")
-    )
-    if exists(clouds):
+    # Same search order as openstacksdk: current directory, user, system
+    candidates = [
+        os.environ.get('OS_CLIENT_CONFIG_FILE', ''),
+        os.path.join(os.getcwd(), 'clouds.yaml'),
+        expanduser("~/.config/openstack/clouds.yaml"),
+        '/etc/openstack/clouds.yaml',
+    ]
+    clouds = next((path for path in candidates if path and exists(path)), '')
+    if clouds:
         cloud_name = os.environ['OS_CLOUD']
         if yaml_avail:
             with open(clouds) as f:
@@ -45,14 +49,14 @@ elif 'OS_CLOUD' in os.environ:
                         break
                     line_stripped = line_lstripped.rstrip().rstrip(':').strip('"\'')
                     if found and line_stripped[:9] ==  'auth_url:':
-                        cloudmap['auth_url'] = line_stripped[9:].strip()
+                        cloudmap['auth_url'] = line_stripped[9:].strip().strip('"\'')
                         break
                     elif line_stripped == key:
                         found = True
                         search_level = cur_level + 1
 
 if 'auth_url' in cloudmap:
-    cloudmap['name'] = urlparse(cloudmap['auth_url']).hostname
+    cloudmap['name'] = urlparse(cloudmap['auth_url']).hostname or ''
 else:
     cloudmap['auth_url'] = ''
     cloudmap['name'] = ''

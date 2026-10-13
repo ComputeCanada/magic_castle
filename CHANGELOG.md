@@ -9,6 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Added the `dns/designate` module to create the cluster DNS records in an OpenStack Designate zone.
 
+### Fixed
+
+- [OpenStack] Fixed the shell fallback of `keystone.sh` when Python is missing, and the parsing of a quoted `auth_url` in `clouds.yaml` without PyYAML.
+
+### Changed
+
+- [OpenStack] `keystone.py` looks for `clouds.yaml` in the current directory, `~/.config/openstack` and `/etc/openstack`, like the OpenStack provider.
+
 ## [16.0.3] 2026-10-09
 
 No changes to infrastructure code.

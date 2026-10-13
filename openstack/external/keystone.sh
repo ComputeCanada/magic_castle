@@ -10,7 +10,9 @@ elif [ -x "$(command -v "python")" ]; then
 else
     # Python could not be found that's... unfortunate
     # We will have to do the job in shell script instead, ugh!
-    local s="${AUTH_URL/#*:\/\/}"
-    name="${s%%.*}"
+    # Keep the host part of the URL, like keystone.py does
+    s="${OS_AUTH_URL#*://}"
+    s="${s%%/*}"
+    name="${s%%:*}"
     echo "{ \"auth_url\" : \"${OS_AUTH_URL}\" , \"name\":  \"${name}\" }"
 fi
