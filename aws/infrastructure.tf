@@ -250,5 +250,6 @@ locals {
     }
   }
 
+  inventory_with_id = { for host, values in local.inventory : host => merge({ id = try(aws_instance.instances[host].id, "") },  values) }
   puppetserver_ids = { for host, values in local.inventory : host => try(aws_instance.instances[host].id, "") if contains(values.tags, "puppet") }
 }

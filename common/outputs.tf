@@ -37,3 +37,7 @@ output "accounts" {
     }
   }
 }
+
+output "inventory" {
+  value = local.inventory_with_id
+}
