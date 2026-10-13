@@ -167,9 +167,9 @@ locals {
     })
   }
 
-  public_instances = { for host, values in module.configuration.inventory : host => values if contains(values.tags, "public") }
-  inventory_with_id = { for host, values in local.post_inventory : host => merge({ id = try(incus_instance.instances[host].id, "") },  values) }
-  puppetserver_ids = { for host, values in local.inventory : host => try(incus_instance.instances[host].id, "") if contains(values.tags, "puppet") }
+  public_instances  = { for host, values in module.configuration.inventory : host => values if contains(values.tags, "public") }
+  inventory_with_id = { for host, values in local.post_inventory : host => merge({ id = try(incus_instance.instances[host].id, "") }, values) }
+  puppetserver_ids  = { for host, values in local.inventory : host => try(incus_instance.instances[host].id, "") if contains(values.tags, "puppet") }
 }
 
 output "project" {

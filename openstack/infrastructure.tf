@@ -158,6 +158,6 @@ locals {
     }
   }
 
-  inventory_with_id = { for host, values in local.inventory : host => merge({ id = try(openstack_compute_instance_v2.instances[host].id, "") },  values) }
-  puppetserver_ids = { for host, values in local.inventory : host => try(openstack_compute_instance_v2.instances[host].id, "") if contains(values.tags, "puppet") }
+  inventory_with_id = { for host, values in local.inventory : host => merge({ id = try(openstack_compute_instance_v2.instances[host].id, "") }, values) }
+  puppetserver_ids  = { for host, values in local.inventory : host => try(openstack_compute_instance_v2.instances[host].id, "") if contains(values.tags, "puppet") }
 }

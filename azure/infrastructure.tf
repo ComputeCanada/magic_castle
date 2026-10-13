@@ -191,6 +191,6 @@ locals {
     }
   }
 
-  inventory_with_id = { for host, values in local.inventory : host => merge({ id = try(azurerm_linux_virtual_machine.instances[host].id, "") },  values) }
-  puppetserver_ids = { for host, values in local.inventory : host => try(azurerm_linux_virtual_machine.instances[host].id, "") if contains(values.tags, "puppet") }
+  inventory_with_id = { for host, values in local.inventory : host => merge({ id = try(azurerm_linux_virtual_machine.instances[host].id, "") }, values) }
+  puppetserver_ids  = { for host, values in local.inventory : host => try(azurerm_linux_virtual_machine.instances[host].id, "") if contains(values.tags, "puppet") }
 }
