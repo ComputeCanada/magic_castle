@@ -1226,6 +1226,9 @@ find it automatically. Can be used to force a v4 subnet when both v4 and v6 exis
 
 **Post build modification effect**: rebuild of all instances at next `terraform apply`.
 
+To connect instances to another subnet, see
+[Attaching Additional Resources to Instances](#111-attaching-additional-resources-to-instances).
+
 ### 5.5 Incus
 
 #### forward_proxy (optional)
@@ -2047,3 +2050,115 @@ Prometheus will then be available at `http://metrics.your-cluster.yourdomain.tld
 
 You can modify the Terraform module files in the folder named after your cloud
 provider (e.g: `gcp`, `openstack`, `aws`, etc.)
+
+### 11.1 Attaching Additional Resources to Instances
+
+The `inventory` output lets you reference Magic Castle instances from resources
+defined in your own Terraform configuration. It maps hostnames such as `login1`
+and `node1` to instance information, including `id`, `tags`, `prefix`, `local_ip`,
+`public_ip`, `specs`, and `volumes`. The `id` is the provider's instance identifier;
+for OpenStack, it is the instance UUID. Pool instances that are not currently
+created have an empty `id`.
+
+For example, if your Magic Castle module is named `openstack`, the UUID of
+`login1` is `module.openstack.inventory["login1"].id`. You can use this reference
+directly in another resource. To also expose the inventory through the Terraform
+CLI, add a root output alongside your module declaration:
+
+```hcl
+output "inventory" {
+  value = module.openstack.inventory
+}
+```
+
+After applying the configuration, run `terraform output -json inventory` to read
+the inventory from the command line.
+
+#### 11.1.1 OpenStack: Attach an Additional Subnet
+
+An instance can connect to an additional subnet through a port on that subnet's
+network. For example, CephFS clients may need an interface on a storage network.
+The following example creates a storage port for each instance and
+attaches it using its inventory UUID.
+
+Add the following code to a file such as `storage.tf` in the same directory as
+your `module "openstack"` declaration. Use a Magic Castle version that includes
+the `inventory` output. The example assumes the `var.pool` variable from the
+OpenStack example is also passed to the module as `pool = var.pool`.
+
+Declare the OpenStack provider source in your root configuration. If it already
+has a `required_providers` block, add this entry to that block:
+
+```hcl
+terraform {
+  required_providers {
+    openstack = {
+      source  = "terraform-provider-openstack/openstack"
+      version = ">= 1.50.0"
+    }
+  }
+}
+```
+
+Use the same OpenStack project and region as the Magic Castle module. The subnet
+and security groups below must already exist and be accessible to that project.
+
+```hcl
+variable "storage_subnet_id" {
+  description = "UUID of the additional subnet used by storage clients"
+  type        = string
+}
+
+variable "storage_security_group_ids" {
+  description = "Security group UUIDs to apply to the storage ports"
+  type        = set(string)
+}
+
+data "openstack_networking_subnet_v2" "storage" {
+  subnet_id = var.storage_subnet_id
+}
+
+locals {
+  online_instances = {
+    for hostname, instance in module.openstack.inventory : hostname => instance
+    if !contains(instance.tags, "pool") || contains(var.pool, hostname)
+  }
+}
+
+resource "openstack_networking_port_v2" "storage" {
+  for_each = local.online_instances
+
+  name               = "${module.openstack.cluster_name}-${each.key}-storage"
+  network_id         = data.openstack_networking_subnet_v2.storage.network_id
+  security_group_ids = var.storage_security_group_ids
+
+  fixed_ip {
+    subnet_id = data.openstack_networking_subnet_v2.storage.id
+  }
+}
+
+resource "openstack_compute_interface_attach_v2" "storage" {
+  for_each = local.online_instances
+
+  instance_id = each.value.id
+  port_id     = openstack_networking_port_v2.storage[each.key].id
+}
+```
+
+Set `storage_subnet_id` and `storage_security_group_ids` in your Terraform
+variables, then run `terraform init`, `terraform plan`, and `terraform apply`.
+To select just one instance, add `hostname == "login1"` to the filter with `&&`,
+enclosing the existing pool condition in parentheses.
+
+The pool condition excludes instances that Magic Castle will not create. Avoid
+filtering this `for_each` map with `instance.id != ""`: new instance IDs are
+unknown until apply, whereas Terraform needs the map's keys during planning.
+See the [Terraform for_each reference](https://developer.hashicorp.com/terraform/language/meta-arguments/for_each).
+
+Terraform manages the additional ports and attachments alongside the cluster.
+When an instance is replaced, its changed UUID causes its attachment to be
+recreated. Removing an instance from the selection removes its storage attachment
+and port. The primary subnet remains configured by Magic Castle's `subnet_id`.
+See the provider documentation for
+[ports](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/networking_port_v2)
+and [interface attachments](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_interface_attach_v2).
