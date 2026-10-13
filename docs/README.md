@@ -2084,8 +2084,7 @@ attaches it using its inventory UUID.
 Add the following code to a file such as `storage.tf` in the same directory as
 your `module "openstack"` declaration. Use a Magic Castle version that includes
 the `inventory` output. The example assumes the `var.pool` variable from the
-[OpenStack example](../examples/openstack/main.tf) is also passed to the module
-as `pool = var.pool`.
+OpenStack example is also passed to the module as `pool = var.pool`.
 
 Declare the OpenStack provider source in your root configuration. If it already
 has a `required_providers` block, add this entry to that block:
