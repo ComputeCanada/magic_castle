@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## [16.1.0] 2026-10-21
 
 ### Added
 
@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - [OpenStack] `keystone.py` looks for `clouds.yaml` in the current directory, `~/.config/openstack` and `/etc/openstack`, like the OpenStack provider.
+
 
 ## [16.0.3] 2026-10-09
 
