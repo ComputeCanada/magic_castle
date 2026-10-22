@@ -1852,6 +1852,40 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="11. Customize Magic Castle Terraform Files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-attaching-additional-resources-to-instances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 Attaching Additional Resources to Instances
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11.1 Attaching Additional Resources to Instances">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1111-openstack-attach-an-additional-subnet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1.1 OpenStack: Attach an Additional Subnet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -3624,6 +3658,40 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="11. Customize Magic Castle Terraform Files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#111-attaching-additional-resources-to-instances" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 Attaching Additional Resources to Instances
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11.1 Attaching Additional Resources to Instances">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1111-openstack-attach-an-additional-subnet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1.1 OpenStack: Attach an Additional Subnet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -4620,6 +4688,8 @@ connected. Define this if you have or intend to have more than one
 subnets defined in your OpenStack project. Otherwise, Terraform can
 find it automatically. Can be used to force a v4 subnet when both v4 and v6 exist.</p>
 <p><strong>Post build modification effect</strong>: rebuild of all instances at next <code>terraform apply</code>.</p>
+<p>To connect instances to another subnet, see
+<a href="#111-attaching-additional-resources-to-instances">Attaching Additional Resources to Instances</a>.</p>
 <h3 id="55-incus">5.5 Incus</h3>
 <h4 id="forward_proxy-optional">forward_proxy (optional)</h4>
 <p><strong>default value</strong>: false</p>
@@ -5244,6 +5314,100 @@ from the Internet.</p>
 <h2 id="11-customize-magic-castle-terraform-files">11. Customize Magic Castle Terraform Files</h2>
 <p>You can modify the Terraform module files in the folder named after your cloud
 provider (e.g: <code>gcp</code>, <code>openstack</code>, <code>aws</code>, etc.)</p>
+<h3 id="111-attaching-additional-resources-to-instances">11.1 Attaching Additional Resources to Instances</h3>
+<p>The <code>inventory</code> output lets you reference Magic Castle instances from resources
+defined in your own Terraform configuration. It maps hostnames such as <code>login1</code>
+and <code>node1</code> to instance information, including <code>id</code>, <code>tags</code>, <code>prefix</code>, <code>local_ip</code>,
+<code>public_ip</code>, <code>specs</code>, and <code>volumes</code>. The <code>id</code> is the provider's instance identifier;
+for OpenStack, it is the instance UUID. Pool instances that are not currently
+created have an empty <code>id</code>.</p>
+<p>For example, if your Magic Castle module is named <code>openstack</code>, the UUID of
+<code>login1</code> is <code>module.openstack.inventory["login1"].id</code>. You can use this reference
+directly in another resource. To also expose the inventory through the Terraform
+CLI, add a root output alongside your module declaration:</p>
+<div class="highlight"><pre><span></span><code><span class="kr">output</span><span class="w"> </span><span class="nv">"inventory"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">module.openstack.inventory</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>After applying the configuration, run <code>terraform output -json inventory</code> to read
+the inventory from the command line.</p>
+<h4 id="1111-openstack-attach-an-additional-subnet">11.1.1 OpenStack: Attach an Additional Subnet</h4>
+<p>An instance can connect to an additional subnet through a port on that subnet's
+network. For example, CephFS clients may need an interface on a storage network.
+The following example creates a storage port for each instance and
+attaches it using its inventory UUID.</p>
+<p>Add the following code to a file such as <code>storage.tf</code> in the same directory as
+your <code>module "openstack"</code> declaration. Use a Magic Castle version that includes
+the <code>inventory</code> output. The example assumes the <code>var.pool</code> variable from the
+OpenStack example is also passed to the module as <code>pool = var.pool</code>.</p>
+<p>Declare the OpenStack provider source in your root configuration. If it already
+has a <code>required_providers</code> block, add this entry to that block:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">terraform</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">required_providers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">openstack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="na">source</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"terraform-provider-openstack/openstack"</span>
+<span class="w">      </span><span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;= 1.50.0"</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Use the same OpenStack project and region as the Magic Castle module. The subnet
+and security groups below must already exist and be accessible to that project.</p>
+<div class="highlight"><pre><span></span><code><span class="kr">variable</span><span class="w"> </span><span class="nv">"storage_subnet_id"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"UUID of the additional subnet used by storage clients"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kr">variable</span><span class="w"> </span><span class="nv">"storage_security_group_ids"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Security group UUIDs to apply to the storage ports"</span>
+<span class="w">  </span><span class="na">type</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="kt">set</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kr">data</span><span class="w"> </span><span class="nc">"openstack_networking_subnet_v2"</span><span class="w"> </span><span class="nv">"storage"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">subnet_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.storage_subnet_id</span>
+<span class="p">}</span>
+
+<span class="nb">locals</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">online_instances</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="err">for</span><span class="w"> </span><span class="err">hostname</span><span class="p">,</span><span class="w"> </span><span class="err">instance</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="nv">module.openstack.inventory</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="na">hostname</span><span class="w"> </span><span class="o">=</span><span class="err">&gt;</span><span class="w"> </span><span class="err">instance</span>
+<span class="w">    </span><span class="err">if</span><span class="w"> </span><span class="p">!</span><span class="nf">contains</span><span class="p">(</span><span class="nv">instance.tags</span><span class="p">,</span><span class="w"> </span><span class="s2">"pool"</span><span class="p">)</span><span class="w"> </span><span class="err">||</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="nv">var.pool</span><span class="p">,</span><span class="w"> </span><span class="err">hostname</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"openstack_networking_port_v2"</span><span class="w"> </span><span class="nv">"storage"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">local.online_instances</span>
+
+<span class="w">  </span><span class="na">name</span><span class="w">               </span><span class="o">=</span><span class="w"> </span><span class="s2">"${module.openstack.cluster_name}-${each.key}-storage"</span>
+<span class="w">  </span><span class="na">network_id</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="nv">data.openstack_networking_subnet_v2.storage.network_id</span>
+<span class="w">  </span><span class="na">security_group_ids</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">var.storage_security_group_ids</span>
+
+<span class="w">  </span><span class="nb">fixed_ip</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="na">subnet_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">data.openstack_networking_subnet_v2.storage.id</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">resource</span><span class="w"> </span><span class="nc">"openstack_compute_interface_attach_v2"</span><span class="w"> </span><span class="nv">"storage"</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="na">for_each</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">local.online_instances</span>
+
+<span class="w">  </span><span class="na">instance_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nv">each.value.id</span>
+<span class="w">  </span><span class="na">port_id</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nv">openstack_networking_port_v2.storage[each.key].id</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Set <code>storage_subnet_id</code> and <code>storage_security_group_ids</code> in your Terraform
+variables, then run <code>terraform init</code>, <code>terraform plan</code>, and <code>terraform apply</code>.
+To select just one instance, add <code>hostname == "login1"</code> to the filter with <code>&amp;&amp;</code>,
+enclosing the existing pool condition in parentheses.</p>
+<p>The pool condition excludes instances that Magic Castle will not create. Avoid
+filtering this <code>for_each</code> map with <code>instance.id != ""</code>: new instance IDs are
+unknown until apply, whereas Terraform needs the map's keys during planning.
+See the <a href="https://developer.hashicorp.com/terraform/language/meta-arguments/for_each">Terraform for_each reference</a>.</p>
+<p>Terraform manages the additional ports and attachments alongside the cluster.
+When an instance is replaced, its changed UUID causes its attachment to be
+recreated. Removing an instance from the selection removes its storage attachment
+and port. The primary subnet remains configured by Magic Castle's <code>subnet_id</code>.
+See the provider documentation for
+<a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/networking_port_v2">ports</a>
+and <a href="https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs/resources/compute_interface_attach_v2">interface attachments</a>.</p>
 
 
 
