@@ -3,19 +3,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [16.1.0] 2026-10-21
+## [16.1.0] 2026-10-22
 
 ### Added
 
-- Added the `dns/designate` module to create the cluster DNS records in an OpenStack Designate zone.
+- Added the `dns/designate` module to create the cluster DNS records in an OpenStack Designate zone. (PR #449)
+- [AWS] Added the `subnet_id` variable to deploy clusters in an existing subnet, using its VPC and availability zone. (PR #445)
+- [AWS] Added the `default_tags` variable to apply tags to resources that support them. (PR #446)
+- Added the `subnet_cidr` variable to configure the subnet created by AWS, Azure, GCP and OVH. (PR #447)
+- Added the `inventory` output with provider instance IDs across all providers, and documented how to attach additional resources to instances. (PR #452)
 
 ### Fixed
 
-- [OpenStack] Fixed the shell fallback of `keystone.sh` when Python is missing, and the parsing of a quoted `auth_url` in `clouds.yaml` without PyYAML.
+- [OpenStack] Fixed the shell fallback of `keystone.sh` when Python is missing, and the parsing of a quoted `auth_url` in `clouds.yaml` without PyYAML. (PR #450)
 
 ### Changed
 
-- [OpenStack] `keystone.py` looks for `clouds.yaml` in the current directory, `~/.config/openstack` and `/etc/openstack`, like the OpenStack provider.
+- [OpenStack] `keystone.py` looks for `clouds.yaml` in the current directory, `~/.config/openstack` and `/etc/openstack`, like the OpenStack provider. (PR #450)
+- [AWS] Scoped internal traffic rules to the cluster's security group and prefixed security group names with the cluster name so multiple clusters can share a subnet. (PR #445)
+- Standardized newly created subnet CIDRs to `10.0.0.0/24` by default, and made AWS VPC and Azure virtual network address ranges match `subnet_cidr`. (PR #447)
+- Updated Terraform in CI to 1.9.8 and added validation and tests for the Designate DNS module. (PR #449)
 
 
 ## [16.0.3] 2026-10-09
