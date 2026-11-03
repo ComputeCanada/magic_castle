@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Fixed
+
+- Stopped removing `dhcpcd` during cloud-init provisioning because cloud-init needs it for early networking. (PR #454)
+
 ## [16.1.1] 2026-10-22
 
 ### Fixed
