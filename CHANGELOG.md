@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Upgraded OpenVox agent from 8.23.1 to 8.32.0 and OpenVox server from 8.11.0 to 8.18.0. (PR #455)
+
 ### Fixed
 
 - Stopped removing `dhcpcd` during cloud-init provisioning because cloud-init needs it for early networking. (PR #454)
