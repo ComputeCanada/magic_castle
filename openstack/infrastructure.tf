@@ -76,7 +76,7 @@ resource "openstack_compute_instance_v2" "instances" {
   }
 
   dynamic "block_device" {
-    for_each = each.value.disk_size > data.openstack_compute_flavor_v2.flavors[each.value.type].disk ? [{ volume_size = each.value.disk_size }] : []
+    for_each = contains(keys(each.value), "disk_type") || each.value.disk_size > data.openstack_compute_flavor_v2.flavors[each.value.type].disk ? [{ volume_size = each.value.disk_size }] : []
     content {
       uuid                  = data.openstack_images_image_v2.image[each.value.image].id
       source_type           = "image"
