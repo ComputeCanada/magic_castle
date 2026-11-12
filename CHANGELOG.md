@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Fixed
+
+- [AWS] Persisted the selected availability zone to prevent unintended cluster rebuilds when AWS zone or instance-type offerings change. (PR #458)
+
 ## [16.1.2] 2026-11-04
 
 ### Changed
