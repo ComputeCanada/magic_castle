@@ -1172,8 +1172,7 @@ assigned number.
 Defines the name of the specific geographical location where the cluster resources will be hosted.
 
 **Requirement**: Must be a Google Cloud region with an available zone offering
-all selected instance types. Custom N1 machine types are checked by
-family. Refer to [Google Cloud documentation](https://cloud.google.com/compute/docs/regions-zones#available)
+all selected instance types. Refer to [Google Cloud documentation](https://cloud.google.com/compute/docs/regions-zones#available)
 for the list of available regions and their characteristics.
 
 #### 5.3.3 zone (optional)

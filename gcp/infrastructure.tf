@@ -53,24 +53,20 @@ data "google_compute_zones" "available" {
 
 locals {
   instance_types = distinct([for instance in var.instances : instance.type])
-  # Custom N1 shapes are not listed by the API; check their machine family.
-  machine_type_names = {
-    for type in local.instance_types : type => startswith(type, "custom-") ? "n1-standard-1" : type
-  }
 }
 
 data "google_compute_machine_types" "available" {
   for_each = toset(data.google_compute_zones.available.names)
   project  = var.project
   zone     = each.key
-  filter   = join(" OR ", [for type in distinct(values(local.machine_type_names)) : "name = ${jsonencode(type)}"])
+  filter   = join(" OR ", [for type in local.instance_types : "name = \"${type}\""])
 }
 
 locals {
   zone_choices = toset([
     for zone, offerings in data.google_compute_machine_types.available : zone
     if alltrue([
-      for type in local.instance_types : contains(offerings.machine_types[*].name, local.machine_type_names[type])
+      for type in local.instance_types : contains(offerings.machine_types[*].name, type)
     ])
   ])
 }
