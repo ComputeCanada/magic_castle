@@ -1055,9 +1055,16 @@ supporting all selected instance types is chosen at random. When `subnet_id`
 is supplied, the cluster uses the subnet's availability zone. These parameters
 cannot both be set.
 
+The selected zone is stored in Terraform state and retained when AWS offerings
+or selected instance types change. Changing `availability_zone` or `subnet_id`
+selects a new zone.
+
 **Requirement**: Must be in a valid availability zone for the selected region. Refer to
 [AWS documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#using-regions-availability-zones-describe)
 to find out how to list the availability zones.
+
+**Post build modification effect**: changing or clearing this value may rebuild
+the subnet, instances, and managed volumes at next `terraform apply`.
 
 #### 5.1.3 subnet_id (optional)
 

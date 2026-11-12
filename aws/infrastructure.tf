@@ -88,7 +88,21 @@ resource "random_shuffle" "random_az" {
 
 locals {
   subnet_av_zone    = var.subnet_id != null ? data.aws_subnet.subnet[0].availability_zone : ""
-  availability_zone = local.pick_random_az ? random_shuffle.random_az[0].result[0] : coalesce(local.subnet_av_zone, var.availability_zone)
+  availability_zone = terraform_data.availability_zone.output
+}
+
+resource "terraform_data" "availability_zone" {
+  input            = local.pick_random_az ? random_shuffle.random_az[0].result[0] : coalesce(local.subnet_av_zone, var.availability_zone)
+  triggers_replace = [var.availability_zone, var.subnet_id]
+
+  lifecycle {
+    ignore_changes = [input]
+
+    postcondition {
+      condition     = contains(local.az_choices, self.output)
+      error_message = "The cluster availability zone ${self.output} does not provide all selected instance types. Select instance types available in this zone or explicitly change availability_zone."
+    }
+  }
 }
 
 resource "terraform_data" "az_check" {
