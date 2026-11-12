@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - [AWS] Persisted the selected availability zone to prevent unintended cluster rebuilds when AWS zone or instance-type offerings change. (PR #458)
+- [GCP] Persisted the selected zone to prevent unintended instance and disk rebuilds when the available zone list changes, and rejected unavailable zones instead of silently selecting another zone.
+- [GCP] Kept all instances and managed disks in one zone offering every requested instance type, including autoscaling nodes, and validated the stored zone against current offerings. Requires Google provider 5.15 or later.
 
 ## [16.1.2] 2026-11-04
 
