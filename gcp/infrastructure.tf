@@ -51,20 +51,67 @@ data "google_compute_zones" "available" {
   status = "UP"
 }
 
+locals {
+  instance_types = distinct([for instance in var.instances : instance.type])
+  # Custom N1 shapes are not listed by the API; check their machine family.
+  machine_type_names = {
+    for type in local.instance_types : type => startswith(type, "custom-") ? "n1-standard-1" : type
+  }
+}
+
+data "google_compute_machine_types" "available" {
+  for_each = toset(data.google_compute_zones.available.names)
+  project  = var.project
+  zone     = each.key
+  filter   = join(" OR ", [for type in distinct(values(local.machine_type_names)) : "name = ${jsonencode(type)}"])
+}
+
+locals {
+  zone_choices = toset([
+    for zone, offerings in data.google_compute_machine_types.available : zone
+    if alltrue([
+      for type in local.instance_types : contains(offerings.machine_types[*].name, local.machine_type_names[type])
+    ])
+  ])
+}
+
 resource "random_shuffle" "random_zone" {
-  input        = data.google_compute_zones.available.names
+  input        = local.zone_choices
   result_count = 1
 }
 
 locals {
-  zone = (
-    (var.zone != "" &&
-      contains(data.google_compute_zones.available.names,
-      var.zone)
-      ?
-      var.zone : random_shuffle.random_zone.result[0]
-    )
-  )
+  zone = terraform_data.zone.output
+}
+
+resource "terraform_data" "zone" {
+  input            = var.zone != "" ? var.zone : random_shuffle.random_zone.result[0]
+  triggers_replace = [var.zone]
+
+  lifecycle {
+    ignore_changes = [input]
+
+    precondition {
+      condition     = length(data.google_compute_zones.available.names) > 0
+      error_message = "There are no available zones in ${var.region}."
+    }
+    precondition {
+      condition     = length(local.zone_choices) > 0
+      error_message = "There is not a single available zone in ${var.region} that provides all selected instance types ${jsonencode(local.instance_types)}."
+    }
+    precondition {
+      condition     = var.zone == "" || contains(data.google_compute_zones.available.names, var.zone)
+      error_message = "The selected zone ${var.zone} is not available in ${var.region}. Select one of ${jsonencode(data.google_compute_zones.available.names)} or leave zone undefined."
+    }
+    precondition {
+      condition     = var.zone == "" || contains(local.zone_choices, var.zone)
+      error_message = "The selected zone ${var.zone} does not provide all selected instance types. Select one of ${jsonencode(local.zone_choices)} or leave zone undefined."
+    }
+    postcondition {
+      condition     = contains(local.zone_choices, self.output)
+      error_message = "The cluster zone ${self.output} is not available or does not provide all selected instance types. Select instance types available in this zone or explicitly change zone to one of ${jsonencode(local.zone_choices)}."
+    }
+  }
 }
 
 data "external" "machine_type" {

@@ -1171,17 +1171,28 @@ assigned number.
 
 Defines the name of the specific geographical location where the cluster resources will be hosted.
 
-**Requirement**: Must be a valid Google Cloud region. Refer to [Google Cloud documentation](https://cloud.google.com/compute/docs/regions-zones#available)
+**Requirement**: Must be a Google Cloud region with an available zone offering
+all selected instance types. Custom N1 machine types are checked by
+family. Refer to [Google Cloud documentation](https://cloud.google.com/compute/docs/regions-zones#available)
 for the list of available regions and their characteristics.
 
 #### 5.3.3 zone (optional)
 
 **default value**: None
 
-Defines the name of the zone within the region where the cluster resources will be hosted.
+Defines the zone within the region where all cluster instances and managed disks
+will be hosted. If omitted, a zone offering all selected instance types is chosen
+at random. The selected zone is stored in Terraform state and retained when zone
+or machine-type offerings change. An unavailable or incompatible zone causes an
+error instead of selecting another zone.
 
-**Requirement**: Must be a valid Google Cloud zone. Refer to [Google Cloud documentation](https://cloud.google.com/compute/docs/regions-zones#available)
+**Requirement**: Must be an available Google Cloud zone in the selected region.
+It must offer all selected instance types, including autoscaling nodes.
+Refer to [Google Cloud documentation](https://cloud.google.com/compute/docs/regions-zones#available)
 for the list of available zones and their characteristics.
+
+**Post build modification effect**: changing or clearing this value resets the
+selection and may rebuild instances and managed disks at next `terraform apply`.
 
 ### 5.4 OpenStack and OVH
 
