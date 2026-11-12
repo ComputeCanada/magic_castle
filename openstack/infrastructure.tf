@@ -91,7 +91,7 @@ resource "openstack_compute_instance_v2" "instances" {
   lifecycle {
     ignore_changes = [
       image_id,
-      block_device[0].uuid,
+      block_device,
       user_data,
     ]
   }

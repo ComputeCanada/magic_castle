@@ -620,6 +620,11 @@ For more information on these attributes, refer to
 available models per region
 - `gpus`: number of GPUs of the `gpu_type` model to attach to the instance
 
+##### OpenStack and OVH
+
+Changes to `disk_size` and `disk_type` do not modify existing boot volumes.
+New or explicitly replaced instances use the current settings.
+
 ##### Incus
 
 - `target`: name of the [specific cluster member](https://linuxcontainers.org/incus/docs/main/howto/cluster_manage_instance/#launch-an-instance-on-a-specific-cluster-member) to deploy the instance. **Only use with Incus cluster.**
