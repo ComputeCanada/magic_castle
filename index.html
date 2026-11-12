@@ -4650,13 +4650,23 @@ assigned number.</p>
 <p><strong>Post build modification effect</strong>: rebuild of all resources at next <code>terraform apply</code>.</p>
 <h4 id="532-region">5.3.2 region</h4>
 <p>Defines the name of the specific geographical location where the cluster resources will be hosted.</p>
-<p><strong>Requirement</strong>: Must be a valid Google Cloud region. Refer to <a href="https://cloud.google.com/compute/docs/regions-zones#available">Google Cloud documentation</a>
+<p><strong>Requirement</strong>: Must be a Google Cloud region with an available zone offering
+all selected instance types. Custom N1 machine types are checked by
+family. Refer to <a href="https://cloud.google.com/compute/docs/regions-zones#available">Google Cloud documentation</a>
 for the list of available regions and their characteristics.</p>
 <h4 id="533-zone-optional">5.3.3 zone (optional)</h4>
 <p><strong>default value</strong>: None</p>
-<p>Defines the name of the zone within the region where the cluster resources will be hosted.</p>
-<p><strong>Requirement</strong>: Must be a valid Google Cloud zone. Refer to <a href="https://cloud.google.com/compute/docs/regions-zones#available">Google Cloud documentation</a>
+<p>Defines the zone within the region where all cluster instances and managed disks
+will be hosted. If omitted, a zone offering all selected instance types is chosen
+at random. The selected zone is stored in Terraform state and retained when zone
+or machine-type offerings change. An unavailable or incompatible zone causes an
+error instead of selecting another zone.</p>
+<p><strong>Requirement</strong>: Must be an available Google Cloud zone in the selected region.
+It must offer all selected instance types, including autoscaling nodes.
+Refer to <a href="https://cloud.google.com/compute/docs/regions-zones#available">Google Cloud documentation</a>
 for the list of available zones and their characteristics.</p>
+<p><strong>Post build modification effect</strong>: changing or clearing this value resets the
+selection and may rebuild instances and managed disks at next <code>terraform apply</code>.</p>
 <h3 id="54-openstack-and-ovh">5.4 OpenStack and OVH</h3>
 <h4 id="541-os_floating_ips-optional">5.4.1 os_floating_ips (optional)</h4>
 <p><strong>default value</strong>: <code>{}</code></p>
