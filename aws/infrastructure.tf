@@ -88,11 +88,16 @@ resource "random_shuffle" "random_az" {
 
 locals {
   subnet_av_zone    = var.subnet_id != null ? data.aws_subnet.subnet[0].availability_zone : ""
-  availability_zone = local.pick_random_az ? random_shuffle.random_az[0].result[0] : coalesce(local.subnet_av_zone, var.availability_zone)
+  availability_zone = terraform_data.availability_zone.output
 }
 
-resource "terraform_data" "az_check" {
+resource "terraform_data" "availability_zone" {
+  input            = local.pick_random_az ? random_shuffle.random_az[0].result[0] : coalesce(local.subnet_av_zone, var.availability_zone)
+  triggers_replace = [var.availability_zone, var.subnet_id]
+
   lifecycle {
+    ignore_changes = [input]
+
     precondition {
       condition     = var.subnet_id == null || var.availability_zone == ""
       error_message = "Set either subnet_id or availability_zone, not both. Leave both undefined to select an availability zone automatically."
@@ -102,18 +107,16 @@ resource "terraform_data" "az_check" {
       error_message = "There is not a single availability zone in ${var.region} that provides all instance types you have selected."
     }
     precondition {
-      condition     = local.subnet_av_zone != "" || var.availability_zone == "" || contains(local.az_choices, var.availability_zone)
-      error_message = <<EOT
-      The selected availability zone "${var.availability_zone}" does not provide all instance types you have selected.
-Pick one of these zone instead ${jsonencode(local.az_choices)} or leave var.availability_zone undefined."
-EOT
+      condition     = var.availability_zone == "" || contains(local.az_choices, var.availability_zone)
+      error_message = "The selected availability zone ${var.availability_zone} does not provide all selected instance types. Select one of ${jsonencode(local.az_choices)} or leave availability_zone undefined."
     }
     precondition {
-      condition     = local.subnet_av_zone == "" || contains(local.az_choices, local.subnet_av_zone)
-      error_message = <<EOT
-      The subnet availability zone "${local.subnet_av_zone}" does not provide all instance types you have selected.
-Change the subnet availability zone or leave var.subnet_id undefined."
-EOT
+      condition     = var.subnet_id == null || contains(local.az_choices, local.subnet_av_zone)
+      error_message = "The subnet availability zone ${local.subnet_av_zone} does not provide all selected instance types. Select a subnet in one of ${jsonencode(local.az_choices)} or leave subnet_id undefined."
+    }
+    postcondition {
+      condition     = contains(local.az_choices, self.output)
+      error_message = "The cluster availability zone ${self.output} does not provide all selected instance types. Select instance types available in this zone or explicitly change availability_zone to any of ${jsonencode(local.az_choices)}."
     }
   }
 }
