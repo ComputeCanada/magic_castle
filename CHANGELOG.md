@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - [AWS] Persisted the selected availability zone to prevent unintended cluster rebuilds when AWS zone or instance-type offerings change. (PR #458)
 - [GCP] Persisted the selected zone to prevent unintended instance and disk rebuilds when the available zone list changes, and rejected unavailable zones instead of silently selecting another zone. (PR #459)
 - [GCP] Limited automatic zone selection to zones offering all requested instance types, including autoscaling nodes, and validated explicit and stored zones against current offerings. All instances and managed disks remain in one zone. (PR #459)
+- [OpenStack, OVH] Ignored changes to the boot block device configuration to prevent unintended instance rebuilds when flavor specifications change. Changes to `disk_size` or `disk_type` now require explicitly replacing existing instances to take effect.
 
 ## [16.1.2] 2026-11-04
 
